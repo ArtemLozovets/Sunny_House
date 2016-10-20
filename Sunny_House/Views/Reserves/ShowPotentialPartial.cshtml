@@ -1,0 +1,58 @@
+﻿@model PagedList.IPagedList<Sunny_House.Models.PotentialClientsViewModel>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<table class="table" id="partialtable">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.First().PersonFIO)
+        </th>
+        <th>
+            Информация
+        </th>
+        <th></th>
+    </tr>
+
+
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="2">
+                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+            </td>
+        </tr>
+    }
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Связанные персоны">@Html.DisplayFor(modelItem => item.PersonFIO)</a>
+            </td>
+            <td>
+                <div class="input-group"style="width:200px; ">
+                    <textarea class="form-control custom-control" rows="1" cols="200">@item.Infoes</textarea>
+                    <span class="input-group-addon btn btn-default glyphicon glyphicon-floppy-save infoesBtn" title="Сохранить" data-ptcid="@item.ClientId"></span>
+                </div>
+            </td>
+            <td style="text-align:center; width:204px; min-width:204px;">
+                <a class="btn btn-default btn-sm reservePTC" title="Бронь" href='#topanchor' data-clientid="@item.ClientId"><span class="glyphicon glyphicon-education"></span></a>
+                <a class="btn btn-default btn-sm" title="Задача" href='@Url.Action("", "Reserves", new { ClientId = item.ClientId })'><span class="glyphicon glyphicon-tasks"></span></a>
+                <a class="btn btn-default btn-sm" title="Отказ" href='@Url.Action("", "Reserves", new { ClientId = item.ClientId })'><span class="glyphicon glyphicon-ban-circle"></span></a>
+                <a class="btn btn-default btn-sm delPTC" title="Удалить" href='#topanchor' data-clientid="@item.ClientId"><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<hr />
+    Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("ShowPotentialPartial", "Reserves",
+                                 new { @EventId = Request.QueryString["EventId"], @SearchString = ViewData["SearchString"], page }),
+                                 PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
+                                 new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "update_potential" }))
+
+
+

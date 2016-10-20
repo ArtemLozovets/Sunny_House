@@ -1,0 +1,98 @@
+﻿@model Sunny_House.Models.Comment
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Comment</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Address.Alias)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address.Alias)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CommentSource.SourceName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CommentSource.SourceName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Event.EventName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Event.EventName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Exercise.Subject)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Exercise.Subject)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Person.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Person.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Person1.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Person1.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Text)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Text)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Rating)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Rating)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Signature)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Signature)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.CommentId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

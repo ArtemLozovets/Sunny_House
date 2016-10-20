@@ -1,0 +1,481 @@
+﻿@model Sunny_House.Models.Event
+<link href="~/Content/Progress.css" rel="stylesheet" type="text/css" />
+@{
+    ViewBag.Title = "Бронирование";
+}
+<div style="margin-bottom:26px;"><span id="topanchor"></span></div>
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog"></div>
+</div>
+<div class="row">
+    <div class="col-lg-5 col-md-6">
+        <div class="panel panel-default fixed" style="min-width:470px;" id="fixedpanel">
+            <div class="panel-heading">
+                <strong>Мероприятие <em class="text-info"> @Html.DisplayFor(model => model.EventName)</em></strong>
+            </div>
+            <div class="panel-body">
+                <div class="text-center">
+                    <div class="second circle">
+                        <strong></strong>
+                        <span><label id="ReservedCountSpan">@ViewData["ReservedCount"]</label> / <label id="AllCountSpan">@ViewData["AllCount"]</label></span>
+                    </div>
+                </div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        <label>Ответственный</label>
+                    </dt>
+                    <dd>
+                        @Model.Person.FirstName @Model.Person.LastName @Model.Person.MiddleName
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.StartTime)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.StartTime)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EndTime)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.EndTime)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Description)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Description)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Note)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Note)
+                    </dd>
+                </dl>
+                @using (Html.BeginForm("AjaxEventCountChange", "Events", FormMethod.Post, new { @id = "AjaxSendForm" }))
+                {
+                    <div class="input-group" style="width:100px; margin:0 auto;">
+                        <span class="input-group-addon">Мест</span>
+                        @Html.EditorFor(model => model.PlacesCount, null,
+                    new
+                    {
+                        htmlAttributes = new
+                        {
+                            @type = "text",
+                            @class = "form-control ",
+                            @title = "Количество мест",
+                            @data_val = "true",
+                            @style = "width:50px; text-align:center;"
+                        }
+                    })
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-toolbar groupbtn" title="Сохранить изменения" id="savecount">
+                                <span class="glyphicon glyphicon-floppy-save"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div style="margin:10px auto; width:90%; text-align:center;">
+                        <label for="PlacesCount" class="error text-danger" id="PlacesCountValidator" style="max-width:400px;"></label>
+                        <span id="ajaxresult"></span>
+                    </div>
+                }
+                <div style="margin:10px 0 0 4px;">
+                    <a class="btn btn-default" href='@Url.Action("EShow", "Events")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7 col-md-6">
+        <div class="panel panel-default" style="min-width:500px; min-height:436px;">
+            <div class="panel-heading"><strong>Бронирование</strong></div>
+            <div class="panel-body" id="tabpanel">
+                <ul class="nav nav-tabs">
+                    @* Вкладки ---------------------------------------------------------------- *@
+                    <li id="ResTab" class="active"><a data-toggle="tab" href="#home"><strong>Бронь</strong></a></li>
+                    <li id="PTCTab"><a data-toggle="tab" href="#menu1"><strong>Потенциальные клиенты</strong></a></li>
+                </ul>
+                <div class="tab-content">
+                    @* Вкладка бронирований ------------------------------------------- *@
+                    <div id="home" class="tab-pane fade in active">
+                        <div class="col-md-12 form-inline" style="margin-bottom:12px;">
+                            @using (Ajax.BeginForm("ResRelPersonsPartial", "Events", new { @EventId = @Model.EventId }, new AjaxOptions { UpdateTargetId = "update" }, new { @id = "eventform" }))
+                            {
+                                <input class="form-control" type="text" name="SearchString" id="SearchString" placeholder="Фамилия, имя, телефон..." style="width:200px; margin:2px 0; display:inline-block">
+                                <button type="submit" title="Искать" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                                @Html.Raw("&nbsp;")<button type="button" title="Обновить" class="btn btn-default" id="filterclear"><i class="glyphicon glyphicon-refresh"></i></button>
+                            }
+                        </div>
+                        <div id="update">
+                            @Html.Action("ResRelPersonsPartial", "Events", new { @EventId = @Model.EventId, @SearchString = "" })
+                        </div>
+                    </div>
+                    @* Вкладка потенциальных клиентов ------------------------------------------- *@
+                    <div id="menu1" class="tab-pane fade">
+                        <div style="margin:6px; font-weight:bold;"><span class="text-danger" id="AjaxResultLabel"></span></div>
+                        @* Панель фильтров --------------------------------- *@
+                        <div class="panel-group">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" href="#collapse1"><span class="text-info">Фильтр</span></a>
+                                    </h4>
+                                </div>
+                                <div id="collapse1" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <div class="col-lg-12 form-inline" style="margin-top:2px; margin-bottom:2px;">
+                                            <div class="input-group" style="width:300px; margin:0 auto">
+                                                <span class="input-group-addon">От</span>
+                                                @Html.TextBox("minAge", "0",
+                                                new
+                                                {
+                                                    @style = "width:50px; text-align:center;",
+                                                    @type = "text",
+                                                    @class = "form-control ",
+                                                    @title = "Минимальный возраст",
+                                                    @data_val = "true"
+                                                })
+                                                <span class="input-group-addon" style="border-left: 0; border-right: 0;">до</span>
+                                                @Html.TextBox("maxAge", "100",
+                                                new
+                                                {
+                                                    @style = "width:50px; text-align:center;",
+                                                    @type = "text",
+                                                    @class = "form-control ",
+                                                    @title = "Максимальный возраст",
+                                                    @data_val = "true"
+                                                })
+                                                <span class="input-group-addon" style="border-left: 0; border-right: 0;"><span class="glyphicon glyphicon-filter"></span></span>
+                                                @Html.DropDownList("RoleId", null, "- Роль -", htmlAttributes: new { @class = "form-control", @style = "width:120px;", @title = "Роль" })
+                                                <div class="input-group-btn">
+                                                    <button type="submit" title="Добавить" class="btn btn-toolbar groupbtn" id="addpotentialbtn">
+                                                        <span class="glyphicon glyphicon-plus"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-inline text-center" style="margin-top:8px; margin-bottom:2px;">
+                                            @using (Ajax.BeginForm("ShowPotentialPartial", "Reserves", new { @EventId = @Model.EventId }, new AjaxOptions { UpdateTargetId = "update_potential" }, new { @id = "clientform" }))
+                                            {
+                                                <input class="form-control" type="text" name="PTCSearchString" id="PTCSearchString" placeholder="Фамилия, имя, роль..." style="width:200px; margin:2px 0; display:inline-block">
+                                                <button type="submit" title="Искать" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                                                @Html.Raw("&nbsp;")<button type="button" title="Обновить" class="btn btn-default" id="clientfilterclear"><i class="glyphicon glyphicon-refresh"></i></button>
+                                                @Html.Raw("&nbsp;")<a class="btn btn-danger" title="Будет удалена поле тестирования!!!" href='@Url.Action("DeleteAll", "Reserves", new { @EventId = @Model.EventId })'><span class="glyphicon glyphicon-remove"> Удалить все</span></a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="update_potential">
+                            @Html.Action("ShowPotentialPartial", "Reserves", new { @EventId = @Model.EventId, @PTCSearchString = "" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/circle-progress.min.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+
+            $('body').on('click', '#clientfilterclear', function (event) {
+                $('#clientform').trigger('reset');
+                $('#clientform').submit();
+            });
+
+            $('body').on('click', '#filterclear', function (event) {
+                $('#eventform').trigger('reset');
+                $('#eventform').submit();
+            });
+
+            var percent = @ViewData["FillPercent"];
+            RefreshCircleBar(percent);
+
+            $("#PlacesCount").rules("add", {
+                number:true,
+                required: true,
+                min: @ViewData["ReservedCount"],
+                range: [@ViewData["ReservedCount"],300],
+                messages: {
+                    required: "Необходимо указать количество мест",
+                    min: "Количество мест не может быть меньше количества бронирований",
+                    range: "Значение должно находиться в диапазоне от @ViewData["ReservedCount"] до 300",
+                    number: "Нужно ввести числовое значение"
+                }
+            });
+
+        });
+
+        //Ограничиваем диапазон значений полей ввода возраста в фильтре
+        $('#minAge, #maxAge').bind("change keyup input click", function() {
+            if (this.value.match(/[^0-9]/g)) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            }
+            if(this.value < 0 && this.value != '') this.value = 0;
+            if(this.value > 100) this.value = 100;
+        });
+
+
+        $('#PlacesCount').keypress(function(e){
+            $('#ajaxresult').text("");
+        });
+
+        $('#AjaxSendForm').validate();
+
+
+        //Обработчик нажатия кнопки добавления потенциальных клиентов
+        $(function () {
+            $.ajaxSetup({ cache: false });
+
+            $('#addpotentialbtn').click(function(e){
+                e.preventDefault();
+                if($('#minAge').val() == ''){$('#minAge').val('0')}
+                if($('#maxAge').val() == ''){$('#maxAge').val('100')}
+                var minage = $('#minAge').val();
+                var maxage = $('#maxAge').val();
+                var roleid = $('#RoleId').val();
+
+                $.get('/Reserves/ShowModalClient', {
+                    EventId:@Model.EventId,
+                    MinAge:minage,
+                    MaxAge:maxage,
+                    RoleId:roleid
+                },
+                     function (data) {
+                         $('#dialogContent').html(data);
+                         $('#modDialog').modal('show');
+                     });
+            });
+        });
+
+
+        //Обработчик нажатия кнопки редактирования количества мест
+        $('#savecount').click(function(e){
+            e.preventDefault();
+            if($('#AjaxSendForm').valid()){
+                var EventId = $('#EventId').val();
+                var PlacesCount = $('#PlacesCount').val();
+                var dataRequest = {EventId: EventId, PlacesCount: PlacesCount}
+
+                $.ajax({
+                    type:'POST',
+                    url: '/Events/AjaxEventCountChange/',
+                    data:{
+                        EventId: @Model.EventId,
+                        EventName: "@Model.EventName",
+                        StartTime: "@Model.StartTime",
+                        EndTime: "@Model.EndTime",
+                        Description: "@Model.Description",
+                        AdministratorId: @Model.AdministratorId,
+                        Note: "@Model.Note",
+                        PlacesCount:$('#PlacesCount').val()
+                    },
+                    success: function(data) {
+                        if(data.Result){
+                            //Обновляем надписи индикатора
+                            $('#AllCountSpan').text(data.PlacesCount);
+                            $('#ReservedCount').text(data.ResPlaces);
+
+                            //Обновляем прогрессбар
+                            var percent = data.Percent;
+                            RefreshCircleBar(percent);
+                        }
+                        else {
+                            $('#ajaxresult').removeClass('text-success').addClass('text-danger').text(data.Message);}
+                    },
+                    fail: function(data){
+                        $('#ajaxresult').removeClass('text-success').addClass('text-danger').text('Ошибка обновления данных. Сервер отклонил запрос.');
+                    }
+                });
+            }
+        });
+
+
+        //Настройка фиксации блока подробной информации при изменении размера окна
+        $(document).ready( function() {
+            /* Check width on page load*/
+            if ( $(window).width() < 1000) {
+                alert($(window).width());
+                $('#fixedpanel').removeClass('fixed');
+            }
+            else {}
+        });
+
+        $(window).resize(function() {
+            /*If browser resized, check width again */
+            if ($(window).width() >= 1000) {
+                $('#fixedpanel').addClass('fixed');
+            }
+            else {$('#fixedpanel').removeClass('fixed');}
+        });
+
+        function RefreshCircleBar(percent){
+            var colorv = "#DF6262";
+            if(percent >= 0.25) {colorv="#DFDF62"}
+            if(percent >= 0.75) {colorv="#62DF62"}
+            $('.second.circle').circleProgress({
+                value: percent,
+                size:75,
+                fill: {color:colorv},
+                thickness:10
+            }).on('circle-animation-progress', function (event, progress) {
+                $(this).find('strong').html(parseInt(100 * percent) + '<i>%</i>');
+            });
+        }
+
+    </script>
+    <script type="text/javascript">
+        //Скрипт удаления записи из таблицы потенциальных клиентов
+        //Работа с представлением ShowPotentialPartial, контроллер ReservesController
+        $('body').on('click', '.delPTC', function (event) {
+            event.preventDefault();
+
+            if (confirm("Удалить выбранную запись?")) {
+
+                var _PTCId = $(this).data("clientid");
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Reserves/AjaxPTCDelete/',
+                    data: {
+                        PTCId: _PTCId
+                    },
+                    success: function (data) {
+                        if (data.Result) {
+                            //Обновляем грид
+                            $('#clientfilterclear').trigger('click');
+                            $('#AjaxResultLabel').removeClass("text-danger").addClass("text-success");
+                            $('#AjaxResultLabel').text(data.Message);
+                            $(document.body).animate({ 'scrollTop': $('#topanchor').offset().top - 300 }, 1000);
+                        }
+                        else {
+                            //Сообщение об ошибке
+                            $('#AjaxResultLabel').removeClass("text-success").addClass("text-danger");
+                            $('#AjaxResultLabel').text(data.Message);
+                            $(document.body).animate({ 'scrollTop': $('#topanchor').offset().top - 300 }, 1000);
+                        }
+
+                    },
+                    fail: function (data) {
+                        //Сообщение об ошибке
+                        $('#AjaxResultLabel').removeClass("text-success").addClass("text-danger");
+                        $('#AjaxResultLabel').text(data.Message);
+                        $(document.body).animate({ 'scrollTop': $('#topanchorr').offset().top - 300 }, 1000);
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+        //Скрипт переноса  записи из таблицы потенциальных клиентов в список бронирований
+        //Работа с представлением ShowPotentialPartial, контроллер ReservesController
+        $('body').on('click', '.reservePTC', function (event) {
+            event.preventDefault();
+
+            if (confirm("Выполнить бронирование?")) {
+
+                var _PTCId = $(this).data("clientid");
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Reserves/AjaxPTCMoveToReserve/',
+                    data: {
+                        PTCId: _PTCId
+                    },
+                    success: function (data) {
+                        if (data.Result) {
+                            //Обновляем грид
+                            $('#clientfilterclear').trigger('click');
+                            $('#AjaxResultLabel').removeClass("text-danger").addClass("text-success");
+                            $('#AjaxResultLabel').text(data.Message);
+                            $(document.body).animate({ 'scrollTop': $('#topanchor').offset().top-300 }, 1000);
+                            $('#ReservedCountSpan').text(data.resplaces);
+                            $('#AllCountSpan').text(data.allplaces);
+                            RefreshCircleBar(data.percent);
+                        }
+                        else {
+                            //Сообщение об ошибке
+                            $('#AjaxResultLabel').removeClass("text-success").addClass("text-danger");
+                            $('#AjaxResultLabel').text(data.Message);
+                            $(document.body).animate({ 'scrollTop': $('#topanchor').offset().top -300 }, 1000);
+                        }
+
+                    },
+                    fail: function (data) {
+                        //Сообщение об ошибке
+                        $('#AjaxResultLabel').removeClass("text-success").addClass("text-danger");
+                        $('#AjaxResultLabel').text(data.Message);
+                        $(document.body).animate({ 'scrollTop': $('#topanchorr').offset().top -300 }, 1000);
+                    }
+                });
+            }
+        });
+    </script>
+    <script type="text/javascript">
+        //Скрипт обновления списка бронирований при активации вкладки "Бронь"
+        $('#ResTab').on('shown.bs.tab', function (e) {
+            $('#filterclear').trigger("click");
+        })
+    </script>
+    <script type="text/javascript">
+        //Скрипт обновления поля "Информация"
+        //Работа с представлением ShowPotentialPartial, контроллер ReservesController
+        $('body').on('click', '.infoesBtn', function (event) {
+            event.preventDefault();
+            var elem = $(this).prev();
+            var _infoes = elem.val();
+            var _PTCId = $(this).data("ptcid");
+            $.ajax({
+                type: 'POST',
+                traditional:true,
+                url: '/Reserves/AjaxUpdateInfoes/',
+                data: {
+                    PTCId: _PTCId,
+                    Infoes: _infoes
+                },
+                success: function (data) {
+                    if (data.Result) {
+                        //Обновляем грид
+                        elem.css('background-color', '#DDFFDD');
+                    }
+                    else {
+                        //Операция не удалась
+                        elem.css('background-color', '#FFDDDD');
+                    }
+
+                },
+                fail: function (data) {
+                    //Операция не удалась
+                    elem.css('background-color', '#FFDDDD');
+                }
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        //Отображение модального окна со списком связанных персон
+        //Представление ShowModalPTCRelations контроллер ReservesCintroller
+        $(function () {
+            $('body').on('click', '.showRelPersons', function (event) {
+                event.preventDefault();
+
+                $.ajaxSetup({ cache: false });
+
+                $.get('/Reserves/ShowModalPTCRelations', {
+                    PersonId: $(this).data('personid')
+                },
+                     function (data) {
+                         $('#dialogContent').html(data);
+                         $('#modDialog').modal('show');
+                     });
+            });
+        });
+    </script>
+
+}

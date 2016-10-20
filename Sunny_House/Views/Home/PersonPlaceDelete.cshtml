@@ -1,0 +1,66 @@
+﻿@model Sunny_House.Models.PersonPlace
+
+@{
+    ViewBag.Title = "Удаление";
+}
+
+<h2>Место персоны</h2>
+
+<h3 class="text-danger">Вы уверены, что хотите удалить выбранную запись?</h3>
+<div>
+    <h4>Удаление места персоны</h4>
+    <hr />
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <dl class="dl-horizontal">
+            <dt>
+                Персона
+            </dt>
+
+            <dd>
+                @Model.Person.FirstName @Model.Person.LastName @Model.Person.MiddleName
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.PlaceName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.PlaceName)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Address.Alias)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Address.Alias)
+            </dd>
+
+            <dt>
+                Адрес
+            </dt>
+
+            <dd>
+                @Model.Address.City, @Model.Address.AddressValue
+            </dd>
+            <dt>
+                <span class="text-danger">Удалить связанный адрес</span>
+            </dt>
+
+            <dd>
+                @Html.CheckBox("RelAddressDel")
+            </dd>
+
+        </dl>
+
+        <div class="form-actions no-color">
+            <a class="btn btn-default" href='@Url.Action("ShowPlaces", "Home", new { PersonId = Request.QueryString["PersonId"]})'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+            <button type="submit" title="Удалить информацию о месте" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i> Удалить</button>
+        </div>
+    }
+</div>
+

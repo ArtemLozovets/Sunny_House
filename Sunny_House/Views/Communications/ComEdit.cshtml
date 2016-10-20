@@ -1,0 +1,91 @@
+﻿@model Sunny_House.Models.Communication
+
+@{
+    ViewBag.Title = "Редактирование";
+}
+
+<h2>@ViewBag.PersonName</h2>
+<h3>Редактирование средства связи</h3>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <input type="hidden" value="@Request.Params["PersonId"]" name="PersonId" />
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TypeOfCommunicationId, "Вид связи", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("TypeOfCommunicationId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TypeOfCommunicationId, "", new { @class = "text-danger", @id="TOCValidator" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address_Number, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Address_Number, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Address_Number, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CommName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CommName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CommName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" title="Редактировать данные" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Обновить</button>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    <a class="btn btn-default" href='@Url.Action("ComShow", "Communications", new {@PersonId = Request.Params["PersonId"]})'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.maskedinput.min.js"></script>
+
+    <script type="text/javascript">
+        $('#CommForm').submit(function () {
+            if ($("#TypeOfCommunicationId").val() == 0) {
+                $("#TOCValidator").html("Обязательное поле");
+                return false;
+            }
+        });
+
+        $("#TypeOfCommunicationId").change(function (e) {
+            if ($("#TypeOfCommunicationId option:selected").text() == 'Телефон мобильный' || $("#TypeOfCommunicationId option:selected").text() == 'Viber') {
+                $("#Address_Number").mask("+389999999999");
+            }
+            else if ($("#TypeOfCommunicationId option:selected").text() == 'Телефон стационарный') {
+                $("#Address_Number").mask("+389999999999?9");
+            }
+            else {
+                $("#Address_Number").unmask();
+            }
+
+        });
+
+    </script>
+}

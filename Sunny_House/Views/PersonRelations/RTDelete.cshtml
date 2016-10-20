@@ -1,0 +1,56 @@
+﻿@model Sunny_House.Models.RelationTypesCatalog
+
+@{
+    ViewBag.Title = "Удаление";
+}
+
+<h2>Удаление</h2>
+
+<h3 class="text-danger">Вы уверены, что хотите удалить данный тип связи?</h3>
+<div>
+    <h4>Справочник типов взаимоотношений</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.RelType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RelType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RevTypeSex)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RevTypeSex)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReverseRelType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReverseRelType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RevTypeSex)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RevTypeSex)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <a class="btn btn-default" href='@Url.Action("RTShow", "PersonRelations")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+            <button type="submit" title="Удалить" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i> Удалить</button>
+        </div>
+    }
+</div>

@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Sunny_House.Models.Exercise>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Subject)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StartTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndTime)
+        </th>
+    </tr>
+
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="3">
+                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+            </td>
+        </tr>
+    }
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.ActionLink(@item.Subject, "ExShow", "Exercises", new { ExerciseId = @item.ExerciseId }, null)
+        </td>
+        <td>
+            @Html.ActionLink(String.Format("{0:dd'/'MM'/'yyyy}", @item.StartTime), "ExShow", "Exercises", new { ExerciseId = @item.ExerciseId }, null)
+        </td>
+        <td>
+            @Html.ActionLink(String.Format("{0:dd'/'MM'/'yyyy}", @item.EndTime), "ExShow", "Exercises", new { ExerciseId = @item.ExerciseId }, null)
+        </td>
+    </tr>
+}
+
+</table>

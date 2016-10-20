@@ -1,0 +1,74 @@
+﻿@model IEnumerable<Sunny_House.Models.CommViewModel>
+
+@{
+    ViewBag.Title = "Средства связи";
+}
+
+<h2>@ViewBag.PersonName</h2>
+<h3>Средства связи</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="text-success"> @TempData["MessageOk"]</p>
+        <p class="text-danger"> @TempData["MessageError"]</p>
+    </div>
+</div>
+
+<p>
+    <a class="btn btn-default" style="margin:2px 2px;" title="Добавить средство связи" href='@Url.Action("ComCreate", "Communications", new { @PersonId = Request.Params["PersonId"]})'><span class="glyphicon glyphicon-link"> Создать</span></a>
+</p>
+
+<table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.TypeOfCommunication)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Address_Number)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CommName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Note)
+        </th>
+        <th style="width:90px; min-width:90px;"></th>
+    </tr>
+
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="5">
+                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+            </td>
+        </tr>
+    }
+
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypeOfCommunication)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address_Number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CommName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            <td style="text-align:center;">
+                <a class="btn btn-default btn-sm" title="Редактировать средство связи" href='@Url.Action("ComEdit", "Communications", new { id = item.Id, PersonId = Request.Params["PersonId"] })'><span class="glyphicon glyphicon-edit"></span></a>
+                <a class="btn btn-default btn-sm" title="Удаление средства связи" href='@Url.Action("ComDelete", "Communications", new { id = item.Id, PersonId = Request.Params["PersonId"] })'><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<p>
+    <a class="btn btn-default" href='@Url.Action("ShowPersons", "Home", new {@PersonId = Request.Params["PersonId"]})'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+</p>

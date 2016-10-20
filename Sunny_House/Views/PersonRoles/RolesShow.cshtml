@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Sunny_House.Models.PersonRole>
+
+@{
+    ViewBag.Title = "Роли";
+}
+
+<h2>Роли</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="text-success"> @TempData["MessageOk"]</p>
+        <p class="text-danger">  @TempData["MessageError"]</p>
+    </div>
+</div>
+
+<p>
+    <a class="btn btn-default" style="margin:2px 2px;" title="Добавить новую роль" href='@Url.Action("RoleCreate", "PersonRoles")'><span class="glyphicon glyphicon-link"> Создать роль</span></a>
+</p>
+<div class="row">
+    <div class="col-lg-4 col-md-5 col-sm-5 col-xs-8">
+
+        <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.RoleName)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RoleName)
+                    </td>
+                    <td style="text-align:center; width:90px; min-width:90px;">
+                        <a class="btn btn-default btn-sm" title="Редактировать роль" href='@Url.Action("RoleEdit", "PersonRoles", new { id = item.RoleId })'><span class="glyphicon glyphicon-edit"></span></a>
+                        <a class="btn btn-default btn-sm" title="Удалить роль" href='@Url.Action("RoleDelete", "PersonRoles", new { id = item.RoleId })'><span class="glyphicon glyphicon-trash"></span></a>
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</div>

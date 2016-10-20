@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Sunny_House.Models.PlacesViewModel>
+
+@{
+    ViewBag.Title = "Контактная информация";
+}
+
+<h2>@ViewBag.PersonName</h2>
+<h3>Контактная информация</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="text-success"> @TempData["MessageOk"]</p>
+        <p class="text-danger">  @TempData["MessageError"]</p>
+    </div>
+</div>
+
+<p>
+    <a class="btn btn-default" title="Добавить контактную информацию" href='@Url.Action("AddPlace", "Home", new { ObjectId = @ViewBag.PersonId })'><span class="glyphicon glyphicon-home"> Добавить место</span></a>
+</p>
+<table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.PlaceName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Alias)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PostCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Country)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Region)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Area)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.City)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AddressValue)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GeoTag)
+        </th>
+        <th style="width:90px; min-width:90px;"></th>
+    </tr>
+
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="10">
+                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+            </td>
+        </tr>
+    }
+    
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlaceName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Alias)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PostCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Country)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Region)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Area)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AddressValue)
+            </td>
+            <td>
+                <a target="_blank" href="https://www.google.com.ua/maps/place/@item.GeoTag">@Html.DisplayFor(modelItem => item.GeoTag)</a>
+            </td>
+            <td style="text-align:center;">
+                <a class="btn btn-default btn-sm" title="Редактировать адрес" href='@Url.Action("AdPlaceEdit", "Addresses", new {id = item.Id, PersonId = Request.QueryString["PersonId"] })'><span class="glyphicon glyphicon-edit"></span></a>
+                <a class="btn btn-default btn-sm" title="Удалить" href='@Url.Action("PersonPlaceDelete", "Home", new {id = item.Id, PersonId = Request.QueryString["PersonId"] })'><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<p><a class="btn btn-default" href='@Url.Action("ShowPersons", "Home", new { PersonId = @ViewBag.PersonId })'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a></p>

@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - "Солнечный дом"</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <meta name="description" content="Солнечный дом - Клуб для детей и родителей" />
+
+</head>
+<body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Персоны", "ShowPersons", "Home", new { Area = "" }, null)</li>
+                    <li>@Html.ActionLink("Платежи", "ShowAllPayments", "Home", new { Area = "" }, null)</li>
+                    <li class="dropdown">
+                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Обучение <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Мероприятия", "EShow", "Events", new { Area = "" }, null)</li>
+                            <li>@Html.ActionLink("Занятия", "ExShow", "Exercises", new { Area = "" }, null)</li>
+                            <li>@Html.ActionLink("Бронирование", "ResShowAll", "Reserves", new { Area = "" }, null)</li>
+                            <li role="separator" class="divider"></li>
+                            <li>@Html.ActionLink("Отзывы", "CommentShow", "Comments", new { Area = "" }, null)</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Дополнительно <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Адреса", "AdShow", "Addresses", new { Area = "" }, null)</li>
+                            <li role="separator" class="divider"></li>
+                            <li>@Html.ActionLink("Роли", "RolesShow", "PersonRoles", new { Area = "" }, null)</li>
+                            <li>@Html.ActionLink("Типы взаимоотношений", "RTShow", "PersonRelations", new { Area = "" }, null)</li>
+                            <li>@Html.ActionLink("Виды связи", "TCShow", "Communications", new { Area = "" }, null)</li>
+                            <li>@Html.ActionLink("Источники отзывов", "CSShow", "Comments", new { Area = "" }, null)</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Управление <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Пользователи", "ShowUsers", "UsersManagement", new { Area = "Administrator" }, null)</li>
+                            <li>@Html.ActionLink("Аудит входа", "LoginAudit", "UsersManagement", new { Area = "Administrator" }, null)</li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    @Html.Partial("_LoginPartial")
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Клуб для детей и родителей <a href="http://www.detki.poltava.ua/">"Солнечный дом"</a></p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+
+</body>
+</html>

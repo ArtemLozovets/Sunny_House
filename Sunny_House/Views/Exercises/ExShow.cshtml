@@ -1,0 +1,98 @@
+﻿@model IEnumerable<Sunny_House.Models.Exercise>
+
+@{
+    ViewBag.Title = "Занятия";
+}
+
+<h2>Занятия</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="text-success"> @TempData["MessageOk"]</p>
+        <p class="text-danger"> @TempData["MessageError"]</p>
+    </div>
+</div>
+
+<p>
+    <a class="btn btn-default" style="margin:2px 2px;" title="Добавить занятие" href='@Url.Action("ExCreate", "Exercises", new { @PersonId = Request.Params["PersonId"]})'><span class="glyphicon glyphicon-book"> Добавить занятие </span></a>
+</p>
+
+<table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+    <tr>
+        <th>
+            <label>Мероприятие</label>
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Subject)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StartTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndTime)
+        </th>
+        <th>
+            <label>Место</label>
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Note)
+        </th>
+        <th style="width:128px; min-width:128px"></th>
+    </tr>
+
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="7">
+                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+            </td>
+        </tr>
+    }
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Event.EventName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Subject)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndTime)
+            </td>
+            <td>
+                @item.Address.City, @item.Address.AddressValue
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            <td style="text-align:center;">
+                <a class="btn btn-default btn-sm" title="Подробно" href='@Url.Action("ExDetails", "Exercises", new { ObjectId = item.ExerciseId })'><span class="glyphicon glyphicon-info-sign"></span></a>
+                <a class="btn btn-default btn-sm" title="Редактировать" href='@Url.Action("ExEdit", "Exercises", new { ObjectId = item.ExerciseId })'><span class="glyphicon glyphicon-edit"></span></a>
+                <a class="btn btn-default btn-sm" title="Удалить" href='@Url.Action("ExDelete", "Exercises", new { ObjectId = item.ExerciseId })'><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+        </tr>
+    }
+
+</table>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.cookie-1.4.1.min.js"></script>
+
+
+    <script type="text/javascript">
+        $(function () {
+            $.removeCookie('EventId');
+            $.removeCookie('EventLabel');
+            $.removeCookie('Subject');
+            $.removeCookie('StartTime');
+            $.removeCookie('EndTime');
+            $.removeCookie('Note');
+        });
+    </script>
+}

@@ -1,0 +1,111 @@
+﻿@model Sunny_House.Models.Reserve
+
+@{
+    ViewBag.Title = "Бронирование";
+}
+
+<h2>@ViewData["PersonFIO"]</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="text-success"> @TempData["MessageOk"]</p>
+        <p class="text-danger">  @TempData["MessageError"]</p>
+    </div>
+</div>
+
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog"></div>
+</div>
+
+@using (Html.BeginForm("ResCreate", "Reserves", FormMethod.Post, new { id = "ReserveForm" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Добавить бронь</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.Hidden("PersonId", @Request.QueryString["PersonId"])
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EventId, "Мероприятие", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.HiddenFor(model => model.EventId)
+                <div class="inline-form">
+                    <input type="text" name="EventLabel" id="EventLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["EventName"]" />
+                    <a class="btn btn-default pModal" style="margin:2px 0;" href='@Url.Action("ShowModalEvents2Res", "Modal", new { field = "EventId"})'><span class="glyphicon glyphicon-folder-open"></span></a><br />
+                </div>
+                @Html.ValidationMessageFor(model => model.EventId, "", new { @class = "text-danger", @id = "EventIdValidator" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RoleId, "Роль", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("RoleId", null, "- Выберите роль -", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.RoleId, "", new { @class = "text-danger", @id = "RoleIdValidator" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" title="Добавить бронь" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Добавить</button>
+            </div>
+        </div>
+    </div>
+        }
+
+<div>
+    <a class="btn btn-default" href='@Url.Action("ResShow", "Reserves", new {PersonId = @Request.QueryString["PersonId"] })'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(function () {
+            $.ajaxSetup({ cache: false });
+            $(".pModal").click(function (e) {
+                e.preventDefault();
+                $.get(this.href, function (data) {
+                    $('#dialogContent').html(data);
+                    $('#modDialog').modal('show');
+                });
+            });
+        });
+
+        $(function () {
+            $(function () {
+                var widthdelta = 44;
+                var wd = $("#EventLabel").width() - widthdelta;
+                $("#EventLabel").width(wd);
+            });
+        });
+
+
+        $('#ReserveForm').submit(function () {
+            var flag = false;
+            if ($("#EventId").val() == 0) {
+                $("#EventIdValidator").html("Выберите мероприятие");
+                flag = true;
+            }
+            if ($('#RoleId').val() == '')  {
+                $('#RoleIdValidator').text('Выберите роль');
+                flag = true;
+            }
+            if (flag) {
+                return false;
+            }
+        });
+    </script>
+}

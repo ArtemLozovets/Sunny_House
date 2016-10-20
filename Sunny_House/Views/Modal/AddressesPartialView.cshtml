@@ -1,0 +1,46 @@
+﻿
+@model IEnumerable<Sunny_House.Models.Address>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Alias)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PostCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.City)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AddressValue)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Alias)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PostCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AddressValue)
+            </td>
+            <td>
+                <a class="btn btn-default btn-sm selAddress"
+                   data-addressid="@item.AddressId"
+                   data-addressvalue="@item.City @item.AddressValue"
+                   onclick="selsubmit(this)">
+                    <span class="glyphicon glyphicon-ok"></span>
+                </a>
+            </td>
+        </tr>
+    }
+</table>

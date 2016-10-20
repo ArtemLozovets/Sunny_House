@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Sunny_House.Models.PaymentViewModel>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.PIB)
+        </th>
+
+        <th>
+            Мероприятие
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Sum)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PayDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Note)
+        </th>
+    </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PIB)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.EventName)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Sum)@Html.Raw("&nbsp;")₴
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PayDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+        </tr>
+    }
+
+</table>

@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Sunny_House.Models.Comment>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Text)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Rating)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Signature)
+        </th>
+    </tr>
+
+
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="4">
+                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+            </td>
+        </tr>
+    }
+    
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.ActionLink(String.Format("{0:dd'/'MM'/'yyyy}", @item.Date), "CommentShow", "Comments", new { CommentId = @item.CommentId}, null)
+        </td>
+        <td>
+            @Html.ActionLink(@item.Text, "CommentShow", "Comments", new { CommentId = @item.CommentId }, null)
+        </td>
+        <td>
+            @Html.ActionLink(@item.Rating, "CommentShow", "Comments", new { CommentId = @item.CommentId }, null)
+        </td>
+        <td>
+            @Html.ActionLink(@item.Signature, "CommentShow", "Comments", new { CommentId = @item.CommentId }, null)
+        </td>
+   </tr>
+}
+</table>

@@ -1,0 +1,33 @@
+﻿@model Sunny_House.Models.TypeOfCommunication
+
+@{
+    ViewBag.Title = "Удаление";
+}
+
+<h2>Удаление</h2>
+
+<h3 class="text-danger">Вы уверены, что хотите удалить выбранный вид связи?</h3>
+<div>
+    <h4>Виды связи</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CommType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CommType)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <a class="btn btn-default" href='@Url.Action("TCShow", "Communications")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+            <button type="submit" title="Удалить" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i> Удалить</button>
+        </div>
+    }
+</div>

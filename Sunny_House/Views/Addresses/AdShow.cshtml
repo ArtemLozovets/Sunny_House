@@ -1,0 +1,57 @@
+﻿@{
+    ViewBag.Title = "Адреса";
+}
+
+<h2>Адреса</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="text-success"> @TempData["MessageOk"]</p>
+        <p class="text-danger">  @TempData["MessageError"]</p>
+    </div>
+</div>
+
+
+@using (Ajax.BeginForm("AdShowAllPartial", "Addresses", new AjaxOptions { UpdateTargetId = "update" }, new { @id = "modalform" }))
+{
+    <div class="row" style="margin:10px 0">
+        <div class="col-lg-3 col-md-4 col-sm-4">
+            <a class="btn btn-default" title="Добавить адрес" style="width:160px;" href='@Url.Action("AdCreate", "Addresses", new { RetActionName = "AdShow", RetControllerName = "Addresses"})'><span class="glyphicon glyphicon-home"> Добавить адрес</span></a>
+            @Html.Raw("&nbsp;")<button type="button" title="Обновить" class="btn btn-default" id="filterclear"><i class="glyphicon glyphicon-refresh"></i></button>
+        </div>
+        <div class="col-lg-5 col-lg-offset-4 col-md-6 col-md-offset-2 col-sm-8 form-inline">
+
+            @Html.DropDownList("CitySearchString", (IEnumerable<SelectListItem>)ViewData["Cityes"], "-Город-", htmlAttributes: new { @class = "form-control", style = "width:160px; margin:2px 0; display:inline-block;" })
+            <input class="form-control" type="text" id="AddressSearchString" name="AddressSearchString" data-autocomplete-source=@Url.Action("AutocompleteAddressValue", "AutoComplete") placeholder="Псевдоним, адрес..." style="width:200px; margin:2px 0; display:inline-block;">
+            <button type="submit" title="Искать" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+        </div>
+    </div>
+}
+
+
+<div id="update">
+    @Html.Action("AdShowAllPartial", "Addresses", new { CitySearchString = "", AddressSearchString = "" })
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            $("[data-autocomplete-source]").each(function () {
+                var target = $(this);
+                target.autocomplete({ source: target.attr("data-autocomplete-source") });
+            });
+
+            $('#AddressSearchString').focus();
+        });
+
+
+        $('#filterclear').click(function (event) {
+            $('#modalform').trigger('reset');
+            $('#modalform').submit();
+        });
+
+
+
+    </script>
+}

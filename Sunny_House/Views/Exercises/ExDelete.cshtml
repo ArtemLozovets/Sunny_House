@@ -1,0 +1,72 @@
+﻿@model Sunny_House.Models.Exercise
+
+@{
+    ViewBag.Title = "Удаление";
+}
+
+<h2>Занятия</h2>
+
+<h3 class="text-danger">Вы действительно хотите удалить выбранное занятие?</h3>
+<div>
+    <h4>Удаление занятия</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Event.EventName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Event.EventName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Subject)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Subject)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EndTime)
+        </dd>
+
+        <dt>
+            Место
+        </dt>
+
+        <dd>
+            @Model.Address.City, @Model.Address.AddressValue
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Note)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Note)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <a class="btn btn-default" href='@Url.Action("ExShow", "Exercises")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+            <button type="submit" title="Удалить занятие" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i> Удалить</button>
+        </div>
+    }
+</div>

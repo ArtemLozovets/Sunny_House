@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Sunny_House.Models.RelationViewModel>
+
+@{
+    ViewBag.Title = "Взаимоотношения";
+}
+
+<h2>@ViewBag.PersonName</h2>
+<h3>Інформация о взаимоотношениях</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="text-success"> @TempData["MessageOk"]</p>
+        <p class="text-danger">  @TempData["MessageError"]</p>
+    </div>
+</div>
+
+<div class="row" style="margin:10px 0;">
+    <div class="col-md-12">
+        <a class="btn btn-default" style="margin:2px 2px;" title="Добавить взаимоотношение" href='@Url.Action("PRCreate", "PersonRelations", new {PersonId = @ViewData["PersonId"]} )'><span class="glyphicon glyphicon-link"> Создать</span></a>
+        <a class="btn btn-default" title="Обновить" style="margin:2px 2px ;" href='@Url.Action("ShowRel", "Home", new { PersonId = @ViewData["PersonId"] })'><span class="glyphicon glyphicon-refresh"></span></a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MiddleName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RelationName)
+                </th>
+                <th style="width:48px; min-width:48px;"></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MiddleName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RelationName)
+                    </td>
+                    <td style="text-align:center;">
+                        <a class="btn btn-default btn-sm" title="Удаление связи" href='@Url.Action("PRDelete", "PersonRelations", new { id = item.RelationId, PersonId = @ViewData["PersonId"] })'><span class="glyphicon glyphicon-trash"></span></a>
+                    </td>
+                </tr>
+            }
+
+        </table>
+
+        <p><a class="btn btn-default" href='@Url.Action("ShowPersons", "Home", new {PersonId = @ViewData["PersonId"]})'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a></p>
+
+    </div>
+</div>

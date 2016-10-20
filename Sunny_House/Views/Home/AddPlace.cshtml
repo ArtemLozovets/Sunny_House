@@ -1,0 +1,121 @@
+﻿@model Sunny_House.Models.PersonPlace
+
+@{
+    ViewBag.Title = "Добавить контактную информацию";
+}
+
+<h2>@ViewBag.PersonName</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel-group" style="margin:4px 4px 10px 4px">
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>Добавить контактную информацию</strong></div>
+                <div class="panel-body">
+
+                    @using (Html.BeginForm("AddPlace", "Home", FormMethod.Post, new { id = "AddPlaceForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            <hr />
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            @Html.HiddenFor(model => model.PersonId, htmlAttributes: new { @class = "form-control" })
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.AddressId, "Адрес", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <input type="text" name="AddressValue" id="AddressValue" value="@ViewBag.AddressText" class="form-control" disabled />
+                                    @Html.HiddenFor(model => model.AddressId, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.AddressId, null, new { @class = "text-danger", @id = "AddressValidator" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.PlaceName, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.PlaceName, new { htmlAttributes = new { @class = "form-control", data_autocomplete_source = @Url.Action("AutocompletePlaceName", "AutoComplete"), @Value = ViewData["PlaceName"] } })
+                                    @Html.ValidationMessageFor(model => model.PlaceName, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <button type="submit" title="Добавить контактную информацию" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Добавить</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p><a class="btn btn-default" href='@Url.Action("ShowPlaces", "Home", new { PersonId = @Model.PersonId })'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a></p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel-group" style="margin:4px 4px 10px 4px">
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>Выбор адреса</strong></div>
+                <div class="panel-body">
+
+                    <div class="row" style="margin:0 0 10px 0">
+                        <div class="col-lg-12">
+                            <a class="btn btn-default" title="Добавить адрес" style="width:160px;" href='@Url.Action("AdCreate", "Addresses", new { ObjectId= @Model.PersonId, RetActionName = "AddPlace", RetControllerName = "Home"})'><span class="glyphicon glyphicon-home"> Добавить адрес</span></a>
+                            <button type="button" title="Обновить" class="btn btn-default" id="filterclear"><i class="glyphicon glyphicon-refresh"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin:10px 0">
+                        <div class="col-lg-12 form-inline">
+                            @using (Ajax.BeginForm("AdShowPartial", "Addresses", null, new AjaxOptions { UpdateTargetId = "update" }, new { id = "addform"}))
+                            {
+                                @Html.DropDownList("CitySearchString", (IEnumerable<SelectListItem>)ViewData["Cityes"], "-Город-", htmlAttributes: new { @class = "form-control", style = "width:160px; margin:2px 0; display:inline-block" })
+                                <input class="form-control" type="text" name="AddressSearchString" data-autocomplete-source=@Url.Action("AutocompleteAddressValue", "AutoComplete") placeholder="Псевдоним, адрес..." style="width:200px; margin:2px 0; display:inline-block">
+                                <button type="submit" title="Искать" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                            }
+                        </div>
+                    </div>
+
+                    <div id="update">
+                        @Html.Action("AdShowPartial", "Addresses", new { CitySearchString = "", AddressSearchString = "", })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+
+        $(function () {
+            $("[data-autocomplete-source]").each(function () {
+                var target = $(this);
+                target.autocomplete({ source: target.attr("data-autocomplete-source") });
+            });
+        });
+
+        function selsubmit(elem) {
+            var AddressId = $(elem).data('addressid');
+            var AddressValue = $(elem).data('addressvalue');
+            $("#AddressValue").val(AddressValue)
+            $("#AddressId").val(AddressId);
+        };
+
+        $('#AddPlaceForm').submit(function () {
+            if ($("#AddressId").val() == 0) {
+                $("#AddressValidator").html("Обязательное поле");
+                return false;
+            }
+        });
+
+        $('#filterclear').click(function (event) {
+            $('#addform').trigger('reset');
+            $('#addform').submit();
+        });
+
+    </script>
+}

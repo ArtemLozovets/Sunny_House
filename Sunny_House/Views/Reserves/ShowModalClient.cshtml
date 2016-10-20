@@ -1,0 +1,79 @@
+﻿<div class="modal-content ui-front">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal" area-hidden="true">X</button>
+        <h4>Персоны</h4>
+    </div>
+
+
+    @using (Html.BeginForm("AddPotentialClient", "Reserves", FormMethod.Post, new { @id = "addclientform" }))
+    {
+        <div class="row form-inline" style="margin:10px 0 0 10px;">
+            <inut id="addclientbutton" class="btn btn-default" title="Добавить клиента(ов)"><span class="glyphicon glyphicon-user"> Добавить</span></inut>
+            <span class="text-danger" id="adderror"></span>
+        </div>
+        <div class="row" style="margin:10px 0">
+            <div id="update">
+                @Html.Action("PartialClientinModal", "Reserves", new
+                       {
+                           EventId = @ViewData["EventId"],
+                           MinAge = @ViewData["MinAge"],
+                           MaxAge = @ViewData["MaxAge"],
+                           RoleId = @ViewData["RoleId"]
+                       })
+            </div>
+        </div>
+    }
+
+</div>
+
+
+
+<script type="text/javascript">
+    
+
+    //Отправка формы через Ajax
+    $('#addclientbutton').click(function(e){
+        e.preventDefault();
+        //Проверяем отмечена ли хоть одна перснона
+        var isChecked = 0;
+        $(".checkPerson").each(function () {
+            if (this.checked) isChecked = 1;
+        })
+        if (isChecked == 0) {
+            $("#adderror").text("Не отмечено ни одной персоны");
+        }
+        else {
+
+            var PersonsIDSArray = new Array();
+
+            $(".checkPerson").each(function () {
+                if (this.checked) {
+                    PersonsIDSArray.push($(this).val());
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '/Reserves/AddPotentialClient/',
+                traditional:true,
+                data: {
+                    EventId: @ViewData["EventId"],
+                    RoleId: @ViewData["RoleId"],
+                    PersonsIDS: PersonsIDSArray
+                },
+                success: function (data) {
+                    if (!data.Result) {
+                        $("#adderror").text(data.Message);
+                    }
+                    else {
+                        $('#clientfilterclear').trigger('click');
+                        $('#modDialog').modal('hide');
+                    }
+                },
+                fail: function (data) {
+                    $("#adderror").text("Ошибка выполнения запроса");
+                }
+            });
+        }
+    });
+</script>

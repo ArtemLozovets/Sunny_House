@@ -1,0 +1,32 @@
+﻿@model Sunny_House.Models.CommentSource
+
+@{
+    ViewBag.Title = "Удаление";
+}
+
+<h2>Отзывы</h2>
+
+<h3>Вы действительно хотите удалить выбранную запись?</h3>
+<div>
+    <h4>Удаление источника</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.SourceName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SourceName)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <a class="btn btn-default" href='@Url.Action("CSShow", "Comments")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+            <button type="submit" title="Удалить" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i> Удалить</button>
+        </div>
+    }
+</div>

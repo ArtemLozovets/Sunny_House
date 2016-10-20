@@ -1,0 +1,216 @@
+﻿@model Sunny_House.Models.Payment
+
+@{
+    ViewBag.Title = "Добавить платеж";
+}
+
+<h2>Платежи</h2>
+
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog"></div>
+</div>
+
+@using (Html.BeginForm("AddPayment", "Home", FormMethod.Post, new { id = "PaymentForm" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Добавить платеж</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PayerId, "Плательщик", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="form-inline">
+                    <input type="text" name="PayerLabel" id="PayerLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["PayerPIB"]" />
+                    <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "PayerId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                </div>
+                @Html.HiddenFor(model => model.PayerId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PayerId, "", new { @class = "text-danger", @id = "PayerValidator" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClientId, "Клиент", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="form-inline">
+                    <input type="text" name="ClientLabel" id="ClientLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["ClientPIB"]" />
+                    <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "ClientId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                </div>
+                @Html.HiddenFor(model => model.ClientId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ClientId, "", new { @class = "text-danger", @id = "ClientValidator" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EventId, "Мероприятие", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="form-inline">
+                    <input type="text" name="EventLabel" id="EventLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["EventName"]" />
+                    <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalEvents", "Modal", new { field = "EventId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                </div>
+                @Html.HiddenFor(model => model.EventId)
+                @Html.ValidationMessageFor(model => model.EventId, "", new { @class = "text-danger", @id = "EventValidator" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Sum, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Sum, new
+           {
+               htmlAttributes = new
+               {
+                   @class = "form-control",
+                   @onkeyup = "reppoint(this)",
+                   @onchange = "reppoint(this)"
+               }
+           })
+                @Html.ValidationMessageFor(model => model.Sum, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
+                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" title="Добавить платеж" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Добавить</button>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    <p><a class="btn btn-default" href='@Url.Action("ShowAllPayments", "Home")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a></p>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.cookie-1.4.1.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $.ajaxSetup({ cache: false });
+
+            $(".pModal").click(function (e) {
+
+                if ($("#PayerId").val() != 0) {
+                    $.cookie('PayerId', $('#PayerId').val(), { path: "/" });
+                }
+
+                if ($("#ClientId").val() != 0) {
+                    $.cookie('ClientId', $('#ClientId').val(), { path: "/" });
+                }
+
+                e.preventDefault();
+                $.get(this.href, function (data) {
+                    $('#dialogContent').html(data);
+                    $('#modDialog').modal('show');
+                });
+            });
+        });
+
+        $(function () {
+            $(function () {
+                var widthdelta = 44;
+                var wd = $("#PayerLabel").width() - widthdelta;
+                $("#PayerLabel").width(wd);
+                $("#ClientLabel").width(wd);
+                $("#EventLabel").width(wd);
+            });
+        });
+
+
+        $(function () {
+            $("input[type='date']").datepicker().each(function () {
+                this.setAttribute("type", "text");
+            });
+
+            $.datepicker.regional['ru'] = {
+                closeText: 'Закрыть',
+                prevText: '<<',
+                nextText: '>>',
+                currentText: 'Сегодня',
+                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+                'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
+                'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+                dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
+                dayNamesShort: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
+                dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+                weekHeader: 'Не',
+                dateFormat: 'dd/mm/yy',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+            $.datepicker.setDefaults($.datepicker.regional['ru']);
+        });
+
+
+        //Separator replace. Convert "." to ","
+        function reppoint(elem) {
+            var d = elem.value;
+            if (d.indexOf(".") > 0) {
+                var outstr = d.replace(".", ",");
+                elem.value = outstr;
+            }
+        }
+
+
+        $.validator.methods.date = function (value, element) {
+            if (value) {
+                try {
+                    $.datepicker.parseDate('dd/mm/yy', value);
+                } catch (ex) {
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /(^\d{1,5}(\,\d{1,2})?$)/.test(value);
+        }
+
+        $('#PaymentForm').submit(function () {
+
+            var flag = false;
+
+            if ($("#PayerId").val() == 0) {
+                $("#PayerValidator").html("Необходимо заполнить поле \"Плательщик\"");
+                flag = true;
+            }
+            if ($("#ClientId").val() == 0) {
+                $("#ClientValidator").html("Необходимо заполнить поле \"Клиент\"");
+                flag = true;
+            }
+            if ($("#EventId").val() == 0) {
+                $("#EventValidator").html("Необходимо заполнить поле \"Мероприятие\"");
+                flag = true;
+            }
+
+            if (flag) { return false; }
+
+        });
+
+    </script>
+}
+

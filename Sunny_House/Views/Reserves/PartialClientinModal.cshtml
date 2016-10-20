@@ -1,0 +1,105 @@
+﻿@model PagedList.IPagedList<Sunny_House.Models.PersonsViewModel>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<table class="table ModalTable">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.First().PersonFIO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().PersonAge) 
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().DateOfBirth)
+        </th>
+
+        <th>
+            <input type="checkbox" name="checkAll" id="checkAll" />
+        </th>
+    </tr>
+
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="6">
+                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+            </td>
+        </tr>
+    }
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PersonFIO)
+            </td>
+            @if (item.PersonAge != null && item.PersonAge > 0)
+            {
+                <td>
+                   <span class="text-info">@Html.DisplayFor(modelItem => item.PersonAge)</span>
+                </td>
+            }
+            else
+            {
+                <td>
+                   @if (item.PersonMonth != null)
+                   { <span class="text-success">@Html.DisplayFor(modelItem => item.PersonMonth) мес.</span> }
+                </td>
+            }
+
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+            <td>
+                <input type="checkbox" name="PersonsIDS" id="PersonsIDS" class="checkPerson" value="@item.PersonId" />
+            </td>
+        </tr>
+    }
+
+</table>
+
+<hr />
+    Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("PartialClientinModal", "Reserves",
+                         new { 
+                             EventId = ViewData["EventId"],
+                             MinAge = ViewData["MinAge"],
+                             MaxAge = ViewData["MaxAge"],
+                             RoleId = ViewData["RoleId"], 
+                             page 
+                         }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
+                                                                                         new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "update" }))
+
+<script type="text/javascript">
+//Работа с чекбоксами
+    $(function () {
+        $("#checkAll").change(function () {
+            $("#adderror").text("");
+            if (this.checked) {
+                $(".checkPerson").each(function () {
+                    this.checked = true;
+                })
+            } else {
+                $(".checkPerson").each(function () {
+                    this.checked = false;
+                })
+            }
+        });
+
+        $(".checkPerson").click(function () {
+            $("#adderror").text("");
+            if ($(this).is(":checked")) {
+                var isAllChecked = 0;
+                $(".checkPerson").each(function () {
+                    if (!this.checked)
+                        isAllChecked = 1;
+                })
+                if (isAllChecked == 0) { $("#checkAll").prop("checked", true); }
+            } else {
+                $("#checkAll").prop("checked", false);
+            }
+        });
+    });
+    </script>

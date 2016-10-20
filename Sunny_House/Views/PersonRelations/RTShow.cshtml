@@ -1,0 +1,71 @@
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<Sunny_House.Models.RelationTypesCatalog>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
+
+@{
+    ViewBag.Title = "Типы взаимоотношений";
+}
+
+<h2>Типы взаимоотношений</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="text-success"> @TempData["MessageOk"]</p>
+        <p class="text-danger">  @TempData["MessageError"]</p>
+    </div>
+</div>
+
+<p>
+    @if (ViewData["PRPersonId"] != "-1")
+    {
+        <a class="btn btn-default" href='@Url.Action("PRCreate", "PersonRelations", new { PersonId = ViewData["PRPersonId"] })'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+    }
+    <a class="btn btn-default" style="margin:2px 2px;" title="Добавить новый тип" href='@Url.Action("RTCreate", "PersonRelations")'><span class="glyphicon glyphicon-link"> Создать</span></a>
+</p>
+<table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.First().RelType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().TypeSex)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().ReverseRelType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().RevTypeSex)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RelType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypeSex)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReverseRelType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RevTypeSex)
+            </td>
+            <td>
+                <a class="btn btn-default btn-sm" title="Редактировать тип взаимоотношений" href='@Url.Action("RTEdit", "PersonRelations", new { id = item.RelTypesId })'><span class="glyphicon glyphicon-edit"></span></a>
+                <a class="btn btn-default btn-sm" title="Удалить тип взаимоотношений" href='@Url.Action("RTDelete", "PersonRelations", new { id = item.RelTypesId })'><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<hr />
+Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("RTShow", "PersonRelations", new { page }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })

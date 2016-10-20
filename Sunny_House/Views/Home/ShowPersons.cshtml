@@ -1,0 +1,140 @@
+﻿@model PagedList.IPagedList<Sunny_House.Models.PersonsViewModel>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Персоны";
+}
+
+<h2>Персоны</h2>
+<h3>Реестр персон</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="text-success"> @TempData["MessageOk"]</p>
+        <p class="text-danger">  @TempData["MessageError"]</p>
+    </div>
+</div>
+
+<label id="SortColumn" hidden>@ViewData["SortColumn"]</label>
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("ShowPersons", "Home", FormMethod.Get))
+        {
+            <div class="row" style="margin:10px 0;">
+                <div class="col-lg-3 col-md-4 col-sm-4 ">
+                    <a class="btn btn-default" style="margin:2px 2px;" title="Добавить персону" href='@Url.Action("AddPerson", "Home")'><span class="glyphicon glyphicon-user"> Добавить персону</span></a>
+                    <a class="btn btn-default" title="Обновить" style="margin:2px 2px ;" href='@Url.Action("ShowPersons", "Home")'><span class="glyphicon glyphicon-refresh"></span></a>
+                </div>
+                <div class="col-lg-3 col-lg-offset-6 col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-2 form-inline">
+                    @Html.TextBox("SearchString", null, new { @class = "form-control ", data_autocomplete_source = @Url.Action("AutocompletePersonFirstName", "AutoComplete"), @placeholder = "Имя, фамилия, телефон", style = "margin:2px 2px; width:200px; display:inline-block;" })
+                    <button type="submit" title="Искать" style="margin:2px 2px; display:inline-block " class="btn btn-default"><i class="glyphicon glyphicon-search"></i> </button>
+                </div>
+            </div>
+        }
+
+        <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+            <tr>
+                <th>
+                    @Html.ActionLink("Фамилия", "ShowPersons", new { SortBy = ViewBag.SortFirstName, SearchString = Request["SearchString"], PersonId = Request.QueryString["PersonId"] },
+                    new { @id = "FirstName" }) <i id="FirstNameArrow"></i>
+                </th>
+                <th>
+                    @Html.ActionLink("Имя", "ShowPersons", new { SortBy = ViewBag.SortLastName, SearchString = Request["SearchString"], PersonId = Request.QueryString["PersonId"] },
+                     new { @id = "LastName" }) <i id="LastNameArrow"></i>
+                </th>
+                <th>
+                    @Html.ActionLink("Отчество", "ShowPersons", new { SortBy = ViewBag.SortMiddleName, SearchString = Request["SearchString"], PersonId = Request.QueryString["PersonId"] },
+                                new { @id = "MiddleName" }) <i id="MiddleNameArrow"></i>
+                </th>
+                <th>
+                    @Html.ActionLink("Дата рождения", "ShowPersons", new { SortBy = ViewBag.SortDateOfBirth, SearchString = Request["SearchString"], PersonId = Request.QueryString["PersonId"] },
+                              new { @id = "DateOfBirth" }) <i id="DateOfBirthArrow"></i>
+                </th>
+                <th>
+                    @Html.ActionLink("Номер/Адрес", "ShowPersons", new { SortBy = ViewBag.SortNum_Address, SearchString = Request["SearchString"], PersonId = Request.QueryString["PersonId"] },
+                              new { @id = "Num_Address" }) <i id="Num_AddressArrow"></i>
+                </th>
+                <th></th>
+            </tr>
+
+            @if (Model.Count() == 0)
+            {
+                <tr>
+                    <td colspan="6">
+                        <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+                    </td>
+                </tr>
+            }
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MiddleName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateOfBirth)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Num_Address)
+                    </td>
+                    <td style="text-align:center; width:292px; min-width:292px;">
+                        <a class="btn btn-default btn-sm" title="Платежи персоны" href='@Url.Action("ShowPayments", "Home", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-usd"></span></a>
+                        <a class="btn btn-default btn-sm" title="Бронирование" href='@Url.Action("ResShow", "Reserves", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-education"></span></a>@Html.Raw("&nbsp;")
+                        <a class="btn btn-default btn-sm" title="Средства связи" href='@Url.Action("ComShow", "Communications", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-phone"></span></a>
+                        <a class="btn btn-default btn-sm" title="Информация о взаимоотношениях" href='@Url.Action("ShowRel", "Home", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-link"></span></a>
+                        <a class="btn btn-default btn-sm" title="Контактная информация" href='@Url.Action("ShowPlaces", "Home", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-home"></span></a>@Html.Raw("&nbsp;")
+                        <a class="btn btn-default btn-sm" title="Редактирование персональных данных" href='@Url.Action("PersonEdit", "Home", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-edit"></span></a>
+                        <a class="btn btn-default btn-sm" title="Удаление персоны" href='@Url.Action("PersonDelete", "Home", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-trash"></span></a>
+                    </td>
+
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<hr />
+Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("ShowPersons", "Home",
+                             new { PersonId = Request.QueryString["PersonId"], SearchString = Request.QueryString["SearchString"], page, SortBy = Request["SortBy"] }),
+                         new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(function () {
+            $("[data-autocomplete-source]").each(function () {
+                var target = $(this);
+                target.autocomplete({ source: target.attr("data-autocomplete-source") });
+            });
+
+            $("#SearchString").focus(); // Фокус на полі фільтра при відкритті сторінки.
+
+            if ($('#SortColumn').text() != '') {
+                var sortcolumnname = $('#SortColumn').text();
+                var sortcontrol = $('#' + sortcolumnname);
+                if (sortcontrol != null) {
+                    if (sortcontrol.attr('href').indexOf('desc') != -1) {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-arrow-up')
+                    }
+                    else {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-arrow-down')
+                    }
+                }
+            }
+        });
+
+    </script>
+
+}

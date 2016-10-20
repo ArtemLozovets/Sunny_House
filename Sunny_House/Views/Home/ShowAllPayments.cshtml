@@ -1,0 +1,162 @@
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<Sunny_House.Models.PaymentViewModel>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Платежи";
+}
+
+<h2>Реестр платежей</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="text-success"> @TempData["MessageOk"]</p>
+        <p class="text-danger">  @TempData["MessageError"]</p>
+    </div>
+</div>
+
+<label id="SortColumn" hidden>@ViewData["SortColumn"]</label>
+
+@using (Html.BeginForm("ShowAllPayments", "Home", FormMethod.Get))
+{
+    <div class="row" style="margin:10px 0;">
+        <div class="col-lg-3 col-md-4 col-sm-4 ">
+            <a class="btn btn-default" title="Добавить информацию о платеже" href='@Url.Action("AddPayment", "Home")'><span class="glyphicon glyphicon-usd"> Добавить платеж</span></a>
+            <a class="btn btn-default" title="Обновить" style="margin:2px 2px ;" href='@Url.Action("ShowAllPayments", "Home")'><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
+        <div class="col-lg-5 col-lg-offset-4 col-md-6 col-md-offset-2 col-sm-8 form-inline">
+            @Html.TextBox("PayerSearchString", null, new { @class = "form-control", data_autocomplete_source = @Url.Action("AutocompletePayer", "AutoComplete"), @placeholder = "Плательщик", style = "margin:2px 2px; width:180px; display:inline-block;" })
+            @Html.TextBox("ClientSearchString", null, new { @class = "form-control", data_autocomplete_source = @Url.Action("AutocompleteClient", "AutoComplete"), @placeholder = "Клиент", style = "margin:2px 2px; width:180px; display:inline-block;" })
+            <button type="submit" title="Искать" style="margin:2px 2px; display:inline-block " class="btn btn-default"><i class="glyphicon glyphicon-search"></i> </button>
+        </div>
+    </div>
+}
+<table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+    <tr>
+        <th>
+            @Html.ActionLink("Плательщик", "ShowAllPayments", new
+                   {
+                       SortBy = ViewBag.SortPayerPIB,
+                       PayerSearchString = Request["PayerSearchString"],
+                       ClientSearchString = Request["ClientSearchString"]
+                   },
+                   new { @id = "PayerPIB" })@Html.Raw("&nbsp;")<i id="PayerPIBArrow"></i>
+        </th>
+        <th>
+            @Html.ActionLink("Клиент", "ShowAllPayments", new
+                   {
+                       SortBy = ViewBag.SortPIB,
+                       PayerSearchString = Request["PayerSearchString"],
+                       ClientSearchString = Request["ClientSearchString"]
+                   },
+                   new { @id = "PIB" })@Html.Raw("&nbsp;")<i id="PIBArrow"></i>
+        </th>
+        <th>
+            @Html.ActionLink("Мероприятие", "ShowAllPayments", new
+                   {
+                       SortBy = ViewBag.SortEventName,
+                       PayerSearchString = Request["PayerSearchString"],
+                       ClientSearchString = Request["ClientSearchString"]
+                   },
+                   new { @id = "EventName" })@Html.Raw("&nbsp;")<i id="EventNameArrow"></i>
+        </th>
+
+        <th>
+            @Html.ActionLink("Сумма", "ShowAllPayments", new
+                   {
+                       SortBy = ViewBag.SortSum,
+                       PayerSearchString = Request["PayerSearchString"],
+                       ClientSearchString = Request["ClientSearchString"]
+                   },
+                   new { @id = "Sum" })@Html.Raw("&nbsp;")<i id="SumArrow"></i>
+        </th>
+        <th>
+            @Html.ActionLink("Дата", "ShowAllPayments", new
+                   {
+                       SortBy = ViewBag.SortPayDate,
+                       PayerSearchString = Request["PayerSearchString"],
+                       ClientSearchString = Request["ClientSearchString"]
+                   },
+                   new { @id = "PayDate" })@Html.Raw("&nbsp;")<i id="PayDateArrow"></i>
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().Note)
+        </th>
+        <th></th>
+    </tr>
+
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="7">
+                <p class="text-center text-danger" style="margin-top:12px;">Платежи, соответствующие критериям поиска, не найдены<p>
+            </td>
+        </tr>
+    }
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.ActionLink(@item.PayerPIB, "ShowPersons", "Home", new { PersonId = @item.PayerId }, null)
+            </td>
+            <td>
+                @Html.ActionLink(@item.PIB, "ShowPersons", "Home", new { PersonId = @item.ClientId }, null)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.EventName)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Sum)@Html.Raw("&nbsp;")₴
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PayDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            <td style="text-align:center; width:90px; min-width:90px;">
+                <a class="btn btn-default btn-sm" title="Редактирование платежа" href='@Url.Action("PaymentEdit", "Home", new {id = item.Id })'><span class="glyphicon glyphicon-edit"></span></a>
+                <a class="btn btn-default btn-sm" title="Удаление платежа" href='@Url.Action("PaymentDelete", "Home", new {id = item.Id })'><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+        </tr>
+    }
+
+</table>
+<hr />
+Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("ShowAllPayments", "Home",
+                                         new { PayerSearchString = Request.QueryString["PayerSearchString"], 
+                                               ClientSearchString = Request.QueryString["ClientSearchString"],
+                                               page, SortBy = Request["SortBy"]}),
+                         new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(function () {
+            $("[data-autocomplete-source]").each(function () {
+                var target = $(this);
+                target.autocomplete({ source: target.attr("data-autocomplete-source") });
+            });
+        });
+
+        if ($('#SortColumn').text() != '') {
+            var sortcolumnname = $('#SortColumn').text();
+            var sortcontrol = $('#' + sortcolumnname);
+            if (sortcontrol != null) {
+                if (sortcontrol.attr('href').indexOf('desc') != -1) {
+                    $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-arrow-up')
+                }
+                else {
+                    $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-arrow-down')
+                }
+            }
+        }
+
+    </script>
+}

@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Sunny_House.Models.Comment>
+
+@{
+    ViewBag.Title = "Отзывы";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    <a class="btn btn-default" style="margin:2px 2px;" title="Добавить отзыв" href='@Url.Action("CommentCreate", "Comments", new { @PersonId = Request.Params["PersonId"] })'><span class="glyphicon glyphicon-comment"> Добавить отзыв</span></a>
+    @Html.Raw("&nbsp;")
+    <a class="btn btn-default" title="Обновить" style="margin:2px 2px ;" href='@Url.Action("CommentShow", "Comments")'><span class="glyphicon glyphicon-refresh"></span></a>
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Address.Alias)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CommentSource.SourceName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Event.EventName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Exercise.Subject)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Person.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Person1.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Text)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Rating)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Signature)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address.Alias)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CommentSource.SourceName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Event.EventName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Exercise.Subject)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Person.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Person1.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Signature)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "CommentEdit", new { id = item.CommentId }) |
+                @Html.ActionLink("Details", "CommentDetails", new { id = item.CommentId }) |
+                @Html.ActionLink("Delete", "CommentDelete", new { id = item.CommentId })
+            </td>
+        </tr>
+    }
+
+</table>

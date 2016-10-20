@@ -1,0 +1,316 @@
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<Sunny_House.Models.Event>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/Progress.css" rel="stylesheet" type="text/css" />
+
+
+@{
+    ViewBag.Title = "Мероприятия";
+}
+
+<h2>Список мероприятий</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="text-success"> @TempData["MessageOk"]</p>
+        <p class="text-danger">  @TempData["MessageError"]</p>
+    </div>
+</div>
+
+<label id="SortColumn" hidden>@ViewData["SortColumn"]</label>
+
+@using (Html.BeginForm("EShow", "Events", FormMethod.Get, new { @id = "EventsForm" }))
+{
+    <div class="row">
+        <div class="col-lg-4 col-md-4">
+            @if (Request.QueryString["FilterMode"] == "Current" || Request.QueryString["FilterMode"] == null)
+            {
+                <p class="text-info"><strong>Режим отображения: ДЕЙСТВУЮЩИЕ</strong></p>
+            }
+            @if (Request.QueryString["FilterMode"] == "Archive")
+            {
+                <p class="text-info"><strong>Режим отображения: АРХИВНЫЕ</strong></p>
+            }
+            @if (Request.QueryString["FilterMode"] == "All")
+            {
+                <p class="text-info"><strong>Режим отображения: ВСЕ</strong></p>
+            }
+
+            @Html.RadioButton("FilterMode", "Current", true) <span>Действующие</span>@Html.Raw("&nbsp;")
+            @Html.RadioButton("FilterMode", "Archive") <span> Архив</span>@Html.Raw("&nbsp;")
+            @Html.RadioButton("FilterMode", "All") <span> Все</span>
+
+        </div>
+        <div class="col-lg-6 col-lg-offset-2 col-md-8">
+            <br />
+            <div class="input-group" style="width:510px;">
+                <span class="input-group-addon">с</span>
+                @Html.TextBox("SearchStartDate", null,
+                new
+                {
+                    @style = "width:100px;",
+                    @type = "date",
+                    @class = "form-control ",
+                    @placeholder = "Начало",
+                    @title = "Дата начала мероприятия",
+                    @data_val = "true",
+                    @data_val_date = "Сообщение об ошибке"
+                })
+                <span class="input-group-addon" style="border-left: 0; border-right: 0;">до</span>
+
+                @Html.TextBox("SearchEndDate", null,
+                new
+                {
+                    @style = "width:100px;",
+                    @type = "date",
+                    @class = "form-control ",
+                    @placeholder = "Окончание",
+                    @title = "Дата окончания мероприятия",
+                    @data_val = "true",
+                    @data_val_date = "Сообщение об ошибке"
+                })
+                <span class="input-group-addon" style="border-left: 0; border-right: 0;"><span class="glyphicon glyphicon-filter"></span></span>
+
+                @Html.TextBox("SearchString", null,
+                new
+                {
+                    @style = "width:210px;",
+                    @type = "text",
+                    @class = "form-control ",
+                    @placeholder = "Название, ответственный...",
+                    @title = "Название, ответственный, описание",
+                })
+
+                <div class="input-group-btn">
+                    <button type="submit" class="btn btn-toolbar groupbtn" id="applyfilter">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-5">
+            <a class="btn btn-default" style="margin:2px 2px;" title="Добавить мероприятие" href='@Url.Action("ECreate", "Events")'><span class="glyphicon glyphicon-tasks"> Добавить мероприятие</span></a>@Html.Raw("&nbsp;")
+            <a class="btn btn-default" title="Обновить" style="margin:2px 2px ;" href='@Url.Action("EShow", "Events", new { FilterMode = Request.QueryString["FilterMode"] }, null)'><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
+    </div>
+}
+
+<table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+    <tr>
+        <th>
+            @Html.ActionLink("Название", "EShow",
+                new
+                {
+                    FilterMode = Request.QueryString["FilterMode"],
+                    SearchStartDate = Request.QueryString["SearchStartDate"],
+                    SearchEndDate = Request.QueryString["SearchEndDate"],
+                    SearchString = Request["SearchString"],
+                    SortBy = ViewBag.SortEventName
+                },
+                    new { @id = "EventName" })@Html.Raw("&nbsp;")<i id="EventNameArrow"></i>
+                </th>
+                <th>
+                    @Html.ActionLink("Начало", "EShow",
+                new
+                {
+                    FilterMode = Request.QueryString["FilterMode"],
+                    SearchStartDate = Request.QueryString["SearchStartDate"],
+                    SearchEndDate = Request.QueryString["SearchEndDate"],
+                    SearchString = Request["SearchString"],
+                    SortBy = ViewBag.SortStartTime
+                },
+                    new { @id = "StartTime" })@Html.Raw("&nbsp;")<i id="StartTimeArrow"></i>
+                </th>
+                <th>
+                    @Html.ActionLink("Окончание", "EShow",
+                new
+                {
+                    FilterMode = Request.QueryString["FilterMode"],
+                    SearchStartDate = Request.QueryString["SearchStartDate"],
+                    SearchEndDate = Request.QueryString["SearchEndDate"],
+                    SearchString = Request["SearchString"],
+                    SortBy = ViewBag.SortEndTime
+                },
+                    new { @id = "EndTime" })@Html.Raw("&nbsp;")<i id="EndTimeArrow"></i>
+                </th>
+                <th>
+                    @Html.ActionLink("Описание", "EShow",
+                new
+                {
+                    FilterMode = Request.QueryString["FilterMode"],
+                    SearchStartDate = Request.QueryString["SearchStartDate"],
+                    SearchEndDate = Request.QueryString["SearchEndDate"],
+                    SearchString = Request["SearchString"],
+                    SortBy = ViewBag.SortDescription
+                },
+                    new { @id = "Description" })@Html.Raw("&nbsp;")<i id="DescriptionArrow"></i>
+                </th>
+                <th>
+                    @Html.ActionLink("Ответственный", "EShow",
+                new
+                {
+                    FilterMode = Request.QueryString["FilterMode"],
+                    SearchStartDate = Request.QueryString["SearchStartDate"],
+                    SearchEndDate = Request.QueryString["SearchEndDate"],
+                    SearchString = Request["SearchString"],
+                    SortBy = ViewBag.SortAdministrator
+                },
+                    new { @id = "Administrator" })@Html.Raw("&nbsp;")<i id="AdministratorArrow"></i>
+                </th>
+                <th>
+                    @Html.ActionLink("Мест", "EShow",
+                new
+                {
+                    FilterMode = Request.QueryString["FilterMode"],
+                    SearchStartDate = Request.QueryString["SearchStartDate"],
+                    SearchEndDate = Request.QueryString["SearchEndDate"],
+                    SearchString = Request["SearchString"],
+                    SortBy = ViewBag.SortPlacesCount
+                },
+                    new { @id = "PlacesCount" })@Html.Raw("&nbsp;")<i id="PlacesCountArrow"></i>
+                </th>
+
+                <th style="width:176px; min-width:176px;"></th>
+            </tr>
+
+            @if (Model.Count() == 0)
+            {
+                <tr>
+                    <td colspan="7">
+                        <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+                    </td>
+                </tr>
+            }
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EventName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @item.FirstName @item.LastName @item.MiddleName
+                    </td>
+                    <td style="width:100px; min-width:100px; text-align:center; padding:0 4px;">
+                        <span style="font-size:12px;font-weight:bold"> @Html.DisplayFor(modelItem => item.ResCount)/@item.PlacesCount</span>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow=@item.Percent aria-valuemin="0" aria-valuemax="100" style="width: @item.Percent%">
+                                <span class="sr-only">40% Complete (success)</span>
+                            </div>
+                            <span class="progress-completed">@item.Percent%</span>
+                        </div>
+                    </td>
+                    <td style="text-align:center;">
+                        <a class="btn btn-default btn-sm" title="Бронирование" href='@Url.Action("ResShowOfEvent", "Reserves", new { EventId = item.EventId })'><span class="glyphicon glyphicon-education"></span></a>
+                        <a class="btn btn-default btn-sm" title="Редактирование" href='@Url.Action("EEdit", "Events", new { EventId = item.EventId })'><span class="glyphicon glyphicon-edit"></span></a>
+                        <a class="btn btn-default btn-sm" title="Удаление мероприятия" href='@Url.Action("EDelete", "Events", new { EventId = item.EventId })'><span class="glyphicon glyphicon-trash"></span></a>
+                    </td>
+                </tr>
+            }
+
+        </table>
+
+        <hr />
+        Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+        @Html.PagedListPager(Model, page => Url.Action("EShow", "Events",
+                             new
+                             {
+                                 FilterMode = Request.QueryString["FilterMode"],
+                                 SearchStartDate = Request.QueryString["SearchStartDate"],
+                                 SearchEndDate = Request.QueryString["SearchEndDate"],
+                                 SearchString = Request.QueryString["SearchString"],
+                                 page,
+                                 SortBy = Request["SortBy"]
+                             }),
+                         new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
+
+
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+
+            <script type="text/javascript">
+                $(function () {
+
+                    //Меняем цвет всех прогрессбаров в зависимости от значений
+                    $('.progress-bar').each(function (i, elem) {
+                        if ($(this).attr("aria-valuenow") < 25) { $(this).css("background-color", "#DF6262"); };
+                        if ($(this).attr("aria-valuenow") >= 25) { $(this).css("background-color", "#DFDF62"); };
+                        if ($(this).attr("aria-valuenow") >= 75) { $(this).css("background-color", "#62DF62"); };
+                    });
+
+                    // Сабмит формы при изменении переключателя (Через $('#FilterMode') работает только в одном положении)
+                    $('input[name=FilterMode]').change(function () {
+                        $('#EventsForm').submit();
+                    })
+
+                    $("#SearchString").focus(); // Фокус на полі фільтра при відкритті сторінки.
+
+                    $("input[type='date']").datepicker().each(function () {
+                        this.setAttribute("type", "text");
+                    });
+
+                    $.datepicker.regional['ru'] = {
+                        closeText: 'Закрыть',
+                        prevText: '<<',
+                        nextText: '>>',
+                        currentText: 'Сегодня',
+                        monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+                        'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                        monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
+                        'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+                        dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
+                        dayNamesShort: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
+                        dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+                        weekHeader: 'Не',
+                        dateFormat: 'dd/mm/yy',
+                        firstDay: 1,
+                        isRTL: false,
+                        showMonthAfterYear: false,
+                        yearSuffix: ''
+                    };
+
+                    $.datepicker.setDefaults($.datepicker.regional['ru']);
+
+                    $.validator.methods.date = function (value, element) {
+                        if (value) {
+                            try {
+                                $.datepicker.parseDate('dd/mm/yy', value);
+                            } catch (ex) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    };
+
+                    if ($('#SortColumn').text() != '') {
+                        var sortcolumnname = $('#SortColumn').text();
+                        var sortcontrol = $('#' + sortcolumnname);
+                        if (sortcontrol != null) {
+                            if (sortcontrol.attr('href').indexOf('desc') != -1) {
+                                $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-arrow-up')
+                            }
+                            else {
+                                $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-arrow-down')
+                            }
+                        }
+                    }
+
+                });
+
+            </script>
+
+        }

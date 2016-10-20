@@ -1,0 +1,32 @@
+﻿@model Sunny_House.Models.PersonRole
+
+@{
+    ViewBag.Title = "Удаление";
+}
+
+<h2>Роли</h2>
+
+<h3 class="text-danger">Вы действительно хотите удалить выбранную запись?</h3>
+<div>
+    <h4>Удаление роли</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.RoleName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RoleName)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <a class="btn btn-default" href='@Url.Action("RolesShow", "PersonRoles")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+            <button type="submit" title="Удалить" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i> Удалить</button>
+        </div>
+    }
+</div>

@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Sunny_House.Models.PersonRelation>
+
+@{
+    ViewBag.Title = "Взаимоотношения";
+}
+
+<h2>Взаимоотношения</h2>
+
+<p>
+    @Html.ActionLink("Добавить", "PRCreate")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Person.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Person1.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Relation12)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Relation21)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Person.FirstName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Person1.FirstName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Relation12)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Relation21)
+        </td>
+        <td>
+            @Html.ActionLink("Удалить", "PRDelete", new { /* id=item.PrimaryKey */ })
+        </td>
+    </tr>
+}
+
+</table>

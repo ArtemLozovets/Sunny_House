@@ -1,0 +1,126 @@
+﻿@model Sunny_House.Models.Address
+
+@{
+    ViewBag.Title = "Подробно";
+}
+
+<h2>Адрес</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel-group" style="margin:4px 4px 10px 4px">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h4>Подробная информация</h4></div>
+                <div class="panel-body">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Alias)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Alias)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.PostCode)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.PostCode)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Country)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Country)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Region)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Region)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Area)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Area)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.City)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.City)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.AddressValue)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.AddressValue)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.GeoTag)
+                        </dt>
+
+                        <dd>
+                            <a target="_blank" href="https://www.google.com.ua/maps/place/@Model.GeoTag">@Model.GeoTag</a>
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Note)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Note)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="panel-group" style="margin:4px 4px 10px 4px">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>Связанные записи</h4>
+                </div>
+                <div class="panel-body" id="tabpanel">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#home"><strong>Персоны</strong></a></li>
+                        <li><a data-toggle="tab" href="#menu1"><strong>Занятия</strong></a></li>
+                        <li><a data-toggle="tab" href="#menu2"><strong>Отзывы</strong></a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div id="home" class="tab-pane fade in active">
+                            @Html.Action("AdRelPersonsPartial", "Addresses", new { @id = @Model.AddressId })
+                        </div>
+                        <div id="menu1" class="tab-pane fade">
+                            @Html.Action("AdRelExercisesPartial", "Addresses", new { @id = @Model.AddressId })
+                        </div>
+                        <div id="menu2" class="tab-pane fade">
+                            @Html.Action("AdRelCommentsPartial", "Addresses", new { @id = @Model.AddressId })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="margin:10px 0 0 4px;">
+    <a class="btn btn-default" href='@Url.Action("AdShow", "Addresses")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+    <a class="btn btn-default" href='@Url.Action("AdEdit", "Addresses", new { id = Model.AddressId })'><span class="glyphicon glyphicon-edit"> Редактировать</span></a>
+</div>

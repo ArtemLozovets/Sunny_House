@@ -1,0 +1,197 @@
+﻿@model Sunny_House.Models.Event
+
+@{
+    ViewBag.Title = "Редактировать";
+}
+
+<h2>Мероприятия</h2>
+
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog"></div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="text-danger" id="MessageError">  @TempData["MessageError"]</p>
+    </div>
+</div>
+
+@using (Html.BeginForm("EEdit", "Events", FormMethod.Post, new { id = "EventForm" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Редактирование мероприятия <span class="text-primary">(забронировано @ViewData["ReservedCount"])</span></h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.EventId);
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EventName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EventName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EventName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StartTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StartTime, new { htmlAttributes = new { @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
+                @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EndTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EndTime, new { htmlAttributes = new { @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
+                @Html.ValidationMessageFor(model => model.EndTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AdministratorId, "Ответственный", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="form-inline">
+                    @Html.HiddenFor(model => model.AdministratorId, new { htmlAttributes = new { @class = "form-control" } })
+                    <input type="text" name="AdminLabel" id="AdminLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["AdministratorPIB"]" />
+                    <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "AdministratorId"})'><span class="glyphicon glyphicon-folder-open"></span></a>
+                </div>
+                @Html.ValidationMessageFor(model => model.AdministratorId, "", new { @class = "text-danger", @id = "AdminValidator" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PlacesCount, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PlacesCount, new { htmlAttributes = new { @type = "text", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PlacesCount, "", new { @class = "text-danger", @id = "PlacesCountValidator" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" title="Редактировать запись" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Обновить</button>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    <a class="btn btn-default" href='@Url.Action("EShow", "Events")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(function () {
+            $.ajaxSetup({ cache: false });
+            $(".pModal").click(function (e) {
+                e.preventDefault();
+                $.get(this.href, function (data) {
+                    $('#dialogContent').html(data);
+                    $('#modDialog').modal('show');
+                });
+            });
+        });
+
+        $(function () {
+            $(function () {
+                var widthdelta = 44;
+                var wd = $("#AdminLabel").width() - widthdelta;
+                $("#AdminLabel").width(wd);
+            });
+        });
+
+
+        $(function () {
+            $("input[type='date']").datepicker().each(function () {
+                this.setAttribute("type", "text");
+            });
+
+            $.datepicker.regional['ru'] = {
+                closeText: 'Закрыть',
+                prevText: '<<',
+                nextText: '>>',
+                currentText: 'Сегодня',
+                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+                'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
+                'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+                dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
+                dayNamesShort: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
+                dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+                weekHeader: 'Не',
+                dateFormat: 'dd/mm/yy',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+            $.datepicker.setDefaults($.datepicker.regional['ru']);
+
+            $.validator.methods.date = function (value, element) {
+                if (value) {
+                    try {
+                        $.datepicker.parseDate('dd/mm/yy', value);
+                    } catch (ex) {
+                        return false;
+                    }
+                }
+                return true;
+            };
+        });
+
+        $(function () {
+            $("#PlacesCount").rules("add", {
+                number:true,
+                required: true,
+                min: @ViewData["ReservedCount"],
+                range: [@ViewData["ReservedCount"],300],
+                messages: {
+                    required: "Необходимо указать количество мест",
+                    min: "Количество мест не может быть меньше количества бронирований",
+                    range: "Значение должно находиться в диапазоне от @ViewData["ReservedCount"] до 300",
+                number: "Нужно ввести числовое значение"
+            }
+            });
+        });
+
+        $('#EventForm').submit(function () {
+            var flag = false;
+
+            if ($("#AdministratorId").val() == 0) {
+                $("#AdminValidator").html("Обязательное поле");
+                flag = true;
+            }
+
+            if ($('#StartTime').val() > $('#EndTime').val()) {
+                $('#MessageError').text('Дата начала мероприятия не может быть больше даты окончания');
+                flag = true;
+            }
+
+            if (flag) {
+                return false;
+            }
+        });
+
+    </script>
+}

@@ -1,0 +1,77 @@
+﻿@model Sunny_House.Models.Payment
+
+@{
+    ViewBag.Title = "Удаление";
+}
+
+<h2>Платежи</h2>
+
+<h3 class="text-danger">Вы действительно хотите удалить выбранный платеж?</h3>
+<div>
+    <h4>Удаление платежа</h4>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dt>
+            Плательщик
+        </dt>
+
+        <dd>
+            @Model.Person.FirstName @Model.Person.LastName @Model.Person.MiddleName
+        </dd>
+
+        <dt>
+            Клиент
+        </dt>
+
+        <dd>
+            @Model.Person1.FirstName @Model.Person1.LastName @Model.Person1.MiddleName
+        </dd>
+
+        <dt>
+            Мероприятие
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Event.EventName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Sum)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Sum)@Html.Raw("&nbsp;")₴
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Note)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Note)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+
+            <a class="btn btn-default" href='@Url.Action("ShowAllPayments", "Home")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+            <button type="submit" title="Удалить платеж" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i> Удалить</button>
+
+        </div>
+    }
+</div>
+
