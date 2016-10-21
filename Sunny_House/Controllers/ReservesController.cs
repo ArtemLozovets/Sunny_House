@@ -626,7 +626,28 @@ namespace Sunny_House.Controllers
 
             return PartialView(_rellist);
         }
-        
+
+        public ActionResult AjaxPersonComm(int? PersonId)
+        {
+            if (PersonId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var _result = (from personcomm in db.PersonCommunications
+                          join comm in db.Communications on personcomm.CommunicationId equals comm.Id
+                          join commtype in db.TypeOfCommunications on comm.TypeOfCommunicationId equals commtype.Id
+                          where personcomm.PersonId == PersonId
+                          select new CommViewModel
+                          {
+                              Address_Number = comm.Address_Number,
+                              TypeOfCommunication = commtype.CommType,
+                              CommName = comm.CommName,
+                          }).ToList();
+
+            return PartialView(_result);
+        }
+
         #endregion
 
         protected override void Dispose(bool disposing)

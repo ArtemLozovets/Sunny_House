@@ -233,6 +233,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Images\err403.jpg" />
+    <Content Include="Content\Images\loader.gif" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\Progress.css" />
     <Content Include="Content\themes\base\accordion.css" />
@@ -439,6 +440,7 @@
     <Content Include="Views\Reserves\ShowModalClient.cshtml" />
     <Content Include="Views\Reserves\PartialClientinModal.cshtml" />
     <Content Include="Views\Reserves\ShowModalPTCRelations.cshtml" />
+    <Content Include="Views\Reserves\AjaxPersonComm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

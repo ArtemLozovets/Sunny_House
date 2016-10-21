@@ -11,7 +11,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" href="#@item.PersonId">
+                            <a data-toggle="collapse" data-personid="@item.PersonId" href="#@item.PersonId" class="personCommToggle">
                                 <span>@Html.DisplayFor(modelItem => item.PersonFIO)</span>
 
                                 <span style="display:block; float:right;">@Html.DisplayFor(modelItem => item.RelationName)</span>
@@ -20,12 +20,10 @@
                     </div>
                     <div id="@item.PersonId" class="panel-collapse collapse">
                         <div class="panel-body">
-                            Список средств связи
                         </div>
                     </div>
                 </div>
             </div>
-
         }
     </div>
 </div>

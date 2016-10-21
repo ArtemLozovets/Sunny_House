@@ -4,9 +4,16 @@
     ViewBag.Title = "Бронирование";
 }
 <div style="margin-bottom:26px;"><span id="topanchor"></span></div>
+
 <div id="modDialog" class="modal fade">
     <div id="dialogContent" class="modal-dialog"></div>
 </div>
+
+
+<div id="loadingImg" style="text-align: center; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; overflow: visible; display: block;z-index:999999;">
+        <img src="~/Content/Images/loader.gif" />
+</div>
+
 <div class="row">
     <div class="col-lg-5 col-md-6">
         <div class="panel panel-default fixed" style="min-width:470px;" id="fixedpanel">
@@ -182,6 +189,7 @@
     <script type="text/javascript">
 
         $(function () {
+            $('#loadingImg').hide();
 
             $('body').on('click', '#clientfilterclear', function (event) {
                 $('#clientform').trigger('reset');
@@ -459,7 +467,7 @@
     </script>
 
     <script type="text/javascript">
-        //Отображение модального окна со списком связанных персон
+        //Отображение модального окна со списком связанных персон и средств связи
         //Представление ShowModalPTCRelations контроллер ReservesCintroller
         $(function () {
             $('body').on('click', '.showRelPersons', function (event) {
@@ -475,6 +483,20 @@
                          $('#modDialog').modal('show');
                      });
             });
+
+            $('body').on('click', '.personCommToggle', function (event) {
+                event.preventDefault();
+                var _personId = $(this).data('personid');
+                
+                $('#loadingImg').show();
+                $('#'+_personId+'>div').delay(5000).queue(function(nxt){
+                    $(this).load('/Reserves/AjaxPersonComm', {PersonId:_personId}, function() {
+                        $('#loadingImg').hide();
+                    });
+                    nxt();
+                });
+            });
+
         });
     </script>
 

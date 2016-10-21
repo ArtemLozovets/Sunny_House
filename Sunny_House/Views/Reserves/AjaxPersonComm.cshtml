@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Sunny_House.Models.CommViewModel>
+<style type="text/css">
+    #commtable {
+        margin:0;
+        padding:0;
+    }
+        #commtable tr td{
+        margin:0;
+        padding:4px 0;
+        border:none !important;
+    }
+</style> 
+
+<table class="table" id="commtable">
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="3">
+                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+            </td>
+        </tr>
+    }
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypeOfCommunication) (@Html.DisplayFor(modelItem => item.CommName))
+            </td>
+            <td style="text-align:right">
+                @Html.DisplayFor(modelItem => item.Address_Number)
+            </td>
+            <td></td>
+        </tr>
+    }
+</table>
