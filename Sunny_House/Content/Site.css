@@ -125,3 +125,16 @@ ul.dropdown-menu {
 .glyphicon {
     top: 0 !important;
 }
+
+#loadingImg {
+    position: fixed; /* or absolute */
+    top: 50%;
+    left: 50%;
+    width: 132px;
+    height: 132px;
+    margin: -66px 0 0 -66px;
+    background: #706d5d;
+    opacity: 0.3;
+    border-radius: 10px;
+    z-index: 999990;
+}

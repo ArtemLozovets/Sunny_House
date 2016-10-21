@@ -11,14 +11,14 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" data-personid="@item.PersonId" href="#@item.PersonId" class="personCommToggle">
+                            <a data-toggle="collapse"  href="#@item.PersonId">
                                 <span>@Html.DisplayFor(modelItem => item.PersonFIO)</span>
 
                                 <span style="display:block; float:right;">@Html.DisplayFor(modelItem => item.RelationName)</span>
                             </a>
                         </h4>
                     </div>
-                    <div id="@item.PersonId" class="panel-collapse collapse">
+                    <div id="@item.PersonId" data-personid="@item.PersonId"  class="panel-collapse collapse">
                         <div class="panel-body">
                         </div>
                     </div>

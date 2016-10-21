@@ -4,18 +4,6 @@
     ViewBag.Title = "Бронирование";
 }
 
-<style type="text/css">
-    #loadingImg {
-        position: fixed; /* or absolute */
-        top: 50%;
-        left: 50%;
-        width: 200px;
-        height: 100px;
-        margin: -50px 0 0 -100px;
-        background: #f0f0f0;
-        z-index:999990;
-    }
-</style>
 
 <div style="margin-bottom:26px;"><span id="topanchor"></span></div>
 
@@ -25,7 +13,7 @@
 
 
 <div id="loadingImg">
-    <div style="text-align: center; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; overflow: visible; display: block;z-index:999999;">
+    <div style="text-align: center; position: absolute; top: 33px; left: 33px; width: 66px; height: 66px; overflow: visible; display: block;">
         <img src="~/Content/Images/loader.gif" />
     </div>
 </div>
@@ -262,6 +250,7 @@
                 var minage = $('#minAge').val();
                 var maxage = $('#maxAge').val();
                 var roleid = $('#RoleId').val();
+                $('#loadingImg').show();
 
                 $.get('/Reserves/ShowModalClient', {
                     EventId:@Model.EventId,
@@ -270,6 +259,7 @@
                     RoleId:roleid
                 },
                      function (data) {
+                         $('#loadingImg').hide();
                          $('#dialogContent').html(data);
                          $('#modDialog').modal('show');
                      });
@@ -284,7 +274,7 @@
                 var EventId = $('#EventId').val();
                 var PlacesCount = $('#PlacesCount').val();
                 var dataRequest = {EventId: EventId, PlacesCount: PlacesCount}
-
+                $('#loadingImg').show();
                 $.ajax({
                     type:'POST',
                     url: '/Events/AjaxEventCountChange/',
@@ -299,6 +289,7 @@
                         PlacesCount:$('#PlacesCount').val()
                     },
                     success: function(data) {
+                        $('#loadingImg').hide();
                         if(data.Result){
                             //Обновляем надписи индикатора
                             $('#AllCountSpan').text(data.PlacesCount);
@@ -312,6 +303,7 @@
                             $('#ajaxresult').removeClass('text-success').addClass('text-danger').text(data.Message);}
                     },
                     fail: function(data){
+                        $('#loadingImg').hide();
                         $('#ajaxresult').removeClass('text-success').addClass('text-danger').text('Ошибка обновления данных. Сервер отклонил запрос.');
                     }
                 });
@@ -361,7 +353,7 @@
             if (confirm("Удалить выбранную запись?")) {
 
                 var _PTCId = $(this).data("clientid");
-
+                $('#loadingImg').show();
                 $.ajax({
                     type: 'POST',
                     url: '/Reserves/AjaxPTCDelete/',
@@ -369,6 +361,7 @@
                         PTCId: _PTCId
                     },
                     success: function (data) {
+                        $('#loadingImg').hide();
                         if (data.Result) {
                             //Обновляем грид
                             $('#clientfilterclear').trigger('click');
@@ -385,6 +378,7 @@
 
                     },
                     fail: function (data) {
+                        $('#loadingImg').hide();
                         //Сообщение об ошибке
                         $('#AjaxResultLabel').removeClass("text-success").addClass("text-danger");
                         $('#AjaxResultLabel').text(data.Message);
@@ -404,7 +398,7 @@
             if (confirm("Выполнить бронирование?")) {
 
                 var _PTCId = $(this).data("clientid");
-
+                $('#loadingImg').show();
                 $.ajax({
                     type: 'POST',
                     url: '/Reserves/AjaxPTCMoveToReserve/',
@@ -412,6 +406,7 @@
                         PTCId: _PTCId
                     },
                     success: function (data) {
+                        $('#loadingImg').hide();
                         if (data.Result) {
                             //Обновляем грид
                             $('#clientfilterclear').trigger('click');
@@ -432,6 +427,7 @@
                     },
                     fail: function (data) {
                         //Сообщение об ошибке
+                        $('#loadingImg').hide();
                         $('#AjaxResultLabel').removeClass("text-success").addClass("text-danger");
                         $('#AjaxResultLabel').text(data.Message);
                         $(document.body).animate({ 'scrollTop': $('#topanchorr').offset().top -300 }, 1000);
@@ -454,6 +450,7 @@
             var elem = $(this).prev();
             var _infoes = elem.val();
             var _PTCId = $(this).data("ptcid");
+            $('#loadingImg').show();
             $.ajax({
                 type: 'POST',
                 traditional:true,
@@ -463,6 +460,7 @@
                     Infoes: _infoes
                 },
                 success: function (data) {
+                    $('#loadingImg').hide();
                     if (data.Result) {
                         //Обновляем грид
                         elem.css('background-color', '#DDFFDD');
@@ -475,6 +473,7 @@
                 },
                 fail: function (data) {
                     //Операция не удалась
+                    $('#loadingImg').hide();
                     elem.css('background-color', '#FFDDDD');
                 }
             });
@@ -489,27 +488,31 @@
                 event.preventDefault();
 
                 $.ajaxSetup({ cache: false });
-
+                $('#loadingImg').show();
                 $.get('/Reserves/ShowModalPTCRelations', {
                     PersonId: $(this).data('personid')
                 },
                      function (data) {
+                         $('#loadingImg').hide();
                          $('#dialogContent').html(data);
                          $('#modDialog').modal('show');
                      });
             });
 
-            $('body').on('click', '.personCommToggle', function (event) {
-                event.preventDefault();
-                var _personId = $(this).data('personid');
+            //Отображение средств связи связанных персон 
+            $("body").on('show.bs.collapse', '.collapse', function(){
+                
+                if($(this).attr('id') != "collapse1"){
+                    var _personId = $(this).data('personid');
 
-                $('#loadingImg').show();
-                $('#'+_personId+'>div').delay(5000).queue(function(nxt){
-                    $(this).load('/Reserves/AjaxPersonComm', {PersonId:_personId}, function() {
-                        $('#loadingImg').hide();
+                    $('#loadingImg').show();
+                    $('#'+_personId+'>div').delay(1000).queue(function(nxt){
+                        $(this).load('/Reserves/AjaxPersonComm', {PersonId:_personId}, function() {
+                            $('#loadingImg').hide();
+                        });
+                        nxt();
                     });
-                    nxt();
-                });
+                }
             });
 
         });
