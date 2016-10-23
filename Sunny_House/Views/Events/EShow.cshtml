@@ -215,6 +215,7 @@
                     </td>
                     <td style="text-align:center;">
                         <a class="btn btn-default btn-sm" title="Бронирование" href='@Url.Action("ResShowOfEvent", "Reserves", new { EventId = item.EventId })'><span class="glyphicon glyphicon-education"></span></a>
+                        <a class="btn btn-default btn-sm" title="Задача" href='@Url.Action("", "Reserves", new { EventId = item.EventId })'><span class="glyphicon glyphicon-tasks"></span></a>
                         <a class="btn btn-default btn-sm" title="Редактирование" href='@Url.Action("EEdit", "Events", new { EventId = item.EventId })'><span class="glyphicon glyphicon-edit"></span></a>
                         <a class="btn btn-default btn-sm" title="Удаление мероприятия" href='@Url.Action("EDelete", "Events", new { EventId = item.EventId })'><span class="glyphicon glyphicon-trash"></span></a>
                     </td>

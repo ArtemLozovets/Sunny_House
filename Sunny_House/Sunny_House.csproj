@@ -187,6 +187,7 @@
     <Compile Include="Controllers\PersonRolesController.cs" />
     <Compile Include="Controllers\PotentialСlientController.cs" />
     <Compile Include="Controllers\ReservesController.cs" />
+    <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -446,6 +447,11 @@
     <Content Include="Views\Reserves\PartialClientinModal.cshtml" />
     <Content Include="Views\Reserves\ShowModalPTCRelations.cshtml" />
     <Content Include="Views\Reserves\AjaxPersonComm.cshtml" />
+    <Content Include="Views\Tasks\TaskCreate.cshtml" />
+    <Content Include="Views\Tasks\TaskDelete.cshtml" />
+    <Content Include="Views\Tasks\TaskDetails.cshtml" />
+    <Content Include="Views\Tasks\TaskEdit.cshtml" />
+    <Content Include="Views\Tasks\TasksShow.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

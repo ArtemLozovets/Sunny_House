@@ -13,7 +13,7 @@
 
 
 <div id="loadingImg">
-    <div style="text-align: center; position: absolute; top: 33px; left: 33px; width: 66px; height: 66px; overflow: visible; display: block;">
+    <div id="preloadImg">
         <img src="~/Content/Images/loader.gif" />
     </div>
 </div>
@@ -62,6 +62,16 @@
                         @Html.DisplayFor(model => model.Note)
                     </dd>
                 </dl>
+
+                <div style="width:200px; margin:0 auto 6px;; text-align:center;">
+                    <a class="btn btn-default"
+                       title="Добавить задачу"
+                       style="width:150px;"
+                       href='@Url.Action("TaskCreate", "Tasks", new { Subject = "Бронирование \""  + Model.EventName+"\""})'>
+                        <span class="glyphicon glyphicon-tasks"> Задача</span>
+                    </a>
+                </div>
+
                 @using (Html.BeginForm("AjaxEventCountChange", "Events", FormMethod.Post, new { @id = "AjaxSendForm" }))
                 {
                     <div class="input-group" style="width:100px; margin:0 auto;">
@@ -493,27 +503,29 @@
                     PersonId: $(this).data('personid')
                 },
                      function (data) {
-                         $('#loadingImg').hide();
                          $('#dialogContent').html(data);
                          $('#modDialog').modal('show');
+                         $('.comm').first().collapse('show');
+                         $('#loadingImg').hide();
                      });
             });
 
-            //Отображение средств связи связанных персон 
+            //Отображение средств связи связанных персон
             $("body").on('show.bs.collapse', '.collapse', function(){
-                
-                if($(this).attr('id') != "collapse1"){
-                    var _personId = $(this).data('personid');
+                AjaxLoadComm($(this).attr('id'));
+            });
 
+            function AjaxLoadComm(_id){
+                if(_id != "collapse1"){
                     $('#loadingImg').show();
-                    $('#'+_personId+'>div').delay(1000).queue(function(nxt){
-                        $(this).load('/Reserves/AjaxPersonComm', {PersonId:_personId}, function() {
+                    $('#'+_id+'>div').delay(100).queue(function(nxt){
+                        $('#'+_id+'>div').load('/Reserves/AjaxPersonComm', {PersonId:_id}, function() {
                             $('#loadingImg').hide();
                         });
                         nxt();
                     });
                 }
-            });
+            }
 
         });
     </script>
