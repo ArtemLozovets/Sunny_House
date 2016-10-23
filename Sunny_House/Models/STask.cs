@@ -13,7 +13,7 @@
 
         [Required(ErrorMessage = "Необходимо заполнить поле \"Дата\"")]
         [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Дата")]
+        [Display(Name = "Дата завершения")]
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
 

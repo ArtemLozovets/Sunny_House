@@ -16,13 +16,13 @@ namespace Sunny_House.Controllers
         private SunnyModel db = new SunnyModel();
 
         // GET: Tasks
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> TasksShow()
         {
             return View(await db.STask.ToListAsync());
         }
 
         // GET: Tasks/Details/5
-        public async Task<ActionResult> Details(int? id)
+        public async Task<ActionResult> TaskDetails(int? id)
         {
             if (id == null)
             {
@@ -37,30 +37,42 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Tasks/Create
-        public ActionResult Create()
+        public ActionResult TaskCreate(string Subject)
         {
+            ViewData["Subject"] = Subject;
             return View();
         }
 
         // POST: Tasks/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note")] STask sTask)
+        public async Task<ActionResult> TaskCreate([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note")] STask sTask)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.STask.Add(sTask);
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
+                sTask.TaskComplete = false;
+                sTask.DateOfCreation = DateTime.Today;
+                if (ModelState.IsValid)
+                {
+                    db.STask.Add(sTask);
+                    await db.SaveChangesAsync();
+                    TempData["MessageOk"] = "Задача добавлена";
+                    return RedirectToAction("TasksShow");
+                }
 
-            return View(sTask);
+                return View(sTask);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErMes = ex.Message;
+                ViewBag.ErStack = ex.StackTrace;
+                return View("Error");
+            }
+            
         }
 
         // GET: Tasks/Edit/5
-        public async Task<ActionResult> Edit(int? id)
+        public async Task<ActionResult> TaskEdit(int? id)
         {
             if (id == null)
             {
@@ -75,8 +87,6 @@ namespace Sunny_House.Controllers
         }
 
         // POST: Tasks/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note")] STask sTask)
@@ -85,13 +95,13 @@ namespace Sunny_House.Controllers
             {
                 db.Entry(sTask).State = EntityState.Modified;
                 await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("TasksShow");
             }
             return View(sTask);
         }
 
         // GET: Tasks/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public async Task<ActionResult> TaskDelete(int? id)
         {
             if (id == null)
             {
@@ -106,14 +116,14 @@ namespace Sunny_House.Controllers
         }
 
         // POST: Tasks/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("TaskDelete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             STask sTask = await db.STask.FindAsync(id);
             db.STask.Remove(sTask);
             await db.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction("TasksShow");
         }
 
         protected override void Dispose(bool disposing)

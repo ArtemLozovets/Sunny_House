@@ -1,10 +1,10 @@
 ﻿@model Sunny_House.Models.STask
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Задачи";
 }
 
-<h2>Create</h2>
+<h2>Задачи</h2>
 
 
 @using (Html.BeginForm()) 
@@ -12,40 +12,23 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>STask</h4>
+        <h4>Создание задачи</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.DateOfCreation, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DateOfCreation, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.DateOfCreation, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.Subject, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Subject, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.Subject, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
                 @Html.ValidationMessageFor(model => model.Subject, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.TaskComplete, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.TaskComplete)
-                    @Html.ValidationMessageFor(model => model.TaskComplete, "", new { @class = "text-danger" })
-                </div>
+                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
+                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -59,16 +42,59 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <button type="submit" title="Добавить задачу" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Добавить</button>
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    <p><a class="btn btn-default" href='@Url.Action("TasksShow", "Tasks")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a></p>
 </div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(function () {
+
+            $("input[type='date']").datepicker().each(function () {
+                this.setAttribute("type", "text");
+            });
+
+            $.datepicker.regional['ru'] = {
+                closeText: 'Закрыть',
+                prevText: '<<',
+                nextText: '>>',
+                currentText: 'Сегодня',
+                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+                'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
+                'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+                dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
+                dayNamesShort: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
+                dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+                weekHeader: 'Не',
+                dateFormat: 'dd/mm/yy',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+
+            $.datepicker.setDefaults($.datepicker.regional['ru']);
+
+            $.validator.methods.date = function (value, element) {
+                if (value) {
+                    try {
+                        $.datepicker.parseDate('dd/mm/yy', value);
+                    } catch (ex) {
+                        return false;
+                    }
+                }
+                return true;
+            };
+
+        });
+    </script>
 }
