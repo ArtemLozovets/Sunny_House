@@ -40,10 +40,14 @@ namespace Sunny_House.Controllers
         // GET: Tasks/Create
         public ActionResult TaskCreate(string Subject, string SubjectLock, string ActionName, string ControllerName, string ParameterName, string ParameterValue)
         {
+
+            //Инициализируем имена метода и контроллера для возврата
+            ActionName = (!string.IsNullOrEmpty(ActionName)) ? ActionName : "TasksShow";
+            ControllerName = (!string.IsNullOrEmpty(ControllerName)) ? ControllerName : "Tasks";
             ViewData["Subject"] = Subject;
             ViewData["SubjectLock"] = SubjectLock;
-            ViewData["ActionName"] = (!string.IsNullOrEmpty(ActionName))? ActionName:"TasksShow";
-            ViewData["ControllerName"] = (!string.IsNullOrEmpty(ControllerName)) ? ControllerName : "Tasks";
+            ViewData["ActionName"] = ActionName;
+            ViewData["ControllerName"] = ControllerName;
             ViewData["ParameterName"] = ParameterName;
             ViewData["ParameterValue"] = ParameterValue;
 
@@ -59,6 +63,10 @@ namespace Sunny_House.Controllers
             {
                 sTask.TaskComplete = false;
                 sTask.DateOfCreation = DateTime.Today;
+                //Инициализируем имена метода и контроллера для возврата
+                ActionName = (!string.IsNullOrEmpty(ActionName)) ? ActionName : "TasksShow";
+                ControllerName = (!string.IsNullOrEmpty(ControllerName)) ? ControllerName : "Tasks";
+
                 if (ModelState.IsValid)
                 {
                     db.STask.Add(sTask);
@@ -77,8 +85,8 @@ namespace Sunny_House.Controllers
 
                 ViewData["Subject"] = Subject;
                 ViewData["SubjectLock"] = SubjectLock;
-                ViewData["ActionName"] = (!string.IsNullOrEmpty(ActionName)) ? ActionName : "TasksShow";
-                ViewData["ControllerName"] = (!string.IsNullOrEmpty(ControllerName)) ? ControllerName : "Tasks";
+                ViewData["ActionName"] = ActionName;
+                ViewData["ControllerName"] = ControllerName;
                 ViewData["ParameterName"] = ParameterName;
                 ViewData["ParameterValue"] = ParameterValue;
 

@@ -215,6 +215,24 @@
         $(function () {
             $('#loadingImg').hide();
 
+            //Скрипт сохранения активной панели
+            $('body').on('click', 'a[data-toggle="tab"]', function (e) {
+                //Сохраняем значение ссылки активной панели
+                localStorage.setItem('lastTab', $(this).attr('href'));
+            });
+            
+            $('body').on('focusout', '.infoesInput', function (e) {
+                $(this).next().trigger('click');
+            });
+                    
+         
+
+            //Открываем сохраненную вкладку если запись существует
+            var lastTab = localStorage.getItem('lastTab');
+            if (lastTab) {
+                $('a[href="'+lastTab+'"]').click();
+            }
+
             $('body').on('click', '#clientfilterclear', function (event) {
                 $('#clientform').trigger('reset');
                 $('#clientform').submit();
