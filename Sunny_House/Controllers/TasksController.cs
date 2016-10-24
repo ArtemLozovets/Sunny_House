@@ -8,6 +8,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Sunny_House.Models;
+using System.Web.Routing;
 
 namespace Sunny_House.Controllers
 {
@@ -37,16 +38,22 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Tasks/Create
-        public ActionResult TaskCreate(string Subject)
+        public ActionResult TaskCreate(string Subject, string SubjectLock, string ActionName, string ControllerName, string ParameterName, string ParameterValue)
         {
             ViewData["Subject"] = Subject;
+            ViewData["SubjectLock"] = SubjectLock;
+            ViewData["ActionName"] = (!string.IsNullOrEmpty(ActionName))? ActionName:"TasksShow";
+            ViewData["ControllerName"] = (!string.IsNullOrEmpty(ControllerName)) ? ControllerName : "Tasks";
+            ViewData["ParameterName"] = ParameterName;
+            ViewData["ParameterValue"] = ParameterValue;
+
             return View();
         }
 
         // POST: Tasks/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> TaskCreate([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note")] STask sTask)
+        public async Task<ActionResult> TaskCreate([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note")] STask sTask, string Subject, string SubjectLock, string ActionName, string ControllerName, string ParameterName, string ParameterValue)
         {
             try
             {
@@ -56,9 +63,24 @@ namespace Sunny_House.Controllers
                 {
                     db.STask.Add(sTask);
                     await db.SaveChangesAsync();
-                    TempData["MessageOk"] = "Задача добавлена";
-                    return RedirectToAction("TasksShow");
+                    TempData["MessageOK"] = "Задача добавлена";
+
+                    if (!string.IsNullOrEmpty(ParameterName) && !string.IsNullOrEmpty(ParameterValue))
+                    {
+                        var obj = new RouteValueDictionary();
+                        obj[ParameterName] = ParameterValue;
+                        return RedirectToAction(ActionName, ControllerName, obj);
+                    }
+
+                    return RedirectToAction(ActionName, ControllerName);
                 }
+
+                ViewData["Subject"] = Subject;
+                ViewData["SubjectLock"] = SubjectLock;
+                ViewData["ActionName"] = (!string.IsNullOrEmpty(ActionName)) ? ActionName : "TasksShow";
+                ViewData["ControllerName"] = (!string.IsNullOrEmpty(ControllerName)) ? ControllerName : "Tasks";
+                ViewData["ParameterName"] = ParameterName;
+                ViewData["ParameterValue"] = ParameterValue;
 
                 return View(sTask);
             }
@@ -89,7 +111,7 @@ namespace Sunny_House.Controllers
         // POST: Tasks/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note")] STask sTask)
+        public async Task<ActionResult> TaskEdit([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note")] STask sTask)
         {
             if (ModelState.IsValid)
             {

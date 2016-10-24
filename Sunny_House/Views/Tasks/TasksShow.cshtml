@@ -1,15 +1,15 @@
 ﻿@model IEnumerable<Sunny_House.Models.STask>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Задачи";
 }
 
-<h2>Index</h2>
+<h2>Список задач</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Добавить задачу", "TaskCreate")
 </p>
-<table class="table">
+<table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Date)
@@ -29,29 +29,30 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Date)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DateOfCreation)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Subject)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TaskComplete)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Note)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.STaskId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.STaskId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.STaskId })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfCreation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Subject)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TaskComplete)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            <td>
+                @Html.ActionLink("Редактировать", "TaskEdit", new { id = item.STaskId }) |
+                @Html.ActionLink("Подробно", "TaskDetails", new { id = item.STaskId }) |
+                @Html.ActionLink("Удалить", "TaskDelete", new { id = item.STaskId })
+            </td>
+        </tr>
+    }
 
 </table>

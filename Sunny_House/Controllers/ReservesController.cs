@@ -229,6 +229,13 @@ namespace Sunny_House.Controllers
             //Получаем ID роли "Клиент"
             int _clientroleid = db.PersonRoles.First(r => r.RoleName.ToUpper() == (string)"Клиент".ToUpper()).RoleId;
 
+            //Передаем в представление набор параметров для возврата 
+            ViewData["ActionName"] = this.ControllerContext.RouteData.Values["action"].ToString();
+            ViewData["ControllerName"] = this.ControllerContext.RouteData.Values["controller"].ToString();
+            ViewData["ParameterName"] = "EventId";
+            ViewData["ParameterValue"] = EventId.ToString();
+
+            
             Event @event = db.Events.Find(EventId);
             int _allplaces = @event.PlacesCount;
             int _resplaces = db.Reserves.Where(e => e.EventId == EventId && e.RoleId == _clientroleid).Count();

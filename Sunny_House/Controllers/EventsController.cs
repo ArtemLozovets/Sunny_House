@@ -149,6 +149,10 @@ namespace Sunny_House.Controllers
                     break;
             }
 
+            //Передаем в представление набор параметров для возврата 
+            ViewData["ActionName"] = this.ControllerContext.RouteData.Values["action"].ToString();
+            ViewData["ControllerName"] = this.ControllerContext.RouteData.Values["controller"].ToString();
+
             int pageSize = 50;
             int pageNumber = (page ?? 1);
 

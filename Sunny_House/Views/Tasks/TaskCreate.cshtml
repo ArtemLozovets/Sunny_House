@@ -1,16 +1,16 @@
 ﻿@model Sunny_House.Models.STask
 
 @{
-    ViewBag.Title = "Задачи";
+    ViewBag.Title = "Добавить";
 }
 
 <h2>Задачи</h2>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Создание задачи</h4>
         <hr />
@@ -19,7 +19,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Subject, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Subject, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                @Html.EditorFor(model => model.Subject, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Subject, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -49,7 +49,11 @@
 }
 
 <div>
-    <p><a class="btn btn-default" href='@Url.Action("TasksShow", "Tasks")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a></p>
+    <p>
+        <a class="btn btn-default" href='\@ViewData["ControllerName"]\@ViewData["ActionName"]?@ViewData["ParameterName"]=@ViewData["ParameterValue"]'>
+            <span class="glyphicon glyphicon-circle-arrow-left"> Назад</span>
+        </a>
+    </p>
 </div>
 
 @section Scripts {
@@ -94,6 +98,11 @@
                 }
                 return true;
             };
+
+
+            if("@ViewData["SubjectLock"]"=='True'){
+                $('#Subject').prop('disabled', true);
+            }
 
         });
     </script>

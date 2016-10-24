@@ -63,18 +63,22 @@
                     </dd>
                 </dl>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <p class="text-success"> @TempData["MessageOk"]</p>
-                        <p class="text-danger">  @TempData["MessageError"]</p>
-                    </div>
-                </div>
 
-                <div style="width:200px; margin:0 auto 6px;; text-align:center;">
+                <div style="width:200px; margin:0 auto 6px; text-align:center;">
+                    <p class="text-success"><strong>@TempData["MessageOk"]</strong></p>
                     <a class="btn btn-default"
                        title="Добавить задачу"
                        style="width:150px;"
-                       href='@Url.Action("TaskCreate", "Tasks", new { Subject = "Бронирование \""  + Model.EventName+"\""})'>
+                       href='@Url.Action("TaskCreate", "Tasks", new
+                        {
+                            Subject = "Бронирование \"" + Model.EventName + "\"",
+                            SubjectLock = "True",
+                            ControllerName = ViewData["ControllerName"],
+                            ActionName = ViewData["ActionName"],
+                            ParameterName = ViewData["ParameterName"],
+                            ParameterValue = ViewData["ParameterValue"]
+                        })'>
+
                         <span class="glyphicon glyphicon-tasks"> Задача</span>
                     </a>
                 </div>
