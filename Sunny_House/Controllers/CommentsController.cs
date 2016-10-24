@@ -63,7 +63,7 @@ namespace Sunny_House.Controllers
         // POST: Comments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CommentCreate([Bind(Include = "CommentId,SourceId,Date,Text,Rating,Signature,AboutPersonId,EventId,ExerciseId,AddressId,SignPersonId")] Comment comment)
+        public async Task<ActionResult> CommentCreate([Bind(Include = "CommentId,SourceId,Date,Text,Rating,AboutPersonId,EventId,ExerciseId,AddressId,SignPersonId")] Comment comment)
         {
             if (ModelState.IsValid)
             {
@@ -105,7 +105,7 @@ namespace Sunny_House.Controllers
         // POST: Comments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CommentEdit([Bind(Include = "CommentId,SourceId,Date,Text,Rating,Signature,AboutPersonId,EventId,ExerciseId,AddressId,SignPersonId")] Comment comment)
+        public async Task<ActionResult> CommentEdit([Bind(Include = "CommentId,SourceId,Date,Text,Rating,AboutPersonId,EventId,ExerciseId,AddressId,SignPersonId")] Comment comment)
         {
             if (ModelState.IsValid)
             {
