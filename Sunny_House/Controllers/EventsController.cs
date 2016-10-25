@@ -425,6 +425,8 @@ namespace Sunny_House.Controllers
                                                     PersonRole = e.PersonRole
                                                 });
 
+            ViewData["EventId"] = EventId;
+
             int pageSize = 50;
             int pageNumber = (page ?? 1);
 

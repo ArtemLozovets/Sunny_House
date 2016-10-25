@@ -34,7 +34,7 @@ namespace Sunny_House.Controllers
 
         #region  Список осіб
         [HttpGet]
-        public ActionResult ShowPersons(int? PersonId, string SearchString, int? page, string SortBy)
+        public ActionResult ShowPersons(int? PersonId, string SearchString, int? page, string SortBy, string ReturnUrl)
         {
             //db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug information------------------------------------
 
@@ -163,6 +163,10 @@ namespace Sunny_House.Controllers
                 _personsviewmodellist.Add(_personsviewmodel);
             }
 
+            if (!string.IsNullOrEmpty(ReturnUrl))
+            {
+                ViewBag.ReturnUrl = ReturnUrl;
+            }
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);

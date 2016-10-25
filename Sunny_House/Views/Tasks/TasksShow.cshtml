@@ -6,53 +6,209 @@
 
 <h2>Список задач</h2>
 
-<p>
-    @Html.ActionLink("Добавить задачу", "TaskCreate")
-</p>
-<table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Date)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DateOfCreation)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Subject)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TaskComplete)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Note)
-        </th>
-        <th></th>
-    </tr>
+<ul class="nav nav-tabs">
+    @* Вкладки ---------------------------------------------------------------- *@
+    <li class="active"><a data-toggle="tab" href="#grouplist"><strong>Задачи по срокам</strong></a></li>
+    <li><a data-toggle="tab" href="#alllist"><strong>Все задачи</strong></a></li>
+</ul>
+<div class="tab-content">
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateOfCreation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Subject)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TaskComplete)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
-            <td>
-                @Html.ActionLink("Редактировать", "TaskEdit", new { id = item.STaskId }) |
-                @Html.ActionLink("Подробно", "TaskDetails", new { id = item.STaskId }) |
-                @Html.ActionLink("Удалить", "TaskDelete", new { id = item.STaskId })
-            </td>
-        </tr>
-    }
+    @* Вкладка сгрупированных задач ------------------------------------------- *@
+    <div id="grouplist" class="tab-pane fade in active">
+        <div class="panel-group" id="accordion">
 
-</table>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        <span id="col1" class="glyphicon glyphicon-collapse-up"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                         Просроченные
+                        </a>
+                    </span>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                       Panel Content
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        <span id="col1" class="glyphicon glyphicon-collapse-up"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                            Просроченные
+                        </a>
+                    </span>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        Panel Content
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        <span id="col1" class="glyphicon glyphicon-collapse-up"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                            Просроченные
+                        </a>
+                    </span>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        Panel Content
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        <span id="col1" class="glyphicon glyphicon-collapse-up"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                            Просроченные
+                        </a>
+                    </span>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        Panel Content
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        <span id="col1" class="glyphicon glyphicon-collapse-up"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                            Просроченные
+                        </a>
+                    </span>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        Panel Content
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        <span id="col1" class="glyphicon glyphicon-collapse-up"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                            Просроченные
+                        </a>
+                    </span>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        Panel Content
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        <span id="col1" class="glyphicon glyphicon-collapse-up"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                            Просроченные
+                        </a>
+                    </span>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        Panel Content
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Вкладка со списком всех задач------------------------------------------- *@
+    <div id="alllist" class="tab-pane fade">
+        <p>
+            @Html.ActionLink("Добавить задачу", "TaskCreate")
+        </p>
+        <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DateOfCreation)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Subject)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TaskComplete)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Note)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOfCreation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subject)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TaskComplete)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Note)
+                </td>
+                <td>
+                    @Html.ActionLink("Редактировать", "TaskEdit", new { id = item.STaskId }) |
+                    @Html.ActionLink("Подробно", "TaskDetails", new { id = item.STaskId }) |
+                    @Html.ActionLink("Удалить", "TaskDelete", new { id = item.STaskId })
+                </td>
+            </tr>
+            }
+
+        </table>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#collapse1").on("hide.bs.collapse", function () {
+                $("#col1").removeClass("glyphicon glyphicon-collapse-up");
+                $("#col1").addClass("glyphicon glyphicon-collapse-down");
+            });
+            $("#collapse1").on("show.bs.collapse", function () {
+                $("#col1").removeClass("glyphicon glyphicon-collapse-down");
+                $("#col1").addClass("glyphicon glyphicon-collapse-up");
+            });
+
+            $("#collapse2").on("hide.bs.collapse", function () {
+                $("#col2").removeClass("glyphicon glyphicon-collapse-up");
+                $("#col2").addClass("glyphicon glyphicon-collapse-down");
+            });
+            $("#collapse2").on("show.bs.collapse", function () {
+                $("#col2").removeClass("glyphicon glyphicon-collapse-down");
+                $("#col2").addClass("glyphicon glyphicon-collapse-up");
+            });
+        });
+    </script>
+}
+
