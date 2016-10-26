@@ -4,55 +4,223 @@
     ViewBag.Title = "Задачи";
 }
 
+<div id="loadingImg">
+    <div id="preloadImg">
+        <img src="~/Content/Images/loader.gif" />
+    </div>
+</div>
+
 <h2>Список задач</h2>
 
-<p>
-    @Html.ActionLink("Добавить задачу", "TaskCreate")
-</p>
-<table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Date)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DateOfCreation)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Subject)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TaskComplete)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Note)
-        </th>
-        <th></th>
-    </tr>
+<ul class="nav nav-tabs">
+    @* Вкладки ---------------------------------------------------------------- *@
+    <li class="active"><a data-toggle="tab" href="#grouplist"><strong>Задачи по срокам</strong></a></li>
+    <li><a data-toggle="tab" href="#alllist"><strong>Все задачи</strong></a></li>
+</ul>
+<div class="tab-content">
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateOfCreation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Subject)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TaskComplete)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
-            <td>
-                @Html.ActionLink("Редактировать", "TaskEdit", new { id = item.STaskId }) |
-                @Html.ActionLink("Подробно", "TaskDetails", new { id = item.STaskId }) |
-                @Html.ActionLink("Удалить", "TaskDelete", new { id = item.STaskId })
-            </td>
-        </tr>
-    }
+    @* Вкладка сгрупированных задач ------------------------------------------- *@
+    <div id="grouplist" class="tab-pane fade in active">
+        <div class="panel-group" id="accordion">
 
-</table>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        <span id="col1" class="glyphicon glyphicon-triangle-top"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#overdue">
+                            Просроченные
+                        </a>
+                    </span>
+                </div>
+                <div id="overdue" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        Panel Content
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#today">
+                            Сегодня
+                        </a>
+                    </span>
+                </div>
+                <div id="today" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        Panel Content
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#tomorrow">
+                            Завтра
+                        </a>
+                    </span>
+                </div>
+                <div id="tomorrow" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        Panel Content
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#nextseven">
+                            Следующие 7 дней
+                        </a>
+                    </span>
+                </div>
+                <div id="nextseven" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        Panel Content
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#later">
+                            Позже
+                        </a>
+                    </span>
+                </div>
+                <div id="later" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        Panel Content
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#withoutdate">
+                            Без срока
+                        </a>
+                    </span>
+                </div>
+                <div id="withoutdate" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        Panel Content
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#completed">
+                            Выполненные
+                        </a>
+                    </span>
+                </div>
+                <div id="completed" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        Panel Content
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Вкладка со списком всех задач------------------------------------------- *@
+    <div id="alllist" class="tab-pane fade">
+        <p>
+            @Html.ActionLink("Добавить задачу", "TaskCreate")
+        </p>
+        <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DateOfCreation)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Subject)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TaskComplete)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Note)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateOfCreation)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Subject)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TaskComplete)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Note)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Редактировать", "TaskEdit", new { id = item.STaskId }) |
+                        @Html.ActionLink("Подробно", "TaskDetails", new { id = item.STaskId }) |
+                        @Html.ActionLink("Удалить", "TaskDelete", new { id = item.STaskId })
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        //Скрипт изменения значка раскрытия панели аккордеона
+        $(document).ready(function () {
+            $(".panel-collapse").on("hide.bs.collapse", function () {
+                $(this).parent().find(".panel-title span").removeClass("glyphicon glyphicon-triangle-top").addClass("glyphicon glyphicon-triangle-bottom");
+            });
+            $(".panel-collapse").on("show.bs.collapse", function () {
+                $(this).parent().find(".panel-title span").removeClass("glyphicon glyphicon-triangle-bottom").addClass("glyphicon glyphicon-triangle-top");
+            });
+
+            //Скрипт сохранения активной панели
+            $('body').on('click', 'a[data-toggle="tab"]', function (e) {
+                //Сохраняем значение ссылки активной панели
+                localStorage.setItem('TaskTab', $(this).attr('href'));
+            });
+
+            //Открываем сохраненную вкладку если запись существует
+            var TaskTab = localStorage.getItem('TaskTab');
+            if (TaskTab) {
+                $('a[href="' + TaskTab + '"]').click();
+            }
+
+            $('#loadingImg').hide();
+
+        });
+    </script>
+
+}
+
