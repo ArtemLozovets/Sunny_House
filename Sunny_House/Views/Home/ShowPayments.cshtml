@@ -9,12 +9,12 @@
     <div class="panel-group" id="accordion">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4 class="panel-title">
-                    <span id="col1" class="glyphicon glyphicon-collapse-up"></span>
+                <span class="panel-title">
+                    <span id="col1" class="glyphicon glyphicon-triangle-top"></span>
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                        <strong>Платежи персоны</strong>
+                        Платежи персоны
                     </a>
-                </h4>
+                </span>
             </div>
             <div id="collapse1" class="panel-collapse collapse in">
                 <div class="panel-body">
@@ -24,12 +24,12 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4 class="panel-title">
-                    <span id="col2" class="glyphicon glyphicon-collapse-down"></span>
+                <span class="panel-title">
+                    <span id="col2" class="glyphicon glyphicon-triangle-bottom"></span>
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
-                        <strong>Платежи по персоне </strong>
+                        Платежи по персоне  
                     </a>
-                </h4>
+                </span>
             </div>
             <div id="collapse2" class="panel-collapse collapse">
                 <div class="panel-body">
@@ -48,23 +48,13 @@
     @Scripts.Render("~/bundles/jqueryval")
 
     <script type="text/javascript">
+        //Скрипт изменения значка раскрытия панели аккордеона
         $(document).ready(function () {
-            $("#collapse1").on("hide.bs.collapse", function () {
-                $("#col1").removeClass("glyphicon glyphicon-collapse-up");
-                $("#col1").addClass("glyphicon glyphicon-collapse-down");
+            $(".panel-collapse").on("hide.bs.collapse", function () {
+                $(this).parent().find(".panel-title span").removeClass("glyphicon glyphicon-triangle-top").addClass("glyphicon glyphicon-triangle-bottom");
             });
-            $("#collapse1").on("show.bs.collapse", function () {
-                $("#col1").removeClass("glyphicon glyphicon-collapse-down");
-                $("#col1").addClass("glyphicon glyphicon-collapse-up");
-            });
-
-            $("#collapse2").on("hide.bs.collapse", function () {
-                $("#col2").removeClass("glyphicon glyphicon-collapse-up");
-                $("#col2").addClass("glyphicon glyphicon-collapse-down");
-            });
-            $("#collapse2").on("show.bs.collapse", function () {
-                $("#col2").removeClass("glyphicon glyphicon-collapse-down");
-                $("#col2").addClass("glyphicon glyphicon-collapse-up");
+            $(".panel-collapse").on("show.bs.collapse", function () {
+                $(this).parent().find(".panel-title span").removeClass("glyphicon glyphicon-triangle-bottom").addClass("glyphicon glyphicon-triangle-top");
             });
         });
     </script>

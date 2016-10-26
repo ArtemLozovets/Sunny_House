@@ -49,7 +49,12 @@
                 </td>
             }
             <td>
-                <a class="btn btn-default btn-sm" title="Информация о взаимоотношениях" href='@Url.Action("ShowRel", "Home", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-link"></span></a>
+                <a class="btn btn-default btn-sm" title="Связанные персоны" href='@Url.Action("ShowPersons", "Home",
+                new{
+                                  PersonId = item.PersonId,
+                                  ReturnUrl= "/Reserves/ResShowOfEvent?EventId="+@ViewData["EventId"]
+                })'>
+                <span class="glyphicon glyphicon-link"></span></a>
             </td>
         </tr>
     }

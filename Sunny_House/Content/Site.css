@@ -148,3 +148,8 @@ ul.dropdown-menu {
     overflow: visible; 
     display: block;
 }
+
+/*Уменьшаем размер индикатора сортировки*/
+.glyphicon.glyphicon-triangle-bottom, .glyphicon.glyphicon-triangle-top {
+    font-size: 10px;
+}

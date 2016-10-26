@@ -106,7 +106,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/10/2016 08:13:25</publishTime>
     </File>
     <File Include="bin/Sunny_House.dll">
-      <publishTime>10/24/2016 11:32:46</publishTime>
+      <publishTime>10/26/2016 15:09:56</publishTime>
     </File>
     <File Include="bin/System.Web.Helpers.dll">
       <publishTime>10/10/2016 08:13:24</publishTime>
@@ -169,7 +169,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/21/2016 08:29:14</publishTime>
     </File>
     <File Include="Content/Site.css">
-      <publishTime>10/24/2016 08:15:44</publishTime>
+      <publishTime>10/26/2016 14:48:40</publishTime>
     </File>
     <File Include="Content/themes/base/accordion.css">
       <publishTime>10/21/2016 08:29:14</publishTime>
@@ -487,19 +487,19 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/21/2016 08:29:14</publishTime>
     </File>
     <File Include="Views/Comments/CommentCreate.cshtml">
-      <publishTime>10/21/2016 08:29:14</publishTime>
+      <publishTime>10/25/2016 08:14:52</publishTime>
     </File>
     <File Include="Views/Comments/CommentDelete.cshtml">
       <publishTime>10/21/2016 08:29:14</publishTime>
     </File>
     <File Include="Views/Comments/CommentDetails.cshtml">
-      <publishTime>10/21/2016 08:29:14</publishTime>
+      <publishTime>10/25/2016 08:14:52</publishTime>
     </File>
     <File Include="Views/Comments/CommentEdit.cshtml">
-      <publishTime>10/21/2016 08:29:14</publishTime>
+      <publishTime>10/25/2016 08:14:52</publishTime>
     </File>
     <File Include="Views/Comments/CommentShow.cshtml">
-      <publishTime>10/21/2016 08:29:14</publishTime>
+      <publishTime>10/25/2016 08:14:52</publishTime>
     </File>
     <File Include="Views/Comments/CSCreate.cshtml">
       <publishTime>10/21/2016 08:29:14</publishTime>
@@ -550,10 +550,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/21/2016 08:29:14</publishTime>
     </File>
     <File Include="Views/Events/EShow.cshtml">
-      <publishTime>10/24/2016 11:17:41</publishTime>
+      <publishTime>10/26/2016 13:36:13</publishTime>
     </File>
     <File Include="Views/Events/ResRelPersonsPartial.cshtml">
-      <publishTime>10/21/2016 08:29:14</publishTime>
+      <publishTime>10/25/2016 11:24:45</publishTime>
     </File>
     <File Include="Views/Exercises/ExCreate.cshtml">
       <publishTime>10/21/2016 08:29:14</publishTime>
@@ -607,7 +607,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/16/2016 21:36:06</publishTime>
     </File>
     <File Include="Views/Home/ShowAllPayments.cshtml">
-      <publishTime>10/21/2016 08:29:15</publishTime>
+      <publishTime>10/26/2016 13:37:10</publishTime>
     </File>
     <File Include="Views/Home/ShowEvents.cshtml">
       <publishTime>09/07/2016 10:05:29</publishTime>
@@ -616,10 +616,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/27/2016 09:43:52</publishTime>
     </File>
     <File Include="Views/Home/ShowPayments.cshtml">
-      <publishTime>10/21/2016 08:29:15</publishTime>
+      <publishTime>10/26/2016 14:31:54</publishTime>
     </File>
     <File Include="Views/Home/ShowPersons.cshtml">
-      <publishTime>10/21/2016 08:29:15</publishTime>
+      <publishTime>10/26/2016 14:55:54</publishTime>
     </File>
     <File Include="Views/Home/ShowPlaces.cshtml">
       <publishTime>10/21/2016 08:29:15</publishTime>
@@ -655,10 +655,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/21/2016 08:29:15</publishTime>
     </File>
     <File Include="Views/Modal/PaymentsPersonAsClient.cshtml">
-      <publishTime>10/21/2016 08:29:15</publishTime>
+      <publishTime>10/26/2016 14:51:49</publishTime>
     </File>
     <File Include="Views/Modal/PaymentsPersonAsPayer.cshtml">
-      <publishTime>10/21/2016 08:29:15</publishTime>
+      <publishTime>10/26/2016 14:54:28</publishTime>
     </File>
     <File Include="Views/Modal/PersonsPartialList.cshtml">
       <publishTime>10/21/2016 08:29:15</publishTime>
@@ -808,7 +808,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/21/2016 08:29:15</publishTime>
     </File>
     <File Include="Views/Reserves/ResShowOfEvent.cshtml">
-      <publishTime>10/24/2016 10:49:51</publishTime>
+      <publishTime>10/26/2016 15:08:28</publishTime>
     </File>
     <File Include="Views/Reserves/ShowModalClient.cshtml">
       <publishTime>10/21/2016 08:29:15</publishTime>
@@ -817,7 +817,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/24/2016 08:15:44</publishTime>
     </File>
     <File Include="Views/Reserves/ShowPotentialPartial.cshtml">
-      <publishTime>10/24/2016 08:15:44</publishTime>
+      <publishTime>10/24/2016 16:38:03</publishTime>
     </File>
     <File Include="Views/Shared/Error.cshtml">
       <publishTime>10/21/2016 08:29:15</publishTime>
@@ -826,7 +826,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/21/2016 08:29:15</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>10/24/2016 10:45:01</publishTime>
+      <publishTime>10/25/2016 08:13:58</publishTime>
     </File>
     <File Include="Views/Shared/_LoginPartial.cshtml">
       <publishTime>10/21/2016 08:29:15</publishTime>
@@ -841,10 +841,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/24/2016 11:22:49</publishTime>
     </File>
     <File Include="Views/Tasks/TaskEdit.cshtml">
-      <publishTime>10/24/2016 11:29:41</publishTime>
+      <publishTime>10/24/2016 11:48:43</publishTime>
     </File>
     <File Include="Views/Tasks/TasksShow.cshtml">
-      <publishTime>10/24/2016 11:25:05</publishTime>
+      <publishTime>10/26/2016 15:09:35</publishTime>
     </File>
     <File Include="Views/Web.config">
       <publishTime>10/21/2016 08:29:15</publishTime>
@@ -853,7 +853,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/21/2016 08:29:15</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>10/24/2016 11:32:48</publishTime>
+      <publishTime>10/25/2016 11:07:15</publishTime>
     </File>
   </ItemGroup>
 </Project>
