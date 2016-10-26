@@ -27,7 +27,6 @@ namespace Sunny_House.Models
         public string Text { get; set; }
 
         [Display(Name = "Оценка")]
-        [Required]
         public string Rating { get; set; }
 
         [Display(Name = "О персоне")]

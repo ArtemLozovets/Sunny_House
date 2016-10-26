@@ -215,17 +215,17 @@
         $(function () {
             $('#loadingImg').hide();
 
-           
+
             //Сохраняем значение поля "Информация" при потере фокуса поля ввода
             $('body').on('focusout', '.infoesInput', function (e) {
                 $(this).next().trigger('click');
             });
-                    
+
             //Скрипт сохранения активной панели
             $('body').on('click', 'a[data-toggle="tab"]', function (e) {
                 //Сохраняем значение ссылки активной панели
                 localStorage.setItem('lastTab', $(this).attr('href'));
-            });         
+            });
 
             //Открываем сохраненную вкладку если запись существует
             var lastTab = localStorage.getItem('lastTab');
@@ -428,6 +428,7 @@
         });
     </script>
 
+   
     <script type="text/javascript">
         //Скрипт переноса  записи из таблицы потенциальных клиентов в список бронирований
         //Работа с представлением ShowPotentialPartial, контроллер ReservesController

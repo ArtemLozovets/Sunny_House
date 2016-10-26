@@ -20,6 +20,8 @@ namespace Sunny_House.Controllers
     {
         private SunnyModel db = new SunnyModel();
 
+        #region Блок работы с резервированием =============================================
+
         // GET: Reserves
         public ActionResult ResShow(int? PersonId)
         {
@@ -236,7 +238,7 @@ namespace Sunny_House.Controllers
             ViewData["ParameterName"] = "EventId";
             ViewData["ParameterValue"] = EventId.ToString();
 
-            
+
             Event @event = db.Events.Find(EventId);
             int _allplaces = @event.PlacesCount;
             int _resplaces = db.Reserves.Where(e => e.EventId == EventId && e.RoleId == _clientroleid).Count();
@@ -264,6 +266,8 @@ namespace Sunny_House.Controllers
             List<Reserve> _reserves = db.Reserves.ToList();
             return View(_reserves);
         }
+
+        #endregion
 
         #region Блок работы с потенциальными клиентами ------------------------------------------
 
@@ -350,7 +354,7 @@ namespace Sunny_House.Controllers
                             {
                                 PersonId = e.PersonId,
                                 PersonFIO = e.PersonFIO,
-                                PersonAge =  AgeMethods.GetAge(e.DateOfBirth),
+                                PersonAge = AgeMethods.GetAge(e.DateOfBirth),
                                 PersonMonth = AgeMethods.GetTotalMonth(e.DateOfBirth),
                                 DateOfBirth = e.DateOfBirth
                             }).Where(a => a.PersonAge >= MinAge && a.PersonAge <= MaxAge);
@@ -536,26 +540,26 @@ namespace Sunny_House.Controllers
             List<RelationViewModel> _rellist = new List<RelationViewModel>();
 
             var _result = (from relation in db.PersonRelations
-                          join person in db.Persons on relation.PersonId equals person.PersonId
-                          where relation.RelPersonId == PersonId
-                          select new RelationViewModel
-                          {
-                              PersonId = person.PersonId,
-                              PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
-                              RelationName = relation.Relation12
-                          }).ToList();
+                           join person in db.Persons on relation.PersonId equals person.PersonId
+                           where relation.RelPersonId == PersonId
+                           select new RelationViewModel
+                           {
+                               PersonId = person.PersonId,
+                               PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
+                               RelationName = relation.Relation12
+                           }).ToList();
 
             _rellist.AddRange(_result);
 
             var _resultRev = (from relation in db.PersonRelations
-                             join person in db.Persons on relation.RelPersonId equals person.PersonId
-                             where relation.PersonId == PersonId
-                             select new RelationViewModel
-                             {
-                                 PersonId = person.PersonId,
-                                 PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
-                                 RelationName = relation.Relation21
-                             }).ToList();
+                              join person in db.Persons on relation.RelPersonId equals person.PersonId
+                              where relation.PersonId == PersonId
+                              select new RelationViewModel
+                              {
+                                  PersonId = person.PersonId,
+                                  PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
+                                  RelationName = relation.Relation21
+                              }).ToList();
 
             _rellist.AddRange(_resultRev);
 
@@ -570,17 +574,37 @@ namespace Sunny_House.Controllers
             }
 
             var _result = (from personcomm in db.PersonCommunications
-                          join comm in db.Communications on personcomm.CommunicationId equals comm.Id
-                          join commtype in db.TypeOfCommunications on comm.TypeOfCommunicationId equals commtype.Id
-                          where personcomm.PersonId == PersonId
-                          select new CommViewModel
-                          {
-                              Address_Number = comm.Address_Number,
-                              TypeOfCommunication = commtype.CommType,
-                              CommName = comm.CommName,
-                          }).ToList();
+                           join comm in db.Communications on personcomm.CommunicationId equals comm.Id
+                           join commtype in db.TypeOfCommunications on comm.TypeOfCommunicationId equals commtype.Id
+                           where personcomm.PersonId == PersonId
+                           select new CommViewModel
+                           {
+                               Address_Number = comm.Address_Number,
+                               TypeOfCommunication = commtype.CommType,
+                               CommName = comm.CommName,
+                           }).ToList();
 
             return PartialView(_result);
+        }
+
+        [HttpGet]
+        public ActionResult PTCRefusing(int? PersonId, int? ClientId)
+        {
+            if (PersonId == null || ClientId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult PTCRefusing(int? PersonId, int? ClientId)
+        {
+            if (PersonId == null || ClientId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            return View();
         }
 
         #endregion
