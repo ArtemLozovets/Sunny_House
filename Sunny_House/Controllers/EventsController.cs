@@ -12,6 +12,7 @@ using PagedList;
 using PagedList.Mvc;
 using System.Globalization;
 using System.Data.Entity.SqlServer;
+using Sunny_House.Methods;
 
 namespace Sunny_House.Controllers
 {
@@ -419,8 +420,8 @@ namespace Sunny_House.Controllers
                                                 {
                                                     PersonId = e.PersonId,
                                                     PersonFIO = e.PersonFIO,
-                                                    PersonAge = GetAge(e.DOB),
-                                                    PersonMonth = GetTotalMonth(e.DOB),
+                                                    PersonAge = AgeMethods.GetAge(e.DOB),
+                                                    PersonMonth = AgeMethods.GetTotalMonth(e.DOB),
                                                     Num_Address = e.Num_Address,
                                                     PersonRole = e.PersonRole
                                                 });
@@ -475,77 +476,6 @@ namespace Sunny_House.Controllers
             else
             {
                 return Json(new { Result = false, Message = "Ошибка валидации модели" }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        private int? GetAge(DateTime? DateOfBirth)
-        {
-            if (DateOfBirth == null)
-            {
-                return null;
-            }
-            else
-            {
-                int Age = 0;
-                int NowDayNum = 0;
-                int DOBDayNum = 0;
-
-                DateTime nowDate = DateTime.Today;
-                DateTime DOB = DateOfBirth ?? DateTime.Today;
-
-                Age = nowDate.Year - DOB.Year;
-
-                if (DateTime.IsLeapYear(nowDate.Year) && (nowDate.DayOfYear > 60))
-                {
-                    NowDayNum = nowDate.DayOfYear - 1;
-                }
-                else
-                {
-                    NowDayNum = nowDate.DayOfYear;
-                }
-
-                if (DateTime.IsLeapYear(DOB.Year) && (DOB.DayOfYear > 60))
-                {
-                    DOBDayNum = DOB.DayOfYear - 1;
-                }
-                else
-                {
-                    DOBDayNum = DOB.DayOfYear;
-                }
-
-                string debugMess = string.Format("Now day:{0} | DOB day:{1}", nowDate.DayOfYear, DOB.DayOfYear);
-                System.Diagnostics.Debug.WriteLine(debugMess);
-
-                if (NowDayNum < DOBDayNum) { Age--; }
-                return Age;
-            }
-        }
-
-        private int? GetTotalMonth(DateTime? DateOfBirth)
-        {
-            if (DateOfBirth == null)
-            {
-                return null;
-            }
-            else
-            {
-                int TotalMonth = 0;
-                DateTime nowDate = DateTime.Today;
-                DateTime DOB = DateOfBirth ?? DateTime.Today;
-
-                if (nowDate == DOB) { TotalMonth = 0; }
-                else
-                {
-                    TotalMonth = ((nowDate.Year - DOB.Year) * 12)
-                        + nowDate.Month - DOB.Month
-                        + (nowDate.Day >= DOB.Day - 1 ? 0 : -1)//поправка на числа
-                        + ((DOB.Day == 1 && DateTime.DaysInMonth(nowDate.Year, nowDate.Month) == nowDate.Day) ? 1 : 0);
-                    //если начальная дата - 1-е число меяца, а конечная - последнее число, добавляется 1 месяц
-                }
-
-                string debugMess = string.Format("Месяцев: ", TotalMonth);
-                System.Diagnostics.Debug.WriteLine(debugMess);
-                return TotalMonth;
             }
         }
 

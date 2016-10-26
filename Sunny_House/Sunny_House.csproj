@@ -191,6 +191,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Methods\AgeMethods.cs" />
     <Compile Include="Migrations\201608271026151_Initial.cs" />
     <Compile Include="Migrations\201608271026151_Initial.Designer.cs">
       <DependentUpon>201608271026151_Initial.cs</DependentUpon>

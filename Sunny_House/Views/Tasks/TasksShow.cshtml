@@ -4,6 +4,12 @@
     ViewBag.Title = "Задачи";
 }
 
+<div id="loadingImg">
+    <div id="preloadImg">
+        <img src="~/Content/Images/loader.gif" />
+    </div>
+</div>
+
 <h2>Список задач</h2>
 
 <ul class="nav nav-tabs">
@@ -20,29 +26,13 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span class="panel-title">
-                        <span id="col1" class="glyphicon glyphicon-collapse-up"></span>
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                         Просроченные
-                        </a>
-                    </span>
-                </div>
-                <div id="collapse1" class="panel-collapse collapse in">
-                    <div class="panel-body">
-                       Panel Content
-                    </div>
-                </div>
-            </div>
-
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <span class="panel-title">
-                        <span id="col1" class="glyphicon glyphicon-collapse-up"></span>
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        <span id="col1" class="glyphicon glyphicon-triangle-top"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#overdue">
                             Просроченные
                         </a>
                     </span>
                 </div>
-                <div id="collapse1" class="panel-collapse collapse">
+                <div id="overdue" class="panel-collapse collapse in">
                     <div class="panel-body">
                         Panel Content
                     </div>
@@ -52,13 +42,13 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span class="panel-title">
-                        <span id="col1" class="glyphicon glyphicon-collapse-up"></span>
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                            Просроченные
+                        <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#today">
+                            Сегодня
                         </a>
                     </span>
                 </div>
-                <div id="collapse1" class="panel-collapse collapse">
+                <div id="today" class="panel-collapse collapse">
                     <div class="panel-body">
                         Panel Content
                     </div>
@@ -68,13 +58,13 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span class="panel-title">
-                        <span id="col1" class="glyphicon glyphicon-collapse-up"></span>
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                            Просроченные
+                        <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#tomorrow">
+                            Завтра
                         </a>
                     </span>
                 </div>
-                <div id="collapse1" class="panel-collapse collapse">
+                <div id="tomorrow" class="panel-collapse collapse">
                     <div class="panel-body">
                         Panel Content
                     </div>
@@ -84,13 +74,13 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span class="panel-title">
-                        <span id="col1" class="glyphicon glyphicon-collapse-up"></span>
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                            Просроченные
+                        <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#nextseven">
+                            Следующие 7 дней
                         </a>
                     </span>
                 </div>
-                <div id="collapse1" class="panel-collapse collapse">
+                <div id="nextseven" class="panel-collapse collapse">
                     <div class="panel-body">
                         Panel Content
                     </div>
@@ -100,13 +90,13 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span class="panel-title">
-                        <span id="col1" class="glyphicon glyphicon-collapse-up"></span>
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                            Просроченные
+                        <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#later">
+                            Позже
                         </a>
                     </span>
                 </div>
-                <div id="collapse1" class="panel-collapse collapse">
+                <div id="later" class="panel-collapse collapse">
                     <div class="panel-body">
                         Panel Content
                     </div>
@@ -116,13 +106,29 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span class="panel-title">
-                        <span id="col1" class="glyphicon glyphicon-collapse-up"></span>
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                            Просроченные
+                        <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#withoutdate">
+                            Без срока
                         </a>
                     </span>
                 </div>
-                <div id="collapse1" class="panel-collapse collapse">
+                <div id="withoutdate" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        Panel Content
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#completed">
+                            Выполненные
+                        </a>
+                    </span>
+                </div>
+                <div id="completed" class="panel-collapse collapse">
                     <div class="panel-body">
                         Panel Content
                     </div>
@@ -158,28 +164,28 @@
 
             @foreach (var item in Model)
             {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateOfCreation)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Subject)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TaskComplete)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Note)
-                </td>
-                <td>
-                    @Html.ActionLink("Редактировать", "TaskEdit", new { id = item.STaskId }) |
-                    @Html.ActionLink("Подробно", "TaskDetails", new { id = item.STaskId }) |
-                    @Html.ActionLink("Удалить", "TaskDelete", new { id = item.STaskId })
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateOfCreation)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Subject)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TaskComplete)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Note)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Редактировать", "TaskEdit", new { id = item.STaskId }) |
+                        @Html.ActionLink("Подробно", "TaskDetails", new { id = item.STaskId }) |
+                        @Html.ActionLink("Удалить", "TaskDelete", new { id = item.STaskId })
+                    </td>
+                </tr>
             }
 
         </table>
@@ -190,25 +196,31 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script type="text/javascript">
+        //Скрипт изменения значка раскрытия панели аккордеона
         $(document).ready(function () {
-            $("#collapse1").on("hide.bs.collapse", function () {
-                $("#col1").removeClass("glyphicon glyphicon-collapse-up");
-                $("#col1").addClass("glyphicon glyphicon-collapse-down");
+            $(".panel-collapse").on("hide.bs.collapse", function () {
+                $(this).parent().find(".panel-title span").removeClass("glyphicon glyphicon-triangle-top").addClass("glyphicon glyphicon-triangle-bottom");
             });
-            $("#collapse1").on("show.bs.collapse", function () {
-                $("#col1").removeClass("glyphicon glyphicon-collapse-down");
-                $("#col1").addClass("glyphicon glyphicon-collapse-up");
+            $(".panel-collapse").on("show.bs.collapse", function () {
+                $(this).parent().find(".panel-title span").removeClass("glyphicon glyphicon-triangle-bottom").addClass("glyphicon glyphicon-triangle-top");
             });
 
-            $("#collapse2").on("hide.bs.collapse", function () {
-                $("#col2").removeClass("glyphicon glyphicon-collapse-up");
-                $("#col2").addClass("glyphicon glyphicon-collapse-down");
+            //Скрипт сохранения активной панели
+            $('body').on('click', 'a[data-toggle="tab"]', function (e) {
+                //Сохраняем значение ссылки активной панели
+                localStorage.setItem('TaskTab', $(this).attr('href'));
             });
-            $("#collapse2").on("show.bs.collapse", function () {
-                $("#col2").removeClass("glyphicon glyphicon-collapse-down");
-                $("#col2").addClass("glyphicon glyphicon-collapse-up");
-            });
+
+            //Открываем сохраненную вкладку если запись существует
+            var TaskTab = localStorage.getItem('TaskTab');
+            if (TaskTab) {
+                $('a[href="' + TaskTab + '"]').click();
+            }
+
+            $('#loadingImg').hide();
+
         });
     </script>
+
 }
 

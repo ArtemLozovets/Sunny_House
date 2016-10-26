@@ -43,8 +43,8 @@
                                 new { @id = "MiddleName" }) <i id="MiddleNameArrow"></i>
                 </th>
                 <th>
-                    @Html.ActionLink("Дата рождения", "ShowPersons", new { SortBy = ViewBag.SortDateOfBirth, SearchString = Request["SearchString"], PersonId = Request.QueryString["PersonId"] },
-                              new { @id = "DateOfBirth" }) <i id="DateOfBirthArrow"></i>
+                    @Html.ActionLink("Возраст", "ShowPersons", new { SortBy = ViewBag.SortAge, SearchString = Request["SearchString"], PersonId = Request.QueryString["PersonId"] },
+                              new { @id = "Age" }) <i id="AgeArrow"></i>
                 </th>
                 <th>
                     @Html.ActionLink("Номер/Адрес", "ShowPersons", new { SortBy = ViewBag.SortNum_Address, SearchString = Request["SearchString"], PersonId = Request.QueryString["PersonId"] },
@@ -72,9 +72,23 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.MiddleName)
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DateOfBirth)
-                    </td>
+                    @if (item.PersonAge != null && item.PersonAge > 0)
+                    {
+                        <td style="text-align:center">
+                            <span class="text-info" title="Дата рождения: @Html.DisplayFor(modelItem => item.DateOfBirth)" style="cursor:pointer">
+                                @Html.DisplayFor(modelItem => item.PersonAge)
+                            </span>
+                        </td>
+                    }
+                    else
+                    {
+                        <td style="text-align:center">
+                            @if (item.PersonMonth != null)
+                            { <span class="text-success" title="Дата рождения: @Html.DisplayFor(modelItem => item.DateOfBirth)" style="cursor:pointer">
+                                @Html.DisplayFor(modelItem => item.PersonMonth) мес.
+                            </span> }
+                        </td>
+                    }
                     <td>
                         @Html.DisplayFor(modelItem => item.Num_Address)
                     </td>
@@ -102,7 +116,7 @@
 <hr />
 Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
 @Html.PagedListPager(Model, page => Url.Action("ShowPersons", "Home",
-                             new { PersonId = Request.QueryString["PersonId"], SearchString = Request.QueryString["SearchString"], page, SortBy = Request["SortBy"] }),
+                                 new { PersonId = Request.QueryString["PersonId"], SearchString = Request.QueryString["SearchString"], page, SortBy = Request["SortBy"], ReturnUrl = @ViewBag.ReturnUrl }),
                          new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
@@ -120,10 +134,10 @@
                 var sortcontrol = $('#' + sortcolumnname);
                 if (sortcontrol != null) {
                     if (sortcontrol.attr('href').indexOf('desc') != -1) {
-                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-arrow-up')
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-top')
                     }
                     else {
-                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-arrow-down')
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-bottom')
                     }
                 }
             }

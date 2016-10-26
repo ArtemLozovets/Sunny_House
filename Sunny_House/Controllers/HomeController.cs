@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using Sunny_House.Models;
 using PagedList;
 using PagedList.Mvc;
+using Sunny_House.Methods;
 
 namespace Sunny_House.Controllers
 {
@@ -41,7 +42,7 @@ namespace Sunny_House.Controllers
             ViewBag.SortFirstName = SortBy == "FirstName" ? "FirstName desc" : "FirstName";
             ViewBag.SortLastName = SortBy == "LastName" ? "LastName desc" : "LastName";
             ViewBag.SortMiddleName = SortBy == "MiddleName" ? "MiddleName desc" : "MiddleName";
-            ViewBag.SortDateOfBirth = SortBy == "DateOfBirth" ? "DateOfBirth desc" : "DateOfBirth";
+            ViewBag.SortAge = SortBy == "Age" ? "Age desc" : "Age";
             ViewBag.SortNum_Address = SortBy == "Num_Address" ? "Num_Address desc" : "Num_Address";
 
 
@@ -126,13 +127,13 @@ namespace Sunny_House.Controllers
                     _persons = _persons.OrderBy(x => x.MiddleName);
                     ViewData["SortColumn"] = "MiddleName";
                     break;
-                case "DateOfBirth desc":
+                case "Age desc":
                     _persons = _persons.OrderByDescending(x => x.DateOfBirth);
-                    ViewData["SortColumn"] = "DateOfBirth";
+                    ViewData["SortColumn"] = "Age";
                     break;
-                case "DateOfBirth":
+                case "Age":
                     _persons = _persons.OrderBy(x => x.DateOfBirth);
-                    ViewData["SortColumn"] = "DateOfBirth";
+                    ViewData["SortColumn"] = "Age";
                     break;
                 case "Num_Address desc":
                     _persons = _persons.OrderByDescending(x => x.Num_Address);
@@ -158,6 +159,8 @@ namespace Sunny_House.Controllers
                 _personsviewmodel.LastName = item.LastName;
                 _personsviewmodel.MiddleName = item.MiddleName;
                 _personsviewmodel.DateOfBirth = item.DateOfBirth;
+                _personsviewmodel.PersonAge =  AgeMethods.GetAge(item.DateOfBirth);
+                _personsviewmodel.PersonMonth = AgeMethods.GetTotalMonth(item.DateOfBirth);
                 _personsviewmodel.Num_Address = item.Num_Address;
 
                 _personsviewmodellist.Add(_personsviewmodel);
