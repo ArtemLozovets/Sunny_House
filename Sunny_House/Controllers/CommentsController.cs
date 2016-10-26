@@ -187,6 +187,7 @@ namespace Sunny_House.Controllers
             {
                 db.CommentSources.Add(commentSource);
                 await db.SaveChangesAsync();
+                TempData["MessageOk"] = "Информация об источнике отзывов успешно добавлена";
                 return RedirectToAction("CSShow");
             }
 
@@ -215,9 +216,28 @@ namespace Sunny_House.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(commentSource).State = EntityState.Modified;
-                await db.SaveChangesAsync();
-                return RedirectToAction("CSShow");
+                try
+                {
+                    //Запрещаем редактирование источника "Бронирование" 
+                    string _namestring = (string)"Бронирование".ToUpper();
+                    string _sourcename = db.CommentSources.Find(commentSource.SourceId).SourceName.ToUpper();
+                    if (_sourcename == _namestring)
+                    {
+                        TempData["MessageError"] = "Источник \"Бронирование\" является системным и не может быть изменен или удален!";
+                        return RedirectToAction("CSShow");
+                    }
+
+                    db.Entry(commentSource).State = EntityState.Modified;
+                    await db.SaveChangesAsync();
+                    TempData["MessageOk"] = "Информация об источнике отзывов успешно изменена";
+                    return RedirectToAction("CSShow");
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.ErMes = ex.Message;
+                    ViewBag.ErStack = ex.StackTrace;
+                    return View("Error");
+                }
             }
             return View(commentSource);
         }
@@ -242,10 +262,31 @@ namespace Sunny_House.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CSDeleteConfirmed(int id)
         {
-            CommentSource commentSource = await db.CommentSources.FindAsync(id);
-            db.CommentSources.Remove(commentSource);
-            await db.SaveChangesAsync();
-            return RedirectToAction("CSShow");
+            try
+            {
+
+                //Запрещаем удаление источника "Бронирование" 
+                string _namestring = (string)"Бронирование".ToUpper();
+                string _sourcename = db.CommentSources.Find(id).SourceName.ToUpper();
+                if (_sourcename == _namestring)
+                {
+                    TempData["MessageError"] = "Источник \"Бронирование\" является системным и не может быть изменен или удален!";
+                    return RedirectToAction("CSShow");
+                }
+                
+                CommentSource commentSource = await db.CommentSources.FindAsync(id);
+                db.CommentSources.Remove(commentSource);
+                await db.SaveChangesAsync();
+                TempData["MessageOk"] = "Информация об источнике отзывов успешно удалена";
+                return RedirectToAction("CSShow");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErMes = ex.Message;
+                ViewBag.ErStack = ex.StackTrace;
+                return View("Error");
+            }
+            
         }
 
         #endregion

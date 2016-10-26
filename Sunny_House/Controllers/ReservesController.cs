@@ -598,9 +598,9 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
-        public ActionResult PTCRefusing(int? PersonId, int? ClientId)
+        public ActionResult PTCRefusing(Comment model, int? ClientId)
         {
-            if (PersonId == null || ClientId == null)
+            if (ClientId == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }

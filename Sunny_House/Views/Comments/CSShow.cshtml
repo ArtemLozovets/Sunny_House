@@ -6,6 +6,13 @@
 
 <h2>Отзывы</h2>
 <h4>Источники отзывов</h4>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="text-success"> @TempData["MessageOk"]</p>
+        <p class="text-danger">  @TempData["MessageError"]</p>
+    </div>
+</div>
 <p>
     <a class="btn btn-default" style="margin:2px 2px;" title="Добавить источник" href='@Url.Action("CSCreate", "Comments", new { @PersonId = Request.Params["PersonId"]})'><span class="glyphicon glyphicon-comment"> Добавить источник</span></a>
 </p>
