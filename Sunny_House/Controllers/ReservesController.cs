@@ -588,38 +588,113 @@ namespace Sunny_House.Controllers
         }
 
         [HttpGet]
-        public ActionResult PTCRefusing(int? PersonId, int? ClientId, int EventId)
+        public ActionResult PTCRefusing(int? PersonId, int ClientId, int EventId)
         {
-            if (PersonId == null || ClientId == null || EventId == 0)
+            if (PersonId == null || ClientId == 0 || EventId == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
             //Получаем ID источника "Бронирование"
             int _sourceid = db.CommentSources.First(s => s.SourceName.ToUpper() == (string)"Бронирование".ToUpper()).SourceId;
-            ViewData["SourceName"] = "Бронирование";
-            ViewData["EventName"] = db.Events.FirstOrDefault(e => e.EventId == EventId).EventName.ToString();
-
-            Comment _comment = new Comment();
+            
+            CommentViewModel _comment = new CommentViewModel();
             _comment.EventId = EventId;
             _comment.SourceId = _sourceid;
             _comment.Date = DateTime.Today;
+            _comment.SourceName = "Бронирование";
+            _comment.EventName = db.Events.FirstOrDefault(e => e.EventId == EventId).EventName.ToString();
+        
 
-            ViewBag.SignPersonId = new SelectList(db.Persons, "PersonId", "FirstName");
+
+            List<RelationViewModel> _rellist = new List<RelationViewModel>();
+
+            var _person = (from person in db.Persons
+                           where (person.PersonId == PersonId)
+                           select new RelationViewModel
+                           {
+                               PersonId = person.PersonId,
+                               PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName
+                           }).Single();
+          
+            _rellist.Add(_person);
+
+            var _result = (from relation in db.PersonRelations
+                           join person in db.Persons on relation.PersonId equals person.PersonId
+                           where relation.RelPersonId == PersonId
+                           select new RelationViewModel
+                           {
+                               PersonId = person.PersonId,
+                               PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName
+                           }).ToList();
+
+            _rellist.AddRange(_result);
+
+            var _resultRev = (from relation in db.PersonRelations
+                              join person in db.Persons on relation.RelPersonId equals person.PersonId
+                              where relation.PersonId == PersonId
+                              select new RelationViewModel
+                              {
+                                  PersonId = person.PersonId,
+                                  PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName
+                              }).ToList();
+
+            _rellist.AddRange(_resultRev);
 
 
-            return View();
+            ViewBag.SignPersonId = new SelectList(_rellist, "PersonId", "PersonFIO");
+
+
+            return View(_comment);
         }
 
         [HttpPost]
-        public ActionResult PTCRefusing(Comment model, int? ClientId)
+        public ActionResult PTCRefusing(CommentViewModel model, int? ClientId, int? PersonId)
         {
-            if (ClientId == null)
+            if (ClientId == null || PersonId == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            return View();
+            List<RelationViewModel> _rellist = new List<RelationViewModel>();
+
+            var _person = (from person in db.Persons
+                           where (person.PersonId == PersonId)
+                           select new RelationViewModel
+                           {
+                               PersonId = person.PersonId,
+                               PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName
+                           }).Single();
+
+            _rellist.Add(_person);
+
+            var _result = (from relation in db.PersonRelations
+                           join person in db.Persons on relation.PersonId equals person.PersonId
+                           where relation.RelPersonId == PersonId
+                           select new RelationViewModel
+                           {
+                               PersonId = person.PersonId,
+                               PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName
+                           }).ToList();
+
+            _rellist.AddRange(_result);
+
+            var _resultRev = (from relation in db.PersonRelations
+                              join person in db.Persons on relation.RelPersonId equals person.PersonId
+                              where relation.PersonId == PersonId
+                              select new RelationViewModel
+                              {
+                                  PersonId = person.PersonId,
+                                  PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName
+                              }).ToList();
+
+            _rellist.AddRange(_resultRev);
+
+
+            ViewBag.SignPersonId = new SelectList(_rellist, "PersonId", "PersonFIO");
+
+
+            return View(model);
         }
 
         #endregion

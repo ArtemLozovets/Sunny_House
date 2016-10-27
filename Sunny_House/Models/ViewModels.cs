@@ -274,5 +274,17 @@ namespace Sunny_House.Models
 
         [Display(Name = "Подпись")]
         public int SignPersonId { get; set; }
+
+        [Display(Name = "Мероприятие")]
+        public string EventName { get; set; }
+
+        [Display(Name = "ФИО персоны")]
+        public string PersonFIO { get; set; }
+
+        [Display(Name = "Источник")]
+        public string SourceName { get; set; }
+
+
+        
     }
 }
