@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Sunny_House.Models;
+using System.Data.Entity.Core.Objects;
 
 namespace Sunny_House.Controllers
 {
@@ -83,8 +84,8 @@ namespace Sunny_House.Controllers
                 {
                     //Запрещаем редактирование роли "Клиент" 
                     string _namestring = (string)"Клиент".ToUpper();
-                    string _rolename = db.PersonRoles.Find(personRole.RoleId).RoleName.ToUpper();
-                    if (_rolename == _namestring)
+                    string _rolestring = (from role in db.PersonRoles where role.RoleId == personRole.RoleId select role.RoleName).Single().ToString().ToUpper();
+                    if (_rolestring == _namestring)
                     {
                         TempData["MessageError"] = "Роль \"Клиент\" является системной и не может быть изменена или удалена!";
                         return RedirectToAction("RolesShow");

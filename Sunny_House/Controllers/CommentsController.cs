@@ -212,16 +212,18 @@ namespace Sunny_House.Controllers
         // POST: CommentSources/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CSEdit([Bind(Include = "SourceId,SourceName")] CommentSource commentSource)
+        public async Task<ActionResult> CSEdit([Bind(Include = "SourceId, SourceName")] CommentSource commentSource)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug information------------------------------------
+
                     //Запрещаем редактирование источника "Бронирование" 
                     string _namestring = (string)"Бронирование".ToUpper();
-                    string _sourcename = db.CommentSources.Find(commentSource.SourceId).SourceName.ToUpper();
-                    if (_sourcename == _namestring)
+                    string _sourcestring = (from source in db.CommentSources where source.SourceId == commentSource.SourceId select source.SourceName).Single().ToString().ToUpper();
+                    if (_sourcestring == _namestring)
                     {
                         TempData["MessageError"] = "Источник \"Бронирование\" является системным и не может быть изменен или удален!";
                         return RedirectToAction("CSShow");
@@ -264,7 +266,6 @@ namespace Sunny_House.Controllers
         {
             try
             {
-
                 //Запрещаем удаление источника "Бронирование" 
                 string _namestring = (string)"Бронирование".ToUpper();
                 string _sourcename = db.CommentSources.Find(id).SourceName.ToUpper();

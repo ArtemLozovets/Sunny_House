@@ -621,6 +621,8 @@ namespace Sunny_House.Controllers
             {
                 try
                 {
+                    db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug information------------------------------------
+
                     db.Entry(model).State = EntityState.Modified;
                     var result = await db.SaveChangesAsync();
                     if (result > 0)

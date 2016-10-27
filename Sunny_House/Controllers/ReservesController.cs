@@ -588,12 +588,26 @@ namespace Sunny_House.Controllers
         }
 
         [HttpGet]
-        public ActionResult PTCRefusing(int? PersonId, int? ClientId)
+        public ActionResult PTCRefusing(int? PersonId, int? ClientId, int EventId)
         {
-            if (PersonId == null || ClientId == null)
+            if (PersonId == null || ClientId == null || EventId == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
+            //Получаем ID источника "Бронирование"
+            int _sourceid = db.CommentSources.First(s => s.SourceName.ToUpper() == (string)"Бронирование".ToUpper()).SourceId;
+            ViewData["SourceName"] = "Бронирование";
+            ViewData["EventName"] = db.Events.FirstOrDefault(e => e.EventId == EventId).EventName.ToString();
+
+            Comment _comment = new Comment();
+            _comment.EventId = EventId;
+            _comment.SourceId = _sourceid;
+            _comment.Date = DateTime.Today;
+
+            ViewBag.SignPersonId = new SelectList(db.Persons, "PersonId", "FirstName");
+
+
             return View();
         }
 
@@ -604,6 +618,7 @@ namespace Sunny_House.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             return View();
         }
 

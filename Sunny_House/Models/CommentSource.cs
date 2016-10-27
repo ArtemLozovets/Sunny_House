@@ -16,6 +16,7 @@ namespace Sunny_House.Models
         }
 
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SourceId { get; set; }
 
         [Display(Name = "Название источника")]
