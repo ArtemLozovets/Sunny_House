@@ -142,7 +142,11 @@
                     </div>
                     @* Вкладка потенциальных клиентов ------------------------------------------- *@
                     <div id="menu1" class="tab-pane fade">
-                        <div style="margin:6px; font-weight:bold;"><span class="text-danger" id="AjaxResultLabel"></span></div>
+                        <div style="margin:6px; font-weight:bold;">
+                            <span class="text-danger" id="AjaxResultLabel"></span>
+                            <span class="text-success"> @TempData["MessageRefusingOk"]</span>
+                        </div>
+                   
                         @* Панель фильтров --------------------------------- *@
                         <div class="panel-group">
                             <div class="panel panel-default">
@@ -428,7 +432,7 @@
         });
     </script>
 
-   
+
     <script type="text/javascript">
         //Скрипт переноса  записи из таблицы потенциальных клиентов в список бронирований
         //Работа с представлением ShowPotentialPartial, контроллер ReservesController

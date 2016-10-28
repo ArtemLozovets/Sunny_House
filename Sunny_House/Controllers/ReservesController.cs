@@ -588,9 +588,9 @@ namespace Sunny_House.Controllers
         }
 
         [HttpGet]
-        public ActionResult PTCRefusing(int? PersonId, int ClientId, int EventId)
+        public ActionResult PTCRefusing(int? PersonId, int? ClientId, int? EventId)
         {
-            if (PersonId == null || ClientId == 0 || EventId == 0)
+            if (PersonId == null || ClientId == null || EventId == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -599,7 +599,7 @@ namespace Sunny_House.Controllers
             int _sourceid = db.CommentSources.First(s => s.SourceName.ToUpper() == (string)"Бронирование".ToUpper()).SourceId;
             
             CommentViewModel _comment = new CommentViewModel();
-            _comment.EventId = EventId;
+            _comment.EventId = EventId ?? 1;
             _comment.SourceId = _sourceid;
             _comment.Date = DateTime.Today;
             _comment.SourceName = "Бронирование";
@@ -649,6 +649,7 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult PTCRefusing(CommentViewModel model, int? ClientId, int? PersonId)
         {
             if (ClientId == null || PersonId == null)
@@ -656,6 +657,45 @@ namespace Sunny_House.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
+            if (ModelState.IsValid)
+            {
+                using (var dbContextTransaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug information------------------------------------
+                        
+                        Comment _comment = new Comment
+                        {
+                            SourceId = model.SourceId,
+                            EventId = model.EventId,
+                            Date = model.Date,
+                            Text = model.Text,
+                            SignPersonId = model.SignPersonId
+                        };
+
+                        db.Comments.Add(_comment);
+                        db.SaveChanges();
+
+                        PotentialСlient _client = db.PotentialСlients.Find(ClientId);
+                        db.PotentialСlients.Remove(_client);
+                        db.SaveChanges();
+                        dbContextTransaction.Commit();
+                        TempData["MessageRefusingOk"] = "Операция выполнена успешно";
+                        return RedirectToAction("ResShowOfEvent", "Reserves", new { EventId = model.EventId });
+
+                    }
+                    catch (Exception ex)
+                    {
+                        dbContextTransaction.Rollback();
+                        ViewBag.ErMes = ex.Message;
+                        ViewBag.ErStack = ex.StackTrace;
+                        return View("Error");
+                    }
+                }
+            }
+
+            TempData["MessageError"] = "Ошибка валидации модели";
             List<RelationViewModel> _rellist = new List<RelationViewModel>();
 
             var _person = (from person in db.Persons

@@ -207,7 +207,7 @@ namespace Sunny_House.Models
         {
             modelBuilder.Entity<Address>()
                 .HasMany(e => e.Comment)
-                .WithRequired(e => e.Address)
+                .WithOptional(e => e.Address)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Address>()
@@ -260,7 +260,7 @@ namespace Sunny_House.Models
 
             modelBuilder.Entity<Exercise>()
                 .HasMany(e => e.Comment)
-                .WithRequired(e => e.Exercise)
+                .WithOptional(e => e.Exercise)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Exercise>()
@@ -270,7 +270,7 @@ namespace Sunny_House.Models
 
             modelBuilder.Entity<Person>()
                 .HasMany(e => e.Comment)
-                .WithRequired(e => e.Person)
+                .WithOptional(e => e.Person)
                 .HasForeignKey(e => e.AboutPersonId)
                 .WillCascadeOnDelete(false);
 
