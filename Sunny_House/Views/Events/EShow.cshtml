@@ -230,6 +230,8 @@
 
         </table>
 
+        <a href="#" class="scrollup1">Наверх</a>
+
         <hr />
         Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
 
@@ -248,7 +250,7 @@
 
         @section Scripts {
             @Scripts.Render("~/bundles/jqueryval")
-
+            <script src="~/Scripts/toparrow.js"></script>
             <script type="text/javascript">
                 $(function () {
 

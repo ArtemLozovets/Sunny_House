@@ -9,6 +9,8 @@ using System.Web;
 using System.Web.Mvc;
 using Sunny_House.Models;
 using System.Web.Routing;
+using PagedList;
+using PagedList.Mvc;
 
 namespace Sunny_House.Controllers
 {
@@ -17,9 +19,67 @@ namespace Sunny_House.Controllers
         private SunnyModel db = new SunnyModel();
 
         // GET: Tasks
-        public async Task<ActionResult> TasksShow()
+        public ActionResult TasksShow(int? page, string SortBy)
         {
-            return View(await db.STask.ToListAsync());
+
+            ViewBag.SortDateOfCreation = SortBy == "DateOfCreation" ? "DateOfCreation desc" : "DateOfCreation";
+            ViewBag.SortDate = SortBy == "Date" ? "Date desc" : "Date";
+            ViewBag.SortSubject = SortBy == "Subject" ? "Subject desc" : "Subject";
+            ViewBag.SortTaskComplete = SortBy == "TaskComplete" ? "TaskComplete desc" : "TaskComplete";
+            ViewBag.SortNote = SortBy == "Note" ? "Note desc" : "Note";
+
+            var _tasks = from task in db.STask select task;
+
+            switch (SortBy)
+            {
+                case "DateOfCreation desc":
+                    _tasks = _tasks.OrderByDescending(x => x.DateOfCreation);
+                    ViewData["SortColumn"] = "DateOfCreation";
+                    break;
+                case "DateOfCreation":
+                    _tasks = _tasks.OrderBy(x => x.DateOfCreation);
+                    ViewData["SortColumn"] = "DateOfCreation";
+                    break;
+                case "Date desc":
+                    _tasks = _tasks.OrderByDescending(x => x.Date);
+                    ViewData["SortColumn"] = "Date";
+                    break;
+                case "Date":
+                    _tasks = _tasks.OrderBy(x => x.Date);
+                    ViewData["SortColumn"] = "Date";
+                    break;
+                case "Subject desc":
+                    _tasks = _tasks.OrderByDescending(x => x.Subject);
+                    ViewData["SortColumn"] = "Subject";
+                    break;
+                case "Subject":
+                    _tasks = _tasks.OrderBy(x => x.Subject);
+                    ViewData["SortColumn"] = "Subject";
+                    break;
+                case "TaskComplete desc":
+                    _tasks = _tasks.OrderByDescending(x => x.TaskComplete);
+                    ViewData["SortColumn"] = "TaskComplete";
+                    break;
+                case "TaskComplete":
+                    _tasks = _tasks.OrderBy(x => x.TaskComplete);
+                    ViewData["SortColumn"] = "TaskComplete";
+                    break;
+                case "Note desc":
+                    _tasks = _tasks.OrderByDescending(x => x.Note);
+                    ViewData["SortColumn"] = "Note";
+                    break;
+                case "Note":
+                    _tasks = _tasks.OrderBy(x => x.Note);
+                    ViewData["SortColumn"] = "Note";
+                    break;
+                default:
+                    break;
+            }
+
+            int pageSize = 4;
+            int pageNumber = (page ?? 1);
+
+            return View(_tasks.ToList().ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Tasks/Details/5

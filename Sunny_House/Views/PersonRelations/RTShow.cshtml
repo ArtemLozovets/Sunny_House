@@ -2,21 +2,16 @@
 @model PagedList.IPagedList<Sunny_House.Models.RelationTypesCatalog>
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
-
-
 @{
     ViewBag.Title = "Типы взаимоотношений";
 }
-
 <h2>Типы взаимоотношений</h2>
-
 <div class="row">
     <div class="col-md-6">
         <p class="text-success"> @TempData["MessageOk"]</p>
         <p class="text-danger">  @TempData["MessageError"]</p>
     </div>
 </div>
-
 <p>
     @if (ViewData["PRPersonId"] != "-1")
     {
@@ -40,7 +35,6 @@
         </th>
         <th></th>
     </tr>
-
     @foreach (var item in Model)
     {
         <tr>
@@ -56,16 +50,18 @@
             <td>
                 @Html.DisplayFor(modelItem => item.RevTypeSex)
             </td>
-            <td>
+            <td style="text-align:center; width:90px; min-width:90px;">
                 <a class="btn btn-default btn-sm" title="Редактировать тип взаимоотношений" href='@Url.Action("RTEdit", "PersonRelations", new { id = item.RelTypesId })'><span class="glyphicon glyphicon-edit"></span></a>
                 <a class="btn btn-default btn-sm" title="Удалить тип взаимоотношений" href='@Url.Action("RTDelete", "PersonRelations", new { id = item.RelTypesId })'><span class="glyphicon glyphicon-trash"></span></a>
             </td>
         </tr>
     }
-
 </table>
-
+<a href="#" class="scrollup1">Наверх</a>
 <hr />
 Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
-
 @Html.PagedListPager(Model, page => Url.Action("RTShow", "PersonRelations", new { page }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
+
+@section Scripts {
+    <script src="~/Scripts/toparrow.js"></script>
+}

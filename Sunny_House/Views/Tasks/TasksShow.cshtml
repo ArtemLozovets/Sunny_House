@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Sunny_House.Models.STask>
+﻿@model PagedList.IPagedList<Sunny_House.Models.STask>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
     ViewBag.Title = "Задачи";
@@ -9,21 +11,97 @@
         <img src="~/Content/Images/loader.gif" />
     </div>
 </div>
+<label id="SortColumn" hidden>@ViewData["SortColumn"]</label>
 
 <h2>Список задач</h2>
 
 <ul class="nav nav-tabs">
     @* Вкладки ---------------------------------------------------------------- *@
-    <li class="active"><a data-toggle="tab" href="#grouplist"><strong>Задачи по срокам</strong></a></li>
     <li><a data-toggle="tab" href="#alllist"><strong>Все задачи</strong></a></li>
+    <li class="active"><a data-toggle="tab" href="#grouplist"><strong>Задачи по срокам</strong></a></li>
 </ul>
 <div class="tab-content">
 
+    @* Вкладка со списком всех задач------------------------------------------- *@
+    <div id="alllist" class="tab-pane fade">
+        <div class="row">
+            <div class="col-md-6">
+                <p class="text-success"> @TempData["MessageOk"]</p>
+                <p class="text-danger">  @TempData["MessageError"]</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="row" style="margin:10px 0;">
+                <div class="pull-left" style="margin-left:10px;">
+                    <a class="btn btn-default" style="margin:2px 2px;" title="Добавить задачу" href='@Url.Action("TaskCreate", "Tasks")'><span class="glyphicon glyphicon-tasks"> Добавить задачу</span></a>@Html.Raw("&nbsp;")
+                    <a class="btn btn-default" title="Обновить" style="margin:2px 2px ;" href='@Url.Action("TasksShow", "Tasks")'><span class="glyphicon glyphicon-refresh"></span></a>
+                </div>
+                <div class="pull-right" style="margin-right:10px;">Фильтр</div>
+            </div>
+            <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+                <tr>
+                    <th>
+                        @Html.ActionLink("Создание", "TasksShow", new { SortBy = ViewBag.SortDateOfCreation, SearchString = Request["SearchString"] }, new { @id = "DateOfCreation" })
+                        <i id="DateOfCreationArrow"></i>
+                    </th>
+                    <th>
+                        @Html.ActionLink("Завершение", "TasksShow", new { SortBy = ViewBag.SortDate, SearchString = Request["SearchString"] }, new { @id = "Date" })
+                        <i id="DateArrow"></i>
+                    </th>
+                    <th>
+                        @Html.ActionLink("Тема", "TasksShow", new { SortBy = ViewBag.SortSubject, SearchString = Request["SearchString"] }, new { @id = "Subject" })
+                        <i id="SubjectArrow"></i>
+                    </th>
+                    <th>
+                        @Html.ActionLink("Вып.", "TasksShow", new { SortBy = ViewBag.SortTaskComplete, SearchString = Request["SearchString"] }, new { @id = "TaskComplete" })
+                        <i id="TaskCompleteArrow"></i>
+                    </th>
+                    <th>
+                        @Html.ActionLink("Описание", "TasksShow", new { SortBy = ViewBag.SortNote, SearchString = Request["SearchString"] }, new { @id = "Note" })
+                        <i id="NoteArrow"></i>
+                    </th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateOfCreation)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Subject)
+                        </td>
+                        <td style="text-align:center;">
+                            @Html.DisplayFor(modelItem => item.TaskComplete)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Note)
+                        </td>
+                        <td style="text-align:center; width:90px; min-width:90px;">
+                            <a class="btn btn-default btn-sm" title="Редактирование задачи" href='@Url.Action("TaskEdit", "Tasks", new { id = item.STaskId })'><span class="glyphicon glyphicon-edit"></span></a>
+                            <a class="btn btn-default btn-sm" title="Удаление задачи" href='@Url.Action("TaskDelete", "Tasks", new { id = item.STaskId })'><span class="glyphicon glyphicon-trash"></span></a>
+                        </td>
+                    </tr>
+                }
+
+            </table>
+            <hr />
+            Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+            @Html.PagedListPager(Model, page => Url.Action("TasksShow", "Tasks",
+                                 new { SearchString = Request.QueryString["SearchString"], page, SortBy = Request["SortBy"] }),
+                         new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
+        </div>
+    </div>
+
     @* Вкладка сгрупированных задач ------------------------------------------- *@
-    <div id="grouplist" class="tab-pane fade in active">
+    <div id="grouplist" class="tab-pane fade in active" style="display:none;">
         <div class="panel-group" id="accordion">
 
-            <div class="panel panel-default">
+            <div class="panel panel-danger">
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-top"></span>
@@ -41,7 +119,7 @@
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
@@ -53,13 +131,13 @@
                 <div id="today" class="panel-collapse collapse">
                     <div class="panel-body">
                         <div id="today">
-                            @Html.Action("TasksGroupShow", "Tasks", new { mode = "today" })
+
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-info">
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
@@ -71,13 +149,13 @@
                 <div id="tomorrow" class="panel-collapse collapse">
                     <div class="panel-body">
                         <div id="tommorow">
-                            @Html.Action("TasksGroupShow", "Tasks", new { mode = "tomorrow" })
+
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-warning">
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
@@ -89,7 +167,7 @@
                 <div id="nextseven" class="panel-collapse collapse">
                     <div class="panel-body">
                         <div id="nextseven">
-                            @Html.Action("TasksGroupShow", "Tasks", new { mode = "nextseven" })
+
                         </div>
                     </div>
                 </div>
@@ -107,7 +185,7 @@
                 <div id="later" class="panel-collapse collapse">
                     <div class="panel-body">
                         <div id="later">
-                            @Html.Action("TasksGroupShow", "Tasks", new { mode = "later" })
+
                         </div>
                     </div>
                 </div>
@@ -125,13 +203,13 @@
                 <div id="withoutdate" class="panel-collapse collapse">
                     <div class="panel-body">
                         <div id="withoutdate">
-                            @Html.Action("TasksGroupShow", "Tasks", new { mode = "withoutdate" })
+
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-success">
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
@@ -143,7 +221,7 @@
                 <div id="completed" class="panel-collapse collapse">
                     <div class="panel-body">
                         <div id="completed">
-                            @Html.Action("TasksGroupShow", "Tasks", new { mode = "completed" })
+
                         </div>
                     </div>
                 </div>
@@ -151,63 +229,12 @@
         </div>
     </div>
 
-    @* Вкладка со списком всех задач------------------------------------------- *@
-    <div id="alllist" class="tab-pane fade">
-        <p>
-            @Html.ActionLink("Добавить задачу", "TaskCreate")
-        </p>
-        <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.DateOfCreation)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Date)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Subject)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.TaskComplete)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Note)
-                </th>
-                <th></th>
-            </tr>
-
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DateOfCreation)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Date)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Subject)
-                    </td>
-                    <td style="text-align:center;">
-                        @Html.DisplayFor(modelItem => item.TaskComplete)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Note)
-                    </td>
-                    <td style="text-align:center; width:90px; min-width:90px;">
-                        <a class="btn btn-default btn-sm" title="Редактирование задачи" href='@Url.Action("TaskEdit", "Tasks", new { id = item.STaskId })'><span class="glyphicon glyphicon-edit"></span></a>
-                        <a class="btn btn-default btn-sm" title="Удаление задачи" href='@Url.Action("TaskDelete", "Tasks", new { id = item.STaskId })'><span class="glyphicon glyphicon-trash"></span></a>
-                    </td>
-                </tr>
-            }
-
-        </table>
-    </div>
 </div>
-
+<a href="#" class="scrollup1">Наверх</a>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/toparrow.js"></script>
     <script type="text/javascript">
         //Скрипт изменения значка раскрытия панели аккордеона
         $(document).ready(function () {
@@ -220,6 +247,7 @@
 
             //Скрипт сохранения активной панели
             $('body').on('click', 'a[data-toggle="tab"]', function (e) {
+                if ($(this).attr('href') == '#grouplist') $('#grouplist').show();
                 //Сохраняем значение ссылки активной панели
                 localStorage.setItem('TaskTab', $(this).attr('href'));
             });
@@ -227,13 +255,48 @@
             //Открываем сохраненную вкладку если запись существует
             var TaskTab = localStorage.getItem('TaskTab');
             if (TaskTab) {
+                if (TaskTab == '#grouplist') $('#grouplist').show();
                 $('a[href="' + TaskTab + '"]').click();
+            }
+
+
+            //Отображаем значки сортировки
+            if ($('#SortColumn').text() != '') {
+                var sortcolumnname = $('#SortColumn').text();
+                var sortcontrol = $('#' + sortcolumnname);
+                if (sortcontrol != null) {
+                    if (sortcontrol.attr('href').indexOf('desc') != -1) {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-top')
+                    }
+                    else {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-bottom')
+                    }
+                }
             }
 
             $('#loadingImg').hide();
 
         });
-    </script>
 
+        //Отображение средств связи связанных персон
+        $("body").on('show.bs.collapse', '.collapse', function () {
+            AjaxLoadComm($(this).attr('id'));
+        });
+
+        function AjaxLoadComm(_id) {
+            $('#loadingImg').show();
+            $('#' + _id).delay(100).queue(function (nxt) {
+                $('#' + _id + '>div').load('/Tasks/TasksGroupShow', { mode: _id }, function () {
+                    $('#loadingImg').hide();
+                });
+                nxt();
+            });
+        }
+
+
+        $(function () {
+
+        });
+    </script>
 }
 

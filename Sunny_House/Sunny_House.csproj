@@ -240,6 +240,8 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Images\err403.jpg" />
+    <Content Include="Content\Images\gear.gif" />
+    <Content Include="Content\Images\icon_top.png" />
     <Content Include="Content\Images\loader.gif" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\Progress.css" />
@@ -343,6 +345,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\toparrow.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

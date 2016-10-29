@@ -113,13 +113,18 @@
     </div>
 }
 
+<a href="#" class="scrollup1">Наверх</a>
+
 <hr />
 Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
 @Html.PagedListPager(Model, page => Url.Action("ShowPersons", "Home",
                                  new { PersonId = Request.QueryString["PersonId"], SearchString = Request.QueryString["SearchString"], page, SortBy = Request["SortBy"], ReturnUrl = @ViewBag.ReturnUrl }),
                          new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
+
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/toparrow.js"></script>
     <script type="text/javascript">
         $(function () {
             $("[data-autocomplete-source]").each(function () {
@@ -132,6 +137,7 @@
             if ($('#SortColumn').text() != '') {
                 var sortcolumnname = $('#SortColumn').text();
                 var sortcontrol = $('#' + sortcolumnname);
+                alert(sortcontrol.val());
                 if (sortcontrol != null) {
                     if (sortcontrol.attr('href').indexOf('desc') != -1) {
                         $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-top')
@@ -144,4 +150,5 @@
         });
 
     </script>
+
 }

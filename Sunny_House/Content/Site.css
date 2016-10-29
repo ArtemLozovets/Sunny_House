@@ -139,17 +139,33 @@ ul.dropdown-menu {
     border-radius: 10px;
     z-index: 999990;
 }
-#loadingImg > #preloadImg{
-    text-align: center; 
-    position: absolute; 
-    top: 33px; left: 33px; 
-    width: 66px; 
-    height: 66px; 
-    overflow: visible; 
-    display: block;
-}
+
+    #loadingImg > #preloadImg {
+        text-align: center;
+        position: absolute;
+        top: 33px;
+        left: 33px;
+        width: 66px;
+        height: 66px;
+        overflow: visible;
+        display: block;
+    }
 
 /*Уменьшаем размер индикатора сортировки*/
 .glyphicon.glyphicon-triangle-bottom, .glyphicon.glyphicon-triangle-top {
     font-size: 10px;
+}
+
+
+/*Блок стилей для кнопки "НАВЕРХ"*/
+.scrollup1 {
+    width: 40px;
+    height: 40px;
+    opacity: 0.2;
+    position: fixed;
+    bottom: 50px;
+    right: 40px;
+    display: none;
+    text-indent: -9999px;
+    background: url('Images/icon_top.png') no-repeat;
 }
