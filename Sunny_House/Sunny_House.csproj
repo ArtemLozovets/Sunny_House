@@ -454,6 +454,7 @@
     <Content Include="Views\Tasks\TaskEdit.cshtml" />
     <Content Include="Views\Tasks\TasksShow.cshtml" />
     <Content Include="Views\Reserves\PTCRefusing.cshtml" />
+    <Content Include="Views\Tasks\TasksGroupShow.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

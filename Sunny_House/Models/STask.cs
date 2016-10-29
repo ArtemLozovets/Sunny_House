@@ -12,13 +12,13 @@
         public int STaskId { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Дата завершения")]
+        [Display(Name = "Завершение")]
         [DataType(DataType.Date)]
         public DateTime? Date { get; set; }
 
         [Required(ErrorMessage = "Необходимо заполнить поле \"Дата создания\"")]
         [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Дата создания")]
+        [Display(Name = "Создание")]
         [DataType(DataType.Date)]
         public DateTime DateOfCreation { get; set; }
 
@@ -27,7 +27,7 @@
         [Display(Name = "Тема")]
         public string Subject { get; set; }
 
-        [Display(Name = "Выполнено")]
+        [Display(Name = "Вып.")]
         public bool TaskComplete { get; set; }
 
         [StringLength(1000, ErrorMessage = "Должно быть не более 1000 символов")]

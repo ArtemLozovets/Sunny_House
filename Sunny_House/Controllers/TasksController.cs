@@ -156,6 +156,40 @@ namespace Sunny_House.Controllers
             return RedirectToAction("TasksShow");
         }
 
+        public ActionResult TasksGroupShow(string mode)
+        {
+            var _result = db.STask.ToList();
+
+            switch (mode)
+            {
+                case "overdue":
+                    _result = _result.Where(t=>(t.TaskComplete == false) && (t.Date < DateTime.Today)).ToList();
+                    break;
+                case "today":
+                    _result = _result.Where(t => (t.TaskComplete == false) && (t.Date == DateTime.Today)).ToList();
+                    break;
+                case "tomorrow":
+                    _result = _result.Where(t => (t.TaskComplete == false) && (t.Date == DateTime.Today.AddDays(1))).ToList();
+                    break;
+                case "nextseven":
+                    _result = _result.Where(t => (t.TaskComplete == false) && (t.Date >= DateTime.Today.AddDays(1)) && t.Date <= DateTime.Today.AddDays(8)).ToList();
+                    break;
+                case "later":
+                    _result = _result.Where(t => (t.TaskComplete == false) && (t.Date > DateTime.Today.AddDays(8))).ToList();
+                    break;
+                case "withoutdate":
+                    _result = _result.Where(t => (t.TaskComplete == false) && (t.Date == null)).ToList();
+                    break;
+                case "completed":
+                    _result = _result.Where(t => (t.TaskComplete == true)).ToList();
+                    break;
+                default:
+                    break;
+            }
+
+            return PartialView(_result);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

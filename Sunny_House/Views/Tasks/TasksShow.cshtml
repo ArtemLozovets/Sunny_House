@@ -27,14 +27,16 @@
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-top"></span>
-                        <a data-toggle="collapse"  href="#overdue">
+                        <a data-toggle="collapse" href="#overdue">
                             Просроченные
                         </a>
                     </span>
                 </div>
                 <div id="overdue" class="panel-collapse collapse in">
                     <div class="panel-body">
-                        Panel Content
+                        <div id="overdue">
+                            @Html.Action("TasksGroupShow", "Tasks", new { mode = "overdue" })
+                        </div>
                     </div>
                 </div>
             </div>
@@ -43,14 +45,16 @@
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
-                        <a data-toggle="collapse"  href="#today">
+                        <a data-toggle="collapse" href="#today">
                             Сегодня
                         </a>
                     </span>
                 </div>
                 <div id="today" class="panel-collapse collapse">
                     <div class="panel-body">
-                        Panel Content
+                        <div id="today">
+                            @Html.Action("TasksGroupShow", "Tasks", new { mode = "today" })
+                        </div>
                     </div>
                 </div>
             </div>
@@ -59,14 +63,16 @@
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
-                        <a data-toggle="collapse"  href="#tomorrow">
+                        <a data-toggle="collapse" href="#tomorrow">
                             Завтра
                         </a>
                     </span>
                 </div>
                 <div id="tomorrow" class="panel-collapse collapse">
                     <div class="panel-body">
-                        Panel Content
+                        <div id="tommorow">
+                            @Html.Action("TasksGroupShow", "Tasks", new { mode = "tomorrow" })
+                        </div>
                     </div>
                 </div>
             </div>
@@ -75,14 +81,16 @@
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
-                        <a data-toggle="collapse"  href="#nextseven">
+                        <a data-toggle="collapse" href="#nextseven">
                             Следующие 7 дней
                         </a>
                     </span>
                 </div>
                 <div id="nextseven" class="panel-collapse collapse">
                     <div class="panel-body">
-                        Panel Content
+                        <div id="nextseven">
+                            @Html.Action("TasksGroupShow", "Tasks", new { mode = "nextseven" })
+                        </div>
                     </div>
                 </div>
             </div>
@@ -91,14 +99,16 @@
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
-                        <a data-toggle="collapse"  href="#later">
+                        <a data-toggle="collapse" href="#later">
                             Позже
                         </a>
                     </span>
                 </div>
                 <div id="later" class="panel-collapse collapse">
                     <div class="panel-body">
-                        Panel Content
+                        <div id="later">
+                            @Html.Action("TasksGroupShow", "Tasks", new { mode = "later" })
+                        </div>
                     </div>
                 </div>
             </div>
@@ -107,14 +117,16 @@
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
-                        <a data-toggle="collapse"  href="#withoutdate">
+                        <a data-toggle="collapse" href="#withoutdate">
                             Без срока
                         </a>
                     </span>
                 </div>
                 <div id="withoutdate" class="panel-collapse collapse">
                     <div class="panel-body">
-                        Panel Content
+                        <div id="withoutdate">
+                            @Html.Action("TasksGroupShow", "Tasks", new { mode = "withoutdate" })
+                        </div>
                     </div>
                 </div>
             </div>
@@ -123,14 +135,16 @@
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
-                        <a data-toggle="collapse"  href="#completed">
+                        <a data-toggle="collapse" href="#completed">
                             Выполненные
                         </a>
                     </span>
                 </div>
                 <div id="completed" class="panel-collapse collapse">
                     <div class="panel-body">
-                        Panel Content
+                        <div id="completed">
+                            @Html.Action("TasksGroupShow", "Tasks", new { mode = "completed" })
+                        </div>
                     </div>
                 </div>
             </div>
@@ -145,10 +159,10 @@
         <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Date)
+                    @Html.DisplayNameFor(model => model.DateOfCreation)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.DateOfCreation)
+                    @Html.DisplayNameFor(model => model.Date)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Subject)
@@ -166,24 +180,23 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Date)
+                        @Html.DisplayFor(modelItem => item.DateOfCreation)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.DateOfCreation)
+                        @Html.DisplayFor(modelItem => item.Date)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Subject)
                     </td>
-                    <td>
+                    <td style="text-align:center;">
                         @Html.DisplayFor(modelItem => item.TaskComplete)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Note)
                     </td>
-                    <td>
-                        @Html.ActionLink("Редактировать", "TaskEdit", new { id = item.STaskId }) |
-                        @Html.ActionLink("Подробно", "TaskDetails", new { id = item.STaskId }) |
-                        @Html.ActionLink("Удалить", "TaskDelete", new { id = item.STaskId })
+                    <td style="text-align:center; width:90px; min-width:90px;">
+                        <a class="btn btn-default btn-sm" title="Редактирование задачи" href='@Url.Action("TaskEdit", "Tasks", new { id = item.STaskId })'><span class="glyphicon glyphicon-edit"></span></a>
+                        <a class="btn btn-default btn-sm" title="Удаление задачи" href='@Url.Action("TaskDelete", "Tasks", new { id = item.STaskId })'><span class="glyphicon glyphicon-trash"></span></a>
                     </td>
                 </tr>
             }
