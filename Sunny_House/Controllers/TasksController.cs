@@ -25,7 +25,7 @@ namespace Sunny_House.Controllers
         }
         
         // GET: Tasks
-        public ActionResult TasksShowPartial(DateTime? SearchDateOfCreation, DateTime? SearchDate, string SearchString, int? page, string SortBy)
+        public ActionResult TasksShowPartial(DateTime? SearchDateOfCreation, DateTime? SearchDate, string SearchString, bool? TaskComplete, int? page, string SortBy)
         {
 
             ViewBag.SortDateOfCreation = SortBy == "DateOfCreation" ? "DateOfCreation desc" : "DateOfCreation";
@@ -33,11 +33,13 @@ namespace Sunny_House.Controllers
             ViewBag.SortSubject = SortBy == "Subject" ? "Subject desc" : "Subject";
             ViewBag.SortTaskComplete = SortBy == "TaskComplete" ? "TaskComplete desc" : "TaskComplete";
             ViewBag.SortNote = SortBy == "Note" ? "Note desc" : "Note";
-
+        
+   
             var _tasks = (from task in db.STask 
                           where(task.DateOfCreation == SearchDateOfCreation || SearchDateOfCreation==null) 
                           && (task.Date == SearchDate || SearchDate == null )
                           && ((task.Subject.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || (task.Note.Contains(SearchString) || string.IsNullOrEmpty(SearchString)))
+                          && (task.TaskComplete == TaskComplete || TaskComplete == null)
                           select task);
 
             switch (SortBy)
@@ -86,7 +88,7 @@ namespace Sunny_House.Controllers
                     break;
             }
 
-            int pageSize = 4;
+            int pageSize = 50;
             int pageNumber = (page ?? 1);
 
             return PartialView(_tasks.ToList().ToPagedList(pageNumber, pageSize));
@@ -242,7 +244,7 @@ namespace Sunny_House.Controllers
                     _result = _result.Where(t => (t.TaskComplete == false) && (t.Date == DateTime.Today.AddDays(1))).ToList();
                     break;
                 case "nextseven":
-                    _result = _result.Where(t => (t.TaskComplete == false) && (t.Date >= DateTime.Today.AddDays(1)) && t.Date <= DateTime.Today.AddDays(8)).ToList();
+                    _result = _result.Where(t => (t.TaskComplete == false) && (t.Date > DateTime.Today.AddDays(1)) && t.Date <= DateTime.Today.AddDays(8)).ToList();
                     break;
                 case "later":
                     _result = _result.Where(t => (t.TaskComplete == false) && (t.Date > DateTime.Today.AddDays(8))).ToList();

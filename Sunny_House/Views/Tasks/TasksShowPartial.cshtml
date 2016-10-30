@@ -12,7 +12,8 @@
            SortBy = ViewBag.SortDateOfCreation,
            SearchString = Request["SearchString"],
            SearchDateOfCreation = Request["SearchDateOfCreation"],
-           SearchDate = Request["SearchDate"]
+           SearchDate = Request["SearchDate"],
+           TaskComplete = Request["TaskComplete"]
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "alltaskslist" }, new { @id = "DateOfCreation" })
             <i id="DateOfCreationArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -23,7 +24,8 @@
            SortBy = ViewBag.SortDate,
            SearchString = Request["SearchString"],
            SearchDateOfCreation = Request["SearchDateOfCreation"],
-           SearchDate = Request["SearchDate"]
+           SearchDate = Request["SearchDate"],
+           TaskComplete = Request["TaskComplete"]
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "alltaskslist" }, new { @id = "Date" })
             <i id="DateArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -33,7 +35,8 @@
            SortBy = ViewBag.SortSubject,
            SearchString = Request["SearchString"],
            SearchDateOfCreation = Request["SearchDateOfCreation"],
-           SearchDate = Request["SearchDate"]
+           SearchDate = Request["SearchDate"],
+           TaskComplete = Request["TaskComplete"]
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "alltaskslist" }, new { @id = "Subject" })
             <i id="SubjectArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -43,7 +46,8 @@
            SortBy = ViewBag.SortTaskComplete,
            SearchString = Request["SearchString"],
            SearchDateOfCreation = Request["SearchDateOfCreation"],
-           SearchDate = Request["SearchDate"]
+           SearchDate = Request["SearchDate"],
+            TaskComplete = Request["TaskComplete"]
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "alltaskslist" }, new { @id = "TaskComplete" })
             <i id="TaskCompleteArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -53,7 +57,8 @@
            SortBy = ViewBag.SortNote,
            SearchString = Request["SearchString"],
            SearchDateOfCreation = Request["SearchDateOfCreation"],
-           SearchDate = Request["SearchDate"]
+           SearchDate = Request["SearchDate"],
+           TaskComplete = Request["TaskComplete"]
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "alltaskslist" }, new { @id = "Note" })
             <i id="NoteArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -103,6 +108,7 @@
                                      SearchString = Request["SearchString"],
                                      SearchDateOfCreation = Request["SearchDateOfCreation"],
                                      SearchDate = Request["SearchDate"],
+                                     TaskComplete = Request["TaskComplete"],
                                      SortBy = Request["SortBy"],
                                      page,
                                  }),
