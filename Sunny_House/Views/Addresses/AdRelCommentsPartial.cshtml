@@ -11,7 +11,7 @@
             @Html.DisplayNameFor(model => model.Rating)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Signature)
+            @Html.DisplayNameFor(model => model.Person.FirstName)
         </th>
     </tr>
 
@@ -37,7 +37,7 @@
             @Html.ActionLink(@item.Rating, "CommentShow", "Comments", new { CommentId = @item.CommentId }, null)
         </td>
         <td>
-            @Html.ActionLink(@item.Signature, "CommentShow", "Comments", new { CommentId = @item.CommentId }, null)
+            @Html.ActionLink(@item.Person.FirstName, "CommentShow", "Comments", new { CommentId = @item.CommentId }, null)
         </td>
    </tr>
 }

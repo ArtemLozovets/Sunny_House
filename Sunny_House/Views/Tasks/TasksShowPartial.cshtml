@@ -1,0 +1,112 @@
+﻿@model PagedList.IPagedList<Sunny_House.Models.STask>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<label id="SortColumn" hidden>@ViewData["SortColumn"]</label>
+
+<table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+    <tr>
+        <th>
+            @Ajax.ActionLink("Создание", "TasksShowPartial", new
+       {
+           SortBy = ViewBag.SortDateOfCreation,
+           SearchString = Request["SearchString"],
+           SearchDateOfCreation = Request["SearchDateOfCreation"],
+           SearchDate = Request["SearchDate"]
+       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "alltaskslist" }, new { @id = "DateOfCreation" })
+            <i id="DateOfCreationArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
+        </th>
+
+        <th>
+            @Ajax.ActionLink("Завершение", "TasksShowPartial", new
+       {
+           SortBy = ViewBag.SortDate,
+           SearchString = Request["SearchString"],
+           SearchDateOfCreation = Request["SearchDateOfCreation"],
+           SearchDate = Request["SearchDate"]
+       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "alltaskslist" }, new { @id = "Date" })
+            <i id="DateArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
+        </th>
+        <th>
+            @Ajax.ActionLink("Тема", "TasksShowPartial", new
+       {
+           SortBy = ViewBag.SortSubject,
+           SearchString = Request["SearchString"],
+           SearchDateOfCreation = Request["SearchDateOfCreation"],
+           SearchDate = Request["SearchDate"]
+       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "alltaskslist" }, new { @id = "Subject" })
+            <i id="SubjectArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
+        </th>
+        <th>
+            @Ajax.ActionLink("Вып.", "TasksShowPartial", new
+       {
+           SortBy = ViewBag.SortTaskComplete,
+           SearchString = Request["SearchString"],
+           SearchDateOfCreation = Request["SearchDateOfCreation"],
+           SearchDate = Request["SearchDate"]
+       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "alltaskslist" }, new { @id = "TaskComplete" })
+            <i id="TaskCompleteArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
+        </th>
+        <th>
+            @Ajax.ActionLink("Описание", "TasksShowPartial", new
+       {
+           SortBy = ViewBag.SortNote,
+           SearchString = Request["SearchString"],
+           SearchDateOfCreation = Request["SearchDateOfCreation"],
+           SearchDate = Request["SearchDate"]
+       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "alltaskslist" }, new { @id = "Note" })
+            <i id="NoteArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
+        </th>
+        <th></th>
+    </tr>
+
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="6">
+                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+            </td>
+        </tr>
+    }
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfCreation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Subject)
+            </td>
+            <td style="text-align:center;">
+                @Html.DisplayFor(modelItem => item.TaskComplete)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            <td style="text-align:center; width:90px; min-width:90px;">
+                <a class="btn btn-default btn-sm" title="Редактирование задачи" href='@Url.Action("TaskEdit", "Tasks", new { id = item.STaskId })'><span class="glyphicon glyphicon-edit"></span></a>
+                <a class="btn btn-default btn-sm" title="Удаление задачи" href='@Url.Action("TaskDelete", "Tasks", new { id = item.STaskId })'><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+        </tr>
+    }
+
+</table>
+<hr />
+<div>
+    Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+    @Html.PagedListPager(Model, page => Url.Action("TasksShowPartial", "Tasks",
+                                 new
+                                 {
+                                     SearchString = Request["SearchString"],
+                                     SearchDateOfCreation = Request["SearchDateOfCreation"],
+                                     SearchDate = Request["SearchDate"],
+                                     SortBy = Request["SortBy"],
+                                     page,
+                                 }),
+                                          PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
+                                                                                             new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "alltaskslist" }))
+
+</div>

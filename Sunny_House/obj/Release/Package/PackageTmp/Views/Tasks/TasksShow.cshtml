@@ -1,6 +1,4 @@
-﻿@model IEnumerable<Sunny_House.Models.STask>
-
-@{
+﻿@{
     ViewBag.Title = "Задачи";
 }
 
@@ -10,6 +8,8 @@
     </div>
 </div>
 
+
+
 <h2>Список задач</h2>
 
 <ul class="nav nav-tabs">
@@ -17,72 +17,80 @@
     <li class="active"><a data-toggle="tab" href="#grouplist"><strong>Задачи по срокам</strong></a></li>
     <li><a data-toggle="tab" href="#alllist"><strong>Все задачи</strong></a></li>
 </ul>
-<div class="tab-content">
+<div class="tab-content" style="min-width:644px;">
 
     @* Вкладка сгрупированных задач ------------------------------------------- *@
     <div id="grouplist" class="tab-pane fade in active">
         <div class="panel-group" id="accordion">
 
-            <div class="panel panel-default">
+            <div class="panel panel-danger">
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-top"></span>
-                        <a data-toggle="collapse" data-parent="#accordion" href="#overdue">
+                        <a data-toggle="collapse" href="#overdue">
                             Просроченные
                         </a>
                     </span>
                 </div>
                 <div id="overdue" class="panel-collapse collapse in">
                     <div class="panel-body">
-                        Panel Content
+                        <div id="overdue">
+                            @Html.Action("TasksGroupShow", "Tasks", new { mode = "overdue" })
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
-                        <a data-toggle="collapse" data-parent="#accordion" href="#today">
+                        <a data-toggle="collapse" href="#today">
                             Сегодня
                         </a>
                     </span>
                 </div>
                 <div id="today" class="panel-collapse collapse">
                     <div class="panel-body">
-                        Panel Content
+                        <div id="today">
+
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-info">
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
-                        <a data-toggle="collapse" data-parent="#accordion" href="#tomorrow">
+                        <a data-toggle="collapse" href="#tomorrow">
                             Завтра
                         </a>
                     </span>
                 </div>
                 <div id="tomorrow" class="panel-collapse collapse">
                     <div class="panel-body">
-                        Panel Content
+                        <div id="tommorow">
+
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-warning">
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
-                        <a data-toggle="collapse" data-parent="#accordion" href="#nextseven">
+                        <a data-toggle="collapse" href="#nextseven">
                             Следующие 7 дней
                         </a>
                     </span>
                 </div>
                 <div id="nextseven" class="panel-collapse collapse">
                     <div class="panel-body">
-                        Panel Content
+                        <div id="nextseven">
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -91,14 +99,16 @@
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
-                        <a data-toggle="collapse" data-parent="#accordion" href="#later">
+                        <a data-toggle="collapse" href="#later">
                             Позже
                         </a>
                     </span>
                 </div>
                 <div id="later" class="panel-collapse collapse">
                     <div class="panel-body">
-                        Panel Content
+                        <div id="later">
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -107,30 +117,34 @@
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
-                        <a data-toggle="collapse" data-parent="#accordion" href="#withoutdate">
+                        <a data-toggle="collapse" href="#withoutdate">
                             Без срока
                         </a>
                     </span>
                 </div>
                 <div id="withoutdate" class="panel-collapse collapse">
                     <div class="panel-body">
-                        Panel Content
+                        <div id="withoutdate">
+
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-success">
                 <div class="panel-heading">
                     <span class="panel-title">
                         <span id="col1" class="glyphicon glyphicon-triangle-bottom"></span>
-                        <a data-toggle="collapse" data-parent="#accordion" href="#completed">
+                        <a data-toggle="collapse" href="#completed">
                             Выполненные
                         </a>
                     </span>
                 </div>
                 <div id="completed" class="panel-collapse collapse">
                     <div class="panel-body">
-                        Panel Content
+                        <div id="completed">
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -139,65 +153,124 @@
 
     @* Вкладка со списком всех задач------------------------------------------- *@
     <div id="alllist" class="tab-pane fade">
-        <p>
-            @Html.ActionLink("Добавить задачу", "TaskCreate")
-        </p>
-        <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Date)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DateOfCreation)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Subject)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.TaskComplete)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Note)
-                </th>
-                <th></th>
-            </tr>
+        <div class="row">
+            <div class="col-md-6">
+                <p class="text-success"> @TempData["MessageOk"]</p>
+                <p class="text-danger">  @TempData["MessageError"]</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="row" style="margin:10px 0;">
+                @using (Ajax.BeginForm("TasksShowPArtial", "Tasks", new AjaxOptions { UpdateTargetId = "alltaskslist" }, new { @id = "tasksform" }))
+                {
+                    <div class="pull-left" style="margin-left:10px;">
+                        <a class="btn btn-default" style="margin:2px 2px;" title="Добавить задачу" href='@Url.Action("TaskCreate", "Tasks")'><span class="glyphicon glyphicon-tasks"> Добавить задачу</span></a>@Html.Raw("&nbsp;")
+                        <a class="btn btn-default" title="Обновить" style="margin:2px 2px;" href='#' id="tasksfilterclear"><span class="glyphicon glyphicon-refresh"></span></a>
+                    </div>
+                    <div class="pull-right" style="margin-right:10px;">
+                        <div class="input-group" style="width:510px;">
 
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Date)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DateOfCreation)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Subject)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TaskComplete)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Note)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Редактировать", "TaskEdit", new { id = item.STaskId }) |
-                        @Html.ActionLink("Подробно", "TaskDetails", new { id = item.STaskId }) |
-                        @Html.ActionLink("Удалить", "TaskDelete", new { id = item.STaskId })
-                    </td>
-                </tr>
-            }
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span></span>
+                            @Html.TextBox("SearchDateOfCreation", null,
+                new
+                {
+                    @style = "width:110px;",
+                    @type = "date",
+                    @class = "form-control ",
+                    @placeholder = "Создание",
+                    @title = "Дата создания задачи",
+                    @data_val = "true",
+                    @data_val_date = "Сообщение об ошибке"
+                })
+                            <span class="input-group-addon" style="border-left: 0; border-right: 0;"><span class="glyphicon glyphicon-filter"></span></span>
 
-        </table>
+                            @Html.TextBox("SearchDate", null,
+                new
+                {
+                    @style = "width:110px;",
+                    @type = "date",
+                    @class = "form-control ",
+                    @placeholder = "Завершение",
+                    @title = "Дата завершения задачи",
+                    @data_val = "true",
+                    @data_val_date = "Сообщение об ошибке"
+                })
+                            <span class="input-group-addon" style="border-left: 0; border-right: 0;"><span class="glyphicon glyphicon-filter"></span></span>
+
+                            @Html.TextBox("SearchString", null,
+                new
+                {
+                    @style = "width:210px;",
+                    @type = "text",
+                    @class = "form-control ",
+                    @placeholder = "Тема, описание...",
+                    @title = "Тема задачи, описание задачи",
+                })
+
+                            <div class="input-group-btn">
+                                <button type="submit" title="Искать" class="btn btn-toolbar groupbtn" id="applyfilter">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div id="alltaskslist">
+                @Html.Action("TasksShowPartial", "Tasks")
+            </div>
+        </div>
     </div>
-</div>
 
+</div>
+<a href="#" class="scrollup1">Наверх</a>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/toparrow.js"></script>
     <script type="text/javascript">
         //Скрипт изменения значка раскрытия панели аккордеона
         $(document).ready(function () {
+
+            $("input[type='date']").datepicker().each(function () {
+                this.setAttribute("type", "text");
+            });
+
+            $.datepicker.regional['ru'] = {
+                closeText: 'Закрыть',
+                prevText: '<<',
+                nextText: '>>',
+                currentText: 'Сегодня',
+                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+                'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
+                'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+                dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
+                dayNamesShort: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
+                dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+                weekHeader: 'Не',
+                dateFormat: 'dd/mm/yy',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+
+            $.datepicker.setDefaults($.datepicker.regional['ru']);
+
+            $.validator.methods.date = function (value, element) {
+                if (value) {
+                    try {
+                        $.datepicker.parseDate('dd/mm/yy', value);
+                    } catch (ex) {
+                        return false;
+                    }
+                }
+                return true;
+            };
+
+
             $(".panel-collapse").on("hide.bs.collapse", function () {
                 $(this).parent().find(".panel-title span").removeClass("glyphicon glyphicon-triangle-top").addClass("glyphicon glyphicon-triangle-bottom");
             });
@@ -220,7 +293,50 @@
             $('#loadingImg').hide();
 
         });
+
+        //Скрипт очистки полей формы и перезагрузки страницы
+        $('body').on('click', '#tasksfilterclear', function (elem) {
+            elem.prevent
+            $('#tasksform').trigger('reset');
+            $('#tasksform').submit();
+        });
+
+        //Отображение задач по группам
+        $("body").on('show.bs.collapse', '.collapse', function () {
+            AjaxLoadTasks($(this).attr('id'));
+        });
+
+        function AjaxLoadTasks(_id) {
+            $('#loadingImg').show();
+            $('#' + _id).delay(100).queue(function (nxt) {
+                $('#' + _id + '>div').load('/Tasks/TasksGroupShow', { mode: _id }, function () {
+                    $('#loadingImg').hide();
+                });
+                nxt();
+            });
+        }
+
     </script>
 
+    <script type="text/javascript">
+        $(document).ajaxComplete(function () {
+
+            $('i[id$="Arrow"]').css("visibility", "hidden");
+
+            //Отображаем значки сортировки
+            if ($('#SortColumn').text() != '') {
+                var sortcolumnname = $('#SortColumn').text();
+                var sortcontrol = $('#' + sortcolumnname);
+                if (sortcontrol != null) {
+                    if (sortcontrol.attr('href').indexOf('desc') != -1) {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-top').css("visibility", "visible")
+                    }
+                    else {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-bottom').css("visibility", "visible")
+                    }
+                }
+            }
+        });
+    </script>
 }
 

@@ -19,7 +19,13 @@ namespace Sunny_House.Controllers
         private SunnyModel db = new SunnyModel();
 
         // GET: Tasks
-        public ActionResult TasksShow(int? page, string SortBy)
+        public ActionResult TasksShow()
+        {
+            return View();
+        }
+        
+        // GET: Tasks
+        public ActionResult TasksShowPartial(DateTime? SearchDateOfCreation, DateTime? SearchDate, string SearchString, int? page, string SortBy)
         {
 
             ViewBag.SortDateOfCreation = SortBy == "DateOfCreation" ? "DateOfCreation desc" : "DateOfCreation";
@@ -28,7 +34,11 @@ namespace Sunny_House.Controllers
             ViewBag.SortTaskComplete = SortBy == "TaskComplete" ? "TaskComplete desc" : "TaskComplete";
             ViewBag.SortNote = SortBy == "Note" ? "Note desc" : "Note";
 
-            var _tasks = from task in db.STask select task;
+            var _tasks = (from task in db.STask 
+                          where(task.DateOfCreation == SearchDateOfCreation || SearchDateOfCreation==null) 
+                          && (task.Date == SearchDate || SearchDate == null )
+                          && ((task.Subject.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || (task.Note.Contains(SearchString) || string.IsNullOrEmpty(SearchString)))
+                          select task);
 
             switch (SortBy)
             {
@@ -79,7 +89,7 @@ namespace Sunny_House.Controllers
             int pageSize = 4;
             int pageNumber = (page ?? 1);
 
-            return View(_tasks.ToList().ToPagedList(pageNumber, pageSize));
+            return PartialView(_tasks.ToList().ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Tasks/Details/5
