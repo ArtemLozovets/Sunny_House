@@ -4,7 +4,7 @@
     ViewBag.Title = "Отзывы";
 }
 
-<h2>@ViewBag.Title</h2>
+<h2><i class="fa fa-commenting fa-1x"></i> @ViewBag.Title</h2>
 
 <p>
     <a class="btn btn-default" style="margin:2px 2px;" title="Добавить отзыв" href='@Url.Action("CommentCreate", "Comments", new { @PersonId = Request.Params["PersonId"] })'><span class="glyphicon glyphicon-comment"> Добавить отзыв</span></a>
