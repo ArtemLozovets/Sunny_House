@@ -87,11 +87,11 @@ namespace Sunny_House.Controllers
                     break;
 
                 case "Archive":
-                    _events = _events.Where(e => e.EndTime <= DateTime.Now);
+                    _events = _events.Where(e => e.EndTime < DateTime.Today);
                     break;
 
                 default:
-                    _events = _events.Where(e => e.EndTime > DateTime.Now);
+                    _events = _events.Where(e => e.EndTime >= DateTime.Today);
                     break;
             }
 

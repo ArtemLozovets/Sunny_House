@@ -137,7 +137,6 @@
             if ($('#SortColumn').text() != '') {
                 var sortcolumnname = $('#SortColumn').text();
                 var sortcontrol = $('#' + sortcolumnname);
-                alert(sortcontrol.val());
                 if (sortcontrol != null) {
                     if (sortcontrol.attr('href').indexOf('desc') != -1) {
                         $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-top')
