@@ -33,7 +33,7 @@ namespace Sunny_House.Models
         public int? AboutPersonId { get; set; }
 
         [Display(Name = "О мероприятии")]
-        public int EventId { get; set; }
+        public int? EventId { get; set; }
 
         [Display(Name = "О занятии")]
         public int? ExerciseId { get; set; }
@@ -42,7 +42,7 @@ namespace Sunny_House.Models
         public int? AddressId { get; set; }
 
         [Display(Name = "Подпись")]
-        public int SignPersonId { get; set; }
+        public int? SignPersonId { get; set; }
 
         public virtual Address Address { get; set; }
 

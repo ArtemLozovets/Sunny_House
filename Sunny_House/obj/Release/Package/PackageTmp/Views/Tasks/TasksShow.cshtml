@@ -9,8 +9,7 @@
 </div>
 
 
-
-<h2>Список задач</h2>
+<h2><i class="fa fa-tasks fa-1x"></i> Список задач</h2>
 
 <ul class="nav nav-tabs">
     @* Вкладки ---------------------------------------------------------------- *@
@@ -195,12 +194,13 @@
                     @data_val = "true",
                     @data_val_date = "Сообщение об ошибке"
                 })
-                            <span class="input-group-addon" style="border-left: 0; border-right: 0;"><span class="glyphicon glyphicon-filter"></span></span>
-
+                            <span class="input-group-addon" style="border-left: 0; border-right: 0;">
+                                <input type="checkbox" id="TaskComplete" name="TaskComplete" value="true" title="Выполнена" />
+                            </span>
                             @Html.TextBox("SearchString", null,
                 new
                 {
-                    @style = "width:210px;",
+                    @style = "width:180px;",
                     @type = "text",
                     @class = "form-control ",
                     @placeholder = "Тема, описание...",
@@ -224,6 +224,7 @@
 
 </div>
 <a href="#" class="scrollup1">Наверх</a>
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

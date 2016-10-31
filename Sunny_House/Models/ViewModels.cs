@@ -261,19 +261,19 @@ namespace Sunny_House.Models
         public string Rating { get; set; }
 
         [Display(Name = "О персоне")]
-        public int AboutPersonId { get; set; }
+        public int? AboutPersonId { get; set; }
 
         [Display(Name = "О мероприятии")]
-        public int EventId { get; set; }
+        public int? EventId { get; set; }
 
         [Display(Name = "О занятии")]
-        public int ExerciseId { get; set; }
+        public int? ExerciseId { get; set; }
 
         [Display(Name = "О месте")]
-        public int AddressId { get; set; }
+        public int? AddressId { get; set; }
 
         [Display(Name = "Подпись")]
-        public int SignPersonId { get; set; }
+        public int? SignPersonId { get; set; }
 
         [Display(Name = "Мероприятие")]
         public string EventName { get; set; }

@@ -599,14 +599,13 @@ namespace Sunny_House.Controllers
             int _sourceid = db.CommentSources.First(s => s.SourceName.ToUpper() == (string)"Бронирование".ToUpper()).SourceId;
             
             CommentViewModel _comment = new CommentViewModel();
-            _comment.EventId = EventId ?? 1;
+            _comment.EventId = EventId ?? null;
             _comment.SourceId = _sourceid;
             _comment.Date = DateTime.Today;
             _comment.SourceName = "Бронирование";
             _comment.EventName = db.Events.FirstOrDefault(e => e.EventId == EventId).EventName.ToString();
+            _comment.SignPersonId = ClientId ?? null;
         
-
-
             List<RelationViewModel> _rellist = new List<RelationViewModel>();
 
             var _person = (from person in db.Persons
