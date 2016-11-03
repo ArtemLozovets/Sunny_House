@@ -232,7 +232,7 @@ namespace Sunny_House.Models
 
             modelBuilder.Entity<Event>()
                 .HasMany(e => e.Comment)
-                .WithRequired(e => e.Event)
+                .WithOptional(e => e.Event)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Event>()
@@ -276,7 +276,7 @@ namespace Sunny_House.Models
 
             modelBuilder.Entity<Person>()
                 .HasMany(e => e.Comment1)
-                .WithRequired(e => e.Person1)
+                .WithOptional(e => e.Person1)
                 .HasForeignKey(e => e.SignPersonId)
                 .WillCascadeOnDelete(false);
 

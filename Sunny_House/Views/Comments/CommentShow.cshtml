@@ -11,25 +11,22 @@
     @Html.Raw("&nbsp;")
     <a class="btn btn-default" title="Обновить" style="margin:2px 2px ;" href='@Url.Action("CommentShow", "Comments")'><span class="glyphicon glyphicon-refresh"></span></a>
 </p>
-<table class="table">
+<table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Address.Alias)
+            Источник
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.CommentSource.SourceName)
+            Место
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Event.EventName)
+            Мероприятие
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Exercise.Subject)
+            Занятие
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Person.FirstName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Person1.FirstName)
+            О персоне
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Date)
@@ -40,6 +37,9 @@
         <th>
             @Html.DisplayNameFor(model => model.Rating)
         </th>
+        <th>
+            Подпись
+        </th>
         <th></th>
     </tr>
 
@@ -47,10 +47,10 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Address.Alias)
+                @Html.DisplayFor(modelItem => item.CommentSource.SourceName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CommentSource.SourceName)
+                @Html.DisplayFor(modelItem => item.Address.Alias)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Event.EventName)
@@ -62,9 +62,6 @@
                 @Html.DisplayFor(modelItem => item.Person.FirstName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Person1.FirstName)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
             <td>
@@ -74,11 +71,21 @@
                 @Html.DisplayFor(modelItem => item.Rating)
             </td>
             <td>
-                @Html.ActionLink("Edit", "CommentEdit", new { id = item.CommentId }) |
-                @Html.ActionLink("Details", "CommentDetails", new { id = item.CommentId }) |
-                @Html.ActionLink("Delete", "CommentDelete", new { id = item.CommentId })
+                @Html.DisplayFor(modelItem => item.Person1.FirstName)
+            </td>
+            <td style="text-align:center; width:136px; min-width:134px;">
+                <a class="btn btn-default btn-sm" title="Подробная информация" href='@Url.Action("CommentDetails", "Comments", new { id = item.CommentId })'><span class="glyphicon glyphicon-info-sign"></span></a>
+                <a class="btn btn-default btn-sm" title="Редактирование отзыва" href='@Url.Action("CommentEdit", "Comments", new { id = item.CommentId })'><span class="glyphicon glyphicon-edit"></span></a>
+                <a class="btn btn-default btn-sm" title="Удаление отзыва" href='@Url.Action("CommentDelete", "Comments", new { id = item.CommentId })'><span class="glyphicon glyphicon-trash"></span></a>
             </td>
         </tr>
     }
 
 </table>
+
+<a href="#" class="scrollup1">Наверх</a>
+
+
+@section Scripts {
+       <script src="~/Scripts/toparrow.js"></script>
+}
