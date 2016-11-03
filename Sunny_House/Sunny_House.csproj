@@ -241,6 +241,9 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\fullcalendar.css" />
+    <Content Include="Content\fullcalendar.min.css" />
+    <Content Include="Content\fullcalendar.print.css" />
     <Content Include="Content\Images\err403.jpg" />
     <Content Include="Content\Images\gear.gif" />
     <Content Include="Content\Images\icon_top.png" />
@@ -327,6 +330,31 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\circle-progress.min.js" />
+    <Content Include="Scripts\FullCalendar\fullcalendar.js" />
+    <Content Include="Scripts\FullCalendar\fullcalendar.min.js" />
+    <Content Include="Scripts\FullCalendar\gcal.js" />
+    <Content Include="Scripts\FullCalendar\lib\cupertino\images\ui-bg_diagonals-thick_90_eeeeee_40x40.png" />
+    <Content Include="Scripts\FullCalendar\lib\cupertino\images\ui-bg_glass_100_e4f1fb_1x400.png" />
+    <Content Include="Scripts\FullCalendar\lib\cupertino\images\ui-bg_glass_50_3baae3_1x400.png" />
+    <Content Include="Scripts\FullCalendar\lib\cupertino\images\ui-bg_glass_80_d7ebf9_1x400.png" />
+    <Content Include="Scripts\FullCalendar\lib\cupertino\images\ui-bg_highlight-hard_100_f2f5f7_1x100.png" />
+    <Content Include="Scripts\FullCalendar\lib\cupertino\images\ui-bg_highlight-hard_70_000000_1x100.png" />
+    <Content Include="Scripts\FullCalendar\lib\cupertino\images\ui-bg_highlight-soft_100_deedf7_1x100.png" />
+    <Content Include="Scripts\FullCalendar\lib\cupertino\images\ui-bg_highlight-soft_25_ffef8f_1x100.png" />
+    <Content Include="Scripts\FullCalendar\lib\cupertino\images\ui-icons_2694e8_256x240.png" />
+    <Content Include="Scripts\FullCalendar\lib\cupertino\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Scripts\FullCalendar\lib\cupertino\images\ui-icons_3d80b3_256x240.png" />
+    <Content Include="Scripts\FullCalendar\lib\cupertino\images\ui-icons_72a7cf_256x240.png" />
+    <Content Include="Scripts\FullCalendar\lib\cupertino\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Scripts\FullCalendar\lib\cupertino\jquery-ui.min.css" />
+    <Content Include="Scripts\FullCalendar\lib\jquery-ui.min.js" />
+    <Content Include="Scripts\FullCalendar\lib\jquery.min.js" />
+    <Content Include="Scripts\FullCalendar\lib\moment.min.js" />
+    <Content Include="Scripts\FullCalendar\moment-with-locales.js" />
+    <Content Include="Scripts\FullCalendar\moment-with-locales.min.js" />
+    <Content Include="Scripts\FullCalendar\moment.js" />
+    <Content Include="Scripts\FullCalendar\moment.min.js" />
+    <Content Include="Scripts\FullCalendar\ru.js" />
     <Content Include="Scripts\jquery-3.1.0.js" />
     <Content Include="Scripts\jquery-3.1.0.min.js" />
     <Content Include="Scripts\jquery-3.1.0.slim.js" />
@@ -467,6 +495,7 @@
     <Content Include="Views\Reserves\PTCRefusing.cshtml" />
     <Content Include="Views\Tasks\TasksGroupShow.cshtml" />
     <Content Include="Views\Tasks\TasksShowPartial.cshtml" />
+    <Content Include="Views\Exercises\CalendarShow.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
