@@ -2,6 +2,7 @@
 @model PagedList.IPagedList<Sunny_House.Models.Event>
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 <link href="~/Content/Progress.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
 
 
 @{
@@ -49,7 +50,7 @@
                 new
                 {
                     @style = "width:100px;",
-                    @type = "date",
+                    @type = "text",
                     @class = "form-control ",
                     @placeholder = "Начало",
                     @title = "Дата начала мероприятия",
@@ -62,7 +63,7 @@
                 new
                 {
                     @style = "width:100px;",
-                    @type = "date",
+                    @type = "text",
                     @class = "form-control ",
                     @placeholder = "Окончание",
                     @title = "Дата окончания мероприятия",
@@ -247,7 +248,6 @@
                              }),
                          new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
 
-
         @section Scripts {
             @Scripts.Render("~/bundles/jqueryval")
             <script src="~/Scripts/toparrow.js"></script>
@@ -268,42 +268,6 @@
 
                     $("#SearchString").focus(); // Фокус на полі фільтра при відкритті сторінки.
 
-                    $("input[type='date']").datepicker().each(function () {
-                        this.setAttribute("type", "text");
-                    });
-
-                    $.datepicker.regional['ru'] = {
-                        closeText: 'Закрыть',
-                        prevText: '<<',
-                        nextText: '>>',
-                        currentText: 'Сегодня',
-                        monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-                        'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-                        monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
-                        'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
-                        dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
-                        dayNamesShort: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
-                        dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-                        weekHeader: 'Не',
-                        dateFormat: 'dd/mm/yy',
-                        firstDay: 1,
-                        isRTL: false,
-                        showMonthAfterYear: false,
-                        yearSuffix: ''
-                    };
-
-                    $.datepicker.setDefaults($.datepicker.regional['ru']);
-
-                    $.validator.methods.date = function (value, element) {
-                        if (value) {
-                            try {
-                                $.datepicker.parseDate('dd/mm/yy', value);
-                            } catch (ex) {
-                                return false;
-                            }
-                        }
-                        return true;
-                    };
 
                     if ($('#SortColumn').text() != '') {
                         var sortcolumnname = $('#SortColumn').text();
@@ -322,4 +286,46 @@
 
             </script>
 
+            @*Блок скриптов для работы с DateTimePicker*@
+            <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
+            <script type="text/javascript">
+
+                $.datetimepicker.setLocale('ru');
+
+                // <![CDATA[
+                jQuery(function () {
+                    jQuery('#SearchStartDate').datetimepicker({
+                        format: 'd/m/Y',
+                        formatDate: 'd/m/Y',
+                        onShow: function (ct) {
+                            this.setOptions({
+                                maxDate: jQuery('#SearchEndDate').val() ? jQuery('#SearchEndDate').val() : false
+                            })
+                        },
+                        timepicker: false
+                    });
+                    jQuery('#SearchEndDate').datetimepicker({
+                        format: 'd/m/Y',
+                        formatDate: 'd/m/Y',
+                        onShow: function (ct) {
+                            this.setOptions({
+                                minDate: jQuery('#SearchStartDate').val() ? jQuery('#SearchStartDate').val() : false
+                            })
+                        },
+                        timepicker: false
+                    });
+                });
+                // ]]>
+
+                $.validator.methods.date = function (value, element) {
+                    if (value) {
+                        try {
+                            $.datepicker.parseDate('dd/mm/yy', value);
+                        } catch (ex) {
+                            return false;
+                        }
+                    }
+                    return true;
+                };
+            </script>
         }

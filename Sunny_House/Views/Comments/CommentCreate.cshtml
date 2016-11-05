@@ -3,13 +3,14 @@
 @{
     ViewBag.Title = "Добавить";
 }
+<link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
 
 <h2><i class="fa fa-commenting fa-1x"></i> Отзывы</h2>
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Добавить отзыв</h4>
         <hr />
@@ -25,7 +26,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @type = "text", @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -100,46 +101,31 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @*Блок скриптов для работы с DateTimePicker*@
+    <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
     <script type="text/javascript">
-        $(function () {
 
-            $("input[type='date']").datepicker().each(function () {
-                this.setAttribute("type", "text");
+        $.datetimepicker.setLocale('ru');
+
+        // <![CDATA[
+        jQuery(function () {
+            jQuery('#Date').datetimepicker({
+                format: 'd/m/Y',
+                formatDate: 'd/m/Y',
+                timepicker: false
             });
-
-            $.datepicker.regional['ru'] = {
-                closeText: 'Закрыть',
-                prevText: '<<',
-                nextText: '>>',
-                currentText: 'Сегодня',
-                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-                'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-                monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
-                'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
-                dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
-                dayNamesShort: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
-                dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-                weekHeader: 'Не',
-                dateFormat: 'dd/mm/yy',
-                firstDay: 1,
-                isRTL: false,
-                showMonthAfterYear: false,
-                yearSuffix: ''
-            };
-
-            $.datepicker.setDefaults($.datepicker.regional['ru']);
-
-            $.validator.methods.date = function (value, element) {
-                if (value) {
-                    try {
-                        $.datepicker.parseDate('dd/mm/yy', value);
-                    } catch (ex) {
-                        return false;
-                    }
-                }
-                return true;
-            };
-
         });
+        // ]]>
+
+        $.validator.methods.date = function (value, element) {
+            if (value) {
+                try {
+                    $.datepicker.parseDate('dd/mm/yy', value);
+                } catch (ex) {
+                    return false;
+                }
+            }
+            return true;
+        };
     </script>
 }
