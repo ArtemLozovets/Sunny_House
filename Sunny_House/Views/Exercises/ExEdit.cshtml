@@ -1,211 +1,204 @@
-﻿        @model Sunny_House.Models.Exercise
+﻿@model Sunny_House.Models.Exercise
+@{
+    ViewBag.Title = "Редактировать";
+}
+<link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
 
-        @{
-            ViewBag.Title = "Редактировать";
-        }
 
-        <h2>Занятия</h2>
+<h2>Занятия</h2>
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog"></div>
+</div>
+@using (Html.BeginForm("ExEdit", "Exercises", FormMethod.Post, new { id = "ExForm" }))
+{
+    @Html.AntiForgeryToken()
 
-        <div id="modDialog" class="modal fade">
-            <div id="dialogContent" class="modal-dialog"></div>
-        </div>
-
-        @using (Html.BeginForm("ExEdit", "Exercises", FormMethod.Post, new { id = "ExForm" }))
-        {
-            @Html.AntiForgeryToken()
-
-            <div class="form-horizontal">
-                <h4>Редактирование занятия</h4>
-                <hr />
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                @Html.HiddenFor(model => model.ExerciseId)
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.EventId, "Мероприятие", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        <div class="form-inline">
-                            <input type="text" name="EventLabel" id="EventLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["EventName"]" />
-                            <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalEvents", "Modal", new { field = "EventId"})'><span class="glyphicon glyphicon-folder-open"></span></a>
-                        </div>
-                        @Html.HiddenFor(model => model.EventId)
-                        @Html.ValidationMessageFor(model => model.EventId, "", new { @class = "text-danger", @id = "EventValidator" })
-                    </div>
+    <div class="form-horizontal">
+        <h4>Редактирование занятия</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ExerciseId)
+        <div class="form-group">
+            @Html.LabelFor(model => model.EventId, "Мероприятие", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="form-inline">
+                    <input type="text" name="EventLabel" id="EventLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["EventName"]" />
+                    <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalEvents", "Modal", new { field = "EventId"})'><span class="glyphicon glyphicon-folder-open"></span></a>
                 </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Subject, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.Subject, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Subject, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.StartTime, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.StartTime, new { htmlAttributes = new { @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
-                        @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.EndTime, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.EndTime, new { htmlAttributes = new { @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
-                        @Html.ValidationMessageFor(model => model.EndTime, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.AddressId, "Место", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        <div class="form-inline">
-                            <input type="text" name="AddressLabel" id="AddressLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["AddressText"]" />
-                            <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalAddresses", "Modal", new {ObjectId = @Model.ExerciseId, RetActionName = "ExEdit", RetControllerName = "Exercises" })'><span class="glyphicon glyphicon-folder-open"></span></a>
-                        </div>
-                        @Html.HiddenFor(model => model.AddressId)
-                        @Html.ValidationMessageFor(model => model.AddressId, "", new { @class = "text-danger", @id = "AddressValidator" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <button type="submit" title="Редактировать запись" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Обновить</button>
-                    </div>
-                </div>
+                @Html.HiddenFor(model => model.EventId)
+                @Html.ValidationMessageFor(model => model.EventId, "", new { @class = "text-danger", @id = "EventValidator" })
             </div>
-        }
-
-        <div>
-            <a class="btn btn-default" href='@Url.Action("ExShow", "Exercises")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
         </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Subject, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Subject, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Subject, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.StartTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StartTime, new { htmlAttributes = new { @type = "text", @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
+                @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.EndTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EndTime, new { htmlAttributes = new { @type = "text", @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
+                @Html.ValidationMessageFor(model => model.EndTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.AddressId, "Место", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="form-inline">
+                    <input type="text" name="AddressLabel" id="AddressLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["AddressText"]" />
+                    <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalAddresses", "Modal", new {ObjectId = @Model.ExerciseId, RetActionName = "ExEdit", RetControllerName = "Exercises" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                </div>
+                @Html.HiddenFor(model => model.AddressId)
+                @Html.ValidationMessageFor(model => model.AddressId, "", new { @class = "text-danger", @id = "AddressValidator" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" title="Редактировать запись" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Обновить</button>
+            </div>
+        </div>
+    </div>
+}
+<div>
+    <a class="btn btn-default" href='@Url.Action("ExShow", "Exercises")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.cookie-1.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
 
-        @section Scripts {
-            @Scripts.Render("~/bundles/jqueryval")
-            <script src="~/Scripts/jquery.cookie-1.4.1.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
 
+            $.ajaxSetup({ cache: false });
 
-            <script type="text/javascript">
-                $(function () {
+            $(".pModal").click(function (e) {
+                // Сохраняем состояние полей формы в cookies при нажатии кнопки выбора адреса
+                $.cookie('Modified', 'True');
 
-                    $.ajaxSetup({ cache: false });
+                $.cookie('EventId', $('#EventId').val());
+                $.cookie('EventLabel', $('#EventLabel').val());
+                $.cookie('Subject', $('#Subject').val());
+                $.cookie('StartTime', $('#StartTime').val());
+                $.cookie('EndTime', $('#EndTime').val());
+                $.cookie('Note', $('#Note').val());
 
-                    $(".pModal").click(function (e) {
-                        // Сохраняем состояние полей формы в cookies при нажатии кнопки выбора адреса
-                        $.cookie('Modified', 'True');
-
-                        $.cookie('EventId', $('#EventId').val());
-                        $.cookie('EventLabel', $('#EventLabel').val());
-                        $.cookie('Subject', $('#Subject').val());
-                        $.cookie('StartTime', $('#StartTime').val());
-                        $.cookie('EndTime', $('#EndTime').val());
-                        $.cookie('Note', $('#Note').val());
-
-                        e.preventDefault();
-                        $.get(this.href, function (data) {
-                            $('#dialogContent').html(data);
-                            $('#modDialog').modal('show');
-                        });
-                    });
+                e.preventDefault();
+                $.get(this.href, function (data) {
+                    $('#dialogContent').html(data);
+                    $('#modDialog').modal('show');
                 });
+            });
+        });
 
-                $(function () {
-                    $(function () {
-                        var widthdelta = 44;
-                        var wd = $("#EventLabel").width() - widthdelta;
-                        var ad = $("#AddressLabel").width() - widthdelta;
+        $(function () {
+            $(function () {
+                var widthdelta = 44;
+                var wd = $("#EventLabel").width() - widthdelta;
+                var ad = $("#AddressLabel").width() - widthdelta;
 
-                        $("#EventLabel").width(wd);
-                        $("#AddressLabel").width(ad);
-                    });
-                });
+                $("#EventLabel").width(wd);
+                $("#AddressLabel").width(ad);
+            });
+        });
 
+        $('#ExForm').submit(function () {
+            if ($("#EventId").val() == 0 && $("#AddressId").val() == 0) {
+                $("#EventValidator").html("Необходимо заполнить поле \"Мероприятие\"");
+                $("#AddressValidator").html("Необходимо заполнить поле \"Адрес\"");
+                return false;
+            }
 
-                $(function () {
-                    $("input[type='date']").datepicker().each(function () {
-                        this.setAttribute("type", "text");
-                    });
+            if ($("#AddressId").val() == 0) {
+                $("#AddressValidator").html("Необходимо заполнить поле \"Адрес\"");
+                return false;
+            }
 
-                    $.datepicker.regional['ru'] = {
-                        closeText: 'Закрыть',
-                        prevText: '<<',
-                        nextText: '>>',
-                        currentText: 'Сегодня',
-                        monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-                        'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-                        monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
-                        'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
-                        dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
-                        dayNamesShort: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
-                        dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-                        weekHeader: 'Не',
-                        dateFormat: 'dd/mm/yy',
-                        firstDay: 1,
-                        isRTL: false,
-                        showMonthAfterYear: false,
-                        yearSuffix: ''
-                    };
-                    $.datepicker.setDefaults($.datepicker.regional['ru']);
+            if ($("#EventId").val() == 0) {
+                $("#EventValidator").html("Необходимо заполнить поле \"Мероприятие\"");
+                return false;
+            }
+        });
 
-                    $.validator.methods.date = function (value, element) {
-                        if (value) {
-                            try {
-                                $.datepicker.parseDate('dd/mm/yy', value);
-                            } catch (ex) {
-                                return false;
-                            }
-                        }
-                        return true;
-                    };
-                });
+        //Читаем содержимое cookies и заполняем поля формы после возврата
+        $(function () {
 
-                $('#ExForm').submit(function () {
-                    if ($("#EventId").val() == 0 && $("#AddressId").val() == 0) {
-                        $("#EventValidator").html("Необходимо заполнить поле \"Мероприятие\"");
-                        $("#AddressValidator").html("Необходимо заполнить поле \"Адрес\"");
-                        return false;
-                    }
+            if ($.cookie('Modified') == 'True') {
+                $('#EventId').val($.cookie('EventId'));
+                $('#EventLabel').val($.cookie('EventLabel'));
+                $('#Subject').val($.cookie('Subject'));
+                $("#StartTime").val($.cookie('StartTime'));
+                $('#EndTime').val($.cookie('EndTime', String));
+                $('#Note').val($.cookie('Note'));
 
-                    if ($("#AddressId").val() == 0) {
-                        $("#AddressValidator").html("Необходимо заполнить поле \"Адрес\"");
-                        return false;
-                    }
+                $.removeCookie('EventId');
+                $.removeCookie('EventLabel');
+                $.removeCookie('Subject');
+                $.removeCookie('StartTime');
+                $.removeCookie('EndTime');
+                $.removeCookie('Note');
 
-                    if ($("#EventId").val() == 0) {
-                        $("#EventValidator").html("Необходимо заполнить поле \"Мероприятие\"");
-                        return false;
-                    }
-                });
+                $.removeCookie('Modified');
+            }
+        });
 
-                //Читаем содержимое cookies и заполняем поля формы после возврата
-                $(function () {
+    </script>
 
-                    if ($.cookie('Modified') == 'True') {
-                        $('#EventId').val($.cookie('EventId'));
-                        $('#EventLabel').val($.cookie('EventLabel'));
-                        $('#Subject').val($.cookie('Subject'));
-                        $("#StartTime").val($.cookie('StartTime'));
-                        $('#EndTime').val($.cookie('EndTime', String));
-                        $('#Note').val($.cookie('Note'));
+    <script type="text/javascript">
+        //Блок скриптов для работы с DateTimePicker
 
-                        $.removeCookie('EventId');
-                        $.removeCookie('EventLabel');
-                        $.removeCookie('Subject');
-                        $.removeCookie('StartTime');
-                        $.removeCookie('EndTime');
-                        $.removeCookie('Note');
+        $.datetimepicker.setLocale('ru');
 
-                        $.removeCookie('Modified');
-                    }
-                });
+        // <![CDATA[
+        jQuery(function () {
+            jQuery('#StartTime').datetimepicker({
+                format: 'd/m/Y H:i',
+                formatDate: 'd/m/Y',
+                onShow: function (ct) {
+                    this.setOptions({
+                        maxDate: jQuery('#EndTime').val() ? jQuery('#EndTime').val() : false
+                    })
+                },
+                timepicker: true
+            });
+            jQuery('#EndTime').datetimepicker({
+                format: 'd/m/Y H:i',
+                formatDate: 'd/m/Y',
+                onShow: function (ct) {
+                    this.setOptions({
+                        minDate: jQuery('#StartTime').val() ? jQuery('#StartTime').val() : false
+                    })
+                },
+                timepicker: true
+            });
+        });
+        // ]]>
 
-            </script>
-        }
+        $.validator.methods.date = function (value, element) {
+            if (value) {
+                try {
+                    $.datepicker.parseDate('dd/mm/yy', value);
+                } catch (ex) {
+                    return false;
+                }
+            }
+            return true;
+        };
+    </script>
+}

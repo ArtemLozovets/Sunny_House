@@ -248,6 +248,7 @@
     <Content Include="Content\Images\gear.gif" />
     <Content Include="Content\Images\icon_top.png" />
     <Content Include="Content\Images\loader.gif" />
+    <Content Include="Content\jquery.datetimepicker.min.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\Progress.css" />
     <Content Include="Content\themes\base\accordion.css" />
@@ -370,6 +371,7 @@
     <Content Include="Scripts\jquery-ui-1.12.0.min.js" />
     <Content Include="Scripts\jquery.cookie-1.4.1.min.js" />
     <Content Include="Scripts\jquery.cookie.js" />
+    <Content Include="Scripts\jquery.datetimepicker.full.min.js" />
     <Content Include="Scripts\jquery.maskedinput.js" />
     <Content Include="Scripts\jquery.maskedinput.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
