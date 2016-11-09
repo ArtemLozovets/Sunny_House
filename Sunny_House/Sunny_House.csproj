@@ -351,6 +351,7 @@
     <Content Include="Scripts\FullCalendar\lib\jquery-ui.min.js" />
     <Content Include="Scripts\FullCalendar\lib\jquery.min.js" />
     <Content Include="Scripts\FullCalendar\lib\moment.min.js" />
+    <Content Include="Scripts\FullCalendar\locale-all.js" />
     <Content Include="Scripts\FullCalendar\moment-with-locales.js" />
     <Content Include="Scripts\FullCalendar\moment-with-locales.min.js" />
     <Content Include="Scripts\FullCalendar\moment.js" />
@@ -367,8 +368,8 @@
     </Content>
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-gmaps-latlon-picker.js" />
-    <Content Include="Scripts\jquery-ui-1.12.0.js" />
-    <Content Include="Scripts\jquery-ui-1.12.0.min.js" />
+    <Content Include="Scripts\jquery-ui-1.12.1.js" />
+    <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
     <Content Include="Scripts\jquery.cookie-1.4.1.min.js" />
     <Content Include="Scripts\jquery.cookie.js" />
     <Content Include="Scripts\jquery.datetimepicker.full.min.js" />

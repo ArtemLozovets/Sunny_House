@@ -14,10 +14,16 @@
 </div>
 
 @section Scripts {
+
+
     <script src="~/Scripts/FullCalendar/lib/moment.min.js"></script>
     <script src="~/Scripts/FullCalendar/lib/jquery.min.js"></script>
     <script src="~/Scripts/FullCalendar/fullcalendar.min.js"></script>
-    <script src='~/Scripts/FullCalendar/ru.js'></script>
+    <script src='~/Scripts/FullCalendar/locale-all.js'></script>
+
+@*<script src="~/Scripts/moment.min.js"></script>
+<script src="~/Scripts/fullcalendar.min.js"></script>
+<script src="~/Scripts/locale/ru.js"></script>*@
 
     <script>
         $(document).ready(function () {
@@ -29,7 +35,7 @@
                     right: 'month,agendaWeek,agendaDay,list'
                 },
                 defaultDate: _now,
-                theme:false, //Тема оформления -------------------------
+                theme: false, //Тема оформления -------------------------
                 navLinks: true, // can click day/week names to navigate views
                 selectable: true,
                 selectHelper: true,
@@ -46,9 +52,29 @@
                     }
                     $('#calendar').fullCalendar('unselect');
                 },
-                eventDrop: function(event, delta, revertFunc) {
-                    alert('DROPPPP');
+                eventDrop: function (event, delta, revertFunc) {
+
+                    alert(event.title + " was dropped on " + event.start.format());
+
+                    if (!confirm("Are you sure about this change?")) {
+                        revertFunc();
+                    }
                 },
+
+                eventResize: function (event) {
+
+                    console.log(event);
+                    $.ajax({
+                            url: "/Exercises/FCEventDrop/",
+                            type: "POST",
+                            data: {
+                                Event_Id: event.id,
+                                Start_Time: event.start.format(),
+                                End_Time: event.end.format()
+                            }
+                        });
+                },
+
                 editable: true,
                 eventLimit: true, // allow "more" link when too many events
                 events: '/exercises/ShowExercises/'

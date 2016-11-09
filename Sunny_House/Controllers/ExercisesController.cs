@@ -218,6 +218,13 @@ namespace Sunny_House.Controllers
             
         }
 
+
+        public ActionResult FCEventDrop(DateTime Start_Time, DateTime End_Time, int Event_Id)
+        {
+            return Json(null, JsonRequestBehavior.AllowGet);
+        }
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
