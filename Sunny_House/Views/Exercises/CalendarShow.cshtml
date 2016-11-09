@@ -1,0 +1,62 @@
+﻿<link href="~/Content/fullcalendar.css" rel="stylesheet" />
+<link href="~/Content/fullcalendar.print.css" rel="stylesheet" media="print" />
+
+@{
+    ViewBag.Title = "Персоны";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row" style="margin-top:20px;">
+    <div class="col-lg-12">
+        <div id='calendar'></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/FullCalendar/lib/moment.min.js"></script>
+    <script src="~/Scripts/FullCalendar/lib/jquery.min.js"></script>
+    <script src="~/Scripts/FullCalendar/fullcalendar.min.js"></script>
+    <script src='~/Scripts/FullCalendar/ru.js'></script>
+
+    <script>
+        $(document).ready(function () {
+            var _now = new Date;
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay,list'
+                },
+                defaultDate: _now,
+                theme:false, //Тема оформления -------------------------
+                navLinks: true, // can click day/week names to navigate views
+                selectable: true,
+                selectHelper: true,
+                select: function (start, end) {
+                    var title = prompt('Название занятия:');
+                    var eventData;
+                    if (title) {
+                        eventData = {
+                            title: title,
+                            start: start,
+                            end: end
+                        };
+                        $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+                    }
+                    $('#calendar').fullCalendar('unselect');
+                },
+                eventDrop: function(event, delta, revertFunc) {
+                    alert('DROPPPP');
+                },
+                editable: true,
+                eventLimit: true, // allow "more" link when too many events
+                events: '/exercises/ShowExercises/'
+            });
+
+        });
+
+    </script>
+}
+
+
