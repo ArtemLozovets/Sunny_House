@@ -25,13 +25,13 @@ namespace Sunny_House.Models
         public string Subject { get; set; }
 
         [Required(ErrorMessage = "Необходимо заполнить поле \"Начало\"")]
-        [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy hh:mm}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
         [Display(Name = "Начало")]
         public DateTime StartTime { get; set; }
 
         [Required(ErrorMessage = "Необходимо заполнить поле \"Окончание\"")]
-        [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy hh:mm}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
         [Display(Name = "Окончание")]
         public DateTime EndTime { get; set; }

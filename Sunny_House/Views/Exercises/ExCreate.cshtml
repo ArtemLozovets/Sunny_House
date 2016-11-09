@@ -1,15 +1,13 @@
 ﻿@model Sunny_House.Models.Exercise
-
 @{
     ViewBag.Title = "Добавить";
 }
+<link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
 
 <h2>Занятия</h2>
-
 <div id="modDialog" class="modal fade">
     <div id="dialogContent" class="modal-dialog"></div>
 </div>
-
 @using (Html.BeginForm("ExCreate", "Exercises", FormMethod.Post, new { id = "ExForm" }))
 {
     @Html.AntiForgeryToken()
@@ -18,7 +16,6 @@
         <h4>Добавление занятия</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
         <div class="form-group">
             @Html.LabelFor(model => model.EventId, "Мероприятие", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -30,7 +27,6 @@
                 @Html.ValidationMessageFor(model => model.EventId, "", new { @class = "text-danger", @id = "EventValidator" })
             </div>
         </div>
-
         <div class="form-group">
             @Html.LabelFor(model => model.Subject, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -38,23 +34,20 @@
                 @Html.ValidationMessageFor(model => model.Subject, "", new { @class = "text-danger" })
             </div>
         </div>
-
         <div class="form-group">
             @Html.LabelFor(model => model.StartTime, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.StartTime, new { htmlAttributes = new { @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
+                @Html.EditorFor(model => model.StartTime, new { htmlAttributes = new { @type="text", @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
                 @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "text-danger" })
             </div>
         </div>
-
         <div class="form-group">
             @Html.LabelFor(model => model.EndTime, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.EndTime, new { htmlAttributes = new { @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
+                @Html.EditorFor(model => model.EndTime, new { htmlAttributes = new { @type="text", @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
                 @Html.ValidationMessageFor(model => model.EndTime, "", new { @class = "text-danger" })
             </div>
         </div>
-
         <div class="form-group">
             @Html.LabelFor(model => model.AddressId, "Место", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -66,7 +59,6 @@
                 @Html.ValidationMessageFor(model => model.AddressId, "", new { @class = "text-danger", @id = "AddressValidator" })
             </div>
         </div>
-
         <div class="form-group">
             @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -74,7 +66,6 @@
                 @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
             </div>
         </div>
-
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <button type="submit" title="Добавить занятие" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Добавить</button>
@@ -82,16 +73,14 @@
         </div>
     </div>
 }
-
 <div>
     <a class="btn btn-default" href='@Url.Action("ExShow", "Exercises")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
 </div>
 
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script src="~/Scripts/jquery.cookie-1.4.1.min.js"></script>
-
-
     <script type="text/javascript">
         $(function () {
 
@@ -115,53 +104,12 @@
         });
 
         $(function () {
-            $(function () {
-                var widthdelta = 44;
-                var wd = $("#EventLabel").width() - widthdelta;
-                var ad = $("#AddressLabel").width() - widthdelta;
+            var widthdelta = 44;
+            var wd = $("#EventLabel").width() - widthdelta;
+            var ad = $("#AddressLabel").width() - widthdelta;
 
-                $("#EventLabel").width(wd);
-                $("#AddressLabel").width(ad);
-            });
-        });
-
-
-        $(function () {
-            $("input[type='date']").datepicker().each(function () {
-                this.setAttribute("type", "text");
-            });
-
-            $.datepicker.regional['ru'] = {
-                closeText: 'Закрыть',
-                prevText: '<<',
-                nextText: '>>',
-                currentText: 'Сегодня',
-                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-                'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-                monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
-                'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
-                dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
-                dayNamesShort: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
-                dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-                weekHeader: 'Не',
-                dateFormat: 'dd/mm/yy',
-                firstDay: 1,
-                isRTL: false,
-                showMonthAfterYear: false,
-                yearSuffix: ''
-            };
-            $.datepicker.setDefaults($.datepicker.regional['ru']);
-
-            $.validator.methods.date = function (value, element) {
-                if (value) {
-                    try {
-                        $.datepicker.parseDate('dd/mm/yy', value);
-                    } catch (ex) {
-                        return false;
-                    }
-                }
-                return true;
-            };
+            $("#EventLabel").width(wd);
+            $("#AddressLabel").width(ad);
         });
 
         $('#ExForm').submit(function () {
@@ -197,5 +145,49 @@
             $.removeCookie('Note');
         });
 
+
+    </script>
+
+    @*Блок скриптов для работы с DateTimePicker*@
+    <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
+    <script type="text/javascript">
+
+        $.datetimepicker.setLocale('ru');
+
+        // <![CDATA[
+        jQuery(function () {
+            jQuery('#StartTime').datetimepicker({
+                format: 'd/m/Y H:i',
+                formatDate: 'd/m/Y',
+                onShow: function (ct) {
+                    this.setOptions({
+                        maxDate: jQuery('#EndTime').val() ? jQuery('#EndTime').val() : false
+                    })
+                },
+                timepicker: true
+            });
+            jQuery('#EndTime').datetimepicker({
+                format: 'd/m/Y H:i',
+                formatDate: 'd/m/Y',
+                onShow: function (ct) {
+                    this.setOptions({
+                        minDate: jQuery('#StartTime').val() ? jQuery('#StartTime').val() : false
+                    })
+                },
+                timepicker: true
+            });
+        });
+        // ]]>
+
+        $.validator.methods.date = function (value, element) {
+            if (value) {
+                try {
+                    $.datepicker.parseDate('dd/mm/yy', value);
+                } catch (ex) {
+                    return false;
+                }
+            }
+            return true;
+        };
     </script>
 }

@@ -8,6 +8,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Sunny_House.Models;
+using System.Diagnostics;
 
 namespace Sunny_House.Controllers
 {
@@ -181,6 +182,40 @@ namespace Sunny_House.Controllers
                 ViewBag.ErStack = ex.StackTrace;
                 return View("Error");
             }
+        }
+
+        public ActionResult CalendarShow()
+        {
+            return View();
+        }
+
+
+        public ActionResult ShowExercises()
+        {
+
+            var _exercises = (from _ex in db.Exercises
+                              select new
+                              {
+                                  id = _ex.ExerciseId,
+                                  title = _ex.Subject,
+                                  start = _ex.StartTime,
+                                  end = _ex.EndTime
+                              }).AsEnumerable().Select(e => new { 
+                                id = e.id,
+                                title = e.title,
+                                start = e.start.ToLocalTime(),
+                                end = e.end.ToLocalTime()
+                              });
+            
+            var rows = _exercises.ToArray();
+
+            foreach (var item in rows)
+            {
+                Debug.WriteLine(item);
+            }
+            
+            return Json(rows, JsonRequestBehavior.AllowGet);        
+            
         }
 
         protected override void Dispose(bool disposing)
