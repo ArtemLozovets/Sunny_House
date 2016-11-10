@@ -13,7 +13,7 @@
         margin: 0 auto;
     }
 
-    #extpanel{
+    #extpanel {
         float: left;
         width: 166px;
         padding: 0 10px;
@@ -24,7 +24,11 @@
     }
 
     #external-events {
-        
+        height: 100px;
+        background-image: url(../../Content/Images/trash.png);
+        background-position:center;
+        background-repeat:no-repeat;
+        opacity:0.5;
     }
 
     .FCButton {
@@ -34,7 +38,7 @@
         color: #333;
         text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-        margin:10px auto;
+        margin: 10px auto;
     }
 
     #calendar {
@@ -50,24 +54,19 @@
                 <div>
                     <a class="btn btn-default FCButton"
                        title="Добавить занятие"
-                       href='@Url.Action("ExCreate", "Exercises")'>
+                       href='@Url.Action("ExCreate", "Exercises", new {@ReturnUrl = Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString())})'>
                         <i class="fa fa-plus-circle"> Добавить занятие</i>
                     </a>
                 </div>
-                <div id='external-events'>
-                    <div id='external-events-listing'>
-                        <h2><i class="fa fa-trash"></i></h2>
-                    </div>
+                <div id='external-events' title="Перетяните занятие для удаления">
                 </div>
             </div>
             <div id='calendar'></div>
             <div style='clear:both'></div>
 
         </div>
-
     </div>
 </div>
-
 
 
 @section Scripts {
@@ -88,22 +87,10 @@
                 defaultDate: _now,
                 theme: false, //Тема оформления -------------------------
                 navLinks: true, // can click day/week names to navigate views
-                selectable: false,
+                selectable: false, //Отключаем обработку щелчка по ячейке календаря
                 selectHelper: true,
                 droppable: true, // this allows things to be dropped onto the calendar
                 dragRevertDuration: 0,
-
-                drop: function () {
-                    $(this).remove();
-                },
-
-
-                eventDragStop: function (event, jsEvent, ui, view, revertFunc) {
-
-                    if (isEventOverDiv(jsEvent.clientX, jsEvent.clientY)) {
-                        $('#calendar').fullCalendar('removeEvents', event._id);
-                    }
-                },
 
                 select: function () {
                     var title = prompt('Название занятия:');
@@ -118,6 +105,37 @@
                     }
                     $('#calendar').fullCalendar('unselect');
                 },
+
+                eventDragStop: function (event, jsEvent, ui, view, revertFunc) {
+                    if (isEventOverDiv(jsEvent.clientX, jsEvent.clientY)) {
+                        if (!confirm('Удалить занятие "' + event.title + '"?')) {
+                            revertFunc();
+                        }
+
+                        $.ajax({
+                            url: "/Exercises/FCEventDelete/",
+                            type: "POST",
+                            data: {
+                                Ex_Id: event.id,
+                            },
+                            success: function (data) {
+                                if (!data.Result) {
+                                    alert(data.Message);
+                                    revertFunc();
+                                }
+                                else {
+                                    $('#calendar').fullCalendar('removeEvents', event._id);
+                                }
+                            },
+                            error: function (data) {
+                                alert('Во время выполнения запроса возникла ошибка!');
+                                revertFunc();
+                            },
+
+                        });
+                    }
+                },
+
                 eventDrop: function (event, delta, revertFunc) {
 
                     if (!confirm('Вы изменили время начала занятия "' + event.title + '" \nСохранить изменения?')) {
@@ -139,7 +157,8 @@
                 events: '/exercises/ShowExercises/'
             });
 
-
+            //----------------------------------------------------------------------------
+            //Обработка перетаскивания блока занятия за пределы календаря
             var isEventOverDiv = function (x, y) {
 
                 var external_events = $('#external-events');
@@ -158,13 +177,13 @@
 
         });
 
-        //Функция изменения параметров события (Resize/Drop)
+        //Функция отправки параметров занятия на сервер после изменения размера/перетаскивания (Resize/Drop)
         function FCAjax(event, delta, revertFunc) {
             $.ajax({
                 url: "/Exercises/FCEventChange/",
                 type: "POST",
                 data: {
-                    Event_Id: event.id,
+                    Ex_Id: event.id,
                     Start_Time: event.start.format(),
                     End_Time: event.end.format()
                 },

@@ -40,8 +40,12 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Exercises/Create
-        public ActionResult ExCreate(int? AddressId)
+        public ActionResult ExCreate(int? AddressId, string ReturnUrl)
         {
+
+            string _returnurl = (!String.IsNullOrEmpty(ReturnUrl)) ? ReturnUrl : "/Exercises/ExShow";
+            ViewData["ReturnUrl"] = _returnurl;
+
             if (AddressId != null)
             {
                 Address _address = db.Addresses.FirstOrDefault(a => a.AddressId == AddressId);
@@ -60,7 +64,7 @@ namespace Sunny_House.Controllers
         // POST: Exercises/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ExCreate([Bind(Include = "ExerciseId,Subject,StartTime,EndTime,AddressId,Note,EventId")] Exercise exercise)
+        public async Task<ActionResult> ExCreate([Bind(Include = "ExerciseId,Subject,StartTime,EndTime,AddressId,Note,EventId")] Exercise exercise, string ReturnUrl)
         {
             if (ModelState.IsValid)
             {
@@ -68,13 +72,16 @@ namespace Sunny_House.Controllers
                 {
                     db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Information====================
 
+                    string _returnurl = (!String.IsNullOrEmpty(ReturnUrl)) ? ReturnUrl : "/Exercises/ExShow";
+                    ViewData["ReturnUrl"] = _returnurl;
+
                     db.Exercises.Add(exercise);
                     await db.SaveChangesAsync();
 
                     string _message = "Информация о занятии добавлена в базу данных";
                     TempData["MessageOk"] = _message;
 
-                    return RedirectToAction("ExShow");
+                    return Redirect(_returnurl);
                 }
                 catch (Exception ex)
                 {
@@ -220,16 +227,16 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
-        public ActionResult FCEventChange(DateTime Start_Time, DateTime End_Time, int? Event_Id)
+        public ActionResult FCEventChange(DateTime Start_Time, DateTime End_Time, int? Ex_Id)
         {
-            if (Event_Id == null || Start_Time == null || End_Time == null)
+            if (Ex_Id == null || Start_Time == null || End_Time == null)
             {
                 return Json(new { Result = false, Message = "Неверные входные параметры" }, JsonRequestBehavior.AllowGet);
             }
 
             try
             {
-                Exercise _exercise = db.Exercises.Find(Event_Id);
+                Exercise _exercise = db.Exercises.Find(Ex_Id);
                 _exercise.StartTime = Start_Time;
                 _exercise.EndTime = End_Time;
 
@@ -244,6 +251,32 @@ namespace Sunny_House.Controllers
             }
         }
 
+
+        [HttpPost, ActionName("FCEventDelete")]
+        public ActionResult FCDelete(int? Ex_Id) 
+        {
+            if (Ex_Id == null)
+            {
+                return Json(new { Result = false, Message = "Неверные входные параметры" }, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                Exercise _exercise = db.Exercises.FirstOrDefault(e=>e.ExerciseId == Ex_Id);
+                if (db.Exercises.First(e => e.ExerciseId == Ex_Id).Visit.Any() || db.Exercises.First(e => e.ExerciseId == Ex_Id).Comment.Any())
+                {
+                    return Json(new { Result = false, Message = "Удаление невозможно! \nВ таблице посещений или отзывов имеются связанные данные."}, JsonRequestBehavior.AllowGet);    
+                }
+
+                db.Exercises.Remove(_exercise);
+                db.SaveChanges();
+                return Json(new { Result = true, Message = "Успешно выполнено" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Result = false, Message = "Ошибка выполнения! \n" + ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
         
         protected override void Dispose(bool disposing)
         {

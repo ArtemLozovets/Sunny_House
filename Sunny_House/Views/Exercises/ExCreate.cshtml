@@ -11,6 +11,7 @@
 @using (Html.BeginForm("ExCreate", "Exercises", FormMethod.Post, new { id = "ExForm" }))
 {
     @Html.AntiForgeryToken()
+    @Html.Hidden("ReturnUrl");
 
     <div class="form-horizontal">
         <h4>Добавление занятия</h4>
@@ -74,7 +75,7 @@
     </div>
 }
 <div>
-    <a class="btn btn-default" href='@Url.Action("ExShow", "Exercises")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+    <a class="btn btn-default" href='@ViewData["ReturnUrl"]'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
 </div>
 
 
