@@ -204,6 +204,7 @@ namespace Sunny_House.Controllers
         }
 
 
+        [HttpPost]
         public ActionResult ShowExercises()
         {
 

@@ -34,7 +34,6 @@
         </div>
     </div>
 </div>
-<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 
 <a href="#" class="scrollup1">Наверх</a>
 
@@ -47,7 +46,21 @@
     <script src="~/Scripts/toparrow.js"></script>
     <script>
         $(document).ready(function () {
+            
             var _now = new Date;
+
+            var fcSources = {
+                loads: {
+                    url: '/Exercises/ShowExercises/',
+                    type: 'POST',
+                    cache: false,
+                    error: function () { alert('something broke with loads...'); },
+                    color: 'red',
+                    textColor: 'black'
+                }
+            };
+            
+
             $('#calendar').fullCalendar({
                 header: {
                     left: 'prev,next today',
@@ -122,9 +135,19 @@
                     FCAjax(event, delta, revertFunc);
                 },
 
+                viewRender: function (view) {
+                    console.log(view.start.format() + '====' + view.end.format());
+                    $('#fullcalendar').fullCalendar('removeEventSource').fullCalendar('refetchEvents');
+                    $('#fullcalendar').fullCalendar('addEventSource', fcSources.loads).fullCalendar('refetchSources');
+
+                  
+                    
+
+                },
+
                 editable: true,
                 eventLimit: true, // allow "more" link when too many events
-                events: '/exercises/ShowExercises/'
+                //events: '/exercises/ShowExercises/'
             });
 
             //----------------------------------------------------------------------------
