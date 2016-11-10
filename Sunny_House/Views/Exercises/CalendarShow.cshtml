@@ -5,17 +5,75 @@
     ViewBag.Title = "Персоны";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<link href="~/Content/fullcalendar.css" rel="stylesheet" />
 
+<style type="text/css">
+    #wrap {
+        width: 1100px;
+        margin: 0 auto;
+    }
+
+    #extpanel{
+        float: left;
+        width: 166px;
+        padding: 0 10px;
+        border: 1px solid #ccc;
+        background: #eee;
+        text-align: center;
+        border-radius: 6px;
+    }
+
+    #external-events {
+        
+    }
+
+    .FCButton {
+        background-image: linear-gradient(to bottom, #ffffff, #e6e6e6);
+        background-repeat: repeat-x;
+        border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+        color: #333;
+        text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+        margin:10px auto;
+    }
+
+    #calendar {
+        float: right;
+        width: 900px;
+    }
+</style>
 
 <div class="row" style="margin-top:20px;">
     <div class="col-lg-12">
-        <div id='calendar'></div>
+        <div id='wrap'>
+            <div id="extpanel">
+                <div>
+                    <a class="btn btn-default FCButton"
+                       title="Добавить занятие"
+                       href='@Url.Action("ExCreate", "Exercises")'>
+                        <i class="fa fa-plus-circle"> Добавить занятие</i>
+                    </a>
+                </div>
+                <div id='external-events'>
+                    <div id='external-events-listing'>
+                        <h2><i class="fa fa-trash"></i></h2>
+                    </div>
+                </div>
+            </div>
+            <div id='calendar'></div>
+            <div style='clear:both'></div>
+
+        </div>
+
     </div>
 </div>
+
+
 
 @section Scripts {
     <script src="~/Scripts/FullCalendar/lib/moment.min.js"></script>
     <script src="~/Scripts/FullCalendar/lib/jquery.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
     <script src="~/Scripts/FullCalendar/fullcalendar.min.js"></script>
     <script src='~/Scripts/FullCalendar/ru.js'></script>
     <script>
@@ -30,9 +88,24 @@
                 defaultDate: _now,
                 theme: false, //Тема оформления -------------------------
                 navLinks: true, // can click day/week names to navigate views
-                selectable: true,
+                selectable: false,
                 selectHelper: true,
-                select: function (start, end) {
+                droppable: true, // this allows things to be dropped onto the calendar
+                dragRevertDuration: 0,
+
+                drop: function () {
+                    $(this).remove();
+                },
+
+
+                eventDragStop: function (event, jsEvent, ui, view, revertFunc) {
+
+                    if (isEventOverDiv(jsEvent.clientX, jsEvent.clientY)) {
+                        $('#calendar').fullCalendar('removeEvents', event._id);
+                    }
+                },
+
+                select: function () {
                     var title = prompt('Название занятия:');
                     var eventData;
                     if (title) {
@@ -55,7 +128,7 @@
                 },
 
                 eventResize: function (event, delta, revertFunc) {
-                    if (!confirm('Вы изменили продолжительность занятия "'+ event.title+'" \nСохранить изменения?')) {
+                    if (!confirm('Вы изменили продолжительность занятия "' + event.title + '" \nСохранить изменения?')) {
                         revertFunc();
                     }
                     FCAjax(event, delta, revertFunc);
@@ -65,6 +138,23 @@
                 eventLimit: true, // allow "more" link when too many events
                 events: '/exercises/ShowExercises/'
             });
+
+
+            var isEventOverDiv = function (x, y) {
+
+                var external_events = $('#external-events');
+                var offset = external_events.offset();
+                offset.right = external_events.width() + offset.left;
+                offset.bottom = external_events.height() + offset.top;
+
+                // Compare
+                if (x >= offset.left
+                    && y >= offset.top
+                    && x <= offset.right
+                    && y <= offset.bottom) { return true; }
+                return false;
+
+            }
 
         });
 
