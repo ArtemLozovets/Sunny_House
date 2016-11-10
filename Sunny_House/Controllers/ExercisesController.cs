@@ -20,7 +20,7 @@ namespace Sunny_House.Controllers
         // GET: Exercises
         public async Task<ActionResult> ExShow(int? ExerciseId)
         {
-            var exercises = db.Exercises.Include(e => e.Event).Where(e=>e.ExerciseId == ExerciseId || ExerciseId==null);
+            var exercises = db.Exercises.Include(e => e.Event).Where(e => e.ExerciseId == ExerciseId || ExerciseId == null);
             return View(await exercises.ToListAsync());
         }
 
@@ -101,7 +101,7 @@ namespace Sunny_House.Controllers
                 return HttpNotFound();
             }
             ViewData["EventName"] = db.Exercises.First(s => s.ExerciseId == ObjectId).Event.EventName;
-            
+
             if (AddressId != null)
             {
                 Address _address = db.Addresses.FirstOrDefault(a => a.AddressId == AddressId);
@@ -200,31 +200,51 @@ namespace Sunny_House.Controllers
                                   title = _ex.Subject,
                                   start = _ex.StartTime,
                                   end = _ex.EndTime
-                              }).AsEnumerable().Select(e => new { 
-                                id = e.id,
-                                title = e.title,
-                                start = e.start.ToLocalTime(),
-                                end = e.end.ToLocalTime()
+                              }).AsEnumerable().Select(e => new
+                              {
+                                  id = e.id,
+                                  title = e.title,
+                                  start = e.start.ToLocalTime(),
+                                  end = e.end.ToLocalTime()
                               });
-            
+
             var rows = _exercises.ToArray();
 
             foreach (var item in rows)
             {
                 Debug.WriteLine(item);
             }
-            
-            return Json(rows, JsonRequestBehavior.AllowGet);        
-            
+
+            return Json(rows, JsonRequestBehavior.AllowGet);
+
         }
 
-
-        public ActionResult FCEventDrop(DateTime Start_Time, DateTime End_Time, int Event_Id)
+        [HttpPost]
+        public ActionResult FCEventChange(DateTime Start_Time, DateTime End_Time, int? Event_Id)
         {
-            return Json(null, JsonRequestBehavior.AllowGet);
+            if (Event_Id == null || Start_Time == null || End_Time == null)
+            {
+                return Json(new { Result = false, Message = "Неверные входные параметры" }, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                Exercise _exercise = db.Exercises.Find(Event_Id);
+                _exercise.StartTime = Start_Time;
+                _exercise.EndTime = End_Time;
+
+                db.Entry(_exercise).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return Json(new { Result = true, Message = "Успешно выполнено" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Result = false, Message = "Ошибка выполнения! \n" + ex.Message }, JsonRequestBehavior.AllowGet);
+            }
         }
 
-
+        
         protected override void Dispose(bool disposing)
         {
             if (disposing)
