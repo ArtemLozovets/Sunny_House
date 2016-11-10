@@ -174,6 +174,13 @@ namespace Sunny_House.Controllers
         {
             try
             {
+                if (db.Exercises.First(e => e.ExerciseId == ObjectId).Visit.Any() || db.Exercises.First(e => e.ExerciseId == ObjectId).Comment.Any())
+                {
+
+                    TempData["MessageError"] = "Ошибка выполнения операции! В таблице посещений или отзывов имеются связанные данные.";
+                    return RedirectToAction("ExShow");
+                }
+                
                 Exercise exercise = await db.Exercises.FindAsync(ObjectId);
                 db.Exercises.Remove(exercise);
                 await db.SaveChangesAsync();

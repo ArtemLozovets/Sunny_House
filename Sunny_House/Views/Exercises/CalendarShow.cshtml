@@ -3,49 +3,16 @@
 
 @{
     ViewBag.Title = "Персоны";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/Content/fullcalendar.css" rel="stylesheet" />
 
-<style type="text/css">
-    #wrap {
-        width: 1100px;
-        margin: 0 auto;
-    }
 
-    #extpanel {
-        float: left;
-        width: 166px;
-        padding: 0 10px;
-        border: 1px solid #ccc;
-        background: #eee;
-        text-align: center;
-        border-radius: 6px;
-    }
+<div id="loadingImg">
+    <div id="preloadImg">
+        <img src="~/Content/Images/loader.gif" />
+    </div>
+</div>
 
-    #external-events {
-        height: 100px;
-        background-image: url(../../Content/Images/trash.png);
-        background-position:center;
-        background-repeat:no-repeat;
-        opacity:0.5;
-    }
-
-    .FCButton {
-        background-image: linear-gradient(to bottom, #ffffff, #e6e6e6);
-        background-repeat: repeat-x;
-        border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-        color: #333;
-        text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-        margin: 10px auto;
-    }
-
-    #calendar {
-        float: right;
-        width: 900px;
-    }
-</style>
 
 <div class="row" style="margin-top:20px;">
     <div class="col-lg-12">
@@ -67,7 +34,9 @@
         </div>
     </div>
 </div>
+<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 
+<a href="#" class="scrollup1">Наверх</a>
 
 @section Scripts {
     <script src="~/Scripts/FullCalendar/lib/moment.min.js"></script>
@@ -75,6 +44,7 @@
     <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
     <script src="~/Scripts/FullCalendar/fullcalendar.min.js"></script>
     <script src='~/Scripts/FullCalendar/ru.js'></script>
+    <script src="~/Scripts/toparrow.js"></script>
     <script>
         $(document).ready(function () {
             var _now = new Date;
@@ -175,6 +145,7 @@
 
             }
 
+            $('#loadingImg').hide();
         });
 
         //Функция отправки параметров занятия на сервер после изменения размера/перетаскивания (Resize/Drop)
@@ -199,6 +170,7 @@
                 },
 
             });
+
         }
 
     </script>
