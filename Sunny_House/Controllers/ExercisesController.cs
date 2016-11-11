@@ -42,7 +42,6 @@ namespace Sunny_House.Controllers
         // GET: Exercises/Create
         public ActionResult ExCreate(int? AddressId, string ReturnUrl)
         {
-
             string _returnurl = (!String.IsNullOrEmpty(ReturnUrl)) ? ReturnUrl : "/Exercises/ExShow";
             ViewData["ReturnUrl"] = _returnurl;
 
@@ -180,7 +179,7 @@ namespace Sunny_House.Controllers
                     TempData["MessageError"] = "Ошибка выполнения операции! В таблице посещений или отзывов имеются связанные данные.";
                     return RedirectToAction("ExShow");
                 }
-                
+
                 Exercise exercise = await db.Exercises.FindAsync(ObjectId);
                 db.Exercises.Remove(exercise);
                 await db.SaveChangesAsync();
@@ -204,8 +203,8 @@ namespace Sunny_House.Controllers
         }
 
 
-        [HttpPost]
-        public ActionResult ShowExercises()
+        [HttpGet]
+        public ActionResult ShowExercises(DateTime start, DateTime end)
         {
 
             var _exercises = (from _ex in db.Exercises
@@ -215,7 +214,7 @@ namespace Sunny_House.Controllers
                                   title = _ex.Subject,
                                   start = _ex.StartTime,
                                   end = _ex.EndTime
-                              }).AsEnumerable().Select(e => new
+                              }).AsEnumerable().Where(ex => ex.start >= start && ex.end < end).Select(e => new
                               {
                                   id = e.id,
                                   title = e.title,
@@ -261,7 +260,7 @@ namespace Sunny_House.Controllers
 
 
         [HttpPost, ActionName("FCEventDelete")]
-        public ActionResult FCDelete(int? Ex_Id) 
+        public ActionResult FCDelete(int? Ex_Id)
         {
             if (Ex_Id == null)
             {
@@ -270,10 +269,10 @@ namespace Sunny_House.Controllers
 
             try
             {
-                Exercise _exercise = db.Exercises.FirstOrDefault(e=>e.ExerciseId == Ex_Id);
+                Exercise _exercise = db.Exercises.FirstOrDefault(e => e.ExerciseId == Ex_Id);
                 if (db.Exercises.First(e => e.ExerciseId == Ex_Id).Visit.Any() || db.Exercises.First(e => e.ExerciseId == Ex_Id).Comment.Any())
                 {
-                    return Json(new { Result = false, Message = "Удаление невозможно! \nВ таблице посещений или отзывов имеются связанные данные."}, JsonRequestBehavior.AllowGet);    
+                    return Json(new { Result = false, Message = "Удаление невозможно! \nВ таблице посещений или отзывов имеются связанные данные." }, JsonRequestBehavior.AllowGet);
                 }
 
                 db.Exercises.Remove(_exercise);
@@ -285,7 +284,7 @@ namespace Sunny_House.Controllers
                 return Json(new { Result = false, Message = "Ошибка выполнения! \n" + ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
-        
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
