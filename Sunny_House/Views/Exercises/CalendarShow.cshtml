@@ -4,8 +4,16 @@
 @{
     ViewBag.Title = "Персоны";
 }
-<link href="~/Content/fullcalendar.css" rel="stylesheet" />
 
+
+<h2><i class="fa fa-bell"></i> Расписание занятий</h2>
+
+<div class="row" style="">
+    <div class="col-md-6">
+        <p class="text-success" id="TextSuccess"> @TempData["MessageOk"]</p>
+        <p class="text-danger"> @TempData["MessageError"]</p>
+    </div>
+</div>
 
 <div id="loadingImg">
     <div id="preloadImg">
@@ -30,7 +38,6 @@
             </div>
             <div id='calendar'></div>
             <div style='clear:both'></div>
-
         </div>
     </div>
 </div>
@@ -41,12 +48,11 @@
     <script src="~/Scripts/FullCalendar/lib/moment.min.js"></script>
     <script src="~/Scripts/FullCalendar/lib/jquery.min.js"></script>
     <script src="~/Scripts/jquery.cookie-1.4.1.min.js"></script>
-    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
     <script src="~/Scripts/FullCalendar/fullcalendar.min.js"></script>
     <script src='~/Scripts/FullCalendar/ru.js'></script>
     <script src="~/Scripts/toparrow.js"></script>
 
-    @* Скрипт удаление cookies состояния полей формы добавления занятия *@f
+    @* Скрипт удаление cookies состояния полей формы добавления занятия *@
     <script type="text/javascript">
 
         $(function () {
@@ -56,6 +62,7 @@
             $.removeCookie('StartTime');
             $.removeCookie('EndTime');
             $.removeCookie('Note');
+            $.removeCookie('ReturnUrl');
         });
     </script>
 
@@ -71,12 +78,17 @@
                     right: 'month,agendaWeek,agendaDay,list'
                 },
                 defaultDate: _now,
+                unselectAuto: true,
                 theme: false, //Тема оформления -------------------------
                 navLinks: true, // can click day/week names to navigate views
                 selectable: false, //Отключаем обработку щелчка по ячейке календаря
                 selectHelper: true,
                 droppable: true, // this allows things to be dropped onto the calendar
                 dragRevertDuration: 0,
+                editable: true,
+                eventLimit: true, // allow "more" link when too many events
+                allDaySlot: false,
+                events: '/exercises/ShowExercises/',
 
                 select: function () {
                     var title = prompt('Название занятия:');
@@ -95,7 +107,8 @@
                 eventDragStop: function (event, jsEvent, ui, view, revertFunc) {
                     if (isEventOverDiv(jsEvent.clientX, jsEvent.clientY)) {
                         if (!confirm('Удалить занятие "' + event.title + '"?')) {
-                            revertFunc();
+                            $('#calendar').fullCalendar('unselect');
+                            return false;
                         }
 
                         $.ajax({
@@ -108,13 +121,16 @@
                                 if (!data.Result) {
                                     alert(data.Message);
                                     revertFunc();
+                                    $('#calendar').fullCalendar('unselect');
                                 }
                                 else {
                                     $('#calendar').fullCalendar('removeEvents', event._id);
+                                    $('#calendar').fullCalendar('unselect');
                                 }
                             },
                             error: function (data) {
                                 alert('Во время выполнения запроса возникла ошибка!');
+                                $('#calendar').fullCalendar('unselect');
                                 revertFunc();
                             },
 
@@ -136,10 +152,8 @@
                         revertFunc();
                     }
                     FCAjax(event, delta, revertFunc);
-                },
-                editable: true,
-                eventLimit: true, // allow "more" link when too many events
-                events: '/exercises/ShowExercises/'
+                }
+
             });
 
             //----------------------------------------------------------------------------
@@ -147,24 +161,44 @@
             var isEventOverDiv = function (x, y) {
 
                 var external_events = $('#external-events');
-                var offset = external_events.offset();
+                var offset = external_events.position();//!!!! Для фиксированного блока. Иначе - offset
+                offset.top += offset.top + 50;
+                offset.bottom += offset.bottom + 50;
+                offset.left += offset.left + 83;
+                offset.right += offset.right + 83;
+
                 offset.right = external_events.width() + offset.left;
                 offset.bottom = external_events.height() + offset.top;
 
+                console.clear();
+                console.log('x => ' + x + ', y => ' + y);
+                console.log('Left => ' + offset.left + ', Right => ' + offset.right);
+                console.log('Top => ' + offset.top + ', Bottom => ' + offset.bottom);
+
                 // Compare
                 if (x >= offset.left
-                    && y >= offset.top
+                    && y >= offset.top - 40
                     && x <= offset.right
-                    && y <= offset.bottom) { return true; }
+                    && y <= offset.bottom + 40) { return true; }
                 return false;
 
             }
+
+            $('body').click(function () {
+                $('#TextSuccess').hide(500);
+            });
+
+            $('#extpanel').show(500);
 
             $('#loadingImg').hide();
         });
 
         //Функция отправки параметров занятия на сервер после изменения размера/перетаскивания (Resize/Drop)
         function FCAjax(event, delta, revertFunc) {
+            if (event.end == null) {
+                event.end = event.start;
+            }
+
             $.ajax({
                 url: "/Exercises/FCEventChange/",
                 type: "POST",
@@ -190,5 +224,3 @@
 
     </script>
 }
-
-

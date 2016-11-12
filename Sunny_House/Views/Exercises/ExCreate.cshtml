@@ -4,7 +4,7 @@
 }
 <link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
 
-<h2><i class="fa fa-bell"> Занятия</i></h2>
+<h2><i class="fa fa-bell"></i> Занятия</h2>
 
 <div id="modDialog" class="modal fade">
     <div id="dialogContent" class="modal-dialog"></div>
@@ -96,6 +96,7 @@
                 $.cookie('StartTime', $('#StartTime').val());
                 $.cookie('EndTime', $('#EndTime').val());
                 $.cookie('Note', $('#Note').val());
+                $.cookie('ReturnUrl', '@ViewData["ReturnUrl"]');
 
                 e.preventDefault();
                 $.get(this.href, function (data) {
@@ -138,6 +139,10 @@
             $("#StartTime").val($.cookie('StartTime'));
             $('#EndTime').val($.cookie('EndTime', String));
             $('#Note').val($.cookie('Note'));
+            if ($.cookie('ReturnUrl')) {
+                alert('SET');
+                $('#ReturnUrl').val($.cookie('ReturnUrl'));
+            }
 
             $.removeCookie('EventId');
             $.removeCookie('EventLabel');
@@ -145,6 +150,7 @@
             $.removeCookie('StartTime');
             $.removeCookie('EndTime');
             $.removeCookie('Note');
+            $.removeCookie('ReturnUrl');
         });
 
 
