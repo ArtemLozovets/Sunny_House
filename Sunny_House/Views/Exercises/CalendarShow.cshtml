@@ -1,6 +1,6 @@
-﻿<link href="~/Content/fullcalendar.css" rel="stylesheet" />
+﻿<link href="~/Scripts/FullCalendar/lib/cupertino/jquery-ui.min.css" rel="stylesheet" />
+<link href="~/Content/fullcalendar.css" rel="stylesheet" />
 <link href="~/Content/fullcalendar.print.css" rel="stylesheet" media="print" />
-
 @{
     ViewBag.Title = "Персоны";
 }
@@ -20,7 +20,6 @@
         <img src="~/Content/Images/loader.gif" />
     </div>
 </div>
-
 
 <div class="row" style="margin-top:20px;">
     <div class="col-lg-12">
@@ -47,6 +46,7 @@
 @section Scripts {
     <script src="~/Scripts/FullCalendar/lib/moment.min.js"></script>
     <script src="~/Scripts/FullCalendar/lib/jquery.min.js"></script>
+    <script src="~/Scripts/FullCalendar/lib/jquery-ui.min.js"></script>
     <script src="~/Scripts/jquery.cookie-1.4.1.min.js"></script>
     <script src="~/Scripts/FullCalendar/fullcalendar.min.js"></script>
     <script src='~/Scripts/FullCalendar/ru.js'></script>
@@ -69,7 +69,7 @@
     <script>
         $(document).ready(function () {
 
-            var _now = new Date;
+           var _now = new Date;
 
             $('#calendar').fullCalendar({
                 header: {
@@ -104,7 +104,18 @@
                     $('#calendar').fullCalendar('unselect');
                 },
 
+                eventDragStart: function (event, jsEvent, ui, view, revertFunc) {
+
+                    $('#external-events').hover(function (e) {
+                        $(this).addClass('ovr');
+                    });
+
+                },
+
                 eventDragStop: function (event, jsEvent, ui, view, revertFunc) {
+
+                    $('#external-events').removeClass('ovr');
+
                     if (isEventOverDiv(jsEvent.clientX, jsEvent.clientY)) {
                         if (!confirm('Удалить занятие "' + event.title + '"?')) {
                             $('#calendar').fullCalendar('unselect');
@@ -162,10 +173,10 @@
 
                 var external_events = $('#external-events');
                 var offset = external_events.position();//!!!! Для фиксированного блока. Иначе - offset
-                offset.top += offset.top + 50;
-                offset.bottom += offset.bottom + 50;
-                offset.left += offset.left + 83;
-                offset.right += offset.right + 83;
+                offset.top += offset.top + 86;
+                offset.bottom += offset.bottom + 86;
+                offset.left += offset.left + 50;
+                offset.right += offset.right + 50;
 
                 offset.right = external_events.width() + offset.left;
                 offset.bottom = external_events.height() + offset.top;
@@ -177,9 +188,9 @@
 
                 // Compare
                 if (x >= offset.left
-                    && y >= offset.top - 40
+                    && y >= offset.top 
                     && x <= offset.right
-                    && y <= offset.bottom + 40) { return true; }
+                    && y <= offset.bottom ) { return true; }
                 return false;
 
             }
