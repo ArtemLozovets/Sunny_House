@@ -5,8 +5,8 @@
     ViewBag.Title = "Персоны";
 }
 
-
 <h2><i class="fa fa-bell"></i> Расписание занятий</h2>
+
 
 <div class="row" style="">
     <div class="col-md-6">
@@ -66,6 +66,28 @@
         });
     </script>
 
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#external-events").droppable({
+            accept: '.fc-draggable',
+            over: function (event, ui) {
+                $('#external-events').addClass('fc-highlight');
+            },
+            out: function (event, ui) {
+                $('#external-events').removeClass('fc-highlight');
+                console.log('OUT');
+            },
+            drop: function () {
+                //alert("You dropped to div ID " + $(this).attr('id'));
+            }
+        });
+    });
+
+</script>
+
+
+
     <script>
         $(document).ready(function () {
 
@@ -104,28 +126,22 @@
                     $('#calendar').fullCalendar('unselect');
                 },
 
+                //==========================Start====================================
                 eventDragStart: function (event, jsEvent, ui, view, revertFunc) {
-
-                    //Диагностическая информация---------------------------------
-                    var dt = Date.now();
-                    console.clear();
-                    console.log('DragStart: ' + dt);
-
-                    $("#external-events").mouseenter(function () {
-                        $(this).addClass('ovr');
+                    $('#calendar').fullCalendar('unselect');
+                    $(this).draggable({
+                        revert: true,
+                        revertDuration: 600
                     });
+
                 },
 
+                //==============================STOP================================
                 eventDragStop: function (event, jsEvent, ui, view, revertFunc) {
 
-
-                    $("#external-events").removeClass('ovr');
-
-
-                    //Диагностическая информация---------------------------------
-                    var dt = Date.now();
-                    //console.clear();
-                    console.log('DragStop: ' + dt);
+                    //$('#calendar').fullCalendar('refetchEvents');
+                    $('#external-events').addClass('highlighter_focus_out');
+                    $('#external-events').removeClass('highlighter_focus_in');
 
                     if (isEventOverDiv(jsEvent.clientX, jsEvent.clientY)) {
                         if (!confirm('Удалить занятие "' + event.title + '"?')) {
@@ -204,7 +220,7 @@
                 //console.log('Left => ' + offset.left + ', Right => ' + offset.right);
                 //console.log('Top => ' + offset.top + ', Bottom => ' + offset.bottom);
 
-                // Compare
+                // Сравнение координат
                 if (x >= offset.left
                     && y >= offset.top
                     && x <= offset.right
@@ -252,4 +268,5 @@
         }
 
     </script>
+
 }
