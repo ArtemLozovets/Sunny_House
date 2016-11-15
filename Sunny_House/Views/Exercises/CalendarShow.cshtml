@@ -69,7 +69,7 @@
     <script>
         $(document).ready(function () {
 
-           var _now = new Date;
+            var _now = new Date;
 
             $('#calendar').fullCalendar({
                 header: {
@@ -106,15 +106,26 @@
 
                 eventDragStart: function (event, jsEvent, ui, view, revertFunc) {
 
-                    $('#external-events').hover(function (e) {
+                    //Диагностическая информация---------------------------------
+                    var dt = Date.now();
+                    console.clear();
+                    console.log('DragStart: ' + dt);
+
+                    $("#external-events").mouseenter(function () {
                         $(this).addClass('ovr');
                     });
-
                 },
 
                 eventDragStop: function (event, jsEvent, ui, view, revertFunc) {
 
-                    $('#external-events').removeClass('ovr');
+
+                    $("#external-events").removeClass('ovr');
+
+
+                    //Диагностическая информация---------------------------------
+                    var dt = Date.now();
+                    //console.clear();
+                    console.log('DragStop: ' + dt);
 
                     if (isEventOverDiv(jsEvent.clientX, jsEvent.clientY)) {
                         if (!confirm('Удалить занятие "' + event.title + '"?')) {
@@ -172,25 +183,32 @@
             var isEventOverDiv = function (x, y) {
 
                 var external_events = $('#external-events');
-                var offset = external_events.position();//!!!! Для фиксированного блока. Иначе - offset
-                offset.top += offset.top + 86;
-                offset.bottom += offset.bottom + 86;
-                offset.left += offset.left + 50;
-                offset.right += offset.right + 50;
+                var offset = external_events.offset();
+
+                //Блок вычисления координат панели корзины при скролле
+                offset.top -= $(window).scrollTop();
+                offset.bottom -= $(window).scrollTop();
+                offset.right -= $(window).scrollLeft();
+                offset.left -= $(window).scrollLeft();
 
                 offset.right = external_events.width() + offset.left;
                 offset.bottom = external_events.height() + offset.top;
 
-                console.clear();
-                console.log('x => ' + x + ', y => ' + y);
-                console.log('Left => ' + offset.left + ', Right => ' + offset.right);
-                console.log('Top => ' + offset.top + ', Bottom => ' + offset.bottom);
+                offset.right = external_events.width() + offset.left;
+                offset.bottom = external_events.height() + offset.top;
+
+                ////Диагностическая информация---------------------------------
+                //console.clear();
+                //console.log('x => ' + x + ', y => ' + y);
+                //console.log('ScrollLeft => ' + $(window).scrollLeft() + ', ScrollTop => ' + $(window).scrollTop());
+                //console.log('Left => ' + offset.left + ', Right => ' + offset.right);
+                //console.log('Top => ' + offset.top + ', Bottom => ' + offset.bottom);
 
                 // Compare
                 if (x >= offset.left
-                    && y >= offset.top 
+                    && y >= offset.top
                     && x <= offset.right
-                    && y <= offset.bottom ) { return true; }
+                    && y <= offset.bottom) { return true; }
                 return false;
 
             }
