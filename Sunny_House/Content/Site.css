@@ -168,6 +168,7 @@ ul.dropdown-menu {
     display: none;
     text-indent: -9999px;
     background: url('Images/icon_top.png') no-repeat;
+    z-index:999999;
 }
 
 /*Блок стилей для дроп-панели календаря*/
@@ -209,6 +210,16 @@ ul.dropdown-menu {
     margin: 10px auto;
 }
 
+.FCButton:hover{
+   color: #333333;
+	text-decoration: none;
+	background-position: 0 -15px;
+	-webkit-transition: background-position 0.1s linear;
+	   -moz-transition: background-position 0.1s linear;
+	     -o-transition: background-position 0.1s linear;
+	        transition: background-position 0.1s linear;
+}
+
 .drop-hover {
     background-color: red;
 }
@@ -216,16 +227,5 @@ ul.dropdown-menu {
 #calendar {
     float: right;
     width: 900px;
+    margin-right:4px;
 }
-
-/*.ovr{
-    
-}
-
-.ovr:hover{
-    background-color:red;
-}*/
-
-
-.highlighter_focus_in{border:1px solid #585858;background-color:#F7FE2E;}
-.highlighter_focus_out{border:none;background-color:#fff;}

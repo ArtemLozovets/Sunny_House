@@ -15,6 +15,7 @@
 
 <p>
     <a class="btn btn-default" style="margin:2px 2px;" title="Добавить занятие" href='@Url.Action("ExCreate", "Exercises", new { @PersonId = Request.Params["PersonId"]})'><i class="fa fa-plus-circle"> Добавить занятие</i></a>
+    <a class="btn btn-default" title="Обновить" style="margin:2px 2px ;" href='@Url.Action("ExShow", "Exercises")'><span class="glyphicon glyphicon-refresh"></span></a>
 </p>
 
 <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
@@ -79,6 +80,14 @@
     }
 
 </table>
+
+
+@if (ViewBag.ReturnUrl != null)
+{
+    <div style="margin:10px 0 0 4px;">
+        <a class="btn btn-default" href='@ViewBag.ReturnUrl'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+    </div>
+}
 
 <a href="#" class="scrollup1">Наверх</a>
 

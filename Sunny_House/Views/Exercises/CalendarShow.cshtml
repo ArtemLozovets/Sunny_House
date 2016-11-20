@@ -1,5 +1,4 @@
-﻿<link href="~/Scripts/FullCalendar/lib/cupertino/jquery-ui.min.css" rel="stylesheet" />
-<link href="~/Content/fullcalendar.css" rel="stylesheet" />
+﻿<link href="~/Content/fullcalendar.css" rel="stylesheet" />
 <link href="~/Content/fullcalendar.print.css" rel="stylesheet" media="print" />
 @{
     ViewBag.Title = "Персоны";
@@ -7,6 +6,7 @@
 
 <h2><i class="fa fa-bell"></i> Расписание занятий</h2>
 
+<a href="@Url.Action("ExShow", "Exercises", new { @ReturnUrl = "/Exercises/CalendarShow/" })">Управление занятиями</a>
 
 <div class="row" style="">
     <div class="col-md-6">
@@ -46,7 +46,6 @@
 @section Scripts {
     <script src="~/Scripts/FullCalendar/lib/moment.min.js"></script>
     <script src="~/Scripts/FullCalendar/lib/jquery.min.js"></script>
-    <script src="~/Scripts/FullCalendar/lib/jquery-ui.min.js"></script>
     <script src="~/Scripts/jquery.cookie-1.4.1.min.js"></script>
     <script src="~/Scripts/FullCalendar/fullcalendar.min.js"></script>
     <script src='~/Scripts/FullCalendar/ru.js'></script>
@@ -65,28 +64,6 @@
             $.removeCookie('ReturnUrl');
         });
     </script>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-
-        $("#external-events").droppable({
-            accept: '.fc-draggable',
-            over: function (event, ui) {
-                $('#external-events').addClass('fc-highlight');
-            },
-            out: function (event, ui) {
-                $('#external-events').removeClass('fc-highlight');
-                console.log('OUT');
-            },
-            drop: function () {
-                //alert("You dropped to div ID " + $(this).attr('id'));
-            }
-        });
-    });
-
-</script>
-
-
 
     <script>
         $(document).ready(function () {
@@ -126,22 +103,25 @@
                     $('#calendar').fullCalendar('unselect');
                 },
 
-                //==========================Start====================================
+                //=======================Щелчок по событию==========================
+                eventClick: function (calEvent, jsEvent, view) {
+
+                        if (!confirm('Перейти на страницу управления занятием "' + calEvent.title + '"?')) {
+                            return false;
+                        }
+                        else {
+                            var UrlStr = '/Exercises/ExShow?ExerciseId=' + calEvent.id;
+                            window.open(UrlStr, "_blank");
+                        }
+                },
+
+                //==============================Start===============================
                 eventDragStart: function (event, jsEvent, ui, view, revertFunc) {
-                    $('#calendar').fullCalendar('unselect');
-                    $(this).draggable({
-                        revert: true,
-                        revertDuration: 600
-                    });
 
                 },
 
                 //==============================STOP================================
                 eventDragStop: function (event, jsEvent, ui, view, revertFunc) {
-
-                    //$('#calendar').fullCalendar('refetchEvents');
-                    $('#external-events').addClass('highlighter_focus_out');
-                    $('#external-events').removeClass('highlighter_focus_in');
 
                     if (isEventOverDiv(jsEvent.clientX, jsEvent.clientY)) {
                         if (!confirm('Удалить занятие "' + event.title + '"?')) {
@@ -233,7 +213,8 @@
                 $('#TextSuccess').hide(500);
             });
 
-            $('#extpanel').show(500);
+            extpanelToggle();
+
 
             $('#loadingImg').hide();
         });
@@ -241,7 +222,7 @@
         //Функция отправки параметров занятия на сервер после изменения размера/перетаскивания (Resize/Drop)
         function FCAjax(event, delta, revertFunc) {
             if (event.end == null) {
-                event.end = event.start;
+                event.end = event.start.setMinutes(event.start.getMinutes()+60);
             }
 
             $.ajax({
@@ -266,7 +247,37 @@
             });
 
         }
-
     </script>
 
+    <script type="text/javascript">
+        //----------Изменение размеров окна окна-----------
+        $(window).resize(function () {
+            extpanelToggle()
+        });
+
+        //Проверяем ширину окна
+        function smallScreen() {
+            var minWidth = 1200; //Ширина окна при которой отображается панель корзины
+            var dw = $(window).width();
+            if (dw < minWidth) {
+                console.log(dw + ' < ' + minWidth);
+                return true;
+            }
+            console.log(dw + ' >= ' + minWidth);
+            return false;
+        }
+
+        function extpanelToggle() {
+            if (!smallScreen()) {
+                $('#extpanel').show(500, function () {
+                    $('#calendar').css({ 'width': '900px', 'float': 'right' });
+                });
+            }
+            else {
+                $('#extpanel').hide(500, function () {
+                    $('#calendar').css({ 'width': $(window).width() - 100, 'float': 'left' });
+                });
+            };
+        }
+    </script>
 }

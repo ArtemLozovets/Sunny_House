@@ -18,8 +18,13 @@ namespace Sunny_House.Controllers
         private SunnyModel db = new SunnyModel();
 
         // GET: Exercises
-        public async Task<ActionResult> ExShow(int? ExerciseId)
+        public async Task<ActionResult> ExShow(int? ExerciseId, string ReturnUrl)
         {
+            if (!String.IsNullOrEmpty(ReturnUrl))
+            {
+                ViewData["ReturnUrl"] = ReturnUrl;
+            }
+
             var exercises = db.Exercises.Include(e => e.Event).Where(e => e.ExerciseId == ExerciseId || ExerciseId == null);
             return View(await exercises.ToListAsync());
         }
