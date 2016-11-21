@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "Задачи";
 }
+<link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
 
 <div id="loadingImg">
     <div id="preloadImg">
@@ -174,7 +175,7 @@
                 new
                 {
                     @style = "width:110px;",
-                    @type = "date",
+                    @type = "text",
                     @class = "form-control ",
                     @placeholder = "Создание",
                     @title = "Дата создания задачи",
@@ -187,7 +188,7 @@
                 new
                 {
                     @style = "width:110px;",
-                    @type = "date",
+                    @type = "text",
                     @class = "form-control ",
                     @placeholder = "Завершение",
                     @title = "Дата завершения задачи",
@@ -233,44 +234,6 @@
     <script type="text/javascript">
         //Скрипт изменения значка раскрытия панели аккордеона
         $(document).ready(function () {
-
-            $("input[type='date']").datepicker().each(function () {
-                this.setAttribute("type", "text");
-            });
-
-            $.datepicker.regional['ru'] = {
-                closeText: 'Закрыть',
-                prevText: '<<',
-                nextText: '>>',
-                currentText: 'Сегодня',
-                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-                'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-                monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
-                'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
-                dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
-                dayNamesShort: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
-                dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-                weekHeader: 'Не',
-                dateFormat: 'dd/mm/yy',
-                firstDay: 1,
-                isRTL: false,
-                showMonthAfterYear: false,
-                yearSuffix: ''
-            };
-
-            $.datepicker.setDefaults($.datepicker.regional['ru']);
-
-            $.validator.methods.date = function (value, element) {
-                if (value) {
-                    try {
-                        $.datepicker.parseDate('dd/mm/yy', value);
-                    } catch (ex) {
-                        return false;
-                    }
-                }
-                return true;
-            };
-
 
             $(".panel-collapse").on("hide.bs.collapse", function () {
                 $(this).parent().find(".panel-title span").removeClass("glyphicon glyphicon-triangle-top").addClass("glyphicon glyphicon-triangle-bottom");
@@ -339,5 +302,35 @@
             }
         });
     </script>
+
+@*Блок скриптов для работы с DateTimePicker*@
+<script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
+<script type="text/javascript">
+
+    $.datetimepicker.setLocale('ru');
+
+    // <![CDATA[
+    jQuery(function () {
+        jQuery('#SearchDateOfCreation, #SearchDate').datetimepicker({
+            format: 'd/m/Y',
+            formatDate: 'd/m/Y',
+            timepicker: false
+        });
+
+    });
+    // ]]>
+
+    $.validator.methods.date = function (value, element) {
+        if (value) {
+            try {
+                $.datepicker.parseDate('dd/mm/yy', value);
+            } catch (ex) {
+                return false;
+            }
+        }
+        return true;
+    };
+</script>
+
 }
 
