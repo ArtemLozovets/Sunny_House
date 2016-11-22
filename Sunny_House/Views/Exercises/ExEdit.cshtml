@@ -49,6 +49,7 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.EndTime, new { htmlAttributes = new { @type = "text", @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
                 @Html.ValidationMessageFor(model => model.EndTime, "", new { @class = "text-danger" })
+                <span id="EndTimeValidator" class="field-validation-valid text-danger"></span>
             </div>
         </div>
         <div class="form-group">
@@ -82,6 +83,7 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script src="~/Scripts/jquery.cookie-1.4.1.min.js"></script>
+    <script src="~/Scripts/FullCalendar/lib/moment.min.js"></script>
     <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
 
     <script type="text/javascript">
@@ -120,21 +122,35 @@
         });
 
         $('#ExForm').submit(function () {
-            if ($("#EventId").val() == 0 && $("#AddressId").val() == 0) {
-                $("#EventValidator").html("Необходимо заполнить поле \"Мероприятие\"");
-                $("#AddressValidator").html("Необходимо заполнить поле \"Адрес\"");
-                return false;
-            }
 
-            if ($("#AddressId").val() == 0) {
-                $("#AddressValidator").html("Необходимо заполнить поле \"Адрес\"");
-                return false;
+            $("#EndTimeValidator").html("");
+            var flag = false;
+
+            //Определяем количество минут между началом и окончанием занятия
+            var start_time = $('#StartTime').val();
+            var end_time = $('#EndTime').val();
+            start_time = moment(start_time, "DD/MM/YYYY HH:mm");
+            end_time = moment(end_time, "DD/MM/YYYY HH:mm");
+            duration = end_time.diff(start_time, 'minutes');
+
+            if (duration < 30) {
+
+                $("#EndTimeValidator").html("Продолжительность занятия должна быть не менее 30 минут");
+                flag = true;
             }
+            //==========================
+
 
             if ($("#EventId").val() == 0) {
                 $("#EventValidator").html("Необходимо заполнить поле \"Мероприятие\"");
-                return false;
+                flag = true;
             }
+            if ($("#AddressId").val() == 0) {
+                $("#AddressValidator").html("Необходимо заполнить поле \"Адрес\"");
+                flag = true;
+            }
+            if (flag) { return false; }
+
         });
 
         //Читаем содержимое cookies и заполняем поля формы после возврата

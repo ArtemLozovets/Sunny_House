@@ -25,7 +25,7 @@ namespace Sunny_House.Controllers
                 ViewData["ReturnUrl"] = ReturnUrl;
             }
 
-            var exercises = db.Exercises.Include(e => e.Event).Where(e => e.ExerciseId == ExerciseId || ExerciseId == null);
+            var exercises = db.Exercises.Include(e => e.Event).Where(e => e.ExerciseId == ExerciseId || ExerciseId == null).OrderByDescending(e=>e.StartTime);
             return View(await exercises.ToListAsync());
         }
 
@@ -79,13 +79,25 @@ namespace Sunny_House.Controllers
                     string _returnurl = (!String.IsNullOrEmpty(ReturnUrl)) ? ReturnUrl : "/Exercises/ExShow";
                     ViewData["ReturnUrl"] = _returnurl;
 
-                    db.Exercises.Add(exercise);
-                    await db.SaveChangesAsync();
+                    if ((exercise.EndTime - exercise.StartTime).TotalMinutes >= 30)
+                    {
+                        db.Exercises.Add(exercise);
+                        await db.SaveChangesAsync();
 
-                    string _message = "Информация о занятии добавлена в базу данных";
-                    TempData["MessageOk"] = _message;
+                        string _message = "Информация о занятии добавлена в базу данных";
+                        TempData["MessageOk"] = _message;
 
-                    return Redirect(_returnurl);
+                        return Redirect(_returnurl);
+                        
+
+                    }
+                    else
+                    {
+                        TempData["MessageError"] = "Продолжительность занятия должна быть не менее 30 минут";
+                        return Redirect(_returnurl);
+                    }
+
+                    
                 }
                 catch (Exception ex)
                 {
@@ -137,13 +149,21 @@ namespace Sunny_House.Controllers
             {
                 try
                 {
-                    db.Entry(exercise).State = EntityState.Modified;
-                    await db.SaveChangesAsync();
+                    if ((exercise.EndTime - exercise.StartTime).TotalMinutes >= 30)
+                    {
+                        db.Entry(exercise).State = EntityState.Modified;
+                        await db.SaveChangesAsync();
 
-                    string _message = "Информация о занятии успешно обновлена";
-                    TempData["MessageOk"] = _message;
+                        string _message = "Информация о занятии успешно обновлена";
+                        TempData["MessageOk"] = _message;
 
-                    return RedirectToAction("ExShow");
+                        return RedirectToAction("ExShow");
+                    }
+                    else
+                    {
+                        TempData["MessageError"] = "Продолжительность занятия должна быть не менее 30 минут";
+                        return Redirect("ExShow");
+                    }
                 }
                 catch (Exception ex)
                 {
