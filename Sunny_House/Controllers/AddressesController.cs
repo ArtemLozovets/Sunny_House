@@ -285,7 +285,7 @@ namespace Sunny_House.Controllers
         {
             try
             {
-                if (!db.Addresses.First(a => a.AddressId == id).PersonPlace.Any() || !db.Addresses.First(a => a.AddressId == id).Exercise.Any())
+                if (!db.Addresses.First(a => a.AddressId == id).PersonPlace.Any() && !db.Addresses.First(a => a.AddressId == id).Exercise.Any())
                 {
                     Address address = db.Addresses.Find(id);
                     db.Addresses.Remove(address);

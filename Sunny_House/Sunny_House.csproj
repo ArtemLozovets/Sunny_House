@@ -188,6 +188,7 @@
     <Compile Include="Controllers\PotentialСlientController.cs" />
     <Compile Include="Controllers\ReservesController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
+    <Compile Include="Controllers\VisitsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -503,13 +504,17 @@
     <Content Include="Views\Tasks\TasksGroupShow.cshtml" />
     <Content Include="Views\Tasks\TasksShowPartial.cshtml" />
     <Content Include="Views\Exercises\CalendarShow.cshtml" />
+    <Content Include="Views\Visits\VisCreate.cshtml" />
+    <Content Include="Views\Visits\VisDelete.cshtml" />
+    <Content Include="Views\Visits\VisDetails.cshtml" />
+    <Content Include="Views\Visits\VisEdit.cshtml" />
+    <Content Include="Views\Visits\VisShow.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201608271026151_Initial.resx">

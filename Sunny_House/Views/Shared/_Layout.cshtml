@@ -30,7 +30,8 @@
                         <ul class="dropdown-menu">
                             <li>@Html.ActionLink("Мероприятия", "EShow", "Events", new { Area = "" }, null)</li>
                             <li>@Html.ActionLink("Расписание", "CalendarShow", "Exercises", new { Area = "" }, null)</li>
-                            @*<li>@Html.ActionLink("Бронирование", "ResShowAll", "Reserves", new { Area = "" }, null)</li>*@
+                            <li role="separator" class="divider"></li>
+                            <li>@Html.ActionLink("Посещения", "VisShow", "Visits", new { Area = "" }, null)</li>
                             <li role="separator" class="divider"></li>
                             <li>@Html.ActionLink("Задачи", "TasksShow", "Tasks", new { Area = "" }, null)</li>
                             <li>@Html.ActionLink("Отзывы", "CommentShow", "Comments", new { Area = "" }, null)</li>
