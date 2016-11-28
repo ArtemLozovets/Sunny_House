@@ -10,11 +10,14 @@ namespace Sunny_House.Models
     public partial class Visit
     {
         public int VisitId { get; set; }
-        
+
+        [Required(ErrorMessage = "Необходимо выбрать персону")]
         public int VisitorId { get; set; }
 
+        [Required(ErrorMessage = "Необходимо выбрать занятие")]
         public int ExerciseId { get; set; }
 
+        [Required(ErrorMessage = "Необходимо выбрать роль")]
         public int RoleId { get; set; }
 
         public virtual Exercise Exercise { get; set; }

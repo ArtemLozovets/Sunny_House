@@ -6,3 +6,5 @@
 *.pdb
 *.nupkg
 *.transform
+/packages/jQuery.UI.Combined.1.12.1/Content/Scripts/jquery-ui-1.12.1.js
+/packages/jQuery.UI.Combined.1.12.1/Content/Scripts/jquery-ui-1.12.1.min.js

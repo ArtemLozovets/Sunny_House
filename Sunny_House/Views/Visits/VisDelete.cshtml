@@ -6,13 +6,13 @@
 
 <h2><i class="fa fa-id-card-o"></i> Посещения</h2>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3 class="text-danger">Вы действительно хотите удалить выбранную запись?</h3>
 <div>
-    <h4>Visit</h4>
+    <h4>Удаление информации о посещении</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Exercise.Subject)
+            Занятие
         </dt>
 
         <dd>
@@ -20,7 +20,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Person.FirstName)
+            ФИО персоны
         </dt>
 
         <dd>
@@ -35,22 +35,15 @@
             @Html.DisplayFor(model => model.PersonRole.RoleName)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <a class="btn btn-default" href='@Url.Action("VisShow", "Visits")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+            <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-trash"> Удалить</i></button>
         </div>
     }
 </div>

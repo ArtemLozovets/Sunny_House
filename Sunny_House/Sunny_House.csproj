@@ -506,9 +506,9 @@
     <Content Include="Views\Exercises\CalendarShow.cshtml" />
     <Content Include="Views\Visits\VisCreate.cshtml" />
     <Content Include="Views\Visits\VisDelete.cshtml" />
-    <Content Include="Views\Visits\VisDetails.cshtml" />
     <Content Include="Views\Visits\VisEdit.cshtml" />
     <Content Include="Views\Visits\VisShow.cshtml" />
+    <Content Include="Views\Modal\ShowModalExercises.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

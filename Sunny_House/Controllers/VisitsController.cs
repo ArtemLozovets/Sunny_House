@@ -22,20 +22,6 @@ namespace Sunny_House.Controllers
             return View(await visits.ToListAsync());
         }
 
-        // GET: Visits/Details/5
-        public async Task<ActionResult> VisDetails(int? VisitId)
-        {
-            if (VisitId == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Visit visit = await db.Visits.FindAsync(VisitId);
-            if (visit == null)
-            {
-                return HttpNotFound();
-            }
-            return View(visit);
-        }
 
         // GET: Visits/Create
         public ActionResult VisCreate()
@@ -53,10 +39,24 @@ namespace Sunny_House.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Visits.Add(visit);
-                await db.SaveChangesAsync();
-                return RedirectToAction("VisShow");
+                try
+                {
+                    db.Visits.Add(visit);
+                    await db.SaveChangesAsync();
+
+                    TempData["MessageOk"] = "Информация о посещении успешно добавлена";
+
+                    return RedirectToAction("VisShow");
+
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.ErMes = ex.Message;
+                    ViewBag.ErStack = ex.StackTrace;
+                    return View("Error");
+                }
             }
+            TempData["MessageError"] = "Ошибка валидации модели";
 
             ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject", visit.ExerciseId);
             ViewBag.VisitorId = new SelectList(db.Persons, "PersonId", "FirstName", visit.VisitorId);
@@ -85,14 +85,31 @@ namespace Sunny_House.Controllers
         // POST: Visits/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> VisEdit([Bind(Include = "VisitorId,ExerciseId,Id,RoleId")] Visit visit)
+        public async Task<ActionResult> VisEdit([Bind(Include = "VisitorId,ExerciseId,VisitId,RoleId")] Visit visit)
         {
+            // db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Information====================
             if (ModelState.IsValid)
             {
-                db.Entry(visit).State = EntityState.Modified;
-                await db.SaveChangesAsync();
-                return RedirectToAction("VisShow");
+                try
+                {
+                    db.Entry(visit).State = EntityState.Modified;
+                    await db.SaveChangesAsync();
+
+                    TempData["MessageOk"] = "Информация о посещении успешно изменена";
+
+                    return RedirectToAction("VisShow");
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.ErMes = ex.Message;
+                    ViewBag.ErStack = ex.StackTrace;
+                    return View("Error");
+                }
+
             }
+
+            TempData["MessageError"] = "Ошибка валидации модели";
+
             ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject", visit.ExerciseId);
             ViewBag.VisitorId = new SelectList(db.Persons, "PersonId", "FirstName", visit.VisitorId);
             ViewBag.RoleId = new SelectList(db.PersonRoles, "RoleId", "RoleName", visit.RoleId);
@@ -119,10 +136,22 @@ namespace Sunny_House.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int VisitId)
         {
-            Visit visit = await db.Visits.FindAsync(VisitId);
-            db.Visits.Remove(visit);
-            await db.SaveChangesAsync();
-            return RedirectToAction("VisShow");
+            try
+            {
+                Visit visit = await db.Visits.FindAsync(VisitId);
+                db.Visits.Remove(visit);
+                await db.SaveChangesAsync();
+
+                TempData["MessageOk"] = "Информация о посещении успешно удалена";
+
+                return RedirectToAction("VisShow");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErMes = ex.Message;
+                ViewBag.ErStack = ex.StackTrace;
+                return View("Error");
+            }
         }
 
         protected override void Dispose(bool disposing)
