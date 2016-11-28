@@ -56,7 +56,6 @@ namespace Sunny_House.Controllers
                     return View("Error");
                 }
             }
-            TempData["MessageError"] = "Ошибка валидации модели";
 
             ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject", visit.ExerciseId);
             ViewBag.VisitorId = new SelectList(db.Persons, "PersonId", "FirstName", visit.VisitorId);
@@ -107,8 +106,6 @@ namespace Sunny_House.Controllers
                 }
 
             }
-
-            TempData["MessageError"] = "Ошибка валидации модели";
 
             ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject", visit.ExerciseId);
             ViewBag.VisitorId = new SelectList(db.Persons, "PersonId", "FirstName", visit.VisitorId);

@@ -36,8 +36,11 @@
             var ExId = $(elem).data('exid');
             var PasteItem = $(elem).data('pasteitem');
             var ExName = $(elem).data('exname');
-            if (PasteItem == 'VisitorId') $("#PersonLabel").val(PersonPIB);
+
+            if (PasteItem == 'ExerciseId') $("#ExLabel").val(ExName);
             $("#" + PasteItem).val(ExId);
             $('#modDialog').modal('hide');
         };
+
+
 </script>

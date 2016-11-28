@@ -305,8 +305,9 @@ namespace Sunny_House.Controllers
             return PartialView();
         }
 
-        public ActionResult ExercisesPartialList()
+        public ActionResult ExercisesPartialList(string field)
         {
+            ViewBag.Mode = field;
             var _result = db.Exercises.ToList();
             return PartialView(_result);
         }
