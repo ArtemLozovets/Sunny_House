@@ -299,6 +299,18 @@ namespace Sunny_House.Controllers
         }
 
 
+        public ActionResult ShowModalExercises(string field)
+        {
+            ViewBag.Mode = field;
+            return PartialView();
+        }
+
+        public ActionResult ExercisesPartialList()
+        {
+            var _result = db.Exercises.ToList();
+            return PartialView(_result);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

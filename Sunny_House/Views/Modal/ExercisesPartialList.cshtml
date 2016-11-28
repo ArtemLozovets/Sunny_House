@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Sunny_House.Models.Exercise>
+
+<table class="table Modal-">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Event.EventName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Subject)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StartTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndTime)
+        </th>
+        <th></th>
+    </tr>
+
+
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="5">
+                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+            </td>
+        </tr>
+    }
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Event.EventName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Subject)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndTime)
+            </td>
+            <td>
+                <a class="btn btn-default btn-sm selPerson"
+                   data-pasteitem="@ViewBag.Mode"
+                   data-exid="@item.ExerciseId"
+                   onclick="selsubmit(this)"
+                   data-exname="@item.Subject">
+                    <span class="glyphicon glyphicon-ok"></span>
+                </a>
+            </td>
+        </tr>
+    }
+
+</table>

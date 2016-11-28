@@ -1,31 +1,26 @@
 ﻿<div class="modal-content ui-front">
     <div class="modal-header">
         <button class="close" data-dismiss="modal" area-hidden="true">X</button>
-        <h4>Персоны</h4>
+        <h4>Занятия</h4>
     </div>
     <div class="row" style="margin:10px 0">
         <div class="col-lg-12 form-inline">
-            @using (Ajax.BeginForm("PersonsPartialList", "Modal", new { @field = @ViewBag.Mode }, new AjaxOptions { UpdateTargetId = "update" }, new { @id = "modalform" }))
+            @using (Ajax.BeginForm("ExercisesPartialList", "Modal", new { @field = @ViewBag.Mode }, new AjaxOptions { UpdateTargetId = "update" }, new { @id = "modalform" }))
             {
-                @Html.TextBox("PersonSearchString", null, new { @class = "form-control ", @data_autocomplete_source = @Url.Action("AutocompletePersonFirstName", "AutoComplete"), @placeholder = "Имя, фамилия, тел.", @style = "margin:2px 2px; width:180px; display:inline-block;" })
+                @Html.TextBox("ExerciseSearchString", null, new { @class = "form-control ", @placeholder = "Название...", @style = "margin:2px 2px; width:180px; display:inline-block;" })
                 <button type="submit" title="Искать" style="margin:2px 2px; display:inline-block " class="btn btn-default"><i class="glyphicon glyphicon-search"></i> </button>
                 <button type="button" title="Обновить" class="btn btn-default" id="filterclear"><i class="glyphicon glyphicon-refresh"></i></button>
             }
         </div>
     </div>
     <div id="update">
-        @Html.Action("PersonsPartialList", "Modal", new { PersonSearchString = "", field = @ViewBag.Mode })
+        @Html.Action("ExercisesPartialList", "Modal", new { ExerciseSearchString = "", field = @ViewBag.Mode })
     </div>
 </div>
 
 <script type="text/javascript">
         $(function () {
-            $("[data-autocomplete-source]").each(function () {
-                var target = $(this);
-                target.autocomplete({ source: target.attr("data-autocomplete-source") });
-            });
-
-            $('#PersonSearchString').focus();
+            $('#ExerciseSearchString').focus();
 
             $('#filterclear').click(function (event) {
                 $('#modalform').trigger('reset');
@@ -38,15 +33,11 @@
         });
 
         function selsubmit(elem) {
-            var PersonId = $(elem).data('personid');
+            var ExId = $(elem).data('exid');
             var PasteItem = $(elem).data('pasteitem');
-            var PersonPIB = $(elem).data('personpib');
-            if (PasteItem == 'PayerId') $("#PayerLabel").val(PersonPIB);
-            if (PasteItem == 'ClientId') $("#ClientLabel").val(PersonPIB);
-            if (PasteItem == 'AdministratorId') $("#AdminLabel").val(PersonPIB);
-            if (PasteItem == 'RelPersonId') $("#RelPersonLabel").val(PersonPIB);
+            var ExName = $(elem).data('exname');
             if (PasteItem == 'VisitorId') $("#PersonLabel").val(PersonPIB);
-            $("#" + PasteItem).val(PersonId);
+            $("#" + PasteItem).val(ExId);
             $('#modDialog').modal('hide');
         };
 </script>
