@@ -16,18 +16,43 @@ namespace Sunny_House.Controllers
         private SunnyModel db = new SunnyModel();
 
         // GET: Visits
-        public async Task<ActionResult> VisShow()
+        public ActionResult VisShow()
         {
-            var visits = db.Visits.Include(v => v.Exercise).Include(v => v.Person).Include(v => v.PersonRole);
-            return View(await visits.ToListAsync());
+            //var visits = db.Visits.Include(v => v.Exercise).Include(v => v.Person).Include(v => v.PersonRole);
+
+            var visits = (from visit in db.Visits
+                          join ex in db.Exercises on visit.ExerciseId equals ex.ExerciseId
+                          join person in db.Persons on visit.VisitorId equals person.PersonId
+                          join role in db.PersonRoles on visit.RoleId equals role.RoleId
+                          select new 
+                          {
+                          
+                            
+                              VisitId = visit.VisitId,
+                              VisitorId = visit.VisitorId,
+                              ExerciseId = ex.ExerciseId,
+                              RoleId = role.RoleId,
+                              PersonFIO = person.FirstName + " "+ person.LastName +" "+ person.MiddleName,
+                              ExName = ex.Subject,
+                              RoleName = role.RoleName
+
+                          }).AsEnumerable().Select(x => new Visit { 
+                                         VisitId = x.VisitId,
+                                         VisitorId = x.VisitorId,
+                                         ExerciseId = x.ExerciseId,
+                                         PersonFIO = x.PersonFIO,
+                                         RoleId = x.RoleId,
+                                         ExName = x.ExName,
+                                         RoleName = x.RoleName
+                          }).ToList();
+
+            return View(visits);
         }
 
 
         // GET: Visits/Create
         public ActionResult VisCreate()
         {
-            ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject");
-            ViewBag.VisitorId = new SelectList(db.Persons, "PersonId", "FirstName");
             ViewBag.RoleId = new SelectList(db.PersonRoles, "RoleId", "RoleName");
             return View();
         }
@@ -57,8 +82,24 @@ namespace Sunny_House.Controllers
                 }
             }
 
-            ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject", visit.ExerciseId);
-            ViewBag.VisitorId = new SelectList(db.Persons, "PersonId", "FirstName", visit.VisitorId);
+            if (visit.ExerciseId != 0)
+            {
+                ViewBag.ExerciseName = db.Exercises.FirstOrDefault(x => x.ExerciseId == visit.ExerciseId).Subject.ToString();
+            }
+
+            if (visit.VisitorId != 0)
+            {
+                var _fio = (from person in db.Persons
+                            where person.PersonId == visit.VisitorId
+                            select new
+                            {
+                                FirstName = person.FirstName,
+                                LastName = person.LastName,
+                                MiddleName = person.MiddleName
+                            }).FirstOrDefault();
+                ViewBag.VisitorFIO = String.Format("{0} {1} {2}", _fio.FirstName, _fio.LastName, _fio.MiddleName);
+            }
+
             ViewBag.RoleId = new SelectList(db.PersonRoles, "RoleId", "RoleName", visit.RoleId);
             return View(visit);
         }
@@ -75,8 +116,19 @@ namespace Sunny_House.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject", visit.ExerciseId);
-            ViewBag.VisitorId = new SelectList(db.Persons, "PersonId", "FirstName", visit.VisitorId);
+
+
+            var _fio = (from person in db.Persons
+                        where person.PersonId == visit.VisitorId
+                        select new
+                        {
+                            FirstName = person.FirstName,
+                            LastName = person.LastName,
+                            MiddleName = person.MiddleName
+                        }).FirstOrDefault();
+            
+            ViewBag.VisitorFIO = String.Format("{0} {1} {2}", _fio.FirstName, _fio.LastName, _fio.MiddleName);
+            ViewBag.ExerciseName = db.Exercises.FirstOrDefault(x => x.ExerciseId == visit.ExerciseId).Subject.ToString();
             ViewBag.RoleId = new SelectList(db.PersonRoles, "RoleId", "RoleName", visit.RoleId);
             return View(visit);
         }
@@ -86,7 +138,7 @@ namespace Sunny_House.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> VisEdit([Bind(Include = "VisitorId,ExerciseId,VisitId,RoleId")] Visit visit)
         {
-            // db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Information====================
+             db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Information====================
             if (ModelState.IsValid)
             {
                 try
@@ -107,8 +159,17 @@ namespace Sunny_House.Controllers
 
             }
 
-            ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject", visit.ExerciseId);
-            ViewBag.VisitorId = new SelectList(db.Persons, "PersonId", "FirstName", visit.VisitorId);
+            var _fio = (from person in db.Persons
+                        where person.PersonId == visit.VisitorId
+                        select new
+                        {
+                            FirstName = person.FirstName,
+                            LastName = person.LastName,
+                            MiddleName = person.MiddleName
+                        }).FirstOrDefault();
+
+            ViewBag.VisitorFIO = String.Format("{0} {1} {2}", _fio.FirstName, _fio.LastName, _fio.MiddleName);
+            ViewBag.ExerciseName = db.Exercises.FirstOrDefault(x => x.ExerciseId == visit.ExerciseId).Subject.ToString();
             ViewBag.RoleId = new SelectList(db.PersonRoles, "RoleId", "RoleName", visit.RoleId);
             return View(visit);
         }

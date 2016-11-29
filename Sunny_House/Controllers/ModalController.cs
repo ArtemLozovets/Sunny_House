@@ -88,7 +88,7 @@ namespace Sunny_House.Controllers
                         PersonId = Convert.ToInt16(Server.HtmlEncode(HttpContext.Request.Cookies["PayerId"].Value));
                     }
                 }
-                
+
                 // Удаляем cookies
                 if (HttpContext.Request.Cookies["PayerId"] != null)
                 {
@@ -279,7 +279,7 @@ namespace Sunny_House.Controllers
             }
 
             List<Events2ResViewModel> _modelList = new List<Events2ResViewModel>();
-            
+
             foreach (var item in _events)
             {
                 Events2ResViewModel _model = new Events2ResViewModel
@@ -292,7 +292,7 @@ namespace Sunny_House.Controllers
                     FreePlaces = item.FreePLaces
                 };
                 _modelList.Add(_model);
-                    
+
             }
 
             return PartialView(_modelList);
@@ -305,11 +305,37 @@ namespace Sunny_House.Controllers
             return PartialView();
         }
 
-        public ActionResult ExercisesPartialList(string field)
+        [HttpGet]
+        public ActionResult ExercisesPartialList(string field, int? page)
         {
             ViewBag.Mode = field;
             var _result = db.Exercises.ToList();
-            return PartialView(_result);
+
+
+            int pageSize = 50;
+            int pageNumber = (page ?? 1);
+
+            return PartialView(_result.ToPagedList(pageNumber, pageSize));
+        }
+
+        [HttpPost]
+        public ActionResult ExercisesPartialList(string field, string ExerciseSearchString, DateTime? StartTimeS, DateTime? EndTimeS, int? page)
+        {
+            ViewBag.Mode = field;
+
+            ViewData["ExerciseSearchString"] = ExerciseSearchString;
+            ViewData["StartTimeS"] = StartTimeS;
+            ViewData["EndTimeS"] = EndTimeS;
+
+            var _ex = (from ex in db.Exercises
+                       where (ex.Subject.ToUpper().Contains(ExerciseSearchString.ToUpper()) || String.IsNullOrEmpty(ExerciseSearchString)) &&
+                       ((ex.StartTime >= StartTimeS || StartTimeS == null) && (ex.EndTime <= EndTimeS || EndTimeS == null))
+                       select ex).ToList();
+
+            int pageSize = 50;
+            int pageNumber = (page ?? 1);
+
+            return PartialView(_ex.ToPagedList(pageNumber, pageSize));
         }
 
         protected override void Dispose(bool disposing)

@@ -6,37 +6,50 @@
 
 <h2><i class="fa fa-id-card-o"></i> Посещения</h2>
 
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog" style="width:660px;"></div>
+</div>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("VisEdit", "Visits", FormMethod.Post, new { id = "VisitForm" }))
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
-        <h4>Редактирование информации о посещении</h4>
+        <h4>Редактировать информацию о посещении</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
+        @Html.HiddenFor(model => model.VisitId)
+
         <div class="form-group">
-            @Html.LabelFor(model => model.VisitorId, "ФИО персоны", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.VisitorId, "Персона", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("VisitorId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.VisitorId, "", new { @class = "text-danger" })
+                <div class="form-inline">
+                    <input type="text" name="PersonLabel" id="PersonLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewBag.VisitorFIO" />
+                    <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "VisitorId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                </div>
+                @Html.HiddenFor(model => model.VisitorId)
+                @Html.ValidationMessageFor(model => model.VisitorId, "", new { @class = "text-danger", @id = "VisitorValidator" })
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.ExerciseId, "Занятие", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("ExerciseId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.ExerciseId, "", new { @class = "text-danger" })
+                <div class="form-inline">
+                    <input type="text" name="ExLabel" id="ExLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewBag.ExerciseName" />
+                    <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalExercises", "Modal", new { field = "ExerciseId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                </div>
+                @Html.HiddenFor(model => model.ExerciseId)
+                @Html.ValidationMessageFor(model => model.ExerciseId, "", new { @class = "text-danger", @id = "ExerciseValidator" })
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.RoleId, "Роль", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("RoleId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.RoleId, "", new { @class = "text-danger" })
+                @Html.DropDownList("RoleId", null, "-Выберите роль-", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.RoleId, "", new { @class = "text-danger", @id = "RoleValidator" })
             </div>
         </div>
 
@@ -49,9 +62,59 @@
 }
 
 <div>
-    <a class="btn btn-default" href='@Url.Action("VisShow", "Visits")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+    <p><a class="btn btn-default" href='@Url.Action("VisShow", "Visits")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a></p>
 </div>
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+
+        $(function () {
+            $.ajaxSetup({ cache: false });
+
+            $(".pModal").click(function (e) {
+                e.preventDefault();
+                $.get(this.href, function (data) {
+                    $('#dialogContent').html(data);
+                    $('#modDialog').modal('show');
+                });
+            });
+        });
+
+        $(function () {
+            var widthdelta = 44;
+            var wd = $("#PersonLabel").width() - widthdelta;
+            $("#PersonLabel").width(wd);
+            $("#ExLabel").width(wd);
+        });
+
+
+
+        $('#VisitForm').submit(function () {
+
+            var flag = false;
+
+            $("#VisitorValidator").html("");
+            $("#ExerciseValidator").html("");
+            $("#RoleValidator").html("");
+
+
+            if ($("#VisitorId").val() == 0) {
+                $("#VisitorValidator").html("Необходимо выбрать персону");
+                flag = true;
+            }
+            if ($("#ExerciseId").val() == 0) {
+                $("#ExerciseValidator").html("Необходимо выбрать занятие");
+                flag = true;
+            }
+            if ($("#RoleId").val() == 0) {
+                $("#RoleValidator").html("Необходимо выбрать роль");
+                flag = true;
+            }
+
+            if (flag) { return false; }
+
+        });
+    </script>
+
 }

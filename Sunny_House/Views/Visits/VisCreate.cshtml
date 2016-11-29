@@ -7,7 +7,7 @@
 <h2><i class="fa fa-id-card-o"></i> Посещения</h2>
 
 <div id="modDialog" class="modal fade">
-    <div id="dialogContent" class="modal-dialog"></div>
+    <div id="dialogContent" class="modal-dialog" style="width:660px;"></div>
 </div>
 
 @using (Html.BeginForm("VisCreate", "Visits", FormMethod.Post, new { id = "VisitForm" }))
@@ -22,7 +22,7 @@
             @Html.LabelFor(model => model.VisitorId, "Персона", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <div class="form-inline">
-                    <input type="text" name="PersonLabel" id="PersonLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["PersonPIB"]" />
+                    <input type="text" name="PersonLabel" id="PersonLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewBag.VisitorFIO" />
                     <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "VisitorId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
                 </div>
                 @Html.HiddenFor(model => model.VisitorId)
@@ -34,7 +34,7 @@
             @Html.LabelFor(model => model.ExerciseId, "Занятие", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <div class="form-inline">
-                    <input type="text" name="ExLabel" id="ExLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["ExName"]" />
+                    <input type="text" name="ExLabel" id="ExLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewBag.ExerciseName" />
                     <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalExercises", "Modal", new { field = "ExerciseId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
                 </div>
                 @Html.HiddenFor(model => model.ExerciseId)
@@ -113,4 +113,5 @@
 
         });
     </script>
+
 }
