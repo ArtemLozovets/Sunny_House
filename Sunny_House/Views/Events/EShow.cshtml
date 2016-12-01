@@ -175,7 +175,7 @@
                     new { @id = "PlacesCount" })@Html.Raw("&nbsp;")<i id="PlacesCountArrow"></i>
                 </th>
 
-                <th style="width:176px; min-width:176px;"></th>
+                <th style="width:210px; min-width:210px;"></th>
             </tr>
 
             @if (Model.Count() == 0)
@@ -216,6 +216,7 @@
                     </td>
                     <td style="text-align:center;">
                         <a class="btn btn-default btn-sm" title="Бронирование" href='@Url.Action("ResShowOfEvent", "Reserves", new { EventId = item.EventId })'><span class="glyphicon glyphicon-education"></span></a>
+                        <a class="btn btn-default btn-sm" title="Платежи по мероприятию" href='@Url.Action("ShowAllPayments", "Home", new { EventId = item.EventId })'><span class="glyphicon glyphicon-usd"></span></a>
                         <a class="btn btn-default btn-sm" title="Добавить задачу" href='@Url.Action("TaskCreate", "Tasks", new
                                   {
                                       Subject = "Бронирование \"" + item.EventName + "\"",

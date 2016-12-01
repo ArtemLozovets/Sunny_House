@@ -289,9 +289,14 @@ namespace Sunny_House.Controllers
 
         #region Список платежів
         [HttpGet]
-        public ActionResult ShowAllPayments(string PayerSearchString, string ClientSearchString, int? page, string SortBy)
+        public ActionResult ShowAllPayments(string PayerSearchString, string ClientSearchString, int? page, string SortBy, int? EventId)
         {
             // db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Information ------------------------------------
+
+            if (EventId != null)
+            {
+                ViewBag.EventName = db.Events.FirstOrDefault(e => e.EventId == EventId).EventName.ToString();
+            }
 
             ViewBag.SortPayerPIB = SortBy == "PayerPIB" ? "PayerPIB desc" : "PayerPIB";
             ViewBag.SortPIB = SortBy == "PIB" ? "PIB desc" : "PIB";
@@ -303,6 +308,7 @@ namespace Sunny_House.Controllers
                           join payer in db.Persons on payments.PayerId equals payer.PersonId
                           join client in db.Persons on payments.ClientId equals client.PersonId
                           join @event in db.Events on payments.EventId equals @event.EventId
+                          where payments.EventId == EventId || EventId == null
                           select new
                           {
                               Id = @payments.PaymentId,

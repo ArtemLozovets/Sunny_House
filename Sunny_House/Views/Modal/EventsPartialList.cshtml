@@ -1,15 +1,17 @@
-﻿@model IEnumerable<Sunny_House.Models.Event>
+﻿@model PagedList.IPagedList<Sunny_House.Models.Event>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.EventName)
+            @Html.DisplayNameFor(model => model.First().EventName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.StartTime)
+            @Html.DisplayNameFor(model => model.First().StartTime)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.EndTime)
+            @Html.DisplayNameFor(model => model.First().EndTime)
         </th>
         <th>
             <label>Ответственный</label>
@@ -53,3 +55,17 @@
 }
 
 </table>
+
+<hr />
+Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("EventsPartialList", "Modal",
+                                     new
+                                     {
+                                         ExerciseSearchString = @ViewData["EventsSearchString"],
+                                         StartTimeS = @ViewData["StartTimeS"],
+                                         EndTimeS = @ViewData["EndTimeS"],
+                                         page
+                                     }),
+                             PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
+                             new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "update" }))

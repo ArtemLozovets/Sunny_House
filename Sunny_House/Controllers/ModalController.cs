@@ -213,14 +213,35 @@ namespace Sunny_House.Controllers
             return PartialView();
         }
 
-        public ActionResult EventsPartialList(string EventsSearchString)
+        [HttpGet]
+        public ActionResult EventsPartialList(int? page)
         {
-            var _events = from events in db.Events select events;
-            if (!String.IsNullOrEmpty(EventsSearchString))
-            {
-                _events = _events.Where(e => e.EventName.Contains(EventsSearchString));
-            }
-            return PartialView(_events);
+            var _events = (from events in db.Events select events).ToList();
+
+            int pageSize = 50;
+            int pageNumber = (page ?? 1);
+
+            return PartialView(_events.ToPagedList(pageNumber, pageSize));
+        }
+
+        [HttpPost]
+        public ActionResult EventsPartialList(string EventsSearchString, DateTime? StartTimeS, DateTime? EndTimeS, int? page)
+        {
+
+            ViewData["ExerciseSearchString"] = EventsSearchString;
+            ViewData["StartTimeS"] = StartTimeS;
+            ViewData["EndTimeS"] = EndTimeS;
+
+            var _events = (from events in db.Events
+                           where (events.EventName.ToUpper().Contains(EventsSearchString.ToUpper()) || String.IsNullOrEmpty(EventsSearchString)) &&
+                           ((events.StartTime >= StartTimeS || StartTimeS == null) && (events.EndTime <= EndTimeS || EndTimeS == null))
+                           select events).ToList();
+
+            int pageSize = 50;
+            int pageNumber = (page ?? 1);
+
+            return PartialView(_events.ToPagedList(pageNumber, pageSize));
+          
         }
 
 
