@@ -106,7 +106,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/10/2016 08:13:25</publishTime>
     </File>
     <File Include="bin/Sunny_House.dll">
-      <publishTime>11/21/2016 14:39:44</publishTime>
+      <publishTime>12/01/2016 11:36:05</publishTime>
     </File>
     <File Include="bin/System.Web.Helpers.dll">
       <publishTime>10/10/2016 08:13:24</publishTime>
@@ -196,7 +196,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/21/2016 08:29:14</publishTime>
     </File>
     <File Include="Content/Site.css">
-      <publishTime>11/21/2016 14:27:37</publishTime>
+      <publishTime>11/29/2016 12:13:50</publishTime>
     </File>
     <File Include="Content/themes/base/accordion.css">
       <publishTime>11/10/2016 08:22:07</publishTime>
@@ -814,7 +814,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/09/2016 08:26:46</publishTime>
     </File>
     <File Include="Views/Comments/CommentShow.cshtml">
-      <publishTime>10/31/2016 11:44:01</publishTime>
+      <publishTime>11/28/2016 09:21:03</publishTime>
     </File>
     <File Include="Views/Comments/CSCreate.cshtml">
       <publishTime>10/21/2016 08:29:14</publishTime>
@@ -868,13 +868,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/09/2016 08:26:46</publishTime>
     </File>
     <File Include="Views/Events/ResRelPersonsPartial.cshtml">
-      <publishTime>10/25/2016 11:24:45</publishTime>
+      <publishTime>11/29/2016 14:10:46</publishTime>
     </File>
     <File Include="Views/Exercises/CalendarShow.cshtml">
-      <publishTime>11/21/2016 14:27:37</publishTime>
+      <publishTime>11/22/2016 15:04:13</publishTime>
     </File>
     <File Include="Views/Exercises/ExCreate.cshtml">
-      <publishTime>11/14/2016 08:33:12</publishTime>
+      <publishTime>11/22/2016 11:18:16</publishTime>
     </File>
     <File Include="Views/Exercises/ExDelete.cshtml">
       <publishTime>11/11/2016 08:14:45</publishTime>
@@ -883,7 +883,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/11/2016 08:14:45</publishTime>
     </File>
     <File Include="Views/Exercises/ExEdit.cshtml">
-      <publishTime>11/11/2016 08:14:45</publishTime>
+      <publishTime>11/22/2016 11:18:14</publishTime>
     </File>
     <File Include="Views/Exercises/ExShow.cshtml">
       <publishTime>11/21/2016 14:27:37</publishTime>
@@ -972,6 +972,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Views/Modal/EventsPartialList.cshtml">
       <publishTime>10/21/2016 08:29:15</publishTime>
     </File>
+    <File Include="Views/Modal/ExercisesPartialList.cshtml">
+      <publishTime>11/29/2016 14:08:23</publishTime>
+    </File>
     <File Include="Views/Modal/PaymentsPersonAsClient.cshtml">
       <publishTime>10/26/2016 14:51:49</publishTime>
     </File>
@@ -990,8 +993,11 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Views/Modal/ShowModalEvents2Res.cshtml">
       <publishTime>10/21/2016 08:29:15</publishTime>
     </File>
+    <File Include="Views/Modal/ShowModalExercises.cshtml">
+      <publishTime>11/29/2016 13:50:28</publishTime>
+    </File>
     <File Include="Views/Modal/ShowModalPersons.cshtml">
-      <publishTime>10/21/2016 08:29:15</publishTime>
+      <publishTime>11/29/2016 08:03:35</publishTime>
     </File>
     <File Include="Views/Payments/Create.cshtml">
       <publishTime>08/21/2016 23:37:16</publishTime>
@@ -1147,7 +1153,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/21/2016 08:29:15</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>11/21/2016 14:27:37</publishTime>
+      <publishTime>12/01/2016 10:49:07</publishTime>
     </File>
     <File Include="Views/Shared/_LoginPartial.cshtml">
       <publishTime>10/21/2016 08:29:15</publishTime>
@@ -1173,6 +1179,18 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Views/Tasks/TasksShowPartial.cshtml">
       <publishTime>10/31/2016 08:59:04</publishTime>
     </File>
+    <File Include="Views/Visits/VisCreate.cshtml">
+      <publishTime>11/29/2016 13:36:07</publishTime>
+    </File>
+    <File Include="Views/Visits/VisDelete.cshtml">
+      <publishTime>11/28/2016 12:56:39</publishTime>
+    </File>
+    <File Include="Views/Visits/VisEdit.cshtml">
+      <publishTime>11/29/2016 16:21:57</publishTime>
+    </File>
+    <File Include="Views/Visits/VisShow.cshtml">
+      <publishTime>11/29/2016 16:56:52</publishTime>
+    </File>
     <File Include="Views/Web.config">
       <publishTime>10/21/2016 08:29:15</publishTime>
     </File>
@@ -1180,7 +1198,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/21/2016 08:29:15</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>11/21/2016 14:39:47</publishTime>
+      <publishTime>12/01/2016 11:36:09</publishTime>
     </File>
   </ItemGroup>
 </Project>
