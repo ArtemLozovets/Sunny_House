@@ -17,19 +17,25 @@
 
 <label id="SortColumn" hidden>@ViewData["SortColumn"]</label>
 
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog" style="width:660px;"></div>
+</div>
 
-@using (Html.BeginForm("ShowAllPayments", "Home", FormMethod.Get))
+@using (Html.BeginForm("ShowAllPayments", "Home", FormMethod.Get, new {@id="paymentsform"}))
 {
     <div class="row" style="margin:10px 0;">
         <div class="col-lg-3 col-md-4 col-sm-4 ">
             <a class="btn btn-default" title="Добавить информацию о платеже" href='@Url.Action("AddPayment", "Home")'><span class="glyphicon glyphicon-usd"> Добавить платеж</span></a>
             <a class="btn btn-default" title="Обновить" style="margin:2px 2px ;" href='@Url.Action("ShowAllPayments", "Home")'><span class="glyphicon glyphicon-refresh"></span></a>
         </div>
-        <div class="col-lg-5 col-lg-offset-4 col-md-6 col-md-offset-2 col-sm-8 form-inline">
+        <div class="form-inline text-right">
+            <a class="btn btn-default pModal" title="Фильтр по мероприятию" style="margin-top:-3px; display:inline-block " href='@Url.Action("ShowModalEvents", "Modal", new { field = "EventId" })'><i class="fa fa-institution"></i></a>
+
             @Html.TextBox("PayerSearchString", null, new { @class = "form-control", data_autocomplete_source = @Url.Action("AutocompletePayer", "AutoComplete"), @placeholder = "Плательщик", style = "margin:2px 2px; width:180px; display:inline-block;" })
             @Html.TextBox("ClientSearchString", null, new { @class = "form-control", data_autocomplete_source = @Url.Action("AutocompleteClient", "AutoComplete"), @placeholder = "Клиент", style = "margin:2px 2px; width:180px; display:inline-block;" })
             @Html.Hidden("EventId", Request.QueryString["EventId"])
-            <button type="submit" title="Искать" style="margin:2px 2px; display:inline-block " class="btn btn-default"><i class="glyphicon glyphicon-search"></i> </button>
+
+            <button type="submit" title="Искать" style="margin-top:-3px; display:inline-block " class="btn btn-default"><i class="glyphicon glyphicon-search"></i> </button>
         </div>
     </div>
 }
@@ -177,6 +183,27 @@
                 }
             }
 
+        </script>
+
+        <script type="text/javascript">
+            $(function () {
+                $.ajaxSetup({ cache: false });
+
+                $(".pModal").click(function (e) {
+                    e.preventDefault();
+                    $.get(this.href, function (data) {
+                        $('#dialogContent').html(data);
+                        $('#modDialog').modal('show');
+                    });
+                });
+
+                $('#modDialog').on('hidden.bs.modal', function () {
+
+                    $('#PayerSearchString').val('');
+                    $('#ClientSearchString').val('');
+                    $('#paymentsform').submit();
+                })
+            });
         </script>
         <script src="~/Scripts/toparrow.js"></script>
     }
