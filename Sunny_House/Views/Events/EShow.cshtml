@@ -92,12 +92,11 @@
         </div>
     </div>
     <hr />
-    <div class="row">
-        <div class="col-lg-3 col-md-4 col-sm-5">
-            <a class="btn btn-default" style="margin:2px 2px;" title="Добавить мероприятие" href='@Url.Action("ECreate", "Events")'><span class="glyphicon glyphicon-tasks"> Добавить мероприятие</span></a>@Html.Raw("&nbsp;")
-            <a class="btn btn-default" title="Обновить" style="margin:2px 2px ;" href='@Url.Action("EShow", "Events", new { FilterMode = Request.QueryString["FilterMode"] }, null)'><span class="glyphicon glyphicon-refresh"></span></a>
-        </div>
-    </div>
+
+    <p>
+        <a class="btn btn-default" style="margin:2px 0;" title="Добавить мероприятие" href='@Url.Action("ECreate", "Events")'><i class="fa fa-plus-circle"></i> Добавить мероприятие</a>@Html.Raw("&nbsp;")
+        <a class="btn btn-default" style="margin:2px 0;" title="Обновить" href='@Url.Action("EShow", "Events", new { FilterMode = Request.QueryString["FilterMode"] }, null)'><span class="glyphicon glyphicon-refresh"></span></a>
+    </p>
 }
 
 <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
@@ -126,7 +125,7 @@
                 },
                     new { @id = "StartTime" })@Html.Raw("&nbsp;")<i id="StartTimeArrow"></i>
                 </th>
-                <th>
+                <th style="width:130px;">
                     @Html.ActionLink("Окончание", "EShow",
                 new
                 {

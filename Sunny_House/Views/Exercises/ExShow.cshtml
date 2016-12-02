@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<Sunny_House.Models.Exercise>
 
+<link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
+
 @{
     ViewBag.Title = "Занятия";
 }
@@ -13,9 +15,84 @@
     </div>
 </div>
 
+
+@using (Html.BeginForm("ExShow", "Exercises", FormMethod.Get, new { @id = "ExForm" }))
+{
+    <div class="row">
+        <div class="col-lg-4 col-md-4">
+            @if (Request.QueryString["FilterMode"] == "Current" || Request.QueryString["FilterMode"] == null)
+            {
+                <p class="text-info"><strong>Режим отображения: ДЕЙСТВУЮЩИЕ</strong></p>
+            }
+            @if (Request.QueryString["FilterMode"] == "Archive")
+            {
+                <p class="text-info"><strong>Режим отображения: АРХИВНЫЕ</strong></p>
+            }
+            @if (Request.QueryString["FilterMode"] == "All")
+            {
+                <p class="text-info"><strong>Режим отображения: ВСЕ</strong></p>
+            }
+
+            @Html.RadioButton("FilterMode", "Current", true) <span>Действующие</span>@Html.Raw("&nbsp;")
+            @Html.RadioButton("FilterMode", "Archive") <span> Архив</span>@Html.Raw("&nbsp;")
+            @Html.RadioButton("FilterMode", "All") <span> Все</span>
+
+        </div>
+        <div class="col-lg-7 col-lg-offset-1 col-md-8">
+            <br />
+            <div class="input-group" style="width:510px;">
+                <span class="input-group-addon">с</span>
+                @Html.TextBox("SearchStartDate", null,
+                new
+                {
+                    @style = "width:140px;",
+                    @type = "text",
+                    @class = "form-control ",
+                    @placeholder = "Начало",
+                    @title = "Дата начала занятия",
+                    @data_val = "true",
+                    @data_val_date = "Сообщение об ошибке"
+                })
+                <span class="input-group-addon" style="border-left: 0; border-right: 0;">до</span>
+
+                @Html.TextBox("SearchEndDate", null,
+                new
+                {
+                    @style = "width:140px;",
+                    @type = "text",
+                    @class = "form-control ",
+                    @placeholder = "Окончание",
+                    @title = "Дата окончания занятия",
+                    @data_val = "true",
+                    @data_val_date = "Сообщение об ошибке"
+                })
+                <span class="input-group-addon" style="border-left: 0; border-right: 0;"><span class="glyphicon glyphicon-filter"></span></span>
+
+                @Html.TextBox("SearchString", null,
+                new
+                {
+                    @style = "width:210px;",
+                    @type = "text",
+                    @class = "form-control ",
+                    @placeholder = "Тема...",
+                    @title = "Тема занятия",
+                })
+
+                <div class="input-group-btn">
+                    <button type="submit" class="btn btn-toolbar groupbtn" id="applyfilter">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <hr />
+}
+
 <p>
-    <a class="btn btn-default" style="margin:2px 2px;" title="Добавить занятие" href='@Url.Action("ExCreate", "Exercises", new { @PersonId = Request.Params["PersonId"]})'><i class="fa fa-plus-circle"> Добавить занятие</i></a>
-    <a class="btn btn-default" title="Обновить" style="margin:2px 2px ;" href='@Url.Action("ExShow", "Exercises")'><span class="glyphicon glyphicon-refresh"></span></a>
+    <a class="btn btn-default" style="margin:2px 2px;" title="Добавить занятие" href='@Url.Action("ExCreate", "Exercises", new { @PersonId = Request.Params["PersonId"]})'><i class="fa fa-plus-circle"></i> Добавить занятие</a>
+    <a class="btn btn-default" style="margin:2px 2px;" title="Обновить" href='@Url.Action("ExShow", "Exercises")'><span class="glyphicon glyphicon-refresh"></span></a>
 </p>
 
 <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
@@ -108,4 +185,60 @@
             $.removeCookie('ReturnUrl');
         });
     </script>
+
+    <script type="text/javascript">
+        $(function () {
+
+            // Сабмит формы при изменении переключателя (Через $('#FilterMode') работает только в одном положении)
+            $('input[name=FilterMode]').change(function () {
+                $('#ExForm').submit();
+            })
+
+            $("#SearchString").focus(); // Фокус на полі фільтра при відкритті сторінки.
+        });
+    </script>
+
+@*Блок скриптов для работы с DateTimePicker*@
+<script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
+<script type="text/javascript">
+
+    $.datetimepicker.setLocale('ru');
+
+    // <![CDATA[
+    jQuery(function () {
+        jQuery('#SearchStartDate').datetimepicker({
+            format: 'd/m/Y H:i',
+            formatDate: 'd/m/Y',
+            onShow: function (ct) {
+                this.setOptions({
+                    maxDate: jQuery('#SearchEndDate').val() ? jQuery('#SearchEndDate').val() : false
+                })
+            },
+            timepicker: true
+        });
+        jQuery('#SearchEndDate').datetimepicker({
+            format: 'd/m/Y H:i',
+            formatDate: 'd/m/Y',
+            onShow: function (ct) {
+                this.setOptions({
+                    minDate: jQuery('#SearchStartDate').val() ? jQuery('#SearchStartDate').val() : false
+                })
+            },
+            timepicker: true
+        });
+    });
+    // ]]>
+
+    $.validator.methods.date = function (value, element) {
+        if (value) {
+            try {
+                $.datepicker.parseDate('dd/mm/yy', value);
+            } catch (ex) {
+                return false;
+            }
+        }
+        return true;
+    };
+</script>
+
 }

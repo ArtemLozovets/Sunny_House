@@ -17,15 +17,19 @@ namespace Sunny_House.Controllers
     {
         private SunnyModel db = new SunnyModel();
 
+
         // GET: Exercises
-        public async Task<ActionResult> ExShow(int? ExerciseId, string ReturnUrl)
+        [HttpGet]
+        public async Task<ActionResult> ExShow(int? ExerciseId, string ReturnUrl, string FilterMode, string SearchString, DateTime? SearchStartDate, DateTime? SearchEndDate)
         {
             if (!String.IsNullOrEmpty(ReturnUrl))
             {
                 ViewData["ReturnUrl"] = ReturnUrl;
             }
 
-            var exercises = db.Exercises.Include(e => e.Event).Where(e => e.ExerciseId == ExerciseId || ExerciseId == null).OrderByDescending(e=>e.StartTime);
+
+
+            var exercises = db.Exercises.Include(e => e.Event).Where(e => e.ExerciseId == ExerciseId || ExerciseId == null).OrderByDescending(e => e.StartTime);
             return View(await exercises.ToListAsync());
         }
 
@@ -88,7 +92,7 @@ namespace Sunny_House.Controllers
                         TempData["MessageOk"] = _message;
 
                         return Redirect(_returnurl);
-                        
+
 
                     }
                     else
@@ -97,7 +101,7 @@ namespace Sunny_House.Controllers
                         return Redirect(_returnurl);
                     }
 
-                    
+
                 }
                 catch (Exception ex)
                 {
