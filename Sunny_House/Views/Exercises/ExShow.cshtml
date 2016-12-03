@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Sunny_House.Models.Exercise>
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<Sunny_House.Models.Exercise>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 <link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
 
@@ -15,6 +17,7 @@
     </div>
 </div>
 
+<label id="SortColumn" hidden>@ViewData["SortColumn"]</label>
 
 @using (Html.BeginForm("ExShow", "Exercises", FormMethod.Get, new { @id = "ExForm" }))
 {
@@ -88,32 +91,73 @@
         </div>
     </div>
     <hr />
-}
 
 <p>
     <a class="btn btn-default" style="margin:2px 2px;" title="Добавить занятие" href='@Url.Action("ExCreate", "Exercises", new { @PersonId = Request.Params["PersonId"]})'><i class="fa fa-plus-circle"></i> Добавить занятие</a>
     <a class="btn btn-default" style="margin:2px 2px;" title="Обновить" href='@Url.Action("ExShow", "Exercises")'><span class="glyphicon glyphicon-refresh"></span></a>
 </p>
+}
+
 
 <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
     <tr>
         <th>
-            <label>Мероприятие</label>
+            @Html.ActionLink("Тема", "ExShow",
+                new
+                {
+                    FilterMode = Request.QueryString["FilterMode"],
+                    SearchStartDate = Request.QueryString["SearchStartDate"],
+                    SearchEndDate = Request.QueryString["SearchEndDate"],
+                    SearchString = Request["SearchString"],
+                    ReturnUrl = ViewData["ReturnUrl"],
+                    SortBy = ViewBag.SortSubject
+                },
+                    new { @id = "Subject" })@Html.Raw("&nbsp;")<i id="SubjectArrow"></i>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Subject)
+            @Html.ActionLink("Мероприятие", "ExShow",
+                new
+                {
+                    FilterMode = Request.QueryString["FilterMode"],
+                    SearchStartDate = Request.QueryString["SearchStartDate"],
+                    SearchEndDate = Request.QueryString["SearchEndDate"],
+                    SearchString = Request["SearchString"],
+                    ReturnUrl = ViewData["ReturnUrl"],
+                    SortBy = ViewBag.SortEventName
+                },
+                    new { @id = "EventName" })@Html.Raw("&nbsp;")<i id="EventNameArrow"></i>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.StartTime)
+            @Html.ActionLink("Начало", "ExShow",
+                new
+                {
+                    FilterMode = Request.QueryString["FilterMode"],
+                    SearchStartDate = Request.QueryString["SearchStartDate"],
+                    SearchEndDate = Request.QueryString["SearchEndDate"],
+                    SearchString = Request["SearchString"],
+                    ReturnUrl = ViewData["ReturnUrl"],
+                    SortBy = ViewBag.SortStartTime
+                },
+                    new { @id = "StartTime" })@Html.Raw("&nbsp;")<i id="StartTimeArrow"></i>
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EndTime)
-        </th>
+        <th style="width:130px;">
+            @Html.ActionLink("Окончание", "ExShow",
+                new
+                {
+                    FilterMode = Request.QueryString["FilterMode"],
+                    SearchStartDate = Request.QueryString["SearchStartDate"],
+                    SearchEndDate = Request.QueryString["SearchEndDate"],
+                    SearchString = Request["SearchString"],
+                    ReturnUrl = ViewData["ReturnUrl"],
+                    SortBy = ViewBag.SortEndTime
+                },
+                    new { @id = "EndTime" })@Html.Raw("&nbsp;")<i id="EndTimeArrow"></i>
+                </th>
         <th>
             <label>Место</label>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Note)
+            @Html.DisplayNameFor(model => model.First().Note)
         </th>
         <th style="width:128px; min-width:128px"></th>
     </tr>
@@ -131,10 +175,10 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Event.EventName)
+                @Html.DisplayFor(modelItem => item.Subject)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Subject)
+                @Html.DisplayFor(modelItem => item.Event.EventName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartTime)
@@ -157,6 +201,22 @@
     }
 
 </table>
+
+<hr />
+        Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+        @Html.PagedListPager(Model, page => Url.Action("ExShow", "Exercises",
+                             new
+                             {
+                                 FilterMode = Request.QueryString["FilterMode"],
+                                 SearchStartDate = Request.QueryString["SearchStartDate"],
+                                 SearchEndDate = Request.QueryString["SearchEndDate"],
+                                 SearchString = Request.QueryString["SearchString"],
+                                 ReturnUrl = ViewData["ReturnUrl"],
+                                 page,
+                                 SortBy = Request["SortBy"]
+                             }),
+                         new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
 
 
 @if (ViewBag.ReturnUrl != null)
@@ -195,6 +255,20 @@
             })
 
             $("#SearchString").focus(); // Фокус на полі фільтра при відкритті сторінки.
+
+            if ($('#SortColumn').text() != '') {
+                var sortcolumnname = $('#SortColumn').text();
+                var sortcontrol = $('#' + sortcolumnname);
+                if (sortcontrol != null) {
+                    if (sortcontrol.attr('href').indexOf('desc') != -1) {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-top')
+                    }
+                    else {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-bottom')
+                    }
+                }
+            }
+
         });
     </script>
 

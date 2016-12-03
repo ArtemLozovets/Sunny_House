@@ -9,6 +9,8 @@ using System.Web;
 using System.Web.Mvc;
 using Sunny_House.Models;
 using System.Diagnostics;
+using PagedList;
+using PagedList.Mvc;
 
 namespace Sunny_House.Controllers
 {
@@ -20,17 +22,102 @@ namespace Sunny_House.Controllers
 
         // GET: Exercises
         [HttpGet]
-        public async Task<ActionResult> ExShow(int? ExerciseId, string ReturnUrl, string FilterMode, string SearchString, DateTime? SearchStartDate, DateTime? SearchEndDate)
+        public ActionResult ExShow(int? ExerciseId, string ReturnUrl, string FilterMode, string SearchString, string SearchStartDate, string SearchEndDate, int? page, string SortBy)
         {
+            db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Ingormation --------------------------
+
+            ViewBag.SortEventName = SortBy == "EventName" ? "EventName desc" : "EventName";
+            ViewBag.SortSubject = SortBy == "Subject" ? "Subject desc" : "Subject";
+            ViewBag.SortStartTime = SortBy == "StartTime" ? "StartTime desc" : "StartTime";
+            ViewBag.SortEndTime = SortBy == "EndTime" ? "EndTime desc" : "EndTime";
+
             if (!String.IsNullOrEmpty(ReturnUrl))
             {
                 ViewData["ReturnUrl"] = ReturnUrl;
             }
 
+            int pageSize = 50;
+            int pageNumber = (page ?? 1);
+
+            if (ExerciseId != null)
+            {
+                var _exercises = db.Exercises.Include(e => e.Event).Where(e => e.ExerciseId == ExerciseId);
+                return View(_exercises.ToList().ToPagedList(pageNumber, pageSize));
+            }
+
+            else
+            {
+                DateTime? _startDate = (String.IsNullOrEmpty(SearchStartDate)) ? Convert.ToDateTime("1900-01-01") : Convert.ToDateTime(SearchStartDate);
+                DateTime? _endDate = (String.IsNullOrEmpty(SearchEndDate)) ? Convert.ToDateTime("2900-01-01") : Convert.ToDateTime(SearchEndDate);
+
+                var _exercises = (from ex in db.Exercises
+
+                                  where ((ex.StartTime >= _startDate) && (ex.EndTime <= _endDate)) &&
+                                        (ex.Subject.ToUpper().Contains(SearchString.ToUpper()) || String.IsNullOrEmpty(SearchString))
+                                  select ex);
+
+                switch (FilterMode)
+                {
+                    case "All":
+                        break;
+
+                    case "Archive":
+                        _exercises = _exercises.Where(e => e.EndTime < DateTime.Now);
+                        break;
+
+                    default:
+                        _exercises = _exercises.Where(e => e.EndTime >= DateTime.Now);
+                        break;
+                }
 
 
-            var exercises = db.Exercises.Include(e => e.Event).Where(e => e.ExerciseId == ExerciseId || ExerciseId == null).OrderByDescending(e => e.StartTime);
-            return View(await exercises.ToListAsync());
+                switch (SortBy)
+                {
+                    case "EventName desc":
+                        _exercises = _exercises.OrderByDescending(x => x.Event.EventName);
+                        ViewData["SortColumn"] = "EventName";
+                        break;
+                    case "EventName":
+                        _exercises = _exercises.OrderBy(x => x.Event.EventName);
+                        ViewData["SortColumn"] = "EventName";
+                        break;
+
+                    case "Subject desc":
+                        _exercises = _exercises.OrderByDescending(x => x.Subject);
+                        ViewData["SortColumn"] = "Subject";
+                        break;
+                    case "Subject":
+                        _exercises = _exercises.OrderBy(x => x.Subject);
+                        ViewData["SortColumn"] = "Subject";
+                        break;
+
+                    case "StartTime desc":
+                        _exercises = _exercises.OrderByDescending(x => x.StartTime);
+                        ViewData["SortColumn"] = "StartTime";
+                        break;
+                    case "StartTime":
+                        _exercises = _exercises.OrderBy(x => x.StartTime);
+                        ViewData["SortColumn"] = "StartTime";
+                        break;
+
+                    case "EndTime desc":
+                        _exercises = _exercises.OrderByDescending(x => x.EndTime);
+                        ViewData["SortColumn"] = "EndTime";
+                        break;
+                    case "EndTime":
+                        _exercises = _exercises.OrderBy(x => x.EndTime);
+                        ViewData["SortColumn"] = "EndTime";
+                        break;
+                    default:
+                        _exercises = _exercises.OrderByDescending(x => x.ExerciseId);
+                        break;
+                }
+
+
+                return View(_exercises.ToList().ToPagedList(pageNumber, pageSize));
+
+            }
+            
         }
 
         // GET: Exercises/Details/5
