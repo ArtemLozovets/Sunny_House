@@ -1,66 +1,92 @@
 ﻿@model Sunny_House.Models.Exercise
-
 @{
     ViewBag.Title = "Подробно";
 }
 
-<h2><i class="fa fa-bell"> Занятия</i></h2>
+<div style="margin-bottom:26px;"><span id="topanchor"></span></div>
 
-<div>
-    <h4>Подробная информация о занятии</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Event.EventName)
-        </dt>
+<div class="row">
+    <div class="col-lg-5 col-md-6">
+        <div class="panel panel-default fixed" style="min-width:470px;" id="fixedpanel">
+            <div class="panel-heading">
+                <strong><i class="fa fa-bell"></i> Занятие <em class="text-info"> @Html.DisplayFor(model => model.Subject)</em></strong>
+            </div>
+            <div class="panel-body">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Event.EventName)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Event.EventName)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Subject)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Subject)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.StartTime)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.StartTime)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EndTime)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.EndTime)
+                    </dd>
+                    <dt>
+                        Место
+                    </dt>
+                    <dd>
+                        @Model.Address.City, @Model.Address.AddressValue
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Note)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Note)
+                    </dd>
+                </dl>
 
-        <dd>
-            @Html.DisplayFor(model => model.Event.EventName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Subject)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Subject)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.StartTime)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.StartTime)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.EndTime)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.EndTime)
-        </dd>
-
-        <dt>
-           Место
-        </dt>
-
-        <dd>
-           @Model.Address.City, @Model.Address.AddressValue
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Note)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Note)
-        </dd>
-
-    </dl>
+                <div style="margin:10px 0 0 4px;">
+                    <a class="btn btn-default" href='@Url.Action("ExShow", "Exercises")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+                    <a class="btn btn-default" href='@Url.Action("ExEdit", "Exercises", new { ObjectId = Model.ExerciseId })'><span class="glyphicon glyphicon-edit"> Редактировать</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7 col-md-6">
+        <div class="panel panel-default" style="min-width:500px; min-height:436px;">
+            <div class="panel-heading"><strong><i class="fa fa-bell"></i>Посещения</strong></div>
+            <div class="panel-body" id="tabpanel">
+                <ul class="nav nav-tabs">
+                    @* Вкладки ---------------------------------------------------------------- *@
+                    <li id="ResTab" class="active"><a data-toggle="tab" href="#home"><strong>Посетители</strong></a></li>
+                    <li id="PTCTab"><a data-toggle="tab" href="#menu1"><strong>Регистрация посещения</strong></a></li>
+                </ul>
+                <div class="tab-content">
+                    @* Вкладка посетителей ------------------------------------------- *@
+                    <div id="home" class="tab-pane fade in active">
+                        <h1>Посетители</h1> 
+                    </div>
+                    @* Вкладка регистрации ------------------------------------------- *@
+                    <div id="menu1" class="tab-pane fade">
+                        <h1>Добавить посетителя</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<p>
-    <a class="btn btn-default" href='@Url.Action("ExShow", "Exercises")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
-    <a class="btn btn-default" href='@Url.Action("ExEdit", "Exercises", new { id = Model.ExerciseId })'><span class="glyphicon glyphicon-edit"> Редактировать</span></a>
-</p>
+
+<a href="#" class="scrollup1">Наверх</a>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/circle-progress.min.js"></script>
+    <script src="~/Scripts/toparrow.js"></script>
+}
