@@ -27,12 +27,15 @@ namespace Sunny_House.Models
         public virtual PersonRole PersonRole { get; set; }
 
         [NotMapped]
+        [Display(Name = "ФИО персоны")]
         public string PersonFIO { get; set; }
 
         [NotMapped]
+        [Display(Name = "Занятие")]
         public string ExName { get; set; }
 
         [NotMapped]
+        [Display(Name = "Роль")]
         public string RoleName { get; set; }
     }
 }

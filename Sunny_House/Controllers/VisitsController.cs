@@ -24,26 +24,27 @@ namespace Sunny_House.Controllers
                           join ex in db.Exercises on visit.ExerciseId equals ex.ExerciseId
                           join person in db.Persons on visit.VisitorId equals person.PersonId
                           join role in db.PersonRoles on visit.RoleId equals role.RoleId
-                          select new 
+                          select new
                           {
-                          
-                            
+
+
                               VisitId = visit.VisitId,
                               VisitorId = visit.VisitorId,
                               ExerciseId = ex.ExerciseId,
                               RoleId = role.RoleId,
-                              PersonFIO = person.FirstName + " "+ person.LastName +" "+ person.MiddleName,
+                              PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
                               ExName = ex.Subject,
                               RoleName = role.RoleName
 
-                          }).AsEnumerable().Select(x => new Visit { 
-                                         VisitId = x.VisitId,
-                                         VisitorId = x.VisitorId,
-                                         ExerciseId = x.ExerciseId,
-                                         PersonFIO = x.PersonFIO,
-                                         RoleId = x.RoleId,
-                                         ExName = x.ExName,
-                                         RoleName = x.RoleName
+                          }).AsEnumerable().Select(x => new Visit
+                          {
+                              VisitId = x.VisitId,
+                              VisitorId = x.VisitorId,
+                              ExerciseId = x.ExerciseId,
+                              PersonFIO = x.PersonFIO,
+                              RoleId = x.RoleId,
+                              ExName = x.ExName,
+                              RoleName = x.RoleName
                           }).ToList();
 
             return View(visits);
@@ -126,7 +127,7 @@ namespace Sunny_House.Controllers
                             LastName = person.LastName,
                             MiddleName = person.MiddleName
                         }).FirstOrDefault();
-            
+
             ViewBag.VisitorFIO = String.Format("{0} {1} {2}", _fio.FirstName, _fio.LastName, _fio.MiddleName);
             ViewBag.ExerciseName = db.Exercises.FirstOrDefault(x => x.ExerciseId == visit.ExerciseId).Subject.ToString();
             ViewBag.RoleId = new SelectList(db.PersonRoles, "RoleId", "RoleName", visit.RoleId);
@@ -138,7 +139,7 @@ namespace Sunny_House.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> VisEdit([Bind(Include = "VisitorId,ExerciseId,VisitId,RoleId")] Visit visit)
         {
-             db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Information====================
+            db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Information====================
             if (ModelState.IsValid)
             {
                 try
@@ -175,12 +176,18 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Visits/Delete/5
-        public async Task<ActionResult> VisDelete(int? VisitId)
+        public async Task<ActionResult> VisDelete(int? VisitId, string ReturnUrl)
         {
             if (VisitId == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
+            if (!String.IsNullOrEmpty(ReturnUrl))
+            {
+                ViewData["ReturnUrl"] = ReturnUrl;
+            }
+
             Visit visit = await db.Visits.FindAsync(VisitId);
             if (visit == null)
             {
@@ -192,7 +199,7 @@ namespace Sunny_House.Controllers
         // POST: Visits/Delete/5
         [HttpPost, ActionName("VisDelete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int VisitId)
+        public async Task<ActionResult> DeleteConfirmed(int VisitId, string ReturnUrl)
         {
             try
             {
@@ -202,7 +209,12 @@ namespace Sunny_House.Controllers
 
                 TempData["MessageOk"] = "Информация о посещении успешно удалена";
 
-                return RedirectToAction("VisShow");
+                if (String.IsNullOrEmpty(ReturnUrl))
+                {
+                    return RedirectToAction("VisShow");
+                }
+                else return Redirect(ReturnUrl);
+
             }
             catch (Exception ex)
             {
@@ -210,6 +222,34 @@ namespace Sunny_House.Controllers
                 ViewBag.ErStack = ex.StackTrace;
                 return View("Error");
             }
+        }
+
+
+        public ActionResult VisitorList(int? ExerciseId)
+        {
+            if (ExerciseId == 0 || ExerciseId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //var _visitors = db.Visits.Where(ex => ex.ExerciseId == ExerciseId);
+
+            var _visitors = (from visitor in db.Visits
+                             where visitor.ExerciseId == ExerciseId
+                             select new
+                             {
+                                 VisitId = visitor.VisitId,
+                                 ExerciseId = visitor.ExerciseId,
+                                 PersonFIO = visitor.Person.FirstName + " " + visitor.Person.LastName + " " + visitor.Person.MiddleName,
+                                 RoleName = visitor.PersonRole.RoleName
+                             }).AsEnumerable().Select(v => new Visit
+                             {
+                                 VisitId = v.VisitId,
+                                 ExerciseId = v.ExerciseId,
+                                 PersonFIO = v.PersonFIO,
+                                 RoleName = v.RoleName
+                             });
+
+            return PartialView(_visitors.ToList());
         }
 
         protected override void Dispose(bool disposing)

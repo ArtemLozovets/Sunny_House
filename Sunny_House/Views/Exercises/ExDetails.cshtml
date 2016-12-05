@@ -60,7 +60,7 @@
     </div>
     <div class="col-lg-7 col-md-6">
         <div class="panel panel-default" style="min-width:500px; min-height:436px;">
-            <div class="panel-heading"><strong><i class="fa fa-bell"></i>Посещения</strong></div>
+            <div class="panel-heading"><strong><i class="fa fa-bell"></i> Посещения</strong></div>
             <div class="panel-body" id="tabpanel">
                 <ul class="nav nav-tabs">
                     @* Вкладки ---------------------------------------------------------------- *@
@@ -70,7 +70,9 @@
                 <div class="tab-content">
                     @* Вкладка посетителей ------------------------------------------- *@
                     <div id="home" class="tab-pane fade in active">
-                        <h1>Посетители</h1> 
+                        <div id="update">
+                            @Html.Action("VisitorList", "Visits", new { @ExerciseId = @Model.ExerciseId, @SearchString = "" })
+                        </div> 
                     </div>
                     @* Вкладка регистрации ------------------------------------------- *@
                     <div id="menu1" class="tab-pane fade">
