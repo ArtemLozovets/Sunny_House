@@ -225,25 +225,29 @@ namespace Sunny_House.Controllers
         }
 
 
-        public ActionResult VisitorList(int? ExerciseId)
+        public ActionResult VisitorPartialList(int? ExerciseId, string SearchString, int? RoleSearchString)
         {
             if (ExerciseId == 0 || ExerciseId == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            //var _visitors = db.Visits.Where(ex => ex.ExerciseId == ExerciseId);
 
             var _visitors = (from visitor in db.Visits
-                             where visitor.ExerciseId == ExerciseId
+                             where (visitor.ExerciseId == ExerciseId) && 
+                                    ((visitor.Person.FirstName.ToUpper().Contains(SearchString.ToUpper()) || String.IsNullOrEmpty(SearchString)) ||
+                                      visitor.Person.LastName.ToUpper().Contains(SearchString.ToUpper()) || String.IsNullOrEmpty(SearchString)) &&
+                                    (visitor.RoleId == RoleSearchString || RoleSearchString == null)
                              select new
                              {
                                  VisitId = visitor.VisitId,
+                                 VisitorId = visitor.VisitorId,
                                  ExerciseId = visitor.ExerciseId,
                                  PersonFIO = visitor.Person.FirstName + " " + visitor.Person.LastName + " " + visitor.Person.MiddleName,
                                  RoleName = visitor.PersonRole.RoleName
                              }).AsEnumerable().Select(v => new Visit
                              {
                                  VisitId = v.VisitId,
+                                 VisitorId = v.VisitorId,
                                  ExerciseId = v.ExerciseId,
                                  PersonFIO = v.PersonFIO,
                                  RoleName = v.RoleName

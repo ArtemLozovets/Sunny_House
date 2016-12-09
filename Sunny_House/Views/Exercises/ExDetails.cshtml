@@ -5,6 +5,12 @@
 
 <div style="margin-bottom:26px;"><span id="topanchor"></span></div>
 
+<div id="loadingImg">
+    <div id="preloadImg">
+        <img src="~/Content/Images/loader.gif" />
+    </div>
+</div>
+
 <div class="row">
     <div class="col-lg-5 col-md-6">
         <div class="panel panel-default fixed" style="min-width:470px;" id="fixedpanel">
@@ -70,9 +76,24 @@
                 <div class="tab-content">
                     @* Вкладка посетителей ------------------------------------------- *@
                     <div id="home" class="tab-pane fade in active">
+                        <div class="col-lg-12 form-inline" style="margin-bottom:12px;">
+                            @using (Ajax.BeginForm("VisitorPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId }, new AjaxOptions { UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "visitform" }))
+                            {
+                                <input class="form-control" type="text" name="SearchString" id="SearchString" placeholder="Фамилия, имя..." style="width:200px; margin:2px 0; display:inline-block">
+                                @Html.DropDownList("RoleSearchString",
+                                                        (IEnumerable<SelectListItem>)ViewData["Roles"], "-Роль-",
+                                                        htmlAttributes: new
+                                                        {
+                                                            @class = "form-control",
+                                                            style = "width:160px; margin:2px 0; display:inline-block;"
+                                                        })
+                                <button type="submit" title="Искать" class="btn btn-default" style="margin-top:-3px;"><i class="glyphicon glyphicon-search"></i></button>
+                                <button type="button" title="Обновить" class="btn btn-default" id="filterclear" style="margin-top:-3px;"><i class="glyphicon glyphicon-refresh"></i></button>
+                            }
+                        </div>
                         <div id="update">
-                            @Html.Action("VisitorList", "Visits", new { @ExerciseId = @Model.ExerciseId, @SearchString = "" })
-                        </div> 
+                            @Html.Action("VisitorPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId, @SearchString = "", @RoleSearchString = "" })
+                        </div>
                     </div>
                     @* Вкладка регистрации ------------------------------------------- *@
                     <div id="menu1" class="tab-pane fade">
@@ -91,4 +112,23 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/circle-progress.min.js"></script>
     <script src="~/Scripts/toparrow.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $('#loadingImg').hide();
+        });
+
+        $('body').on('click', '#filterclear', function (event) {
+            $('#visitform').trigger('reset');
+            $('#visitform').submit();
+        });
+
+        $(window).resize(function () {
+            /*If browser resized, check width again */
+            if ($(window).width() >= 1000) {
+                $('#fixedpanel').addClass('fixed');
+            }
+            else { $('#fixedpanel').removeClass('fixed'); }
+        });
+    </script>
 }

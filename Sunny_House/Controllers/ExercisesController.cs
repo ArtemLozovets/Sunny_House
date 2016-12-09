@@ -132,6 +132,9 @@ namespace Sunny_House.Controllers
             {
                 return HttpNotFound();
             }
+
+            ViewData["Roles"] = new SelectList(db.PersonRoles, "RoleId", "RoleName");
+
             return View(exercise);
         }
 

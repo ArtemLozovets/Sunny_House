@@ -510,7 +510,7 @@
     <Content Include="Views\Visits\VisShow.cshtml" />
     <Content Include="Views\Modal\ShowModalExercises.cshtml" />
     <Content Include="Views\Modal\ExercisesPartialList.cshtml" />
-    <Content Include="Views\Visits\VisitorList.cshtml" />
+    <Content Include="Views\Visits\VisitorPartialList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

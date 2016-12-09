@@ -24,7 +24,7 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.PersonFIO)
+                @Html.ActionLink(@item.PersonFIO, "ShowPersons", "Home", new { PersonId = @item.VisitorId }, new { target = "_blank"})
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.RoleName)
