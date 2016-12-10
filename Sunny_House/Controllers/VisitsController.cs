@@ -8,6 +8,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Sunny_House.Models;
+using PagedList;
+using PagedList.Mvc;
 
 namespace Sunny_House.Controllers
 {
@@ -225,7 +227,7 @@ namespace Sunny_House.Controllers
         }
 
 
-        public ActionResult VisitorPartialList(int? ExerciseId, string SearchString, int? RoleSearchString)
+        public ActionResult VisitorPartialList(int? ExerciseId, string SearchString, int? RoleSearchString, int? page)
         {
             if (ExerciseId == 0 || ExerciseId == null)
             {
@@ -233,7 +235,7 @@ namespace Sunny_House.Controllers
             }
 
             var _visitors = (from visitor in db.Visits
-                             where (visitor.ExerciseId == ExerciseId) && 
+                             where (visitor.ExerciseId == ExerciseId) &&
                                     ((visitor.Person.FirstName.ToUpper().Contains(SearchString.ToUpper()) || String.IsNullOrEmpty(SearchString)) ||
                                       visitor.Person.LastName.ToUpper().Contains(SearchString.ToUpper()) || String.IsNullOrEmpty(SearchString)) &&
                                     (visitor.RoleId == RoleSearchString || RoleSearchString == null)
@@ -243,8 +245,10 @@ namespace Sunny_House.Controllers
                                  VisitorId = visitor.VisitorId,
                                  ExerciseId = visitor.ExerciseId,
                                  PersonFIO = visitor.Person.FirstName + " " + visitor.Person.LastName + " " + visitor.Person.MiddleName,
+                                 FirstName = visitor.Person.FirstName,
+                                 LastName = visitor.Person.LastName,
                                  RoleName = visitor.PersonRole.RoleName
-                             }).AsEnumerable().Select(v => new Visit
+                             }).OrderBy(v=>v.FirstName).ThenBy(v=>v.LastName).AsEnumerable().Select(v => new Visit
                              {
                                  VisitId = v.VisitId,
                                  VisitorId = v.VisitorId,
@@ -253,7 +257,15 @@ namespace Sunny_House.Controllers
                                  RoleName = v.RoleName
                              });
 
-            return PartialView(_visitors.ToList());
+
+            ViewData["SearchString"] = SearchString;
+            ViewData["RoleSearchString"] = RoleSearchString;
+            ViewData["ExerciseId"] = ExerciseId;
+
+            int pageSize = 50;
+            int pageNumber = (page ?? 1);
+
+            return PartialView(_visitors.ToList().ToPagedList(pageNumber, pageSize));
         }
 
         protected override void Dispose(bool disposing)

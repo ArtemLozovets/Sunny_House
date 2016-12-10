@@ -1,12 +1,14 @@
-﻿@model IEnumerable<Sunny_House.Models.Visit>
+﻿@model PagedList.IPagedList<Sunny_House.Models.Visit>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.PersonFIO)
+            @Html.DisplayNameFor(model => model.First().PersonFIO)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.RoleName)
+            @Html.DisplayNameFor(model => model.First().RoleName)
         </th>
         <th></th>
     </tr>
@@ -40,3 +42,15 @@
     }
 
 </table>
+
+<hr />
+Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("VisitorPartialList", "Visits",
+                             new {
+                                 ExerciseId = ViewData["ExerciseId"],
+                                 SearchString = ViewData["SearchString"],
+                                 RoleSearchString = ViewData["RoleSearchString"],
+                                 page }),
+                             PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
+                             new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "update" }))

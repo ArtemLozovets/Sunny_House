@@ -115,6 +115,20 @@
 
     <script type="text/javascript">
         $(function () {
+
+            //Скрипт сохранения активной панели
+            $('body').on('click', 'a[data-toggle="tab"]', function (e) {
+                //Сохраняем значение ссылки активной панели
+                localStorage.setItem('visitorlastTab', $(this).attr('href'));
+            });
+
+            //Открываем сохраненную вкладку если запись существует
+            var visitorlastTab = localStorage.getItem('visitorlastTab');
+            if (visitorlastTab) {
+                $('a[href="' + visitorlastTab + '"]').click();
+            }
+
+            $('#SearchString').focus();
             $('#loadingImg').hide();
         });
 
