@@ -1,6 +1,8 @@
 ﻿@model Sunny_House.Models.Exercise
 @{
     ViewBag.Title = "Подробно";
+    string ReturnParam = "/Exercises/ExDetails?ObjectId=" + Request.QueryString["ObjectId"];
+    string SuccessReturn = "/Exercises/ExShow";
 }
 
 <div style="margin-bottom:26px;"><span id="topanchor"></span></div>
@@ -18,6 +20,11 @@
                 <strong><i class="fa fa-bell"></i> Занятие <em class="text-info"> @Html.DisplayFor(model => model.Subject)</em></strong>
             </div>
             <div class="panel-body">
+                    <div style="text-align:center; margin:0 auto; margin-bottom:4px; width:300px;">
+                        <span class="text-success"> @TempData["MessageOk"]</span>
+                        <span class="text-danger"> @TempData["MessageError"]</span>
+                    </div>
+
                 <dl class="dl-horizontal">
                     <dt>
                         @Html.DisplayNameFor(model => model.Event.EventName)
@@ -57,9 +64,10 @@
                     </dd>
                 </dl>
 
-                <div style="margin:10px 0 0 4px;">
-                    <a class="btn btn-default" href='@Url.Action("ExShow", "Exercises")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
-                    <a class="btn btn-default" href='@Url.Action("ExEdit", "Exercises", new { ObjectId = Model.ExerciseId })'><span class="glyphicon glyphicon-edit"> Редактировать</span></a>
+                <div style="margin:10px 0 0 4px; text-align:center;">
+                    <a class="btn btn-default" href='@ViewData["ReturnParam"]' title="Список посещений"><span class="fa fa-bell"> Все занятия</span></a>
+                    <a class="btn btn-default" href='@Url.Action("ExEdit", "Exercises", new { ObjectId = Model.ExerciseId, ReturnParam })' title="Редактировать"><span class="glyphicon glyphicon-edit"> Редактировать</span></a>
+                    <a class="btn btn-default" href='@Url.Action("ExDelete", "Exercises", new { ObjectId = Model.ExerciseId, ReturnParam, SuccessReturn})' title="Удалить"><span class="glyphicon glyphicon-trash"> Удалить</span></a>
                 </div>
             </div>
         </div>

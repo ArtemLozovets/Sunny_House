@@ -121,7 +121,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Exercises/Details/5
-        public async Task<ActionResult> ExDetails(int? ObjectId)
+        public async Task<ActionResult> ExDetails(int? ObjectId, string ReturnParam)
         {
             if (ObjectId == null)
             {
@@ -134,7 +134,16 @@ namespace Sunny_House.Controllers
             }
 
             ViewData["Roles"] = new SelectList(db.PersonRoles, "RoleId", "RoleName");
-
+            
+            if (!string.IsNullOrEmpty(ReturnParam))
+            {
+                ViewData["ReturnParam"] = ReturnParam;
+            }
+            else
+            {
+                ViewData["ReturnParam"] = "/Exercises/ExShow";
+            }
+            
             return View(exercise);
         }
 
@@ -205,7 +214,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Exercises/Edit/5
-        public async Task<ActionResult> ExEdit(int? ObjectId, int? AddressId)
+        public async Task<ActionResult> ExEdit(int? ObjectId, int? AddressId, string ReturnParam)
         {
             if (ObjectId == null)
             {
@@ -231,13 +240,22 @@ namespace Sunny_House.Controllers
                 ViewData["AddressText"] = _addressString;
             }
 
+            if (!string.IsNullOrEmpty(ReturnParam))
+            {
+                ViewData["ReturnParam"] = ReturnParam;
+            }
+            else
+            {
+                ViewData["ReturnParam"] = "/Exercises/ExShow";
+            }
+
             return View(_exercise);
         }
 
         // POST: Exercises/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ExEdit([Bind(Include = "ExerciseId,Subject,StartTime,EndTime,AddressId,Note,EventId")] Exercise exercise)
+        public async Task<ActionResult> ExEdit([Bind(Include = "ExerciseId,Subject,StartTime,EndTime,AddressId,Note,EventId")] Exercise exercise, string ReturnParam)
         {
             if (ModelState.IsValid)
             {
@@ -251,7 +269,11 @@ namespace Sunny_House.Controllers
                         string _message = "Информация о занятии успешно обновлена";
                         TempData["MessageOk"] = _message;
 
-                        return RedirectToAction("ExShow");
+                        if (!string.IsNullOrEmpty(ReturnParam))
+                        {
+                           return Redirect(ReturnParam);
+                        }
+                        else return RedirectToAction("ExShow");
                     }
                     else
                     {
@@ -267,11 +289,20 @@ namespace Sunny_House.Controllers
                 }
             }
 
+            if (!string.IsNullOrEmpty(ReturnParam))
+            {
+                ViewData["ReturnParam"] = ReturnParam;
+            }
+            else
+            {
+                ViewData["ReturnParam"] = "/Exercises/ExShow";
+            }
+
             return View(exercise);
         }
 
         // GET: Exercises/Delete/5
-        public async Task<ActionResult> ExDelete(int? ObjectId)
+        public async Task<ActionResult> ExDelete(int? ObjectId, string ReturnParam, string SuccessReturn)
         {
             if (ObjectId == null)
             {
@@ -282,13 +313,28 @@ namespace Sunny_House.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (!string.IsNullOrEmpty(SuccessReturn))
+            {
+                ViewData["SuccessReturn"] = SuccessReturn;
+            }
+
+            if (!string.IsNullOrEmpty(ReturnParam))
+            {
+                ViewData["ReturnParam"] = ReturnParam;
+            }
+            else
+            {
+                ViewData["ReturnParam"] = "/Exercises/ExShow";
+            }
+
             return View(exercise);
         }
 
         // POST: Exercises/Delete/5
         [HttpPost, ActionName("ExDelete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ExDeleteConfirmed(int ObjectId)
+        public async Task<ActionResult> ExDeleteConfirmed(int ObjectId, string ReturnParam, string SuccessReturn)
         {
             try
             {
@@ -296,7 +342,12 @@ namespace Sunny_House.Controllers
                 {
 
                     TempData["MessageError"] = "Ошибка выполнения операции! В таблице посещений или отзывов имеются связанные данные.";
-                    return RedirectToAction("ExShow");
+
+                    if (!string.IsNullOrEmpty(ReturnParam))
+                    {
+                        return Redirect(ReturnParam);
+                    }
+                    else return RedirectToAction("ExShow");
                 }
 
                 Exercise exercise = await db.Exercises.FindAsync(ObjectId);
@@ -306,7 +357,19 @@ namespace Sunny_House.Controllers
                 string _message = "Информация о занятии успешно удалена";
                 TempData["MessageOk"] = _message;
 
-                return RedirectToAction("ExShow");
+                if (string.IsNullOrEmpty(SuccessReturn))
+                {
+                    if (!string.IsNullOrEmpty(ReturnParam))
+                    {
+                        return Redirect(ReturnParam);
+                    }
+                    else return RedirectToAction("ExShow");
+                }
+                else
+                {
+                    return Redirect(SuccessReturn);
+                }
+               
             }
             catch (Exception ex)
             {

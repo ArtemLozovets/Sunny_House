@@ -6,9 +6,15 @@
 
 @{
     ViewBag.Title = "Занятия";
-}
-<h2><i class="fa fa-bell"></i> Занятия</h2>
 
+        string ReturnParam = "/Exercises/ExShow?FilterMode=" + Request.QueryString["FilterMode"];
+        ReturnParam += "&SearchStartDate=" + Request.QueryString["SearchStartDate"];
+        ReturnParam += "&SearchEndDate=" + Request.QueryString["SearchEndDate"];
+        ReturnParam += "&SearchString=" + Request.QueryString["SearchString"];
+        ReturnParam += "&page=" + Request.QueryString["page"];
+}
+
+<h2><i class="fa fa-bell"></i> Занятия</h2>
 
 <div class="row">
     <div class="col-md-6">
@@ -92,10 +98,10 @@
     </div>
     <hr />
 
-<p>
-    <a class="btn btn-default" style="margin:2px 2px;" title="Добавить занятие" href='@Url.Action("ExCreate", "Exercises", new { @PersonId = Request.Params["PersonId"]})'><i class="fa fa-plus-circle"></i> Добавить занятие</a>
-    <a class="btn btn-default" style="margin:2px 2px;" title="Обновить" href='@Url.Action("ExShow", "Exercises")'><span class="glyphicon glyphicon-refresh"></span></a>
-</p>
+    <p>
+        <a class="btn btn-default" style="margin:2px 2px;" title="Добавить занятие" href='@Url.Action("ExCreate", "Exercises", new { @PersonId = Request.Params["PersonId"]})'><i class="fa fa-plus-circle"></i> Добавить занятие</a>
+        <a class="btn btn-default" style="margin:2px 2px;" title="Обновить" href='@Url.Action("ExShow", "Exercises")'><span class="glyphicon glyphicon-refresh"></span></a>
+    </p>
 }
 
 
@@ -113,9 +119,9 @@
                     SortBy = ViewBag.SortSubject
                 },
                     new { @id = "Subject" })@Html.Raw("&nbsp;")<i id="SubjectArrow"></i>
-        </th>
-        <th>
-            @Html.ActionLink("Мероприятие", "ExShow",
+                </th>
+                <th>
+                    @Html.ActionLink("Мероприятие", "ExShow",
                 new
                 {
                     FilterMode = Request.QueryString["FilterMode"],
@@ -126,9 +132,9 @@
                     SortBy = ViewBag.SortEventName
                 },
                     new { @id = "EventName" })@Html.Raw("&nbsp;")<i id="EventNameArrow"></i>
-        </th>
-        <th>
-            @Html.ActionLink("Начало", "ExShow",
+                </th>
+                <th>
+                    @Html.ActionLink("Начало", "ExShow",
                 new
                 {
                     FilterMode = Request.QueryString["FilterMode"],
@@ -139,9 +145,9 @@
                     SortBy = ViewBag.SortStartTime
                 },
                     new { @id = "StartTime" })@Html.Raw("&nbsp;")<i id="StartTimeArrow"></i>
-        </th>
-        <th style="width:130px;">
-            @Html.ActionLink("Окончание", "ExShow",
+                </th>
+                <th style="width:130px;">
+                    @Html.ActionLink("Окончание", "ExShow",
                 new
                 {
                     FilterMode = Request.QueryString["FilterMode"],
@@ -153,56 +159,56 @@
                 },
                     new { @id = "EndTime" })@Html.Raw("&nbsp;")<i id="EndTimeArrow"></i>
                 </th>
-        <th>
-            <label>Место</label>
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.First().Note)
-        </th>
-        <th style="width:128px; min-width:128px"></th>
-    </tr>
+                <th>
+                    <label>Место</label>
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Note)
+                </th>
+                <th style="width:128px; min-width:128px"></th>
+            </tr>
 
-    @if (Model.Count() == 0)
-    {
-        <tr>
-            <td colspan="7">
-                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
-            </td>
-        </tr>
-    }
+            @if (Model.Count() == 0)
+            {
+                <tr>
+                    <td colspan="7">
+                        <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+                    </td>
+                </tr>
+            }
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Subject)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Event.EventName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndTime)
-            </td>
-            <td>
-                @item.Address.City, @item.Address.AddressValue
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
-            <td style="text-align:center;">
-                <a class="btn btn-default btn-sm" title="Подробно" href='@Url.Action("ExDetails", "Exercises", new { ObjectId = item.ExerciseId })'><span class="glyphicon glyphicon-info-sign"></span></a>
-                <a class="btn btn-default btn-sm" title="Редактировать" href='@Url.Action("ExEdit", "Exercises", new { ObjectId = item.ExerciseId })'><span class="glyphicon glyphicon-edit"></span></a>
-                <a class="btn btn-default btn-sm" title="Удалить" href='@Url.Action("ExDelete", "Exercises", new { ObjectId = item.ExerciseId })'><span class="glyphicon glyphicon-trash"></span></a>
-            </td>
-        </tr>
-    }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Subject)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Event.EventName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndTime)
+                    </td>
+                    <td>
+                        @item.Address.City, @item.Address.AddressValue
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Note)
+                    </td>
+                    <td style="text-align:center;">
+                        <a class="btn btn-default btn-sm" title="Подробно" href='@Url.Action("ExDetails", "Exercises", new { ObjectId = item.ExerciseId, ReturnParam })'><span class="glyphicon glyphicon-info-sign"></span></a>
+                        <a class="btn btn-default btn-sm" title="Редактировать" href='@Url.Action("ExEdit", "Exercises", new { ObjectId = item.ExerciseId, ReturnParam })'><span class="glyphicon glyphicon-edit"></span></a>
+                        <a class="btn btn-default btn-sm" title="Удалить" href='@Url.Action("ExDelete", "Exercises", new { ObjectId = item.ExerciseId, ReturnParam })'><span class="glyphicon glyphicon-trash"></span></a>
+                    </td>
+                </tr>
+            }
 
-</table>
+        </table>
 
-<hr />
+        <hr />
         Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
 
         @Html.PagedListPager(Model, page => Url.Action("ExShow", "Exercises",
@@ -219,100 +225,99 @@
                          new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
 
 
-@if (ViewBag.ReturnUrl != null)
-{
-    <div style="margin:10px 0 0 4px;">
-        <a class="btn btn-default" href='@ViewBag.ReturnUrl'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
-    </div>
-}
-
-<a href="#" class="scrollup1">Наверх</a>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-    <script src="~/Scripts/jquery.cookie-1.4.1.min.js"></script>
-    <script src="~/Scripts/toparrow.js"></script>
-
-
-    <script type="text/javascript">
-        $(function () {
-            $.removeCookie('EventId');
-            $.removeCookie('EventLabel');
-            $.removeCookie('Subject');
-            $.removeCookie('StartTime');
-            $.removeCookie('EndTime');
-            $.removeCookie('Note');
-            $.removeCookie('ReturnUrl');
-        });
-    </script>
-
-    <script type="text/javascript">
-        $(function () {
-
-            // Сабмит формы при изменении переключателя (Через $('#FilterMode') работает только в одном положении)
-            $('input[name=FilterMode]').change(function () {
-                $('#ExForm').submit();
-            })
-
-            $("#SearchString").focus(); // Фокус на полі фільтра при відкритті сторінки.
-
-            if ($('#SortColumn').text() != '') {
-                var sortcolumnname = $('#SortColumn').text();
-                var sortcontrol = $('#' + sortcolumnname);
-                if (sortcontrol != null) {
-                    if (sortcontrol.attr('href').indexOf('desc') != -1) {
-                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-top')
-                    }
-                    else {
-                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-bottom')
-                    }
-                }
-            }
-
-        });
-    </script>
-
-@*Блок скриптов для работы с DateTimePicker*@
-<script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
-<script type="text/javascript">
-
-    $.datetimepicker.setLocale('ru');
-
-    // <![CDATA[
-    jQuery(function () {
-        jQuery('#SearchStartDate').datetimepicker({
-            format: 'd/m/Y H:i',
-            formatDate: 'd/m/Y',
-            onShow: function (ct) {
-                this.setOptions({
-                    maxDate: jQuery('#SearchEndDate').val() ? jQuery('#SearchEndDate').val() : false
-                })
-            },
-            timepicker: true
-        });
-        jQuery('#SearchEndDate').datetimepicker({
-            format: 'd/m/Y H:i',
-            formatDate: 'd/m/Y',
-            onShow: function (ct) {
-                this.setOptions({
-                    minDate: jQuery('#SearchStartDate').val() ? jQuery('#SearchStartDate').val() : false
-                })
-            },
-            timepicker: true
-        });
-    });
-    // ]]>
-
-    $.validator.methods.date = function (value, element) {
-        if (value) {
-            try {
-                $.datepicker.parseDate('dd/mm/yy', value);
-            } catch (ex) {
-                return false;
-            }
+        @if (ViewBag.ReturnUrl != null)
+        {
+            <div style="margin:10px 0 0 4px;">
+                <a class="btn btn-default" href='@ViewBag.ReturnUrl'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+            </div>
         }
-        return true;
-    };
-</script>
 
-}
+        <a href="#" class="scrollup1">Наверх</a>
+
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+            <script src="~/Scripts/jquery.cookie-1.4.1.min.js"></script>
+            <script src="~/Scripts/toparrow.js"></script>
+
+
+            <script type="text/javascript">
+                $(function () {
+                    $.removeCookie('EventId');
+                    $.removeCookie('EventLabel');
+                    $.removeCookie('Subject');
+                    $.removeCookie('StartTime');
+                    $.removeCookie('EndTime');
+                    $.removeCookie('Note');
+                    $.removeCookie('ReturnUrl');
+                });
+            </script>
+
+            <script type="text/javascript">
+                $(function () {
+
+                    // Сабмит формы при изменении переключателя (Через $('#FilterMode') работает только в одном положении)
+                    $('input[name=FilterMode]').change(function () {
+                        $('#ExForm').submit();
+                    })
+
+                    $("#SearchString").focus(); // Фокус на полі фільтра при відкритті сторінки.
+
+                    if ($('#SortColumn').text() != '') {
+                        var sortcolumnname = $('#SortColumn').text();
+                        var sortcontrol = $('#' + sortcolumnname);
+                        if (sortcontrol != null) {
+                            if (sortcontrol.attr('href').indexOf('desc') != -1) {
+                                $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-top')
+                            }
+                            else {
+                                $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-bottom')
+                            }
+                        }
+                    }
+
+                });
+            </script>
+
+            @*Блок скриптов для работы с DateTimePicker*@
+            <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
+            <script type="text/javascript">
+
+                $.datetimepicker.setLocale('ru');
+
+                // <![CDATA[
+                jQuery(function () {
+                    jQuery('#SearchStartDate').datetimepicker({
+                        format: 'd/m/Y H:i',
+                        formatDate: 'd/m/Y',
+                        onShow: function (ct) {
+                            this.setOptions({
+                                maxDate: jQuery('#SearchEndDate').val() ? jQuery('#SearchEndDate').val() : false
+                            })
+                        },
+                        timepicker: true
+                    });
+                    jQuery('#SearchEndDate').datetimepicker({
+                        format: 'd/m/Y H:i',
+                        formatDate: 'd/m/Y',
+                        onShow: function (ct) {
+                            this.setOptions({
+                                minDate: jQuery('#SearchStartDate').val() ? jQuery('#SearchStartDate').val() : false
+                            })
+                        },
+                        timepicker: true
+                    });
+                });
+                // ]]>
+
+                $.validator.methods.date = function (value, element) {
+                    if (value) {
+                        try {
+                            $.datepicker.parseDate('dd/mm/yy', value);
+                        } catch (ex) {
+                            return false;
+                        }
+                    }
+                    return true;
+                };
+            </script>
+        }
