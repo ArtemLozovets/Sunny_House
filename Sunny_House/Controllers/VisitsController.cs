@@ -20,36 +20,9 @@ namespace Sunny_House.Controllers
         // GET: Visits
         public ActionResult VisShow()
         {
-            //var visits = db.Visits.Include(v => v.Exercise).Include(v => v.Person).Include(v => v.PersonRole);
+            ViewData["Roles"] = new SelectList(db.PersonRoles, "RoleId", "RoleName");
 
-            var visits = (from visit in db.Visits
-                          join ex in db.Exercises on visit.ExerciseId equals ex.ExerciseId
-                          join person in db.Persons on visit.VisitorId equals person.PersonId
-                          join role in db.PersonRoles on visit.RoleId equals role.RoleId
-                          select new
-                          {
-
-
-                              VisitId = visit.VisitId,
-                              VisitorId = visit.VisitorId,
-                              ExerciseId = ex.ExerciseId,
-                              RoleId = role.RoleId,
-                              PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
-                              ExName = ex.Subject,
-                              RoleName = role.RoleName
-
-                          }).AsEnumerable().Select(x => new Visit
-                          {
-                              VisitId = x.VisitId,
-                              VisitorId = x.VisitorId,
-                              ExerciseId = x.ExerciseId,
-                              PersonFIO = x.PersonFIO,
-                              RoleId = x.RoleId,
-                              ExName = x.ExName,
-                              RoleName = x.RoleName
-                          }).ToList();
-
-            return View(visits);
+            return View();
         }
 
 
@@ -248,7 +221,7 @@ namespace Sunny_House.Controllers
                                  FirstName = visitor.Person.FirstName,
                                  LastName = visitor.Person.LastName,
                                  RoleName = visitor.PersonRole.RoleName
-                             }).OrderBy(v=>v.FirstName).ThenBy(v=>v.LastName).AsEnumerable().Select(v => new Visit
+                             }).OrderBy(v => v.FirstName).ThenBy(v => v.LastName).AsEnumerable().Select(v => new Visit
                              {
                                  VisitId = v.VisitId,
                                  VisitorId = v.VisitorId,
@@ -267,6 +240,90 @@ namespace Sunny_House.Controllers
 
             return PartialView(_visitors.ToList().ToPagedList(pageNumber, pageSize));
         }
+
+        public ActionResult AllVisitsPartial(string SearchString, int? RoleSearchString, int? page, string SortBy)
+        {
+
+            ViewBag.SortExName = SortBy == "ExName" ? "ExName desc" : "ExName";
+            ViewBag.SortPersonFIO = SortBy == "PersonFIO" ? "PersonFIO desc" : "PersonFIO";
+            ViewBag.SortRoleName = SortBy == "RoleName" ? "RoleName desc" : "RoleName";
+
+            var visits = (from visit in db.Visits
+                          join ex in db.Exercises on visit.ExerciseId equals ex.ExerciseId
+                          join person in db.Persons on visit.VisitorId equals person.PersonId
+                          join role in db.PersonRoles on visit.RoleId equals role.RoleId
+                          where (role.RoleId == RoleSearchString || RoleSearchString == null) &&
+                                    ((person.FirstName.ToUpper().Contains(SearchString.ToUpper()) || string.IsNullOrEmpty(SearchString)) ||
+                                    (person.LastName.ToUpper().Contains(SearchString.ToUpper()) || string.IsNullOrEmpty(SearchString)) ||
+                                    (ex.Subject.ToUpper().Contains(SearchString.ToUpper()) || string.IsNullOrEmpty(SearchString)))
+                          select new
+                          {
+                              VisitId = visit.VisitId,
+                              VisitorId = visit.VisitorId,
+                              ExerciseId = ex.ExerciseId,
+                              RoleId = role.RoleId,
+                              PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
+                              ExName = ex.Subject,
+                              RoleName = role.RoleName
+
+                          }).AsEnumerable().Select(x => new Visit
+                          {
+                              VisitId = x.VisitId,
+                              VisitorId = x.VisitorId,
+                              ExerciseId = x.ExerciseId,
+                              PersonFIO = x.PersonFIO.Trim(),
+                              RoleId = x.RoleId,
+                              ExName = x.ExName,
+                              RoleName = x.RoleName
+                          });
+
+
+            switch (SortBy)
+            {
+                case "ExName desc":
+                    visits = visits.OrderByDescending(x => x.ExName);
+                    ViewData["SortColumn"] = "ExName";
+                    break;
+                case "ExName":
+                    visits = visits.OrderBy(x => x.ExName);
+                    ViewData["SortColumn"] = "ExName";
+                    break;
+
+                case "PersonFIO desc":
+                    visits = visits.OrderByDescending(x => x.PersonFIO);
+                    ViewData["SortColumn"] = "PersonFIO";
+                    break;
+                case "PersonFIO":
+                    visits = visits.OrderBy(x => x.PersonFIO);
+                    ViewData["SortColumn"] = "PersonFIO";
+                    break;
+
+                case "RoleName desc":
+                    visits = visits.OrderByDescending(x => x.RoleName);
+                    ViewData["SortColumn"] = "RoleName";
+                    break;
+                case "RoleName":
+                    visits = visits.OrderBy(x => x.RoleName);
+                    ViewData["SortColumn"] = "RoleName";
+                    break;
+
+                default:
+                    visits = visits.OrderBy(x => x.PersonFIO);
+                    break;
+            }
+
+
+
+            ViewData["SearchString"] = SearchString;
+            ViewData["RoleSearchString"] = RoleSearchString;
+
+            int pageSize = 50;
+            int pageNumber = (page ?? 1);
+
+            return PartialView(visits.ToList().ToPagedList(pageNumber, pageSize));
+
+        }
+
 
         protected override void Dispose(bool disposing)
         {

@@ -511,6 +511,7 @@
     <Content Include="Views\Modal\ShowModalExercises.cshtml" />
     <Content Include="Views\Modal\ExercisesPartialList.cshtml" />
     <Content Include="Views\Visits\VisitorPartialList.cshtml" />
+    <Content Include="Views\Visits\AllVisitsPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

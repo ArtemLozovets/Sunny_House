@@ -298,7 +298,7 @@ namespace Sunny_House.Controllers
                                     {
                                         PersonId = c.PersonId,
                                         ClientId = c.ClientId,
-                                        PersonFIO = c.PersonFIO,
+                                        PersonFIO = c.PersonFIO.Trim(),
                                         RoleName = c.RoleName,
                                         Infoes = c.Infoes
                                     }).OrderByDescending(c => c.ClientId);
@@ -353,7 +353,7 @@ namespace Sunny_House.Controllers
                             }).Distinct().AsEnumerable().Select(e => new PersonsViewModel
                             {
                                 PersonId = e.PersonId,
-                                PersonFIO = e.PersonFIO,
+                                PersonFIO = e.PersonFIO.Trim(),
                                 PersonAge = AgeMethods.GetAge(e.DateOfBirth),
                                 PersonMonth = AgeMethods.GetTotalMonth(e.DateOfBirth),
                                 DateOfBirth = e.DateOfBirth

@@ -419,7 +419,7 @@ namespace Sunny_House.Controllers
                             }).OrderByDescending(r=>r.ReserveId).AsEnumerable().Select(e => new PersonsViewModel
                                                 {
                                                     PersonId = e.PersonId,
-                                                    PersonFIO = e.PersonFIO,
+                                                    PersonFIO = e.PersonFIO.Trim(),
                                                     PersonAge = AgeMethods.GetAge(e.DOB),
                                                     PersonMonth = AgeMethods.GetTotalMonth(e.DOB),
                                                     Num_Address = e.Num_Address,
