@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using Sunny_House.Models;
 using PagedList;
 using PagedList.Mvc;
+using Sunny_House.Methods;
 
 namespace Sunny_House.Controllers
 {
@@ -324,6 +325,27 @@ namespace Sunny_House.Controllers
 
         }
 
+        public ActionResult PersonsPartialList(int? ExerciseId, string SearchString, int? page)
+        {
+            int pageSize = 50;
+            int pageNumber = (page ?? 1);
+
+            var _persons = (from person in db.Persons
+                            where (person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString))
+                            select new
+                            {
+                                PersonFIO = person.FirstName + "" + person.LastName + "" + person.MiddleName,
+                                DateOfBirth = person.DateOfBirth
+                            }).AsEnumerable().Select(p => new PersonsViewModel
+                            {
+                                PersonFIO = p.PersonFIO.Trim(),
+                                PersonAge =  AgeMethods.GetAge(p.DateOfBirth),
+                                PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth)
+                            });
+
+            return PartialView(_persons.ToList().ToPagedList(pageNumber, pageSize));
+
+        }
 
         protected override void Dispose(bool disposing)
         {

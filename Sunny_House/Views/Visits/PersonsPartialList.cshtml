@@ -1,0 +1,67 @@
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<Sunny_House.Models.PersonsViewModel>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<table class="table ModalTable">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.First().PersonFIO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().PersonAge)
+        </th>
+        <th></th>
+    </tr>
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="2">
+                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+            </td>
+        </tr>
+    }
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PersonFIO)
+            </td>
+            
+              @if (item.PersonAge != null && item.PersonAge > 0)
+                    {
+                        <td style="text-align:center">
+                            <span class="text-info" title="Дата рождения: @Html.DisplayFor(modelItem => item.DateOfBirth)" style="cursor:pointer">
+                                @Html.DisplayFor(modelItem => item.PersonAge)
+                            </span>
+                        </td>
+                    }
+                    else
+                    {
+                        <td style="text-align:center">
+                            @if (item.PersonMonth != null)
+                            { <span class="text-success" title="Дата рождения: @Html.DisplayFor(modelItem => item.DateOfBirth)" style="cursor:pointer">
+                                @Html.DisplayFor(modelItem => item.PersonMonth) мес.
+                            </span> }
+                        </td>
+                    }
+            <td>
+                <a class="btn btn-default btn-sm selPerson"
+                   data-pasteitem="@ViewBag.Mode"
+                   data-personid="@item.PersonId"
+                   onclick="selsubmit(this)"
+                   data-personpib="@item.FirstName @item.LastName @item.MiddleName">
+                    <span class="glyphicon glyphicon-ok"></span>
+                </a>
+            </td>
+        </tr>
+    }
+</table>
+<hr />
+<div style="margin-left:10px;">
+    Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+    @Html.PagedListPager(Model, page => Url.Action("PersonsPartialList", "Visits",
+                         new { PersonSearchString = ViewData["SearchString"], page, field = ViewBag.Mode }),
+                                 PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
+                                                                                         new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "update1" }))
+</div>
+

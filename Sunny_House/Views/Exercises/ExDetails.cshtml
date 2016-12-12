@@ -84,7 +84,7 @@
                 <div class="tab-content">
                     @* Вкладка посетителей ------------------------------------------- *@
                     <div id="home" class="tab-pane fade in active">
-                        <div class="col-lg-12 form-inline" style="margin-bottom:12px;">
+                        <div class="col-lg-12 form-inline text-right" style="margin-bottom:12px;">
                             @using (Ajax.BeginForm("VisitorPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId }, new AjaxOptions { UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "visitform" }))
                             {
                                 <input class="form-control" type="text" name="SearchString" id="SearchString" placeholder="Фамилия, имя..." style="width:200px; margin:2px 0; display:inline-block">
@@ -105,7 +105,17 @@
                     </div>
                     @* Вкладка регистрации ------------------------------------------- *@
                     <div id="menu1" class="tab-pane fade">
-                        <h1>Добавить посетителя</h1>
+                        <div class="col-lg-12 form-inline text-right" style="margin-bottom:12px;">
+                            @using (Ajax.BeginForm("PersonsPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId }, new AjaxOptions { UpdateTargetId = "update1", LoadingElementId = "loadingImg" }, new { @id = "personform" }))
+                            {
+                                <input class="form-control" type="text" name="SearchString" id="SearchString" placeholder="Фамилия, имя..." style="width:200px; margin:2px 0; display:inline-block">
+                                <button type="submit" title="Искать" class="btn btn-default" style="margin-top:-3px;"><i class="glyphicon glyphicon-search"></i></button>
+                                <button type="button" title="Обновить" class="btn btn-default" id="personfilterclear" style="margin-top:-3px;"><i class="glyphicon glyphicon-refresh"></i></button>
+                            }
+                        </div>
+                        <div id="update1">
+                            @Html.Action("PersonsPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId, @SearchString = ""})
+                        </div>
                     </div>
                 </div>
             </div>
@@ -143,6 +153,11 @@
         $('body').on('click', '#filterclear', function (event) {
             $('#visitform').trigger('reset');
             $('#visitform').submit();
+        });
+
+        $('body').on('click', '#personfilterclear', function (event) {
+            $('#personform').trigger('reset');
+            $('#personform').submit();
         });
 
         $(window).resize(function () {
