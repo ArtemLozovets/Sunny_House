@@ -14,6 +14,7 @@ using PagedList.Mvc;
 
 namespace Sunny_House.Controllers
 {
+    [Authorize(Roles = "Administrator, User")]
     public class TasksController : Controller
     {
         private SunnyModel db = new SunnyModel();
@@ -23,7 +24,7 @@ namespace Sunny_House.Controllers
         {
             return View();
         }
-        
+
         // GET: Tasks
         public ActionResult TasksShowPartial(DateTime? SearchDateOfCreation, DateTime? SearchDate, string SearchString, bool? TaskComplete, int? page, string SortBy)
         {
@@ -33,11 +34,11 @@ namespace Sunny_House.Controllers
             ViewBag.SortSubject = SortBy == "Subject" ? "Subject desc" : "Subject";
             ViewBag.SortTaskComplete = SortBy == "TaskComplete" ? "TaskComplete desc" : "TaskComplete";
             ViewBag.SortNote = SortBy == "Note" ? "Note desc" : "Note";
-        
-   
-            var _tasks = (from task in db.STask 
-                          where(task.DateOfCreation == SearchDateOfCreation || SearchDateOfCreation==null) 
-                          && (task.Date == SearchDate || SearchDate == null )
+
+
+            var _tasks = (from task in db.STask
+                          where (task.DateOfCreation == SearchDateOfCreation || SearchDateOfCreation == null)
+                          && (task.Date == SearchDate || SearchDate == null)
                           && ((task.Subject.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || (task.Note.Contains(SearchString) || string.IsNullOrEmpty(SearchString)))
                           && (task.TaskComplete == TaskComplete || TaskComplete == null)
                           select task);
@@ -170,7 +171,7 @@ namespace Sunny_House.Controllers
                 ViewBag.ErStack = ex.StackTrace;
                 return View("Error");
             }
-            
+
         }
 
         // GET: Tasks/Edit/5
@@ -235,7 +236,7 @@ namespace Sunny_House.Controllers
             switch (mode)
             {
                 case "overdue":
-                    _result = _result.Where(t=>(t.TaskComplete == false) && (t.Date < DateTime.Today)).ToList();
+                    _result = _result.Where(t => (t.TaskComplete == false) && (t.Date < DateTime.Today)).ToList();
                     break;
                 case "today":
                     _result = _result.Where(t => (t.TaskComplete == false) && (t.Date == DateTime.Today)).ToList();

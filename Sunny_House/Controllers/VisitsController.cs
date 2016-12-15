@@ -14,6 +14,7 @@ using Sunny_House.Methods;
 
 namespace Sunny_House.Controllers
 {
+    [Authorize(Roles = "Administrator, User")]
     public class VisitsController : Controller
     {
         private SunnyModel db = new SunnyModel();
@@ -325,23 +326,89 @@ namespace Sunny_House.Controllers
 
         }
 
-        public ActionResult PersonsPartialList(int? ExerciseId, string SearchString, int? page)
+        public ActionResult PersonsPartialList(string FilterMode, int? ExerciseId, string SearchString, int? page, string SortBy)
         {
             int pageSize = 50;
             int pageNumber = (page ?? 1);
+
+            ViewBag.SortPersonFIO = SortBy == "PersonFIO" ? "PersonFIO desc" : "PersonFIO";
+            ViewBag.SortAge = SortBy == "Age" ? "Age desc" : "Age";
+
+            if (String.IsNullOrEmpty(FilterMode))
+            {
+                FilterMode = "Reserve";
+            }
 
             var _persons = (from person in db.Persons
                             where (person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString))
                             select new
                             {
-                                PersonFIO = person.FirstName + "" + person.LastName + "" + person.MiddleName,
-                                DateOfBirth = person.DateOfBirth
+                                PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
+                                DateOfBirth = person.DateOfBirth,
                             }).AsEnumerable().Select(p => new PersonsViewModel
                             {
-                                PersonFIO = p.PersonFIO.Trim(),
-                                PersonAge =  AgeMethods.GetAge(p.DateOfBirth),
-                                PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth)
+                                PersonFIO = p.PersonFIO.TrimStart(),
+                                PersonAge = AgeMethods.GetAge(p.DateOfBirth),
+                                PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
+                                DateOfBirth = p.DateOfBirth
                             });
+
+
+            switch (FilterMode)
+            {
+
+                case "Reserve":
+                    _persons = (from reserve in db.Reserves
+                                join person in db.Persons on reserve.PersonId equals person.PersonId
+                                join _event in db.Events on reserve.EventId equals _event.EventId
+                                join _ex in db.Exercises on _event.EventId equals _ex.EventId
+                                where (_ex.ExerciseId == ExerciseId || ExerciseId == null) &&
+                                ((person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)))
+                                select new
+                                {
+                                    PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
+                                    DateOfBirth = person.DateOfBirth,
+                                }).AsEnumerable().Select(p => new PersonsViewModel
+                                {
+                                    PersonFIO = p.PersonFIO.TrimStart(),
+                                    PersonAge = AgeMethods.GetAge(p.DateOfBirth),
+                                    PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
+                                    DateOfBirth = p.DateOfBirth
+                                });
+                    break;
+                
+                default:
+                    break;
+            }
+
+            switch (SortBy)
+            {
+                case "PersonFIO desc":
+                    _persons = _persons.OrderByDescending(x => x.PersonFIO);
+                    ViewData["SortColumn"] = "PersonFIO";
+                    break;
+                case "PersonFIO":
+                    _persons = _persons.OrderBy(x => x.PersonFIO);
+                    ViewData["SortColumn"] = "PersonFIO";
+                    break;
+
+                case "Age desc":
+                    _persons = _persons.OrderByDescending(x => x.DateOfBirth);
+                    ViewData["SortColumn"] = "Age";
+                    break;
+                case "Age":
+                    _persons = _persons.OrderBy(x => x.DateOfBirth);
+                    ViewData["SortColumn"] = "Age";
+                    break;
+
+                default:
+                    _persons = _persons.OrderBy(x => x.PersonFIO);
+                    break;
+            }
+
+
+
+            ViewData["SearchString"] = SearchString;
 
             return PartialView(_persons.ToList().ToPagedList(pageNumber, pageSize));
 

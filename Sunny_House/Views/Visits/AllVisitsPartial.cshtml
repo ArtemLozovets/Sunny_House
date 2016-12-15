@@ -7,7 +7,7 @@
 <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
     <tr>
         <th>
-            @Ajax.ActionLink("ФИО персоны", "AllVisitsPArtial", new
+            @Ajax.ActionLink("ФИО персоны", "AllVisitsPartial", new
        {
            SortBy = ViewBag.SortPersonFIO,
            SearchString = Request["SearchString"],
@@ -16,7 +16,7 @@
             <i id="PersonFIOArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>
-            @Ajax.ActionLink("Занятие", "AllVisitsPArtial", new
+            @Ajax.ActionLink("Занятие", "AllVisitsPartial", new
        {
            SortBy = ViewBag.SortExName,
            SearchString = Request["SearchString"],
@@ -25,7 +25,7 @@
             <i id="ExNameArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>
-            @Ajax.ActionLink("Роль", "AllVisitsPArtial", new
+            @Ajax.ActionLink("Роль", "AllVisitsPartial", new
        {
            SortBy = ViewBag.SortRoleName,
            SearchString = Request["SearchString"],

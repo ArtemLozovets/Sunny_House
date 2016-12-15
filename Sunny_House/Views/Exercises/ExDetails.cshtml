@@ -20,10 +20,10 @@
                 <strong><i class="fa fa-bell"></i> Занятие <em class="text-info"> @Html.DisplayFor(model => model.Subject)</em></strong>
             </div>
             <div class="panel-body">
-                    <div style="text-align:center; margin:0 auto; margin-bottom:4px; width:300px;">
-                        <span class="text-success"> @TempData["MessageOk"]</span>
-                        <span class="text-danger"> @TempData["MessageError"]</span>
-                    </div>
+                <div style="text-align:center; margin:0 auto; margin-bottom:4px; width:300px;">
+                    <span class="text-success"> @TempData["MessageOk"]</span>
+                    <span class="text-danger"> @TempData["MessageError"]</span>
+                </div>
 
                 <dl class="dl-horizontal">
                     <dt>
@@ -105,16 +105,22 @@
                     </div>
                     @* Вкладка регистрации ------------------------------------------- *@
                     <div id="menu1" class="tab-pane fade">
-                        <div class="col-lg-12 form-inline text-right" style="margin-bottom:12px;">
+                        <div class="col-lg-12 form-inline" style="margin-bottom:12px;">
                             @using (Ajax.BeginForm("PersonsPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId }, new AjaxOptions { UpdateTargetId = "update1", LoadingElementId = "loadingImg" }, new { @id = "personform" }))
                             {
-                                <input class="form-control" type="text" name="SearchString" id="SearchString" placeholder="Фамилия, имя..." style="width:200px; margin:2px 0; display:inline-block">
-                                <button type="submit" title="Искать" class="btn btn-default" style="margin-top:-3px;"><i class="glyphicon glyphicon-search"></i></button>
-                                <button type="button" title="Обновить" class="btn btn-default" id="personfilterclear" style="margin-top:-3px;"><i class="glyphicon glyphicon-refresh"></i></button>
+                                <div class="col-lg-2 col-md-3 col-sm-3 text-left">
+                                    @Html.RadioButton("FilterMode", "Reserve", true)@Html.Raw("&nbsp;")<span>Бронь</span><br />
+                                    @Html.RadioButton("FilterMode", "All")@Html.Raw("&nbsp;")<span> Все</span>
+                                </div>
+                                <div class="col-lg-10 col-md-9 col-sm-8 text-right">
+                                    <input class="form-control" type="text" name="SearchString" id="SearchString" placeholder="Фамилия, имя..." style="width:200px; margin:2px 0; display:inline-block">
+                                    <button type="submit" title="Искать" class="btn btn-default" style="margin-top:-3px;"><i class="glyphicon glyphicon-search"></i></button>
+                                    <button type="button" title="Обновить" class="btn btn-default" id="personfilterclear" style="margin-top:-3px;"><i class="glyphicon glyphicon-refresh"></i></button>
+                                </div>
                             }
                         </div>
                         <div id="update1">
-                            @Html.Action("PersonsPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId, @SearchString = ""})
+                            @Html.Action("PersonsPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId, @SearchString = "" })
                         </div>
                     </div>
                 </div>
@@ -133,6 +139,11 @@
 
     <script type="text/javascript">
         $(function () {
+
+            // Сабмит формы при изменении переключателя (Через $('#FilterMode') работает только в одном положении)
+            $('input[name=FilterMode]').change(function () {
+                $('#personform').submit();
+            })
 
             //Скрипт сохранения активной панели
             $('body').on('click', 'a[data-toggle="tab"]', function (e) {
@@ -166,6 +177,27 @@
                 $('#fixedpanel').addClass('fixed');
             }
             else { $('#fixedpanel').removeClass('fixed'); }
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ajaxComplete(function () {
+
+            $('i[id$="Arrow"]').css("visibility", "hidden");
+
+            //Отображаем значки сортировки
+            if ($('#SortColumn').text() != '') {
+                var sortcolumnname = $('#SortColumn').text();
+                var sortcontrol = $('#' + sortcolumnname);
+                if (sortcontrol != null) {
+                    if (sortcontrol.attr('href').indexOf('desc') != -1) {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-top').css("visibility", "visible")
+                    }
+                    else {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-bottom').css("visibility", "visible")
+                    }
+                }
+            }
         });
     </script>
 }
