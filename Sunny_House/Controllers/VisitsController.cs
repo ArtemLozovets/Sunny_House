@@ -328,59 +328,52 @@ namespace Sunny_House.Controllers
 
         public ActionResult PersonsPartialList(string FilterMode, int? ExerciseId, string SearchString, int? page, string SortBy)
         {
-            int pageSize = 50;
-            int pageNumber = (page ?? 1);
-
             ViewBag.SortPersonFIO = SortBy == "PersonFIO" ? "PersonFIO desc" : "PersonFIO";
             ViewBag.SortAge = SortBy == "Age" ? "Age desc" : "Age";
 
-            if (String.IsNullOrEmpty(FilterMode))
+            IEnumerable<PersonsViewModel> _persons ;
+            
+            if (FilterMode == "Reserve" || String.IsNullOrEmpty(FilterMode))
             {
-                FilterMode = "Reserve";
-            }
-
-            var _persons = (from person in db.Persons
-                            where (person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString))
+                _persons = (from reserve in db.Reserves
+                            join person in db.Persons on reserve.PersonId equals person.PersonId
+                            join _event in db.Events on reserve.EventId equals _event.EventId
+                            join _ex in db.Exercises on _event.EventId equals _ex.EventId
+                            where (_ex.ExerciseId == ExerciseId || ExerciseId == null) &&
+                            ((person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)))
                             select new
                             {
                                 PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
-                                DateOfBirth = person.DateOfBirth,
+                                PersonId = person.PersonId,
+                                DateOfBirth = person.DateOfBirth
                             }).AsEnumerable().Select(p => new PersonsViewModel
                             {
                                 PersonFIO = p.PersonFIO.TrimStart(),
+                                PersonId = p.PersonId,
                                 PersonAge = AgeMethods.GetAge(p.DateOfBirth),
                                 PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
                                 DateOfBirth = p.DateOfBirth
                             });
-
-
-            switch (FilterMode)
-            {
-
-                case "Reserve":
-                    _persons = (from reserve in db.Reserves
-                                join person in db.Persons on reserve.PersonId equals person.PersonId
-                                join _event in db.Events on reserve.EventId equals _event.EventId
-                                join _ex in db.Exercises on _event.EventId equals _ex.EventId
-                                where (_ex.ExerciseId == ExerciseId || ExerciseId == null) &&
-                                ((person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)))
-                                select new
-                                {
-                                    PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
-                                    DateOfBirth = person.DateOfBirth,
-                                }).AsEnumerable().Select(p => new PersonsViewModel
-                                {
-                                    PersonFIO = p.PersonFIO.TrimStart(),
-                                    PersonAge = AgeMethods.GetAge(p.DateOfBirth),
-                                    PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
-                                    DateOfBirth = p.DateOfBirth
-                                });
-                    break;
-                
-                default:
-                    break;
             }
-
+            else
+            {
+               _persons = (from person in db.Persons
+                            where (person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString))
+                            select new
+                            {
+                                PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
+                                PersonId = person.PersonId,
+                                DateOfBirth = person.DateOfBirth,
+                            }).AsEnumerable().Select(p => new PersonsViewModel
+                            {
+                                PersonFIO = p.PersonFIO.TrimStart(),
+                                PersonId = p.PersonId,
+                                PersonAge = AgeMethods.GetAge(p.DateOfBirth),
+                                PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
+                                DateOfBirth = p.DateOfBirth
+                            });
+            }
+            
             switch (SortBy)
             {
                 case "PersonFIO desc":
@@ -406,12 +399,14 @@ namespace Sunny_House.Controllers
                     break;
             }
 
-
-
             ViewData["SearchString"] = SearchString;
+            ViewData["ExerciseId"] = ExerciseId;
+            ViewData["Roles"] = new SelectList(db.PersonRoles, "RoleId", "RoleName");
+            
+            int pageSize = 50;
+            int pageNumber = (page ?? 1);
 
             return PartialView(_persons.ToList().ToPagedList(pageNumber, pageSize));
-
         }
 
         protected override void Dispose(bool disposing)
