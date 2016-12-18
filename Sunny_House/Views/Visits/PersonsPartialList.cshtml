@@ -69,12 +69,13 @@
                                                         {
                                                             @class = "form-control personddl",
                                                             style = "width:160px; margin:2px 0; display:inline-block;",
-                                                            id = "ddl"+@item.PersonId
+                                                            id = "ddl" + @item.PersonId
                                                         })
             </td>
 
             <td>
                 <a class="btn btn-default btn-sm selPerson"
+                   title="Регистрация посещения"
                    data-personid="@item.PersonId"
                    data-exid="@ViewData["ExerciseId"]"
                    onclick="selsubmit(this)">

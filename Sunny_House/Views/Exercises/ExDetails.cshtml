@@ -20,9 +20,9 @@
                 <strong><i class="fa fa-bell"></i> Занятие <em class="text-info"> @Html.DisplayFor(model => model.Subject)</em></strong>
             </div>
             <div class="panel-body">
-                <div style="text-align:center; margin:0 auto; margin-bottom:4px; width:300px;">
-                    <span class="text-success"> @TempData["MessageOk"]</span>
-                    <span class="text-danger"> @TempData["MessageError"]</span>
+                <div style="text-align:center; margin:0 auto; margin-bottom:4px; width:300px; cursor:pointer" id="resultMessage">
+                    <strong><span class="text-success" id="MessageOk"> @TempData["MessageOk"]</span></strong>
+                    <strong><span class="text-danger" id="MessageError"> @TempData["MessageError"]</span></strong>
                 </div>
 
                 <dl class="dl-horizontal">
@@ -139,6 +139,15 @@
 
     <script type="text/javascript">
         $(function () {
+            // Очищаем панель сообщений по щелчку в окне
+            $('#resultMessage').click(function () {
+                $('#resultMessage').fadeOut(1000,
+                    function () {
+                        $('#MessageOk').html('');
+                        $('#MessageError').html('');
+                        $('#resultMessage').fadeIn(1000)
+                    });
+            });
 
             // Сабмит формы при изменении переключателя (Через $('#FilterMode') работает только в одном положении)
             $('input[name=FilterMode]').change(function () {
@@ -205,15 +214,47 @@
 
         //Обработчик щелчка по кнопке выбора персоны
         function selsubmit(elem) {
-            var PersonId = $(elem).data('personid');
-            var ExId = $(elem).data('exid');
-            var RoleId = $('#ddl' + PersonId).val();
-            if (RoleId == '') {
+            var _personId = $(elem).data('personid');
+            var _exId = $(elem).data('exid');
+            var _roleId = $('#ddl' + _personId).val();
+            if (_roleId == '') {
                 alert('Необходимо указать роль посетителя!');
             }
             else {
-                alert('Мероприятие:'+ExId+' / Персона: '+PersonId + ' / Роль: ' + RoleId);
+
+                if (!confirm('Добавить информацию о посещении?')) {
+                    return false;
+                }
+                else {
+                    $('#loadingImg').show();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Visits/AddVisitAjax/',
+                        traditional: true,
+                        data: {
+                            ExId: _exId,
+                            RoleId: _roleId,
+                            PersonId: _personId
+                        },
+                        success: function (data) {
+                            $('#loadingImg').hide();
+                            if (!data.Result) {
+                                $("#MessageError").text(data.Message);
+                            }
+                            else {
+                                $("#MessageOk").text(data.Message);
+                                $('#visitform').trigger('reset');
+                                $('#visitform').submit();
+                            }
+                        },
+                        fail: function (data) {
+                            $('#loadingImg').hide();
+                            $("#MessageError").text("Ошибка выполнения запроса");
+                        }
+                    });
+                }
             }
         };
+
     </script>
 }                   

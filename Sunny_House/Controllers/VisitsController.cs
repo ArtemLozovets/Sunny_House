@@ -331,8 +331,8 @@ namespace Sunny_House.Controllers
             ViewBag.SortPersonFIO = SortBy == "PersonFIO" ? "PersonFIO desc" : "PersonFIO";
             ViewBag.SortAge = SortBy == "Age" ? "Age desc" : "Age";
 
-            IEnumerable<PersonsViewModel> _persons ;
-            
+            IEnumerable<PersonsViewModel> _persons;
+
             if (FilterMode == "Reserve" || String.IsNullOrEmpty(FilterMode))
             {
                 _persons = (from reserve in db.Reserves
@@ -357,7 +357,7 @@ namespace Sunny_House.Controllers
             }
             else
             {
-               _persons = (from person in db.Persons
+                _persons = (from person in db.Persons
                             where (person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString))
                             select new
                             {
@@ -365,15 +365,15 @@ namespace Sunny_House.Controllers
                                 PersonId = person.PersonId,
                                 DateOfBirth = person.DateOfBirth,
                             }).AsEnumerable().Select(p => new PersonsViewModel
-                            {
-                                PersonFIO = p.PersonFIO.TrimStart(),
-                                PersonId = p.PersonId,
-                                PersonAge = AgeMethods.GetAge(p.DateOfBirth),
-                                PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
-                                DateOfBirth = p.DateOfBirth
-                            });
+                             {
+                                 PersonFIO = p.PersonFIO.TrimStart(),
+                                 PersonId = p.PersonId,
+                                 PersonAge = AgeMethods.GetAge(p.DateOfBirth),
+                                 PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
+                                 DateOfBirth = p.DateOfBirth
+                             });
             }
-            
+
             switch (SortBy)
             {
                 case "PersonFIO desc":
@@ -402,11 +402,38 @@ namespace Sunny_House.Controllers
             ViewData["SearchString"] = SearchString;
             ViewData["ExerciseId"] = ExerciseId;
             ViewData["Roles"] = new SelectList(db.PersonRoles, "RoleId", "RoleName");
-            
+
             int pageSize = 50;
             int pageNumber = (page ?? 1);
 
             return PartialView(_persons.ToList().ToPagedList(pageNumber, pageSize));
+        }
+
+        public JsonResult AddVisitAjax(int? ExId, int? RoleId, int? PersonId)
+        {
+            if (ExId == null || RoleId == null || PersonId == null)
+            {
+                return Json(new { Result = false, Message = "Ошибка валидации модели" }, JsonRequestBehavior.AllowGet);
+            }
+            try
+            {
+                Visit _visit = new Visit()
+                {
+                    VisitorId = PersonId ?? 0,
+                    ExerciseId = ExId ?? 0,
+                    RoleId = RoleId ?? 0
+                };
+                    
+                db.Visits.Add(_visit);
+                db.SaveChanges();
+
+                return Json(new { Result = true, Message = "Инофрмация о песещении добавлена" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                string we = ex.Message;
+                return Json(new { Result = false, Message = "Ошибка добавления добавления информации о посещении" }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         protected override void Dispose(bool disposing)

@@ -403,7 +403,6 @@ namespace Sunny_House.Controllers
                     dbContextTransaction.Rollback();
                     return Json(new { Result = false, Message = "Ошибка добавления персон" }, JsonRequestBehavior.AllowGet);
                 }
-
             }
         }
 

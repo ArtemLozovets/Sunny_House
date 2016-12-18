@@ -2,10 +2,10 @@
 @using PagedList.Mvc;
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
-<table class="table">
+<table class="table ModalTable">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.First().PersonFIO)
+            @Html.DisplayNameFor(model => model.First().PersonFIO) 
         </th>
         <th>
             @Html.DisplayNameFor(model => model.First().RoleName)
@@ -26,7 +26,7 @@
     {
         <tr>
             <td>
-                @Html.ActionLink(@item.PersonFIO, "ShowPersons", "Home", new { PersonId = @item.VisitorId }, new { target = "_blank"})
+                @Html.ActionLink(@item.PersonFIO, "ShowPersons", "Home", new { PersonId = @item.VisitorId }, new { target = "_blank" })
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.RoleName)
