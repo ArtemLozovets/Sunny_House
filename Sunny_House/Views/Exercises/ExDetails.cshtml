@@ -222,37 +222,32 @@
             }
             else {
 
-                if (!confirm('Добавить информацию о посещении?')) {
-                    return false;
-                }
-                else {
-                    $('#loadingImg').show();
-                    $.ajax({
-                        type: 'POST',
-                        url: '/Visits/AddVisitAjax/',
-                        traditional: true,
-                        data: {
-                            ExId: _exId,
-                            RoleId: _roleId,
-                            PersonId: _personId
-                        },
-                        success: function (data) {
-                            $('#loadingImg').hide();
-                            if (!data.Result) {
-                                $("#MessageError").text(data.Message);
-                            }
-                            else {
-                                $("#MessageOk").text(data.Message);
-                                $('#visitform').trigger('reset');
-                                $('#visitform').submit();
-                            }
-                        },
-                        fail: function (data) {
-                            $('#loadingImg').hide();
-                            $("#MessageError").text("Ошибка выполнения запроса");
+                $('#loadingImg').show();
+                $.ajax({
+                    type: 'POST',
+                    url: '/Visits/AddVisitAjax/',
+                    traditional: true,
+                    data: {
+                        ExId: _exId,
+                        RoleId: _roleId,
+                        PersonId: _personId
+                    },
+                    success: function (data) {
+                        $('#loadingImg').hide();
+                        if (!data.Result) {
+                            $("#MessageError").text(data.Message);
                         }
-                    });
-                }
+                        else {
+                            $("#MessageOk").text(data.Message);
+                            $('#visitform').trigger('reset');
+                            $('#visitform').submit();
+                        }
+                    },
+                    fail: function (data) {
+                        $('#loadingImg').hide();
+                        $("#MessageError").text("Ошибка выполнения запроса");
+                    }
+                });
             }
         };
 
