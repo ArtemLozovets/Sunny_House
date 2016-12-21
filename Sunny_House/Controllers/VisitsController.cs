@@ -351,14 +351,16 @@ namespace Sunny_House.Controllers
                             {
                                 PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
                                 PersonId = person.PersonId,
-                                DateOfBirth = person.DateOfBirth
+                                DateOfBirth = person.DateOfBirth,
+                                RoleId = reserve.RoleId
                             }).AsEnumerable().Select(p => new PersonsViewModel
                             {
                                 PersonFIO = p.PersonFIO.TrimStart(),
                                 PersonId = p.PersonId,
                                 PersonAge = AgeMethods.GetAge(p.DateOfBirth),
                                 PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
-                                DateOfBirth = p.DateOfBirth
+                                DateOfBirth = p.DateOfBirth,
+                                RoleId = p.RoleId
                             });
             }
             else
@@ -407,7 +409,8 @@ namespace Sunny_House.Controllers
 
             ViewData["SearchString"] = SearchString;
             ViewData["ExerciseId"] = ExerciseId;
-            ViewData["Roles"] = new SelectList(db.PersonRoles, "RoleId", "RoleName");
+
+            ViewBag.RoleList = db.PersonRoles.ToList();
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);

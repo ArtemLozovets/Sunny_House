@@ -63,8 +63,8 @@
             }
 
             <td>
-                @Html.DropDownList("RoleId",
-                                                        (IEnumerable<SelectListItem>)ViewData["Roles"], "-Роль-",
+                @Html.DropDownList("RoleId", new SelectList(ViewBag.RoleList, "RoleId", "RoleName", item.RoleId),
+                                                        "-Роль-",
                                                         htmlAttributes: new
                                                         {
                                                             @class = "form-control personddl",
