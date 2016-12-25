@@ -52,12 +52,17 @@ namespace Sunny_House.Controllers
         public ActionResult CommentCreate()
         {
             ViewBag.AddressId = new SelectList(db.Addresses, "AddressId", "Alias");
-            ViewBag.SourceId = new SelectList(db.CommentSources, "SourceId", "SourceName");
+            ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i=>i.SourceName), "SourceId", "SourceName");
             ViewBag.EventId = new SelectList(db.Events, "EventId", "EventName");
             ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject");
             ViewBag.AboutPersonId = new SelectList(db.Persons, "PersonId", "FirstName");
             ViewBag.SignPersonId = new SelectList(db.Persons, "PersonId", "FirstName");
-            return View();
+
+            Comment _comment = new Comment();
+            _comment.Date = DateTime.Now;
+            _comment.Rating = 1;
+            
+            return View(_comment);
         }
 
         // POST: Comments/Create
@@ -67,17 +72,30 @@ namespace Sunny_House.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Comments.Add(comment);
-                await db.SaveChangesAsync();
-                return RedirectToAction("CommentShow");
-            }
+                try
+                {
+                    db.Comments.Add(comment);
+                    await db.SaveChangesAsync();
+                    TempData["MessageOk"] = "Информация о бронировании успешно добавлена";
+                    return RedirectToAction("CommentShow");
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.ErMes = ex.Message;
+                    ViewBag.ErStack = ex.StackTrace;
+                    return View("Error");
+                }
 
+            }
+            
+            TempData["MessageError"] = "Ошибка валидации модели";
             ViewBag.AddressId = new SelectList(db.Addresses, "AddressId", "Alias", comment.AddressId);
             ViewBag.SourceId = new SelectList(db.CommentSources, "SourceId", "SourceName", comment.SourceId);
             ViewBag.EventId = new SelectList(db.Events, "EventId", "EventName", comment.EventId);
             ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject", comment.ExerciseId);
             ViewBag.AboutPersonId = new SelectList(db.Persons, "PersonId", "FirstName", comment.AboutPersonId);
             ViewBag.SignPersonId = new SelectList(db.Persons, "PersonId", "FirstName", comment.SignPersonId);
+            
             return View(comment);
         }
 

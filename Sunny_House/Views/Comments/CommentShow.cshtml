@@ -17,18 +17,6 @@
             Источник
         </th>
         <th>
-            Место
-        </th>
-        <th>
-            Мероприятие
-        </th>
-        <th>
-            Занятие
-        </th>
-        <th>
-            О персоне
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.Date)
         </th>
         <th>
@@ -40,6 +28,18 @@
         <th>
             Подпись
         </th>
+        <th>
+            О персоне
+        </th>
+        <th>
+            О мероприятии
+        </th>
+        <th>
+            О занятии
+        </th>
+        <th>
+            О месте
+        </th>
         <th></th>
     </tr>
 
@@ -48,18 +48,6 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.CommentSource.SourceName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address.Alias)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Event.EventName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Exercise.Subject)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Person.FirstName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Date)
@@ -72,6 +60,18 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Person1.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Person.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Event.EventName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Exercise.Subject)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address.Alias)
             </td>
             <td style="text-align:center; width:136px; min-width:134px;">
                 <a class="btn btn-default btn-sm" title="Подробная информация" href='@Url.Action("CommentDetails", "Comments", new { id = item.CommentId })'><span class="glyphicon glyphicon-info-sign"></span></a>
@@ -87,5 +87,5 @@
 
 
 @section Scripts {
-       <script src="~/Scripts/toparrow.js"></script>
+    <script src="~/Scripts/toparrow.js"></script>
 }

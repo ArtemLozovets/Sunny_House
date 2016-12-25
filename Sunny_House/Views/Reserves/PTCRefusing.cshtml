@@ -46,7 +46,7 @@
             @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.HiddenFor(model => model.Date)
-                <input type="text" value="@Model.Date.ToString("dd/MM/yyyy")" class="form-control" disabled />
+                <input type="text" value="@Model.Date.ToString("dd/MM/yyyy HH:mm")" class="form-control" disabled />
                 @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
             </div>
         </div>

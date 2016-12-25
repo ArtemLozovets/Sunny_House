@@ -600,7 +600,7 @@ namespace Sunny_House.Controllers
             CommentViewModel _comment = new CommentViewModel();
             _comment.EventId = EventId ?? null;
             _comment.SourceId = _sourceid;
-            _comment.Date = DateTime.Today;
+            _comment.Date = DateTime.Now;
             _comment.SourceName = "Бронирование";
             _comment.EventName = db.Events.FirstOrDefault(e => e.EventId == EventId).EventName.ToString();
             _comment.SignPersonId = ClientId ?? null;

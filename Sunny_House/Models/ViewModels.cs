@@ -250,7 +250,7 @@ namespace Sunny_House.Models
         public int SourceId { get; set; }
 
         [Display(Name = "Дата отзыва")]
-        [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy HH':'mm}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
         [Required(ErrorMessage = "Необходимо заполнить поле \"Дата отзыва\"")]
         public DateTime Date { get; set; }
@@ -261,7 +261,9 @@ namespace Sunny_House.Models
         public string Text { get; set; }
 
         [Display(Name = "Оценка")]
-        public string Rating { get; set; }
+        [Required(ErrorMessage = "Необходимо указать оценку")]
+        [Range(1, Int16.MaxValue)]
+        public int? Rating { get; set; }
 
         [Display(Name = "О персоне")]
         public int? AboutPersonId { get; set; }

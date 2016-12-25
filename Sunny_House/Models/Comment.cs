@@ -10,15 +10,15 @@ namespace Sunny_House.Models
     public partial class Comment
     {
         public int CommentId { get; set; }
-        
+
         [Required(ErrorMessage = "Необходимо выбрать источник отзыва")]
         [Display(Name = "Источник")]
         public int SourceId { get; set; }
 
         [Display(Name = "Дата отзыва")]
-        [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy HH':'mm}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
-        [Required(ErrorMessage="Необходимо заполнить поле \"Дата отзыва\"")]
+        [Required(ErrorMessage = "Необходимо заполнить поле \"Дата отзыва\"")]
         public DateTime Date { get; set; }
 
         [Display(Name = "Отзыв")]
@@ -27,7 +27,9 @@ namespace Sunny_House.Models
         public string Text { get; set; }
 
         [Display(Name = "Оценка")]
-        public string Rating { get; set; }
+        [Required(ErrorMessage = "Необходимо указать оценку")]
+        [Range(1, Int16.MaxValue)]
+        public int? Rating { get; set; }
 
         [Display(Name = "О персоне")]
         public int? AboutPersonId { get; set; }
@@ -54,6 +56,7 @@ namespace Sunny_House.Models
 
         public virtual Person Person1 { get; set; }
 
+        [Display(Name = "Источник")]
         public virtual CommentSource CommentSource { get; set; }
     }
 }
