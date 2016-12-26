@@ -77,6 +77,6 @@
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Назад", "CommentShow") |
-    @Html.ActionLink("Редактировать", "Edit", new { id = Model.CommentId })
+    <a class="btn btn-default" href='@Url.Action("CommentShow", "Comments")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+    <a class="btn btn-default" href='@Url.Action("CommentEdit", "Comments", new { id = Model.CommentId })'><span class="glyphicon glyphicon-edit"> Редактировать</span></a>
 </p>

@@ -76,7 +76,7 @@ namespace Sunny_House.Controllers
                 {
                     db.Comments.Add(comment);
                     await db.SaveChangesAsync();
-                    TempData["MessageOk"] = "Информация о бронировании успешно добавлена";
+                    TempData["MessageOk"] = "Отзыв успешно добавлен";
                     return RedirectToAction("CommentShow");
                 }
                 catch (Exception ex)
@@ -90,7 +90,7 @@ namespace Sunny_House.Controllers
             
             TempData["MessageError"] = "Ошибка валидации модели";
             ViewBag.AddressId = new SelectList(db.Addresses, "AddressId", "Alias", comment.AddressId);
-            ViewBag.SourceId = new SelectList(db.CommentSources, "SourceId", "SourceName", comment.SourceId);
+            ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName", comment.SourceId);
             ViewBag.EventId = new SelectList(db.Events, "EventId", "EventName", comment.EventId);
             ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject", comment.ExerciseId);
             ViewBag.AboutPersonId = new SelectList(db.Persons, "PersonId", "FirstName", comment.AboutPersonId);
@@ -112,7 +112,7 @@ namespace Sunny_House.Controllers
                 return HttpNotFound();
             }
             ViewBag.AddressId = new SelectList(db.Addresses, "AddressId", "Alias", comment.AddressId);
-            ViewBag.SourceId = new SelectList(db.CommentSources, "SourceId", "SourceName", comment.SourceId);
+            ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName", comment.SourceId);
             ViewBag.EventId = new SelectList(db.Events, "EventId", "EventName", comment.EventId);
             ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject", comment.ExerciseId);
             ViewBag.AboutPersonId = new SelectList(db.Persons, "PersonId", "FirstName", comment.AboutPersonId);
@@ -127,16 +127,30 @@ namespace Sunny_House.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(comment).State = EntityState.Modified;
-                await db.SaveChangesAsync();
-                return RedirectToAction("CommentShow");
+                try
+                {
+                    db.Entry(comment).State = EntityState.Modified;
+                    await db.SaveChangesAsync();
+                    TempData["MessageOk"] = "Данные отзыва успешно изменены";
+                    return RedirectToAction("CommentShow");
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.ErMes = ex.Message;
+                    ViewBag.ErStack = ex.StackTrace;
+                    return View("Error");
+                }
             }
+
+            TempData["MessageError"] = "Ошибка валидации модели";
+
             ViewBag.AddressId = new SelectList(db.Addresses, "AddressId", "Alias", comment.AddressId);
-            ViewBag.SourceId = new SelectList(db.CommentSources, "SourceId", "SourceName", comment.SourceId);
+            ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName", comment.SourceId);
             ViewBag.EventId = new SelectList(db.Events, "EventId", "EventName", comment.EventId);
             ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject", comment.ExerciseId);
             ViewBag.AboutPersonId = new SelectList(db.Persons, "PersonId", "FirstName", comment.AboutPersonId);
             ViewBag.SignPersonId = new SelectList(db.Persons, "PersonId", "FirstName", comment.SignPersonId);
+
             return View(comment);
         }
 
@@ -160,10 +174,21 @@ namespace Sunny_House.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CommentDeleteConfirmed(int id)
         {
-            Comment comment = await db.Comments.FindAsync(id);
-            db.Comments.Remove(comment);
-            await db.SaveChangesAsync();
-            return RedirectToAction("CommentShow");
+            try
+            {
+                Comment comment = await db.Comments.FindAsync(id);
+                db.Comments.Remove(comment);
+                await db.SaveChangesAsync();
+                TempData["MessageOk"] = "Отзыв успешно удален";
+                return RedirectToAction("CommentShow");
+            }
+
+            catch (Exception ex)
+            {
+                ViewBag.ErMes = ex.Message;
+                ViewBag.ErStack = ex.StackTrace;
+                return View("Error");
+            }
         }
 
         #endregion

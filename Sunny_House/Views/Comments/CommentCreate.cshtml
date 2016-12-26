@@ -95,7 +95,7 @@
 
                 <div class="form-group">
                     <div class="col-sm-offset-4 col-sm-4">
-                        <input type="submit" value="Сохранить" class="btn btn-default" />
+                        <button type="submit" title="Добавить отзыв" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Добавить</button>
                     </div>
                 </div>
             </div>
@@ -103,7 +103,7 @@
     </div>
 }
 <div>
-    @Html.ActionLink("Назад", "CommentShow")
+    <a class="btn btn-default" href='@Url.Action("CommentShow", "Comments")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
 </div>
 
 @section Scripts {

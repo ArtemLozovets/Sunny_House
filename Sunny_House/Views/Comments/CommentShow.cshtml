@@ -6,11 +6,19 @@
 
 <h2><i class="fa fa-commenting fa-1x"></i> @ViewBag.Title</h2>
 
+<div class="row">
+    <div class="col-md-6" id="resultMessage" style="display:block; height:30px; cursor:pointer">
+        <p class="text-success" id="MessageOk"> @TempData["MessageOk"]</p>
+        <p class="text-danger" id="MessageError">  @TempData["MessageError"]</p>
+    </div>
+</div>
+
 <p>
-    <a class="btn btn-default" style="margin:2px 2px;" title="Добавить отзыв" href='@Url.Action("CommentCreate", "Comments", new { @PersonId = Request.Params["PersonId"] })'><span class="glyphicon glyphicon-comment"> Добавить отзыв</span></a>
+    <a class="btn btn-default" style="margin:2px 0;" title="Добавить отзыв" href='@Url.Action("CommentCreate", "Comments", new { @PersonId = Request.Params["PersonId"] })'><span class="glyphicon glyphicon-plus"> Добавить отзыв</span></a>
     @Html.Raw("&nbsp;")
-    <a class="btn btn-default" title="Обновить" style="margin:2px 2px ;" href='@Url.Action("CommentShow", "Comments")'><span class="glyphicon glyphicon-refresh"></span></a>
+    <a class="btn btn-default" style="margin:2px 0;" title="Обновить" href='@Url.Action("CommentShow", "Comments")'><span class="glyphicon glyphicon-refresh"></span></a>
 </p>
+
 <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
     <tr>
         <th>
@@ -28,16 +36,16 @@
         <th>
             Подпись
         </th>
-        <th>
+        <th style="white-space:nowrap;">
             О персоне
         </th>
-        <th>
+        <th style="white-space:nowrap;">
             О мероприятии
         </th>
-        <th>
+        <th style="white-space:nowrap;">
             О занятии
         </th>
-        <th>
+        <th style="white-space:nowrap;">
             О месте
         </th>
         <th></th>
@@ -55,7 +63,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Text)
             </td>
-            <td>
+            <td style="text-align:center">
                 @Html.DisplayFor(modelItem => item.Rating)
             </td>
             <td>
@@ -88,4 +96,14 @@
 
 @section Scripts {
     <script src="~/Scripts/toparrow.js"></script>
+    <script type="text/javascript">
+        $('body').click(function () {
+            $('#resultMessage').fadeOut(1000,
+                function () {
+                    $('#MessageOk').html('');
+                    $('#MessageError').html('');
+                    $('#resultMessage').fadeIn(1000)
+                });
+        });
+    </script>
 }
