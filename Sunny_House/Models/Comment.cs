@@ -28,7 +28,7 @@ namespace Sunny_House.Models
 
         [Display(Name = "Оценка")]
         [Required(ErrorMessage = "Необходимо указать оценку")]
-        [Range(1, Int16.MaxValue)]
+        [Range(1, Int16.MaxValue, ErrorMessage="Значение поля \"Оценка\" должно находится в диапазоне от 1 до 32767")]
         public int? Rating { get; set; }
 
         [Display(Name = "О персоне")]
