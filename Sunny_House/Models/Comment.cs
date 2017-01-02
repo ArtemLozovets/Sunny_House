@@ -58,5 +58,11 @@ namespace Sunny_House.Models
 
         [Display(Name = "Источник")]
         public virtual CommentSource CommentSource { get; set; }
+
+        [NotMapped]
+        public string SignPersonFIO { get; set; }
+
+        [NotMapped]
+        public string AboutPersonFIO { get; set; }
     }
 }

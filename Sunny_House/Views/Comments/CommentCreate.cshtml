@@ -11,6 +11,13 @@
     <div id="dialogContent" class="modal-dialog" style="width:660px;"></div>
 </div>
 
+<div class="row">
+    <div class="col-md-6" id="resultMessage" style="display:block; height:30px; cursor:pointer">
+        <p class="text-success" id="MessageOk"> @TempData["MessageOk"]</p>
+        <p class="text-danger" id="MessageError">  @TempData["MessageError"]</p>
+    </div>
+</div>
+
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -32,22 +39,21 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
-                        @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @type = "text", @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @type = "text", @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
+                        @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" })
                     </div>
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label  col-sm-4" })
+                    <label id="TextLabel" class="control-label  col-sm-4">Отзыв <span id="charNum" style="font-size:0.8em;">(4000)</span></label>
                     <div class="col-sm-8">
-                        @Html.TextAreaFor(model => model.Text, new { @class = "form-control", @rows = 10 })
+                        @Html.TextAreaFor(model => model.Text, new { @class = "form-control", @rows = 10, @onkeyup = "DisplayCount(this);", @onchange = "DisplayCount(this);" })
                         @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
 
             <div class="col-lg-6 col-md-6">
-
                 <div class="form-group">
                     @Html.LabelFor(model => model.Rating, htmlAttributes: new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
@@ -57,11 +63,11 @@
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.SignPersonId, "Подпись", htmlAttributes: new { @class = "control-label col-sm-4" })
+                    @Html.LabelFor(model => model.SignPersonId, "Подпись", htmlAttributes: new { @class = "control-label text-success col-sm-4" })
                     <div class="col-sm-8">
                         <div class="form-inline">
-                            <input type="text" name="SignPersonLabel" id="SignPersonLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["SignPersonId,"]" />
-                            <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "SignPersonId," })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                            <input type="text" name="SignPersonLabel" id="SignPersonLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["SignPersonId"]" />
+                            <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "SignPersonId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
                         </div>
                         @Html.HiddenFor(model => model.SignPersonId)
                         @Html.ValidationMessageFor(model => model.SignPersonId, "", new { @class = "text-danger" })
@@ -72,8 +78,8 @@
                     @Html.LabelFor(model => model.AboutPersonId, "О персоне", htmlAttributes: new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
                         <div class="form-inline">
-                            <input type="text" name="AboutPersonLabel" id="AboutPersonLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["AboutPersonId,"]" />
-                            <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "AboutPersonId," })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                            <input type="text" name="AboutPersonLabel" id="AboutPersonLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["AboutPersonId"]" />
+                            <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "AboutPersonId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
                         </div>
                         @Html.HiddenFor(model => model.AboutPersonId)
                         @Html.ValidationMessageFor(model => model.AboutPersonId, "", new { @class = "text-danger" })
@@ -83,7 +89,11 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.EventId, "О мероприятии", htmlAttributes: new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
-                        @Html.DropDownList("EventId", null, htmlAttributes: new { @class = "form-control" })
+                        <div class="form-inline">
+                            <input type="text" name="EventLabel" id="EventLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["EventName"]" />
+                            <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalEvents", "Modal", new { field = "EventId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                        </div>
+                        @Html.HiddenFor(model => model.EventId)
                         @Html.ValidationMessageFor(model => model.EventId, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -91,7 +101,11 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.ExerciseId, "О занятии", htmlAttributes: new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
-                        @Html.DropDownList("ExerciseId", null, htmlAttributes: new { @class = "form-control" })
+                        <div class="form-inline">
+                            <input type="text" name="ExLabel" id="ExLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["ExName"]" />
+                            <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalExercises", "Modal", new { field = "ExerciseId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                        </div>
+                        @Html.HiddenFor(model => model.ExerciseId)
                         @Html.ValidationMessageFor(model => model.ExerciseId, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -99,7 +113,11 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.AddressId, "О месте", htmlAttributes: new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
-                        @Html.DropDownList("AddressId", null, htmlAttributes: new { @class = "form-control" })
+                        <div class="form-inline">
+                            <input type="text" name="AddressAliasLabel" id="AddressAliasLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["AddressName"]" />
+                            <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalAddresses", "Modal", new { field = "AddressId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                        </div>
+                        @Html.HiddenFor(model => model.AddressId)
                         @Html.ValidationMessageFor(model => model.AddressId, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -124,12 +142,28 @@
     <script type="text/javascript">
 
         $(function () {
+            $.ajaxSetup({ cache: false });
+
+            $(".pModal").click(function (e) {
+
+                e.preventDefault();
+                $.get(this.href, function (data) {
+                    $('#dialogContent').html(data);
+                    $('#modDialog').modal('show');
+                });
+            });
+        });
+
+
+        $(function () {
             $(function () {
                 var widthdelta = 44;
                 var wd = $("#SignPersonLabel").width() - widthdelta;
                 $("#SignPersonLabel").width(wd);
                 $("#AboutPersonLabel").width(wd);
-              //  $("#EventLabel").width(wd);
+                $("#EventLabel").width(wd);
+                $("#ExLabel").width(wd);
+                $("#AddressAliasLabel").width(wd);
             });
         });
 
@@ -155,5 +189,37 @@
             }
             return true;
         };
+
     </script>
+
+    <script type="text/javascript">
+        $('body').click(function () {
+            $('#resultMessage').fadeOut(1000,
+                function () {
+                    $('#MessageOk').html('');
+                    $('#MessageError').html('');
+                    $('#resultMessage').fadeIn(1000)
+                });
+        });
+    </script>
+
+    <script type="text/javascript">
+        //Скрипт отображения количества оставшихся символов при вводе отзыва
+
+        $(function () {
+            var MaxCount = 4000;
+            var LeftCount = MaxCount - $("#Text").val().length;
+            $("#charNum").text('(' + LeftCount + ')');
+        });
+
+        function DisplayCount(elem) {
+            var MaxCount = 4000;
+            var LeftCount = MaxCount - $(elem).val().length;
+            if ($(elem).val().length > MaxCount) {
+                $(elem).val($(elem).val().substr(0, MaxCount));
+            } else {
+                $("#charNum").text('(' + LeftCount + ')');
+            }
+        }
+</script>
 }

@@ -57,7 +57,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.CommentSource.SourceName)
             </td>
-            <td>
+            <td style="text-align:center">
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
             <td style="overflow-wrap:break-word; max-width:300px;">
@@ -67,10 +67,10 @@
                 @Html.DisplayFor(modelItem => item.Rating)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Person1.FirstName)
+                @Html.DisplayFor(modelItem => item.SignPersonFIO)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Person.FirstName)
+                @Html.DisplayFor(modelItem => item.AboutPersonFIO)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Event.EventName)

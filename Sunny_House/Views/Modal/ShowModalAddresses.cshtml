@@ -44,7 +44,11 @@
     function selsubmit(elem) {
         var AddressId = $(elem).data('addressid');
         var AddressValue = $(elem).data('addressvalue');
+        var AddressAlias = $(elem).data('addressalias');
+
         $("#AddressLabel").val(AddressValue);
+        $("#AddressAliasLabel").val(AddressAlias);
+
         $("#AddressId").val(AddressId);
         $('#modDialog').modal('hide');
     };

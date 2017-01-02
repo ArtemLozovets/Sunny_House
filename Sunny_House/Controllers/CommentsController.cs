@@ -21,16 +21,40 @@ namespace Sunny_House.Controllers
         #region Область методов комментария
 
         // GET: Comments
-        public async Task<ActionResult> CommentShow(int? CommentId)
+        public ActionResult CommentShow(int? CommentId)
         {
-            var comments = db.Comments.Include(c => c.Address)
-                    .Include(c => c.CommentSource)
-                    .Include(c => c.Event)
-                    .Include(c => c.Exercise)
-                    .Include(c => c.Person)
-                    .Include(c => c.Person1)
-                    .Where(c => c.CommentId == CommentId || CommentId == null);
-            return View(await comments.ToListAsync());
+            var comments = (from comment in db.Comments
+                            join sperson in db.Persons on comment.SignPersonId equals sperson.PersonId
+                            join aperson in db.Persons on comment.AboutPersonId equals aperson.PersonId
+                            where comment.CommentId == CommentId || CommentId == null
+                            select new
+                            {
+                                CommentId = comment.CommentId,
+                                Date = comment.Date,
+                                Text = comment.Text,
+                                Rating = comment.Rating,
+                                CommentSource = comment.CommentSource,
+                                Event = comment.Event,
+                                Exercise = comment.Exercise,
+                                Address = comment.Address,
+                                SFIO = sperson.FirstName + " " + sperson.LastName + " " + sperson.MiddleName,
+                                AFIO = aperson.FirstName + " " + aperson.LastName + " " + aperson.MiddleName,
+                            }).AsEnumerable().Select(x => new Comment
+                             {
+                                 CommentId = x.CommentId,
+                                 Date = x.Date,
+                                 Text = x.Text,
+                                 Rating = x.Rating,
+                                 CommentSource = x.CommentSource,
+                                 Event = x.Event,
+                                 Exercise = x.Exercise,
+                                 Address = x.Address,
+                                 SignPersonFIO = x.SFIO.TrimStart(),
+                                 AboutPersonFIO = x.AFIO.TrimStart()
+                             });
+
+
+            return View(comments.ToList());
         }
 
         // GET: Comments/Details/5
@@ -51,17 +75,12 @@ namespace Sunny_House.Controllers
         // GET: Comments/Create
         public ActionResult CommentCreate()
         {
-            ViewBag.AddressId = new SelectList(db.Addresses, "AddressId", "Alias");
-            ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i=>i.SourceName), "SourceId", "SourceName");
-            ViewBag.EventId = new SelectList(db.Events, "EventId", "EventName");
-            ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject");
-            ViewBag.AboutPersonId = new SelectList(db.Persons, "PersonId", "FirstName");
-            ViewBag.SignPersonId = new SelectList(db.Persons, "PersonId", "FirstName");
+            ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName");
 
             Comment _comment = new Comment();
             _comment.Date = DateTime.Now;
             _comment.Rating = 1;
-            
+
             return View(_comment);
         }
 
@@ -87,16 +106,40 @@ namespace Sunny_House.Controllers
                 }
 
             }
-            
-            TempData["MessageError"] = "Ошибка валидации модели";
-            ViewBag.AddressId = new SelectList(db.Addresses, "AddressId", "Alias", comment.AddressId);
-            ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName", comment.SourceId);
-            ViewBag.EventId = new SelectList(db.Events, "EventId", "EventName", comment.EventId);
-            ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject", comment.ExerciseId);
-            ViewBag.AboutPersonId = new SelectList(db.Persons, "PersonId", "FirstName", comment.AboutPersonId);
-            ViewBag.SignPersonId = new SelectList(db.Persons, "PersonId", "FirstName", comment.SignPersonId);
-            
-            return View(comment);
+            else
+            {
+
+                TempData["MessageError"] = "Ошибка валидации модели";
+                ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName", comment.SourceId);
+
+                if (comment.SignPersonId > 0)
+                {
+                    Person _pers = db.Persons.FirstOrDefault(p => p.PersonId == comment.SignPersonId);
+                    ViewData["SignPersonId"] = string.Format("{0} {1} {2}", _pers.FirstName, _pers.LastName, _pers.MiddleName);
+                }
+                if (comment.AboutPersonId > 0)
+                {
+                    Person _pers = db.Persons.FirstOrDefault(p => p.PersonId == comment.AboutPersonId);
+                    ViewData["AboutPersonId"] = string.Format("{0} {1} {2}", _pers.FirstName, _pers.LastName, _pers.MiddleName);
+                }
+                if (comment.EventId > 0)
+                {
+                    Event _event = db.Events.FirstOrDefault(p => p.EventId == comment.EventId);
+                    ViewData["EventName"] = String.Format("{0}", _event.EventName);
+                }
+                if (comment.ExerciseId > 0)
+                {
+                    Exercise _ex = db.Exercises.FirstOrDefault(p => p.ExerciseId == comment.ExerciseId);
+                    ViewData["ExName"] = _ex.Subject;
+                }
+                if (comment.AddressId > 0)
+                {
+                    Address _ad = db.Addresses.FirstOrDefault(p => p.AddressId == comment.AddressId);
+                    ViewData["AddressName"] = _ad.Alias;
+                }
+
+                return View(comment);
+            }
         }
 
         // GET: Comments/Edit/5
@@ -111,12 +154,38 @@ namespace Sunny_House.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.AddressId = new SelectList(db.Addresses, "AddressId", "Alias", comment.AddressId);
             ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName", comment.SourceId);
-            ViewBag.EventId = new SelectList(db.Events, "EventId", "EventName", comment.EventId);
-            ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject", comment.ExerciseId);
-            ViewBag.AboutPersonId = new SelectList(db.Persons, "PersonId", "FirstName", comment.AboutPersonId);
-            ViewBag.SignPersonId = new SelectList(db.Persons, "PersonId", "FirstName", comment.SignPersonId);
+
+            Person _pers = db.Persons.FirstOrDefault(p => p.PersonId == comment.SignPersonId);
+            if (_pers != null)
+            {
+                ViewData["SignPersonId"] = string.Format("{0} {1} {2}", _pers.FirstName, _pers.LastName, _pers.MiddleName);
+            }
+
+            Person _abpers = db.Persons.FirstOrDefault(p => p.PersonId == comment.AboutPersonId);
+            if (_abpers != null)
+            {
+                ViewData["AboutPersonId"] = string.Format("{0} {1} {2}", _abpers.FirstName, _abpers.LastName, _abpers.MiddleName);
+            }
+
+            Event _event = db.Events.FirstOrDefault(p => p.EventId == comment.EventId);
+            if (_event != null)
+            {
+                ViewData["EventName"] = String.Format("{0}", _event.EventName);
+            }
+
+            Exercise _ex = db.Exercises.FirstOrDefault(p => p.ExerciseId == comment.ExerciseId);
+            if (_ex != null)
+            {
+                ViewData["ExName"] = _ex.Subject;
+            }
+
+            Address _ad = db.Addresses.FirstOrDefault(p => p.AddressId == comment.AddressId);
+            if (_ad != null)
+            {
+                ViewData["AddressName"] = _ad.Alias;
+            }
+
             return View(comment);
         }
 
@@ -141,17 +210,40 @@ namespace Sunny_House.Controllers
                     return View("Error");
                 }
             }
+            else
+            {
 
-            TempData["MessageError"] = "Ошибка валидации модели";
+                TempData["MessageError"] = "Ошибка валидации модели";
+                ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName", comment.SourceId);
 
-            ViewBag.AddressId = new SelectList(db.Addresses, "AddressId", "Alias", comment.AddressId);
-            ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName", comment.SourceId);
-            ViewBag.EventId = new SelectList(db.Events, "EventId", "EventName", comment.EventId);
-            ViewBag.ExerciseId = new SelectList(db.Exercises, "ExerciseId", "Subject", comment.ExerciseId);
-            ViewBag.AboutPersonId = new SelectList(db.Persons, "PersonId", "FirstName", comment.AboutPersonId);
-            ViewBag.SignPersonId = new SelectList(db.Persons, "PersonId", "FirstName", comment.SignPersonId);
+                if (comment.SignPersonId > 0)
+                {
+                    Person _pers = db.Persons.FirstOrDefault(p => p.PersonId == comment.SignPersonId);
+                    ViewData["SignPersonId"] = string.Format("{0} {1} {2}", _pers.FirstName, _pers.LastName, _pers.MiddleName);
+                }
+                if (comment.AboutPersonId > 0)
+                {
+                    Person _pers = db.Persons.FirstOrDefault(p => p.PersonId == comment.AboutPersonId);
+                    ViewData["AboutPersonId"] = string.Format("{0} {1} {2}", _pers.FirstName, _pers.LastName, _pers.MiddleName);
+                }
+                if (comment.EventId > 0)
+                {
+                    Event _event = db.Events.FirstOrDefault(p => p.EventId == comment.EventId);
+                    ViewData["EventName"] = String.Format("{0}", _event.EventName);
+                }
+                if (comment.ExerciseId > 0)
+                {
+                    Exercise _ex = db.Exercises.FirstOrDefault(p => p.ExerciseId == comment.ExerciseId);
+                    ViewData["ExName"] = _ex.Subject;
+                }
+                if (comment.AddressId > 0)
+                {
+                    Address _ad = db.Addresses.FirstOrDefault(p => p.AddressId == comment.AddressId);
+                    ViewData["AddressName"] = _ad.Alias;
+                }
 
-            return View(comment);
+                return View(comment);
+            }
         }
 
         // GET: Comments/Delete/5
@@ -317,7 +409,7 @@ namespace Sunny_House.Controllers
                     TempData["MessageError"] = "Источник \"Бронирование\" является системным и не может быть изменен или удален!";
                     return RedirectToAction("CSShow");
                 }
-                
+
                 CommentSource commentSource = await db.CommentSources.FindAsync(id);
                 db.CommentSources.Remove(commentSource);
                 await db.SaveChangesAsync();
@@ -330,7 +422,7 @@ namespace Sunny_House.Controllers
                 ViewBag.ErStack = ex.StackTrace;
                 return View("Error");
             }
-            
+
         }
 
         #endregion
