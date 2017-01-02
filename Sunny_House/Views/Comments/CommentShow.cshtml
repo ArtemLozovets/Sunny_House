@@ -51,6 +51,15 @@
         <th></th>
     </tr>
 
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="10">
+                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+            </td>
+        </tr>
+    }
+
     @foreach (var item in Model)
     {
         <tr>
@@ -67,19 +76,35 @@
                 @Html.DisplayFor(modelItem => item.Rating)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SignPersonFIO)
+                @if (item.SignPersonId != 0)
+                {
+                    @Html.ActionLink(item.SignPersonFIO, "ShowPersons", "Home", new { PersonId = @item.SignPersonId }, new { target = "_blank" })
+                }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AboutPersonFIO)
+                @if (item.AboutPersonId != 0)
+                {
+                    @Html.ActionLink(item.AboutPersonFIO, "ShowPersons", "Home", new { PersonId = @item.AboutPersonId }, new { target = "_blank" })
+                }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Event.EventName)
+                @if (item.Event != null)
+                {
+                    @Html.ActionLink(item.Event.EventName, "ResShowOfEvent", "Reserves", new { EventId = @item.Event.EventId }, new { target = "_blank" })
+                }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Exercise.Subject)
+                @if (item.Exercise != null)
+                {
+                    @Html.ActionLink(item.Exercise.Subject, "ExDetails", "Exercises", new { ObjectId = @item.Exercise.ExerciseId }, new { target = "_blank" })
+                }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Address.Alias)
+                @if (item.Address != null)
+                {
+
+                    @Html.ActionLink(item.Address.Alias, "AdDetails", "Addresses", new { Id = @item.Address.AddressId }, new { target = "_blank" })
+                }
             </td>
             <td style="text-align:center; width:136px; min-width:134px;">
                 <a class="btn btn-default btn-sm" title="Подробная информация" href='@Url.Action("CommentDetails", "Comments", new { id = item.CommentId })'><span class="glyphicon glyphicon-info-sign"></span></a>

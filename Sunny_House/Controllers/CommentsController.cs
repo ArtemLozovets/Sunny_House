@@ -24,8 +24,6 @@ namespace Sunny_House.Controllers
         public ActionResult CommentShow(int? CommentId)
         {
             var comments = (from comment in db.Comments
-                            join sperson in db.Persons on comment.SignPersonId equals sperson.PersonId
-                            join aperson in db.Persons on comment.AboutPersonId equals aperson.PersonId
                             where comment.CommentId == CommentId || CommentId == null
                             select new
                             {
@@ -37,8 +35,8 @@ namespace Sunny_House.Controllers
                                 Event = comment.Event,
                                 Exercise = comment.Exercise,
                                 Address = comment.Address,
-                                SFIO = sperson.FirstName + " " + sperson.LastName + " " + sperson.MiddleName,
-                                AFIO = aperson.FirstName + " " + aperson.LastName + " " + aperson.MiddleName,
+                                Person1 = comment.Person ?? null,
+                                Person = comment.Person1 ?? null
                             }).AsEnumerable().Select(x => new Comment
                              {
                                  CommentId = x.CommentId,
@@ -49,8 +47,10 @@ namespace Sunny_House.Controllers
                                  Event = x.Event,
                                  Exercise = x.Exercise,
                                  Address = x.Address,
-                                 SignPersonFIO = x.SFIO.TrimStart(),
-                                 AboutPersonFIO = x.AFIO.TrimStart()
+                                 SignPersonFIO = x.Person == null ? "" : (x.Person.FirstName + " " + x.Person.LastName).TrimStart(),
+                                 AboutPersonFIO = x.Person1 == null ? "" : (x.Person1.FirstName + " " + x.Person1.LastName).TrimStart(),
+                                 SignPersonId = x.Person == null ? 0 : x.Person.PersonId,
+                                 AboutPersonId = x.Person1 == null ? 0 : x.Person1.PersonId,
                              });
 
 

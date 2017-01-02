@@ -8,10 +8,7 @@
             @Html.DisplayNameFor(model => model.Text)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Rating)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Person.FirstName)
+            Подпись
         </th>
     </tr>
 
@@ -24,21 +21,28 @@
             </td>
         </tr>
     }
-    
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.ActionLink(String.Format("{0:dd'/'MM'/'yyyy}", @item.Date), "CommentShow", "Comments", new { CommentId = @item.CommentId}, null)
-        </td>
-        <td>
-            @Html.ActionLink(@item.Text, "CommentShow", "Comments", new { CommentId = @item.CommentId }, null)
-        </td>
-        <td>
-            @Html.ActionLink(@item.Rating, "CommentShow", "Comments", new { CommentId = @item.CommentId }, null)
-        </td>
-        <td>
-            @Html.ActionLink(@item.Person.FirstName, "CommentShow", "Comments", new { CommentId = @item.CommentId }, null)
-        </td>
-   </tr>
-}
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.ActionLink(String.Format("{0:dd'/'MM'/'yyyy}", @item.Date), "CommentShow", "Comments", new { CommentId = @item.CommentId }, null)
+            </td>
+            <td style="overflow-wrap:break-word; max-width:150px;">
+                @Html.ActionLink(item.Text, "CommentShow", "Comments", new { CommentId = @item.CommentId }, null)
+            </td>
+            <td>
+                @{
+        if (item.Person1 != null)
+        {
+            string FIO = item.Person1.FirstName == null ? string.Empty : item.Person1.FirstName+" ";
+            FIO += item.Person1.LastName == null ? string.Empty : item.Person1.LastName+" ";
+            FIO += item.Person1.MiddleName == null ? string.Empty : item.Person1.MiddleName;
+            
+            @Html.ActionLink(FIO, "CommentShow", "Comments", new { CommentId = @item.CommentId }, null)
+        }
+                }
+            </td>
+        </tr>
+    }
 </table>
