@@ -669,7 +669,8 @@ namespace Sunny_House.Controllers
                             EventId = model.EventId,
                             Date = model.Date,
                             Text = model.Text,
-                            SignPersonId = model.SignPersonId
+                            SignPersonId = model.SignPersonId,
+                            Rating = model.Rating
                         };
 
                         db.Comments.Add(_comment);

@@ -285,17 +285,31 @@ namespace Sunny_House.Controllers
         {
             try
             {
-                if (!db.Addresses.First(a => a.AddressId == id).PersonPlace.Any() && !db.Addresses.First(a => a.AddressId == id).Exercise.Any())
+
+                if (db.Addresses.First(a => a.AddressId == id).PersonPlace.Any())
+                {
+                    TempData["MessageError"] = "Удаление адреса невозможно. В таблице персон имеются связанные данные.";
+                    return RedirectToAction("AdShow");
+                }
+
+                if (db.Addresses.First(a => a.AddressId == id).Exercise.Any())
+                {
+                    TempData["MessageError"] = "Удаление адреса невозможно. В таблице занятий имеются связанные данные.";
+                    return RedirectToAction("AdShow");
+                }
+
+                if (db.Addresses.First(a => a.AddressId == id).Comment.Any())
+                {
+                    TempData["MessageError"] = "Удаление адреса невозможно. В таблице отзывов имеются связанные данные.";
+                    return RedirectToAction("AdShow");
+                }
+               
+                else
                 {
                     Address address = db.Addresses.Find(id);
                     db.Addresses.Remove(address);
                     db.SaveChanges();
                     TempData["MessageOk"] = "Информация о адресе успешно удалена";
-                    return RedirectToAction("AdShow");
-                }
-                else
-                {
-                    TempData["MessageError"] = "Удаление адреса невозможно. В таблице персон или занятий имеются связанные данные";
                     return RedirectToAction("AdShow");
                 }
             }

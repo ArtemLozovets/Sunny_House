@@ -375,6 +375,14 @@ namespace Sunny_House.Controllers
                     return RedirectToAction("EShow");
                 }
 
+                if (db.Events.First(i => i.EventId == EventId).Comment.Any())
+                {
+                    _message = string.Format("Информация о мероприятии не может быть удалена. В таблице \"Comment\" есть связанные данные.");
+                    TempData["MessageError"] = _message;
+
+                    return RedirectToAction("EShow");
+                }
+
                 Event @event = await db.Events.FindAsync(EventId);
                 db.Events.Remove(@event);
                 await db.SaveChangesAsync();

@@ -724,6 +724,14 @@ namespace Sunny_House.Controllers
                         return RedirectToAction("ShowPersons", "Home", new { @PersonId = PersonId });
                     }
 
+                    if (db.Persons.First(i => i.PersonId == PersonId).Comment.Any())
+                    {
+                        string _message = string.Format("Персона \"{0} {1} {2} \" не может быть удалена, так как имеются связанные данные в таблице \"Comment\"", person.FirstName, person.LastName, person.MiddleName);
+                        TempData["MessageError"] = _message;
+
+                        return RedirectToAction("ShowPersons", "Home", new { @PersonId = PersonId });
+                    }
+
                     else
                     {
 

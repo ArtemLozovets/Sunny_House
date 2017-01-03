@@ -51,7 +51,7 @@ namespace Sunny_House.Controllers
                                  AboutPersonFIO = x.Person1 == null ? "" : (x.Person1.FirstName + " " + x.Person1.LastName).TrimStart(),
                                  SignPersonId = x.Person == null ? 0 : x.Person.PersonId,
                                  AboutPersonId = x.Person1 == null ? 0 : x.Person1.PersonId,
-                             });
+                             }).OrderBy(x=>x.Date);
 
 
             return View(comments.ToList());
@@ -410,7 +410,13 @@ namespace Sunny_House.Controllers
                     return RedirectToAction("CSShow");
                 }
 
-                CommentSource commentSource = await db.CommentSources.FindAsync(id);
+                if (db.CommentSources.First(i => i.SourceId == id).Comment.Any())
+                {
+                    TempData["MessageError"] = "Данный источник не может быть удален, так как имеются связанные записи в таблице отзывов!";
+                    return RedirectToAction("CSShow");
+                }
+
+                CommentSource commentSource = await db.CommentSources.FindAsync(id);                
                 db.CommentSources.Remove(commentSource);
                 await db.SaveChangesAsync();
                 TempData["MessageOk"] = "Информация об источнике отзывов успешно удалена";
