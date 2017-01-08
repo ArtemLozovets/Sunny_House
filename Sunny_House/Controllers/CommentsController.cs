@@ -51,25 +51,53 @@ namespace Sunny_House.Controllers
                                  AboutPersonFIO = x.Person1 == null ? "" : (x.Person1.FirstName + " " + x.Person1.LastName).TrimStart(),
                                  SignPersonId = x.Person == null ? 0 : x.Person.PersonId,
                                  AboutPersonId = x.Person1 == null ? 0 : x.Person1.PersonId,
-                             }).OrderBy(x=>x.Date);
+                             }).OrderBy(x => x.Date);
 
 
             return View(comments.ToList());
         }
 
         // GET: Comments/Details/5
-        public async Task<ActionResult> CommentDetails(int? id)
+        public ActionResult CommentDetails(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Comment comment = await db.Comments.FindAsync(id);
-            if (comment == null)
+            var _comment = (from comment in db.Comments
+                            where comment.CommentId == id
+                            select new
+                            {
+                                CommentId = comment.CommentId,
+                                Date = comment.Date,
+                                Text = comment.Text,
+                                Rating = comment.Rating,
+                                CommentSource = comment.CommentSource,
+                                Event = comment.Event,
+                                Exercise = comment.Exercise,
+                                Address = comment.Address,
+                                Person1 = comment.Person ?? null,
+                                Person = comment.Person1 ?? null
+                            }).AsEnumerable().Select(x => new Comment
+                            {
+                                CommentId = x.CommentId,
+                                Date = x.Date,
+                                Text = x.Text,
+                                Rating = x.Rating,
+                                CommentSource = x.CommentSource,
+                                Event = x.Event,
+                                Exercise = x.Exercise,
+                                Address = x.Address,
+                                SignPersonFIO = x.Person == null ? "" : (x.Person.FirstName + " " + x.Person.LastName).TrimStart(),
+                                AboutPersonFIO = x.Person1 == null ? "" : (x.Person1.FirstName + " " + x.Person1.LastName).TrimStart(),
+                                SignPersonId = x.Person == null ? 0 : x.Person.PersonId,
+                                AboutPersonId = x.Person1 == null ? 0 : x.Person1.PersonId,
+                            }).FirstOrDefault();
+            if (_comment == null)
             {
                 return HttpNotFound();
             }
-            return View(comment);
+            return View(_comment);
         }
 
         // GET: Comments/Create
@@ -416,7 +444,7 @@ namespace Sunny_House.Controllers
                     return RedirectToAction("CSShow");
                 }
 
-                CommentSource commentSource = await db.CommentSources.FindAsync(id);                
+                CommentSource commentSource = await db.CommentSources.FindAsync(id);
                 db.CommentSources.Remove(commentSource);
                 await db.SaveChangesAsync();
                 TempData["MessageOk"] = "Информация об источнике отзывов успешно удалена";

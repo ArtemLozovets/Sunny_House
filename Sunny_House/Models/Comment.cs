@@ -64,5 +64,6 @@ namespace Sunny_House.Models
 
         [NotMapped]
         public string AboutPersonFIO { get; set; }
+
     }
 }

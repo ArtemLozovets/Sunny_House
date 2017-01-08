@@ -42,7 +42,10 @@
             Подпись
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Person1.FirstName)
+            @if (Model.SignPersonId != 0)
+            {
+                @Html.ActionLink(Model.SignPersonFIO, "ShowPersons", "Home", new { PersonId = Model.SignPersonId }, new { target = "_blank" })
+            }
         </dd>
 
         <dt>
@@ -50,28 +53,42 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Person.FirstName)
+
+            @if (Model.AboutPersonId != 0)
+            {
+                @Html.ActionLink(Model.AboutPersonFIO, "ShowPersons", "Home", new { PersonId = Model.AboutPersonId }, new { target = "_blank" })
+            }
         </dd>
 
         <dt>
             О мероприятии
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Event.EventName)
+            @if (Model.Event != null)
+            {
+                @Html.ActionLink(Model.Event.EventName, "ResShowOfEvent", "Reserves", new { EventId = Model.Event.EventId }, new { target = "_blank" })
+            }
         </dd>
 
         <dt>
             О занятии
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Exercise.Subject)
+            @if (Model.Exercise != null)
+            {
+                @Html.ActionLink(Model.Exercise.Subject, "ExDetails", "Exercises", new { ObjectId = Model.Exercise.ExerciseId }, new { target = "_blank" })
+            }
         </dd>
 
         <dt>
-           О месте
+            О месте
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Address.Alias)
+            @if (Model.Address != null)
+            {
+                @Html.ActionLink(Model.Address.Alias, "AdDetails", "Addresses", new { Id = Model.Address.AddressId }, new { target = "_blank" })
+            }
         </dd>
 
     </dl>
