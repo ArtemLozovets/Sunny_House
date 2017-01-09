@@ -8,6 +8,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Sunny_House.Models;
+using PagedList;
+using PagedList.Mvc;
 
 namespace Sunny_House.Controllers
 {
@@ -21,40 +23,9 @@ namespace Sunny_House.Controllers
         #region Область методов комментария
 
         // GET: Comments
-        public ActionResult CommentShow(int? CommentId)
+        public ActionResult CommentShow()
         {
-            var comments = (from comment in db.Comments
-                            where comment.CommentId == CommentId || CommentId == null
-                            select new
-                            {
-                                CommentId = comment.CommentId,
-                                Date = comment.Date,
-                                Text = comment.Text,
-                                Rating = comment.Rating,
-                                CommentSource = comment.CommentSource,
-                                Event = comment.Event,
-                                Exercise = comment.Exercise,
-                                Address = comment.Address,
-                                Person1 = comment.Person ?? null,
-                                Person = comment.Person1 ?? null
-                            }).AsEnumerable().Select(x => new Comment
-                             {
-                                 CommentId = x.CommentId,
-                                 Date = x.Date,
-                                 Text = x.Text,
-                                 Rating = x.Rating,
-                                 CommentSource = x.CommentSource,
-                                 Event = x.Event,
-                                 Exercise = x.Exercise,
-                                 Address = x.Address,
-                                 SignPersonFIO = x.Person == null ? "" : (x.Person.FirstName + " " + x.Person.LastName).TrimStart(),
-                                 AboutPersonFIO = x.Person1 == null ? "" : (x.Person1.FirstName + " " + x.Person1.LastName).TrimStart(),
-                                 SignPersonId = x.Person == null ? 0 : x.Person.PersonId,
-                                 AboutPersonId = x.Person1 == null ? 0 : x.Person1.PersonId,
-                             }).OrderBy(x => x.Date);
-
-
-            return View(comments.ToList());
+            return View();
         }
 
         // GET: Comments/Details/5
@@ -460,6 +431,101 @@ namespace Sunny_House.Controllers
         }
 
         #endregion
+
+        #region Метод отображения списка отзывов в частичном представлении
+
+        public ActionResult CommentShowPartial(int? CommentId, int? page, string SortBy)
+        {
+
+            ViewBag.SortSource = SortBy == "Source" ? "Source desc" : "Source";
+            ViewBag.SortDate = SortBy == "Date" ? "Date desc" : "Date";
+            ViewBag.SortRating = SortBy == "Rating" ? "Rating desc" : "Rating";
+            ViewBag.SortSignPerson = SortBy == "SignPerson" ? "SignPerson desc" : "SignPerson";
+            
+            var comments = (from comment in db.Comments
+                            where comment.CommentId == CommentId || CommentId == null
+                            select new
+                            {
+                                CommentId = comment.CommentId,
+                                Date = comment.Date,
+                                Text = comment.Text,
+                                Rating = comment.Rating,
+                                CommentSource = comment.CommentSource,
+                                Event = comment.Event,
+                                Exercise = comment.Exercise,
+                                Address = comment.Address,
+                                Person1 = comment.Person ?? null,
+                                Person = comment.Person1 ?? null
+                            }).AsEnumerable().Select(x => new Comment
+                             {
+                                 CommentId = x.CommentId,
+                                 Date = x.Date,
+                                 Text = x.Text,
+                                 Rating = x.Rating,
+                                 CommentSource = x.CommentSource,
+                                 Event = x.Event,
+                                 Exercise = x.Exercise,
+                                 Address = x.Address,
+                                 SignPersonFIO = x.Person == null ? "" : (x.Person.FirstName + " " + x.Person.LastName).TrimStart(),
+                                 AboutPersonFIO = x.Person1 == null ? "" : (x.Person1.FirstName + " " + x.Person1.LastName).TrimStart(),
+                                 SignPersonId = x.Person == null ? 0 : x.Person.PersonId,
+                                 AboutPersonId = x.Person1 == null ? 0 : x.Person1.PersonId,
+                             }).OrderByDescending(x => x.Date);
+
+
+            switch (SortBy)
+            {
+                case "Source desc":
+                    comments = comments.OrderByDescending(x => x.CommentSource.SourceName);
+                    ViewData["SortColumn"] = "Source";
+                    break;
+                case "Source":
+                    comments = comments.OrderBy(x => x.CommentSource.SourceName);
+                    ViewData["SortColumn"] = "Source";
+                    break;
+
+
+                case "Date desc":
+                    comments = comments.OrderByDescending(x => x.Date);
+                    ViewData["SortColumn"] = "Date";
+                    break;
+                case "Date":
+                    comments = comments.OrderBy(x => x.Date);
+                    ViewData["SortColumn"] = "Date";
+                    break;
+
+                case "Rating desc":
+                    comments = comments.OrderByDescending(x => x.Rating);
+                    ViewData["SortColumn"] = "Rating";
+                    break;
+                case "Rating":
+                    comments = comments.OrderBy(x => x.Rating);
+                    ViewData["SortColumn"] = "Rating";
+                    break;
+
+                case "SignPerson desc":
+                    comments = comments.OrderByDescending(x => x.SignPersonFIO);
+                    ViewData["SortColumn"] = "SignPerson";
+                    break;
+                case "SignPerson":
+                    comments = comments.OrderBy(x => x.SignPersonFIO);
+                    ViewData["SortColumn"] = "SignPerson";
+                    break;
+               
+                default:
+                    comments = comments.OrderByDescending(x => x.Date);
+                    break;
+            }
+
+
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+
+            return PartialView(comments.ToList().ToPagedList(pageNumber, pageSize));
+        }
+
+        #endregion
+
 
         protected override void Dispose(bool disposing)
         {

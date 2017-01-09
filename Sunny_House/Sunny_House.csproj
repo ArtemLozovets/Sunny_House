@@ -513,6 +513,7 @@
     <Content Include="Views\Visits\VisitorPartialList.cshtml" />
     <Content Include="Views\Visits\AllVisitsPartial.cshtml" />
     <Content Include="Views\Visits\PersonsPartialList.cshtml" />
+    <Content Include="Views\Comments\CommentShowPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

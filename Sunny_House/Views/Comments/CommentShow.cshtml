@@ -1,6 +1,4 @@
-﻿@model IEnumerable<Sunny_House.Models.Comment>
-
-@{
+﻿@{
     ViewBag.Title = "Отзывы";
 }
 
@@ -75,98 +73,9 @@
     <a class="btn btn-default" style="margin:2px 0;" title="Обновить" href='@Url.Action("CommentShow", "Comments")'><span class="glyphicon glyphicon-refresh"></span></a>
 </p>
 
-<table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
-    <tr>
-        <th>
-            Источник
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Date)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Text)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Rating)
-        </th>
-        <th>
-            Подпись
-        </th>
-        <th>Дополнительно</th>
-        <th></th>
-    </tr>
-
-    @if (Model.Count() == 0)
-    {
-        <tr>
-            <td colspan="10">
-                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
-            </td>
-        </tr>
-    }
-
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CommentSource.SourceName)
-            </td>
-            <td style="text-align:center">
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td style="overflow-wrap:break-word; max-width:300px;">
-                @Html.DisplayFor(modelItem => item.Text)
-            </td>
-            <td style="text-align:center">
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                @if (item.SignPersonId != 0)
-                {
-                    @Html.ActionLink(item.SignPersonFIO, "ShowPersons", "Home", new { PersonId = @item.SignPersonId }, new { target = "_blank" })
-                }
-            </td>
-
-            <td>
-                @if (item.AboutPersonId != 0)
-                {
-                    <span>
-                        О персоне: @Html.ActionLink(item.AboutPersonFIO, "ShowPersons", "Home", new { PersonId = @item.AboutPersonId }, new { target = "_blank" })
-                    </span><br />
-                }
-
-                @if (item.Event != null)
-                {
-                    <span>
-                        О мероприятии: @Html.ActionLink(item.Event.EventName, "ResShowOfEvent", "Reserves", new { EventId = @item.Event.EventId }, new { target = "_blank" })
-                    </span> <br />
-                }
-
-                @if (item.Exercise != null)
-                {
-                    <span>
-                        О занятии: @Html.ActionLink(item.Exercise.Subject, "ExDetails", "Exercises", new { ObjectId = @item.Exercise.ExerciseId }, new { target = "_blank" })
-                    </span> <br />
-                }
-
-                @if (item.Address != null)
-                {
-                    <span>
-                        О месте: @Html.ActionLink(item.Address.Alias, "AdDetails", "Addresses", new { Id = @item.Address.AddressId }, new { target = "_blank" })
-                    </span>
-                }
-            </td>
-
-            <td style="text-align:center; width:136px; min-width:134px;">
-                <a class="btn btn-default btn-sm" title="Подробная информация" href='@Url.Action("CommentDetails", "Comments", new { id = item.CommentId })'><span class="glyphicon glyphicon-info-sign"></span></a>
-                <a class="btn btn-default btn-sm" title="Редактирование отзыва" href='@Url.Action("CommentEdit", "Comments", new { id = item.CommentId })'><span class="glyphicon glyphicon-edit"></span></a>
-                <a class="btn btn-default btn-sm" title="Удаление отзыва" href='@Url.Action("CommentDelete", "Comments", new { id = item.CommentId })'><span class="glyphicon glyphicon-trash"></span></a>
-            </td>
-        </tr>
-
-    }
-
-</table>
+<div id="update">
+    @Html.Action("CommentShowPartial", "Comments")
+</div>
 
 <a href="#" class="scrollup1">Наверх</a>
 
@@ -183,4 +92,26 @@
                 });
         });
     </script>
+
+<script type="text/javascript">
+    $(document).ajaxComplete(function () {
+
+        $('i[id$="Arrow"]').css("visibility", "hidden");
+
+        //Отображаем значки сортировки
+        if ($('#SortColumn').text() != '') {
+            var sortcolumnname = $('#SortColumn').text();
+            var sortcontrol = $('#' + sortcolumnname);
+            if (sortcontrol != null) {
+                if (sortcontrol.attr('href').indexOf('desc') != -1) {
+                    $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-top').css("visibility", "visible")
+                }
+                else {
+                    $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-bottom').css("visibility", "visible")
+                }
+            }
+        }
+    });
+</script>
+
 }
