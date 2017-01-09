@@ -229,3 +229,17 @@ ul.dropdown-menu {
     width: 900px;
     margin-right:4px;
 }
+
+/*Блок стилей для переноса длинной непрерывной последовтельности символов*/
+.breakWord {
+    overflow-wrap: break-word;
+    -ms-word-break: break-all;
+    word-break: break-all;
+}
+
+
+#AboutDL  dt {
+  height:40px;
+  line-height:40px;
+}
+

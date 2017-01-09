@@ -25,6 +25,8 @@ namespace Sunny_House.Controllers
         // GET: Comments
         public ActionResult CommentShow()
         {
+            ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName");
+
             return View();
         }
 
