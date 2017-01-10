@@ -41,7 +41,7 @@ namespace Sunny_House.Controllers
 
             var _events = (from _event in db.Events
                            join person in db.Persons on _event.AdministratorId equals person.PersonId
-                           where ((_event.StartTime >= _startDate) && (_event.EndTime <= _endDate)) &&
+                           where ((_event.StartTime <= _endDate) && (_event.EndTime >= _startDate)) &&
                            ((_event.EventName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) ||
                             (person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) ||
                             (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) ||

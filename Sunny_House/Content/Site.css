@@ -40,6 +40,7 @@ textarea {
         padding: 4px 12px;
     }
 
+        
     .ReestrTable tr th {
         text-align: center;
     }
@@ -47,6 +48,7 @@ textarea {
         .ReestrTable tr th a {
             color: #333;
         }
+
 
 #partialtable tr td {
     vertical-align: middle !important;
@@ -230,13 +232,18 @@ ul.dropdown-menu {
     margin-right:4px;
 }
 
-/*Блок стилей для переноса длинной непрерывной последовтельности символов*/
-.breakWord {
+/*Блок стилей для переноса длинной непрерывной последовательности символов*/
+/*.breakWord {
     overflow-wrap: break-word;
-    -ms-word-break: break-all;
-    word-break: break-all;
-}
+    -ms-word-break: break-word;
+    word-break: break-word;
+}*/
 
+
+.breakWord {
+    -ms-word-wrap: break-word;
+    word-wrap: break-word;
+}
 
 #AboutDL  dt {
   height:40px;

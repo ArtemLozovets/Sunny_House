@@ -44,7 +44,7 @@ namespace Sunny_House.Controllers
             {
                 try
                 {
-                    if (db.Visits.Where(v => v.Person.PersonId == visit.VisitorId).Count() > 0)
+                    if (db.Visits.Where(v => v.Person.PersonId == visit.VisitorId && v.ExerciseId == visit.ExerciseId).Count() > 0)
                     {
                         TempData["MessageError"] = "Данная персона уже присутствует в списке посещений";
                         return RedirectToAction("VisShow");
@@ -427,7 +427,7 @@ namespace Sunny_House.Controllers
             try
             {
 
-                if (db.Visits.Where(v => v.Person.PersonId == PersonId).Count() > 0)
+                if (db.Visits.Where(v => v.Person.PersonId == PersonId && v.ExerciseId == ExId).Count() > 0)
                 {
                     return Json(new { Result = false, Message = "Данная персона уже присутствует в списке посещений" }, JsonRequestBehavior.AllowGet);
                 }
