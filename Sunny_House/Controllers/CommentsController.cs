@@ -436,16 +436,36 @@ namespace Sunny_House.Controllers
 
         #region Метод отображения списка отзывов в частичном представлении
 
-        public ActionResult CommentShowPartial(int? CommentId, int? page, string SortBy)
+        public ActionResult CommentShowPartial(int? CommentId, int? page,
+                                string SortBy, string minRating, string maxRating,
+                                string SearchStartDate, string SearchEndDate,
+                                int? SourceId, string SearchText,
+                                int? SignPersonId)
         {
-
             ViewBag.SortSource = SortBy == "Source" ? "Source desc" : "Source";
             ViewBag.SortDate = SortBy == "Date" ? "Date desc" : "Date";
             ViewBag.SortRating = SortBy == "Rating" ? "Rating desc" : "Rating";
             ViewBag.SortSignPerson = SortBy == "SignPerson" ? "SignPerson desc" : "SignPerson";
-            
+
+            // Блок кода для преобразования минимального и максимального значения рейтинга для фильтра 
+            int _minRating, _maxRating;
+            if (string.IsNullOrEmpty(minRating)) { minRating = "1"; }
+            if (string.IsNullOrEmpty(maxRating)) { maxRating = "32767"; }
+            if (Int32.TryParse(minRating, out _minRating)) ;
+            if (Int32.TryParse(maxRating, out _maxRating)) ;
+
+            // Блок кода для преобразования значений дат периода фильтрации
+            DateTime? _startDate = (String.IsNullOrEmpty(SearchStartDate)) ? Convert.ToDateTime("1900-01-01") : Convert.ToDateTime(SearchStartDate);
+            DateTime? _endDate = (String.IsNullOrEmpty(SearchEndDate)) ? Convert.ToDateTime("2900-01-01") : Convert.ToDateTime(SearchEndDate);
+
+
+
             var comments = (from comment in db.Comments
-                            where comment.CommentId == CommentId || CommentId == null
+                            where (comment.CommentId == CommentId || CommentId == null) && (comment.Rating >= _minRating && comment.Rating <= _maxRating) &&
+                            (comment.Date >= _startDate && comment.Date <= _endDate) &&
+                            (comment.SourceId == SourceId || SourceId == null) &&
+                            (comment.Text.Contains(SearchText) || string.IsNullOrEmpty(SearchText)) &&
+                            (comment.SignPersonId == SignPersonId || SignPersonId == null)
                             select new
                             {
                                 CommentId = comment.CommentId,
@@ -513,12 +533,15 @@ namespace Sunny_House.Controllers
                     comments = comments.OrderBy(x => x.SignPersonFIO);
                     ViewData["SortColumn"] = "SignPerson";
                     break;
-               
+
                 default:
                     comments = comments.OrderByDescending(x => x.Date);
                     break;
             }
 
+
+            //ViewData["minRating"] = minRating;
+            //ViewData["maxRating"] = maxRating;
 
             int pageSize = 3;
             int pageNumber = (page ?? 1);

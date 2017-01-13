@@ -10,6 +10,12 @@
             @Ajax.ActionLink("Источник", "CommentShowPartial", new
                    {
                        SortBy = ViewBag.SortSource,
+                       minRating = Request["minRating"],
+                       maxRating = Request["maxRating"],
+                       SearchStartDate = Request["SearchStartDate"],
+                       SearchEndDate = Request["SearchEndDate"],
+                       SourceId = Request["SourceId"],
+                       SearchText = Request["SearchText"]
                    }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "Source" })
             <i id="SourceArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -17,6 +23,12 @@
             @Ajax.ActionLink("Дата", "CommentShowPartial", new
                    {
                        SortBy = ViewBag.SortDate,
+                       minRating = Request["minRating"],
+                       maxRating = Request["maxRating"],
+                       SearchStartDate = Request["SearchStartDate"],
+                       SearchEndDate = Request["SearchEndDate"],
+                       SourceId = Request["SourceId"],
+                       SearchText = Request["SearchText"]
                    }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "Date" })
             <i id="DateArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -27,6 +39,12 @@
             @Ajax.ActionLink("Оценка", "CommentShowPartial", new
                    {
                        SortBy = ViewBag.SortRating,
+                       minRating = Request["minRating"],
+                       maxRating = Request["maxRating"],
+                       SearchStartDate = Request["SearchStartDate"],
+                       SearchEndDate = Request["SearchEndDate"],
+                       SourceId = Request["SourceId"],
+                       SearchText = Request["SearchText"]
                    }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "Rating" })
             <i id="RatingArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -34,6 +52,12 @@
             @Ajax.ActionLink("Подпись", "CommentShowPartial", new
                    {
                        SortBy = ViewBag.SortSignPerson,
+                       minRating = Request["minRating"],
+                       maxRating = Request["maxRating"],
+                       SearchStartDate = Request["SearchStartDate"],
+                       SearchEndDate = Request["SearchEndDate"],
+                       SourceId = Request["SourceId"],
+                       SearchText = Request["SearchText"]
                    }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "SignPerson" })
             <i id="SignPersonArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -120,7 +144,15 @@
                              new
                              {
                                  page,
-                                 SortBy = Request["SortBy"]
+                                 SortBy = Request["SortBy"],
+                                 minRating = Request["minRating"],
+                                 maxRating = Request["maxRating"],
+                                 SearchStartDate = Request["SearchStartDate"],
+                                 SearchEndDate = Request["SearchEndDate"],
+                                 SourceId = Request["SourceId"],
+                                 SearchText = Request["SearchText"],
+                                 SignPersonId = Request["SignPersonId"]
+                                 
                              }),
                              PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
                              new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "update" }))

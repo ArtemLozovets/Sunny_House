@@ -12,9 +12,9 @@
 <h2><i class="fa fa-institution fa-1x"></i> Список мероприятий</h2>
 
 <div class="row">
-    <div class="col-md-6">
-        <p class="text-success"> @TempData["MessageOk"]</p>
-        <p class="text-danger">  @TempData["MessageError"]</p>
+    <div class="col-md-6" id="resultMessage" style="display:block; height:30px;">
+        <p class="text-success" id="MessageOk"> @TempData["MessageOk"]</p>
+        <p class="text-danger" id="MessageError">  @TempData["MessageError"]</p>
     </div>
 </div>
 
@@ -286,6 +286,18 @@
 
             </script>
 
+            <script type="text/javascript">
+                $('body').click(function () {
+                    $('#resultMessage').fadeOut(1000,
+                        function () {
+                            $('#MessageOk').html('');
+                            $('#MessageError').html('');
+                            $('#resultMessage').fadeIn(1000)
+                        });
+                });
+
+            </script>
+
             @*Блок скриптов для работы с DateTimePicker*@
             <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
             <script type="text/javascript">
@@ -328,4 +340,6 @@
                     return true;
                 };
             </script>
+
+
         }

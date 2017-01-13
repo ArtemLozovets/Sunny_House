@@ -1,7 +1,7 @@
 ﻿@model Sunny_House.Models.Comment
 
 @{
-    ViewBag.Title = "Редактирование";
+    ViewBag.Title = "Добавить";
 }
 <link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
 
@@ -23,10 +23,9 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>Редактировать отзыв</h4>
+        <h4>Добавить отзыв</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.CommentId)
         <div class="row">
             <div class="col-lg-6 col-md-6">
                 <div class="form-group">
@@ -55,7 +54,6 @@
             </div>
 
             <div class="col-lg-6 col-md-6">
-
                 <div class="form-group">
                     @Html.LabelFor(model => model.Rating, htmlAttributes: new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
@@ -68,13 +66,7 @@
                     @Html.LabelFor(model => model.SignPersonId, "Подпись", htmlAttributes: new { @class = "control-label text-success col-sm-4" })
                     <div class="col-sm-8">
                         <div class="form-inline">
-                            <input type="text" name="SignPersonLabel" id="SignPersonLabel"
-                                   class="form-control"
-                                   readonly
-                                   style="margin:2px 0; display:inline-block; cursor:pointer"
-                                   title="Щелкните для сброса"
-                                   onclick="SignPersonClear()"
-                                   value="@ViewData["SignPersonId"]" />
+                            <input type="text" name="SignPersonLabel" id="SignPersonLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["SignPersonId"]" />
                             <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "SignPersonId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
                         </div>
                         @Html.HiddenFor(model => model.SignPersonId)
@@ -86,13 +78,7 @@
                     @Html.LabelFor(model => model.AboutPersonId, "О персоне", htmlAttributes: new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
                         <div class="form-inline">
-                            <input type="text" name="AboutPersonLabel" id="AboutPersonLabel"
-                                   class="form-control"
-                                   readonly
-                                   title="Щелкните для сброса"
-                                   onclick="AboutPersonClear()"
-                                   style="margin:2px 0; display:inline-block; cursor:pointer"
-                                   value="@ViewData["AboutPersonId"]" />
+                            <input type="text" name="AboutPersonLabel" id="AboutPersonLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["AboutPersonId"]" />
                             <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "AboutPersonId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
                         </div>
                         @Html.HiddenFor(model => model.AboutPersonId)
@@ -104,14 +90,8 @@
                     @Html.LabelFor(model => model.EventId, "О мероприятии", htmlAttributes: new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
                         <div class="form-inline">
-                            <input type="text" name="EventLabel" id="EventLabel"
-                                   class="form-control"
-                                   readonly
-                                   title="Щелкните для сброса"
-                                   onclick="EventClear()"
-                                   style="margin:2px 0; display:inline-block; cursor:pointer"
-                                   value="@ViewData["EventName"]" />
-                            <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block" href='@Url.Action("ShowModalEvents", "Modal", new { field = "EventId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                            <input type="text" name="EventLabel" id="EventLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["EventName"]" />
+                            <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalEvents", "Modal", new { field = "EventId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
                         </div>
                         @Html.HiddenFor(model => model.EventId)
                         @Html.ValidationMessageFor(model => model.EventId, "", new { @class = "text-danger" })
@@ -122,14 +102,8 @@
                     @Html.LabelFor(model => model.ExerciseId, "О занятии", htmlAttributes: new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
                         <div class="form-inline">
-                            <input type="text" name="ExLabel" id="ExLabel"
-                                   class="form-control"
-                                   readonly
-                                   title="Щелкните для сброса"
-                                   onclick="ExClear()"
-                                   style="margin:2px 0; display:inline-block; cursor:pointer"
-                                   value="@ViewData["ExName"]" />
-                            <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block" href='@Url.Action("ShowModalExercises", "Modal", new { field = "ExerciseId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                            <input type="text" name="ExLabel" id="ExLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["ExName"]" />
+                            <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalExercises", "Modal", new { field = "ExerciseId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
                         </div>
                         @Html.HiddenFor(model => model.ExerciseId)
                         @Html.ValidationMessageFor(model => model.ExerciseId, "", new { @class = "text-danger" })
@@ -140,14 +114,8 @@
                     @Html.LabelFor(model => model.AddressId, "О месте", htmlAttributes: new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
                         <div class="form-inline">
-                            <input type="text" name="AddressAliasLabel" id="AddressAliasLabel"
-                                   class="form-control"
-                                   readonly
-                                   title="Щелкните для сброса"
-                                   onclick="AddressClear()"
-                                   style="margin:2px 0; display:inline-block; cursor:pointer"
-                                   value="@ViewData["AddressName"]" />
-                            <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block" href='@Url.Action("ShowModalAddresses", "Modal", new { field = "AddressId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                            <input type="text" name="AddressAliasLabel" id="AddressAliasLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["AddressName"]" />
+                            <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalAddresses", "Modal", new { field = "AddressId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
                         </div>
                         @Html.HiddenFor(model => model.AddressId)
                         @Html.ValidationMessageFor(model => model.AddressId, "", new { @class = "text-danger" })
@@ -156,7 +124,7 @@
 
                 <div class="form-group">
                     <div class="col-sm-offset-4 col-sm-4">
-                        <button type="submit" title="Редактировать отзыв" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Сохранить</button>
+                        <button type="submit" title="Добавить отзыв" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Добавить</button>
                     </div>
                 </div>
             </div>
@@ -221,6 +189,7 @@
             }
             return true;
         };
+
     </script>
 
     <script type="text/javascript">
@@ -232,33 +201,6 @@
                     $('#resultMessage').fadeIn(1000)
                 });
         });
-    </script>
-
-    <script type="text/javascript">
-        function SignPersonClear() {
-            $('#SignPersonLabel').val('');
-            $('#SignPersonId').val(null);
-        }
-
-        function AboutPersonClear() {
-            $('#AboutPersonLabel').val('');
-            $('#AboutPersonId').val(null);
-        }
-
-        function EventClear() {
-            $('#EventLabel').val('');
-            $('#EventId').val(null);
-        }
-
-        function ExClear() {
-            $('#ExLabel').val('');
-            $('#ExerciseId').val(null);
-        }
-
-        function AddressClear() {
-            $('#AddressAliasLabel').val('');
-            $('#AddressId').val(null);
-        }
     </script>
 
     <script type="text/javascript">

@@ -316,7 +316,7 @@ namespace Sunny_House.Controllers
                     break;
 
                 default:
-                    visits = visits.OrderBy(x => x.PersonFIO);
+                    visits = visits.OrderByDescending(x => x.VisitId);
                     break;
             }
 

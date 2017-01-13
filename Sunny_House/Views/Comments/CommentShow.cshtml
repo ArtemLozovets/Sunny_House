@@ -38,7 +38,7 @@
         </div>
         <div id="collapse1" class="panel-collapse collapse">
             <div class="panel-body">
-                @using (Ajax.BeginForm("CommentShowPartial", "Comments", new { @EventId = 1 }, new AjaxOptions { UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "commentform" }))
+                @using (Ajax.BeginForm("CommentShowPartial", "Comments", null, new AjaxOptions { UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "commentform" }))
                 {
                     <div class="col-lg-12 form-inline" style="margin-top:2px; margin-bottom:2px;">
                         <div class="input-group" style="width:300px; margin:0 auto">
@@ -48,7 +48,7 @@
                                                 {
                                                     @style = "width:70px; text-align:center;",
                                                     @type = "text",
-                                                    @class = "form-control ",
+                                                    @class = "form-control numinput",
                                                     @title = "Минимальная оценка",
                                                     @data_val = "true"
                                                 })
@@ -58,7 +58,7 @@
                                                 {
                                                     @style = "width:70px; text-align:center;",
                                                     @type = "text",
-                                                    @class = "form-control ",
+                                                    @class = "form-control numinput",
                                                     @title = "Максимальная оценка",
                                                     @data_val = "true"
                                                 })
@@ -194,10 +194,10 @@
                     </div>
 
                     <div class="col-lg-12 form-inline text-center" style="margin:6px 0 0; ">
-                        @Html.CheckBox("chbAboutPerson", true) О персоне @Html.Raw("&nbsp;")
-                        @Html.CheckBox("chbEvent", true) О мероприятии @Html.Raw("&nbsp;")
-                        @Html.CheckBox("chbEx", true) О занятии @Html.Raw("&nbsp;")
-                        @Html.CheckBox("chbAddress", true) О месте @Html.Raw("&nbsp;")
+                        @Html.CheckBox("chbAboutPerson", false) О персоне @Html.Raw("&nbsp;")
+                        @Html.CheckBox("chbEvent", false) О мероприятии @Html.Raw("&nbsp;")
+                        @Html.CheckBox("chbEx", false) О занятии @Html.Raw("&nbsp;")
+                        @Html.CheckBox("chbAddress", false) О месте @Html.Raw("&nbsp;")
                     </div>
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-inline text-center" style="margin-top:8px; margin-bottom:2px;">
@@ -219,6 +219,7 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/toparrow.js"></script>
 
     <script type="text/javascript">
@@ -253,7 +254,9 @@
             $('#commentform').trigger('reset');
             $('#commentform').submit();
         });
+
     </script>
+
 
     <script type="text/javascript">
         $(document).ajaxComplete(function () {
@@ -320,6 +323,27 @@
     </script>
 
     <script type="text/javascript">
+        $('.numinput').bind("change keyup input click", function () {
+            if (this.value.match(/[^0-9]/g)) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            }
+        });
+
+        $('#SearchText').bind("change keyup input click", function () {
+            var MaxCount = 100;
+            if (this.value.length >= MaxCount) {
+                $(this).val($(this).val().substr(0, MaxCount));
+            }
+        });
+
+        $('#modDialog').on('hidden.bs.modal', function () {
+            alert('Close');
+        });
+
+    </script>
+
+    <script type="text/javascript">
+        //Скрипт очистки значений необязательных полей
         function SignPersonClear() {
             $('#SignPersonLabel').val('');
             $('#SignPersonId').val(null);

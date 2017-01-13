@@ -52,7 +52,7 @@ namespace Sunny_House.Controllers
 
                 var _exercises = (from ex in db.Exercises
 
-                                  where ((ex.StartTime >= _startDate) && (ex.EndTime <= _endDate)) &&
+                                  where ((_endDate >= ex.StartTime) && (_startDate <= ex.EndTime)) &&
                                         (ex.Subject.ToUpper().Contains(SearchString.ToUpper()) || String.IsNullOrEmpty(SearchString))
                                   select ex);
 

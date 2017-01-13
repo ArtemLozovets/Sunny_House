@@ -41,7 +41,7 @@ namespace Sunny_House.Controllers
 
             var _events = (from _event in db.Events
                            join person in db.Persons on _event.AdministratorId equals person.PersonId
-                           where ((_event.StartTime <= _endDate) && (_event.EndTime >= _startDate)) &&
+                           where (_endDate >= _event.StartTime && _startDate <= _event.EndTime) &&
                            ((_event.EventName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) ||
                             (person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) ||
                             (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) ||
@@ -160,7 +160,7 @@ namespace Sunny_House.Controllers
             return View(_events.ToList().ToPagedList(pageNumber, pageSize));
         }
 
-       #region Створення заходу
+        #region Створення заходу
         // GET: Events/Create
         [HttpGet]
         public ActionResult ECreate()
@@ -274,7 +274,7 @@ namespace Sunny_House.Controllers
                         var _person = db.Persons.FirstOrDefault(p => p.PersonId == @event.AdministratorId);
                         if (_person != null)
                         {
-                            
+
                             ViewData["ReservedCount"] = db.Reserves.Where(e => e.EventId == @event.EventId && e.RoleId == _clientroleid).Count();
 
                             string _administartorPIB = string.Format("{0} {1} {2}", _person.FirstName, _person.LastName, _person.MiddleName);
@@ -424,7 +424,7 @@ namespace Sunny_House.Controllers
                                 Num_Address = tmpcomm.FirstOrDefault().Address_Number,
                                 PersonRole = role.RoleName,
                                 DOB = person.DateOfBirth
-                            }).OrderByDescending(r=>r.ReserveId).AsEnumerable().Select(e => new PersonsViewModel
+                            }).OrderByDescending(r => r.ReserveId).AsEnumerable().Select(e => new PersonsViewModel
                                                 {
                                                     PersonId = e.PersonId,
                                                     PersonFIO = e.PersonFIO.Trim(),
