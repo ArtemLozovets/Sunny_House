@@ -38,7 +38,7 @@
         </div>
         <div id="collapse1" class="panel-collapse collapse">
             <div class="panel-body">
-                @using (Ajax.BeginForm("CommentShowPartial", "Comments", null, new AjaxOptions { UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "commentform" }))
+                @using (Ajax.BeginForm("CommentShowPartial", "Comments", null, new AjaxOptions { UpdateTargetId = "updateC", LoadingElementId = "loadingImg" }, new { @id = "commentform" }))
                 {
                     <div class="col-lg-12 form-inline" style="margin-top:2px; margin-bottom:2px;">
                         <div class="input-group" style="width:300px; margin:0 auto">
@@ -210,7 +210,7 @@
     </div>
 </div>
 
-<div id="update" style="min-width:680px;">
+<div id="updateC" style="min-width:680px;">
     @Html.Action("CommentShowPartial", "Comments")
 </div>
 
@@ -250,8 +250,16 @@
                 });
         });
 
+        //Скрипт очистки полей формы и сброса параметров фильтрации
         $('body').on('click', '#filterclear', function (event) {
             $('#commentform').trigger('reset');
+
+            $('#SignPersonId').val(null);
+            $('#AboutPersonId').val(null);
+            $('#EventId').val(null);
+            $('#ExerciseId').val(null);
+            $('#AddressId').val(null);
+
             $('#commentform').submit();
         });
 
@@ -334,10 +342,6 @@
             if (this.value.length >= MaxCount) {
                 $(this).val($(this).val().substr(0, MaxCount));
             }
-        });
-
-        $('#modDialog').on('hidden.bs.modal', function () {
-            alert('Close');
         });
 
     </script>

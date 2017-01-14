@@ -440,7 +440,8 @@ namespace Sunny_House.Controllers
                                 string SortBy, string minRating, string maxRating,
                                 string SearchStartDate, string SearchEndDate,
                                 int? SourceId, string SearchText,
-                                int? SignPersonId)
+                                int? SignPersonId, int? AboutPersonId, int? EventId, int? ExerciseId, int? AddressId,
+                                bool? chbAboutPerson, bool? chbEvent, bool? chbEx, bool? chbAddress)
         {
             ViewBag.SortSource = SortBy == "Source" ? "Source desc" : "Source";
             ViewBag.SortDate = SortBy == "Date" ? "Date desc" : "Date";
@@ -461,11 +462,20 @@ namespace Sunny_House.Controllers
 
 
             var comments = (from comment in db.Comments
-                            where (comment.CommentId == CommentId || CommentId == null) && (comment.Rating >= _minRating && comment.Rating <= _maxRating) &&
+                            where (comment.CommentId == CommentId || CommentId == null) && 
+                            (comment.Rating >= _minRating && comment.Rating <= _maxRating) &&
                             (comment.Date >= _startDate && comment.Date <= _endDate) &&
                             (comment.SourceId == SourceId || SourceId == null) &&
                             (comment.Text.Contains(SearchText) || string.IsNullOrEmpty(SearchText)) &&
-                            (comment.SignPersonId == SignPersonId || SignPersonId == null)
+                            (comment.SignPersonId == SignPersonId || SignPersonId == null) &&
+                            (comment.AboutPersonId == AboutPersonId || AboutPersonId == null) &&
+                            (comment.EventId == EventId || EventId == null) &&
+                            (comment.ExerciseId == ExerciseId || ExerciseId == null) &&
+                            (comment.AddressId == AddressId || AddressId == null) &&
+                            (comment.AboutPersonId.HasValue || chbAboutPerson == false || chbAboutPerson == null) &&
+                            (comment.EventId.HasValue || chbEvent == false || chbEvent == null) &&
+                            (comment.ExerciseId.HasValue || chbEx == false || chbEx == null) &&
+                            (comment.AddressId.HasValue || chbAddress == false || chbAddress == null)
                             select new
                             {
                                 CommentId = comment.CommentId,
@@ -506,7 +516,6 @@ namespace Sunny_House.Controllers
                     ViewData["SortColumn"] = "Source";
                     break;
 
-
                 case "Date desc":
                     comments = comments.OrderByDescending(x => x.Date);
                     ViewData["SortColumn"] = "Date";
@@ -539,9 +548,10 @@ namespace Sunny_House.Controllers
                     break;
             }
 
-
-            //ViewData["minRating"] = minRating;
-            //ViewData["maxRating"] = maxRating;
+            ViewData["chbAboutPerson"] = chbAboutPerson;
+            ViewData["chbEvent"] = chbEvent;
+            ViewData["chbEx"] = chbEx;
+            ViewData["chbAddress"] = chbAddress;
 
             int pageSize = 3;
             int pageNumber = (page ?? 1);

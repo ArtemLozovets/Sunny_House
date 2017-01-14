@@ -15,8 +15,17 @@
                        SearchStartDate = Request["SearchStartDate"],
                        SearchEndDate = Request["SearchEndDate"],
                        SourceId = Request["SourceId"],
-                       SearchText = Request["SearchText"]
-                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "Source" })
+                       SearchText = Request["SearchText"],
+                       SignPersonId = Request["SignPersonId"],
+                       AboutPersonId = Request["AboutPersonId"],
+                       EventId = Request["EventId"],
+                       ExerciseId = Request["ExerciseId"],
+                       AddressId = Request["AddressId"],
+                       chbAboutPerson = ViewData["chbAboutPerson"],
+                       chbEvent = ViewData["chbEvent"],
+                       chbEx = ViewData["chbEx"],
+                       chbAddress = ViewData["chbAddress"]
+                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateC", LoadingElementId = "loadingImg" }, new { @id = "Source" })
             <i id="SourceArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th style="max-height:40px;">
@@ -28,8 +37,17 @@
                        SearchStartDate = Request["SearchStartDate"],
                        SearchEndDate = Request["SearchEndDate"],
                        SourceId = Request["SourceId"],
-                       SearchText = Request["SearchText"]
-                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "Date" })
+                       SearchText = Request["SearchText"],
+                       SignPersonId = Request["SignPersonId"],
+                       AboutPersonId = Request["AboutPersonId"],
+                       EventId = Request["EventId"],
+                       ExerciseId = Request["ExerciseId"],
+                       AddressId = Request["AddressId"],
+                       chbAboutPerson = ViewData["chbAboutPerson"],
+                       chbEvent = ViewData["chbEvent"],
+                       chbEx = ViewData["chbEx"],
+                       chbAddress = ViewData["chbAddress"]
+                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateC", LoadingElementId = "loadingImg" }, new { @id = "Date" })
             <i id="DateArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th style="min-height:300px;">
@@ -44,8 +62,17 @@
                        SearchStartDate = Request["SearchStartDate"],
                        SearchEndDate = Request["SearchEndDate"],
                        SourceId = Request["SourceId"],
-                       SearchText = Request["SearchText"]
-                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "Rating" })
+                       SearchText = Request["SearchText"],
+                       SignPersonId = Request["SignPersonId"],
+                       AboutPersonId = Request["AboutPersonId"],
+                       EventId = Request["EventId"],
+                       ExerciseId = Request["ExerciseId"],
+                       AddressId = Request["AddressId"],
+                       chbAboutPerson = ViewData["chbAboutPerson"],
+                       chbEvent = ViewData["chbEvent"],
+                       chbEx = ViewData["chbEx"],
+                       chbAddress = ViewData["chbAddress"]
+                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateC", LoadingElementId = "loadingImg" }, new { @id = "Rating" })
             <i id="RatingArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>
@@ -57,10 +84,21 @@
                        SearchStartDate = Request["SearchStartDate"],
                        SearchEndDate = Request["SearchEndDate"],
                        SourceId = Request["SourceId"],
-                       SearchText = Request["SearchText"]
-                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "SignPerson" })
+                       SearchText = Request["SearchText"],
+                       SignPersonId = Request["SignPersonId"],
+                       AboutPersonId = Request["AboutPersonId"],
+                       EventId = Request["EventId"],
+                       ExerciseId = Request["ExerciseId"],
+                       AddressId = Request["AddressId"],
+                       chbAboutPerson = ViewData["chbAboutPerson"],
+                       chbEvent = ViewData["chbEvent"],
+                       chbEx = ViewData["chbEx"],
+                       chbAddress = ViewData["chbAddress"]
+
+                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateC", LoadingElementId = "loadingImg" }, new { @id = "SignPerson" })
             <i id="SignPersonArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
+
         <th>Дополнительно</th>
         <th></th>
     </tr>
@@ -151,9 +189,13 @@
                                  SearchEndDate = Request["SearchEndDate"],
                                  SourceId = Request["SourceId"],
                                  SearchText = Request["SearchText"],
-                                 SignPersonId = Request["SignPersonId"]
+                                 SignPersonId = Request["SignPersonId"],
+                                 chbAboutPerson = ViewData["chbAboutPerson"],
+                                 chbEvent = ViewData["chbEvent"],
+                                 chbEx = ViewData["chbEx"],
+                                 chbAddress = ViewData["chbAddress"]
                                  
                              }),
                              PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
-                             new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "update" }))
+                             new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "updateC" }))
 
