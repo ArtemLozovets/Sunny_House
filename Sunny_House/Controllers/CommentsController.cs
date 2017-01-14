@@ -553,7 +553,7 @@ namespace Sunny_House.Controllers
             ViewData["chbEx"] = chbEx;
             ViewData["chbAddress"] = chbAddress;
 
-            int pageSize = 3;
+            int pageSize = 50;
             int pageNumber = (page ?? 1);
 
             return PartialView(comments.ToList().ToPagedList(pageNumber, pageSize));

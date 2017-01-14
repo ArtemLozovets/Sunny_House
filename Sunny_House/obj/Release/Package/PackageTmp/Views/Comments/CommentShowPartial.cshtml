@@ -6,37 +6,99 @@
 
 <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
     <tr>
-        <th>
+        <th style="max-height:160px;">
             @Ajax.ActionLink("Источник", "CommentShowPartial", new
                    {
                        SortBy = ViewBag.SortSource,
-                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "Source" })
+                       minRating = Request["minRating"],
+                       maxRating = Request["maxRating"],
+                       SearchStartDate = Request["SearchStartDate"],
+                       SearchEndDate = Request["SearchEndDate"],
+                       SourceId = Request["SourceId"],
+                       SearchText = Request["SearchText"],
+                       SignPersonId = Request["SignPersonId"],
+                       AboutPersonId = Request["AboutPersonId"],
+                       EventId = Request["EventId"],
+                       ExerciseId = Request["ExerciseId"],
+                       AddressId = Request["AddressId"],
+                       chbAboutPerson = ViewData["chbAboutPerson"],
+                       chbEvent = ViewData["chbEvent"],
+                       chbEx = ViewData["chbEx"],
+                       chbAddress = ViewData["chbAddress"]
+                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateC", LoadingElementId = "loadingImg" }, new { @id = "Source" })
             <i id="SourceArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
-        <th>
+        <th style="max-height:40px;">
             @Ajax.ActionLink("Дата", "CommentShowPartial", new
                    {
                        SortBy = ViewBag.SortDate,
-                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "Date" })
+                       minRating = Request["minRating"],
+                       maxRating = Request["maxRating"],
+                       SearchStartDate = Request["SearchStartDate"],
+                       SearchEndDate = Request["SearchEndDate"],
+                       SourceId = Request["SourceId"],
+                       SearchText = Request["SearchText"],
+                       SignPersonId = Request["SignPersonId"],
+                       AboutPersonId = Request["AboutPersonId"],
+                       EventId = Request["EventId"],
+                       ExerciseId = Request["ExerciseId"],
+                       AddressId = Request["AddressId"],
+                       chbAboutPerson = ViewData["chbAboutPerson"],
+                       chbEvent = ViewData["chbEvent"],
+                       chbEx = ViewData["chbEx"],
+                       chbAddress = ViewData["chbAddress"]
+                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateC", LoadingElementId = "loadingImg" }, new { @id = "Date" })
             <i id="DateArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
-        <th>
+        <th style="min-height:300px;">
             @Html.DisplayNameFor(model => model.First().Text)
         </th>
         <th style="min-width:100px;">
             @Ajax.ActionLink("Оценка", "CommentShowPartial", new
                    {
                        SortBy = ViewBag.SortRating,
-                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "Rating" })
+                       minRating = Request["minRating"],
+                       maxRating = Request["maxRating"],
+                       SearchStartDate = Request["SearchStartDate"],
+                       SearchEndDate = Request["SearchEndDate"],
+                       SourceId = Request["SourceId"],
+                       SearchText = Request["SearchText"],
+                       SignPersonId = Request["SignPersonId"],
+                       AboutPersonId = Request["AboutPersonId"],
+                       EventId = Request["EventId"],
+                       ExerciseId = Request["ExerciseId"],
+                       AddressId = Request["AddressId"],
+                       chbAboutPerson = ViewData["chbAboutPerson"],
+                       chbEvent = ViewData["chbEvent"],
+                       chbEx = ViewData["chbEx"],
+                       chbAddress = ViewData["chbAddress"]
+                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateC", LoadingElementId = "loadingImg" }, new { @id = "Rating" })
             <i id="RatingArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>
             @Ajax.ActionLink("Подпись", "CommentShowPartial", new
                    {
                        SortBy = ViewBag.SortSignPerson,
-                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "SignPerson" })
+                       minRating = Request["minRating"],
+                       maxRating = Request["maxRating"],
+                       SearchStartDate = Request["SearchStartDate"],
+                       SearchEndDate = Request["SearchEndDate"],
+                       SourceId = Request["SourceId"],
+                       SearchText = Request["SearchText"],
+                       SignPersonId = Request["SignPersonId"],
+                       AboutPersonId = Request["AboutPersonId"],
+                       EventId = Request["EventId"],
+                       ExerciseId = Request["ExerciseId"],
+                       AddressId = Request["AddressId"],
+                       chbAboutPerson = ViewData["chbAboutPerson"],
+                       chbEvent = ViewData["chbEvent"],
+                       chbEx = ViewData["chbEx"],
+                       chbAddress = ViewData["chbAddress"]
+
+                   }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateC", LoadingElementId = "loadingImg" }, new { @id = "SignPerson" })
             <i id="SignPersonArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
+
         <th>Дополнительно</th>
         <th></th>
     </tr>
@@ -53,26 +115,26 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>
+            <td style="vertical-align:top !important">
                 @Html.DisplayFor(modelItem => item.CommentSource.SourceName)
             </td>
-            <td style="text-align:center">
+            <td style="text-align:center; vertical-align:top !important">
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
-            <td class="breakWord" style="max-width:300px;">
+            <td class="breakWord" style="max-width:300px; vertical-align:top !important; text-align:justify;">
                 @Html.DisplayFor(modelItem => item.Text)
             </td>
-            <td style="text-align:center">
+            <td style="text-align:center; vertical-align:top !important">
                 @Html.DisplayFor(modelItem => item.Rating)
             </td>
-            <td>
+            <td style="vertical-align:top !important">
                 @if (item.SignPersonId != 0)
                 {
                     @Html.ActionLink(item.SignPersonFIO, "ShowPersons", "Home", new { PersonId = @item.SignPersonId }, new { target = "_blank" })
                 }
             </td>
 
-            <td>
+            <td style="vertical-align:top !important">
                 @if (item.AboutPersonId != 0)
                 {
                     <span>
@@ -102,12 +164,12 @@
                 }
             </td>
 
-            <td style="text-align:center; width:136px; min-width:134px;">
+            <td style="text-align:center; width:136px; min-width:134px; vertical-align:top !important">
                 <a class="btn btn-default btn-sm" title="Подробная информация" href='@Url.Action("CommentDetails", "Comments", new { id = item.CommentId })'><span class="glyphicon glyphicon-info-sign"></span></a>
                 <a class="btn btn-default btn-sm" title="Редактирование отзыва" href='@Url.Action("CommentEdit", "Comments", new { id = item.CommentId })'><span class="glyphicon glyphicon-edit"></span></a>
                 <a class="btn btn-default btn-sm" title="Удаление отзыва" href='@Url.Action("CommentDelete", "Comments", new { id = item.CommentId })'><span class="glyphicon glyphicon-trash"></span></a>
             </td>
-        </tr>
+        </tr> 
 
     }
 
@@ -120,8 +182,20 @@
                              new
                              {
                                  page,
-                                 SortBy = Request["SortBy"]
+                                 SortBy = Request["SortBy"],
+                                 minRating = Request["minRating"],
+                                 maxRating = Request["maxRating"],
+                                 SearchStartDate = Request["SearchStartDate"],
+                                 SearchEndDate = Request["SearchEndDate"],
+                                 SourceId = Request["SourceId"],
+                                 SearchText = Request["SearchText"],
+                                 SignPersonId = Request["SignPersonId"],
+                                 chbAboutPerson = ViewData["chbAboutPerson"],
+                                 chbEvent = ViewData["chbEvent"],
+                                 chbEx = ViewData["chbEx"],
+                                 chbAddress = ViewData["chbAddress"]
+                                 
                              }),
                              PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
-                             new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "update" }))
+                             new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "updateC" }))
 
