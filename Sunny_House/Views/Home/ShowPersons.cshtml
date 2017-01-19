@@ -63,7 +63,24 @@
             }
             @foreach (var item in Model)
             {
-                <tr>
+
+                string ttl = string.Empty;
+                ttl += "ФИО: ";
+                ttl += string.IsNullOrEmpty(item.FirstName) ? "" : item.FirstName + " ";
+                ttl += string.IsNullOrEmpty(item.LastName) ? "" : item.LastName+ " ";
+                ttl += string.IsNullOrEmpty(item.MiddleName) ? "" : item.MiddleName;
+                ttl += "\x0A";
+                
+                if (item.DateOfBirth.HasValue)
+                {
+                    ttl += "Дата рождения: " + Html.DisplayFor(modelItem => item.DateOfBirth) + "\x0A";
+                }
+                if (!String.IsNullOrEmpty(item.Note))
+                {
+                    ttl += "Примечание: " + item.Note;
+                }
+
+                <tr title="@ttl" style="cursor:pointer">
                     <td>
                         @Html.DisplayFor(modelItem => item.FirstName)
                     </td>
@@ -76,7 +93,7 @@
                     @if (item.PersonAge != null && item.PersonAge > 0)
                     {
                         <td style="text-align:center">
-                            <span class="text-info" title="Дата рождения: @Html.DisplayFor(modelItem => item.DateOfBirth)" style="cursor:pointer">
+                            <span class="text-info">
                                 @Html.DisplayFor(modelItem => item.PersonAge)
                             </span>
                         </td>
@@ -85,9 +102,10 @@
                     {
                         <td style="text-align:center">
                             @if (item.PersonMonth != null)
-                            { <span class="text-success" title="Дата рождения: @Html.DisplayFor(modelItem => item.DateOfBirth)" style="cursor:pointer">
+                            { <span class="text-success">
                                 @Html.DisplayFor(modelItem => item.PersonMonth) мес.
-                            </span> }
+                            </span>
+                            }
                         </td>
                     }
                     <td>
@@ -105,7 +123,11 @@
                 </tr>
             }
         </table>
+
+
+
     </div>
+
 </div>
 @if (ViewBag.ReturnUrl != null)
 {

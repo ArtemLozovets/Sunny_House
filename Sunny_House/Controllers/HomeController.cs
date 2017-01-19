@@ -58,6 +58,7 @@ namespace Sunny_House.Controllers
                                LastName = person.LastName,
                                MiddleName = person.MiddleName,
                                DateOfBirth = person.DateOfBirth,
+                               Note = person.Note,
                                Num_Address = tmpcomm.FirstOrDefault().Address_Number
                            };
 
@@ -79,6 +80,7 @@ namespace Sunny_House.Controllers
                                LastName = person.LastName,
                                MiddleName = person.MiddleName,
                                DateOfBirth = person.DateOfBirth,
+                               Note = person.Note,
                                Num_Address = tmpcomm.FirstOrDefault().Address_Number
                            };
             }
@@ -161,6 +163,7 @@ namespace Sunny_House.Controllers
                 _personsviewmodel.DateOfBirth = item.DateOfBirth;
                 _personsviewmodel.PersonAge =  AgeMethods.GetAge(item.DateOfBirth);
                 _personsviewmodel.PersonMonth = AgeMethods.GetTotalMonth(item.DateOfBirth);
+                _personsviewmodel.Note = item.Note;
                 _personsviewmodel.Num_Address = item.Num_Address;
 
                 _personsviewmodellist.Add(_personsviewmodel);
