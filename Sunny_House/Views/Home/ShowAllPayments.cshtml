@@ -40,7 +40,7 @@
     </div>
 }
 
-@if (Request.QueryString["EventId"] != null)
+@if (Request.QueryString["EventId"] != null && !string.IsNullOrEmpty(ViewBag.EventName))
 {
     <p class="text-info"><strong><i class="fa fa-institution"></i> Мероприятие: "@ViewBag.EventName"</strong></p>
 }

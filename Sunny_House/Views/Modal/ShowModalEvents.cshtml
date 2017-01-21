@@ -11,8 +11,8 @@
                 @Html.TextBox("EventsSearchString", null, new { @class = "form-control ", @data_autocomplete_source = @Url.Action("AutocompleteEventName", "AutoComplete"), @placeholder = "Название...", @style = "margin:2px 2px; width:160px; display:inline-block;" })
                 @Html.TextBox("StartTimeS", null, new { @class = "form-control ", @placeholder = "Начало...", @style = "margin:2px 2px; width:110px; display:inline-block;" })
                 @Html.TextBox("EndTimeS", null, new { @class = "form-control ", @placeholder = "Окончание...", @style = "margin:2px 2px; width:110px; display:inline-block;" })
-                <button type="submit" title="Искать" style="margin:2px 2px; display:inline-block " class="btn btn-default"><i class="glyphicon glyphicon-search"></i> </button>
-                <button type="button" title="Обновить" class="btn btn-default" id="filterclear"><i class="glyphicon glyphicon-refresh"></i></button>
+                <button type="submit" title="Искать" style="margin:-2px 2px 0 2px; display:inline-block" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> </button>
+                <button type="button" title="Обновить" style="margin:-2px 2px 0 2px; display:inline-block" class="btn btn-default" id="filterclear"><i class="glyphicon glyphicon-refresh"></i></button>
             }
         </div>
     </div>

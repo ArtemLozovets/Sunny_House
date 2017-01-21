@@ -1,13 +1,10 @@
 ﻿@model Sunny_House.Models.Address
-
 @{
     ViewBag.Title = "Добавление адреса";
 }
-
 <h2>Адрес</h2>
 <h4>Добавление адреса</h4>
 <hr />
-
 <div class="row">
     <div class="col-lg-6 col-md-6">
         @using (Html.BeginForm())
@@ -23,7 +20,6 @@
                         @Html.ValidationMessageFor(model => model.Alias, "", new { @class = "text-danger" })
                     </div>
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(model => model.PostCode, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
@@ -31,7 +27,6 @@
                         @Html.ValidationMessageFor(model => model.PostCode, "", new { @class = "text-danger" })
                     </div>
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(model => model.Country, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
@@ -39,7 +34,6 @@
                         @Html.ValidationMessageFor(model => model.Country, "", new { @class = "text-danger" })
                     </div>
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(model => model.Region, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
@@ -47,7 +41,6 @@
                         @Html.ValidationMessageFor(model => model.Region, "", new { @class = "text-danger" })
                     </div>
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(model => model.Area, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
@@ -55,7 +48,6 @@
                         @Html.ValidationMessageFor(model => model.Area, "", new { @class = "text-danger" })
                     </div>
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
@@ -63,7 +55,6 @@
                         @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
                     </div>
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(model => model.AddressValue, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
@@ -71,7 +62,6 @@
                         @Html.ValidationMessageFor(model => model.AddressValue, "", new { @class = "text-danger" })
                     </div>
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(model => model.GeoTag, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
@@ -79,7 +69,6 @@
                         @Html.ValidationMessageFor(model => model.GeoTag, "", new { @class = "text-danger" })
                     </div>
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
@@ -87,7 +76,6 @@
                         @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
                     </div>
                 </div>
-
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
                         <button type="submit" title="Добавить адрес" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Добавить</button>
@@ -96,11 +84,14 @@
             </div>
         }
         <div>
-            <p><a class="btn btn-default" href='@Url.Action(@ViewData["RetActionName"].ToString(), @ViewData["RetControllerName"].ToString(), new {ObjectId = @ViewBag.ObjectId })'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a></p>
+            @{
+                string _ActName = ViewData["RetActionName"] == null ? "AdShow" : ViewData["RetActionName"].ToString();
+                string _ContrName = ViewData["RetControllerName"] == null ? "Addresses" : ViewData["RetControllerName"].ToString();
+                    
+                <a class="btn btn-default" href='@Url.Action(_ActName, _ContrName, new {ObjectId = @ViewBag.ObjectId })'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+            }
         </div>
-
     </div>
-
     <div class="col-lg-6 col-md-6">
         <div class="panel-group">
             <div class="panel panel-default">
@@ -120,7 +111,6 @@
     </div>
 </div>
 
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <link href="~/Content/jquery-gmaps-latlon-picker.css" rel="stylesheet" />
@@ -134,5 +124,4 @@
             });
         });
     </script>
-
 }
