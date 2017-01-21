@@ -2,8 +2,13 @@
     ViewBag.Title = "Адреса";
 }
 
-<h2>Адреса</h2>
+<h2><i class="fa fa-home"></i> Адреса</h2>
 
+<div id="loadingImg">
+    <div id="preloadImg">
+        <img src="~/Content/Images/loader.gif" />
+    </div>
+</div>
 
 <div class="row">
     <div class="col-md-6" id="resultMessage" style="display:block; height:30px;">
@@ -13,11 +18,11 @@
 </div>
 
 
-@using (Ajax.BeginForm("AdShowAllPartial", "Addresses", new AjaxOptions { UpdateTargetId = "update" }, new { @id = "modalform" }))
+@using (Ajax.BeginForm("AdShowAllPartial", "Addresses", new AjaxOptions { UpdateTargetId = "updateAd", LoadingElementId = "loadingImg" }, new { @id = "modalform" }))
 {
     <div class="row" style="margin:10px 0">
         <div class="col-lg-3 col-md-4 col-sm-4">
-            <a class="btn btn-default" title="Добавить адрес" style="width:160px;" href='@Url.Action("AdCreate", "Addresses", new { RetActionName = "AdShow", RetControllerName = "Addresses"})'><span class="glyphicon glyphicon-home"> Добавить адрес</span></a>
+            <a class="btn btn-default" title="Добавить адрес" style="width:160px;" href='@Url.Action("AdCreate", "Addresses", new { RetActionName = "AdShow", RetControllerName = "Addresses"})'><span class="glyphicon glyphicon-plus"> Добавить адрес</span></a>
             @Html.Raw("&nbsp;")<button type="button" title="Обновить" class="btn btn-default" id="filterclear"><i class="glyphicon glyphicon-refresh"></i></button>
         </div>
         <div class="col-lg-5 col-lg-offset-4 col-md-6 col-md-offset-2 col-sm-8 form-inline">
@@ -30,8 +35,8 @@
 }
 
 
-<div id="update">
-    @Html.Action("AdShowAllPartial", "Addresses", new { CitySearchString = "", AddressSearchString = "" })
+<div id="updateAd">
+    @Html.Action("AdShowAllPartial", "Addresses")
 </div>
 
 
@@ -44,6 +49,7 @@
             });
 
             $('#AddressSearchString').focus();
+            $('#loadingImg').hide();
         });
 
 
@@ -62,5 +68,26 @@
             $('#modalform').submit();
         });
 
+    </script>
+
+    <script type="text/javascript">
+        $(document).ajaxComplete(function () {
+
+            $('i[id$="Arrow"]').css("visibility", "hidden");
+
+            //Отображаем значки сортировки
+            if ($('#SortColumn').text() != '') {
+                var sortcolumnname = $('#SortColumn').text();
+                var sortcontrol = $('#' + sortcolumnname);
+                if (sortcontrol != null) {
+                    if (sortcontrol.attr('href').indexOf('desc') != -1) {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-top').css("visibility", "visible")
+                    }
+                    else {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-bottom').css("visibility", "visible")
+                    }
+                }
+            }
+        });
     </script>
 }

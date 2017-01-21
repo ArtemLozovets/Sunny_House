@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Sunny_House.Models;
+using PagedList;
+using PagedList.Mvc;
 
 namespace Sunny_House.Controllers
 {
@@ -28,17 +30,97 @@ namespace Sunny_House.Controllers
         }
 
         // Список адрес 
-        public ActionResult AdShowAllPartial(string CitySearchString, string AddressSearchString)
+        public ActionResult AdShowAllPartial(string CitySearchString, string AddressSearchString, int? page, string SortBy)
         {
-            List<Address> _addresses = db.Addresses.ToList();
 
-            _addresses = _addresses.Where(c => (c.City
-                    .Contains(CitySearchString) || CitySearchString == null) && ((c.AddressValue.ToUpper()
-                    .Contains(AddressSearchString.ToUpper()) || AddressSearchString == null) || (c.Alias.ToUpper()
-                    .Contains(AddressSearchString.ToUpper()) || AddressSearchString == null)))
-                    .ToList();
+            ViewBag.SortAlias = SortBy == "Alias" ? "Alias desc" : "Alias";
+            ViewBag.SortPostCode = SortBy == "PostCode" ? "PostCode desc" : "PostCode";
+            ViewBag.SortCountry = SortBy == "Country" ? "Country desc" : "Country";
+            ViewBag.SortRegion = SortBy == "Region" ? "Region desc" : "Region";
+            ViewBag.SortArea = SortBy == "Area" ? "Area desc" : "Area";
+            ViewBag.SortCity = SortBy == "City" ? "City desc" : "City";
+            ViewBag.SortAddressValue = SortBy == "AddressValue" ? "AddressValue desc" : "AddressValue";
 
-            return PartialView(_addresses);
+
+            var _addresses = db.Addresses.Where(c => (c.City.Contains(CitySearchString) || String.IsNullOrEmpty(CitySearchString)) &&
+                     ((c.AddressValue.ToUpper().Contains(AddressSearchString.ToUpper()) || String.IsNullOrEmpty(AddressSearchString)) ||
+                     (c.Alias.ToUpper().Contains(AddressSearchString.ToUpper()) || String.IsNullOrEmpty(AddressSearchString))));
+
+            switch (SortBy)
+            {
+                case "Alias desc":
+                    _addresses = _addresses.OrderByDescending(x => x.Alias);
+                    ViewData["SortColumn"] = "Alias";
+                    break;
+                case "Alias":
+                    _addresses = _addresses.OrderBy(x => x.Alias);
+                    ViewData["SortColumn"] = "Alias";
+                    break;
+
+                case "PostCode desc":
+                    _addresses = _addresses.OrderByDescending(x => x.PostCode);
+                    ViewData["SortColumn"] = "PostCode";
+                    break;
+                case "PostCode":
+                    _addresses = _addresses.OrderBy(x => x.PostCode);
+                    ViewData["SortColumn"] = "PostCode";
+                    break;
+
+                case "Country desc":
+                    _addresses = _addresses.OrderByDescending(x => x.Country);
+                    ViewData["SortColumn"] = "Country";
+                    break;
+                case "Country":
+                    _addresses = _addresses.OrderBy(x => x.Country);
+                    ViewData["SortColumn"] = "Country";
+                    break;
+
+                case "Region desc":
+                    _addresses = _addresses.OrderByDescending(x => x.Region);
+                    ViewData["SortColumn"] = "Region";
+                    break;
+                case "Region":
+                    _addresses = _addresses.OrderBy(x => x.Region);
+                    ViewData["SortColumn"] = "Region";
+                    break;
+
+                case "Area desc":
+                    _addresses = _addresses.OrderByDescending(x => x.Area);
+                    ViewData["SortColumn"] = "Area";
+                    break;
+                case "Area":
+                    _addresses = _addresses.OrderBy(x => x.Area);
+                    ViewData["SortColumn"] = "Area";
+                    break;
+
+                case "City desc":
+                    _addresses = _addresses.OrderByDescending(x => x.City);
+                    ViewData["SortColumn"] = "City";
+                    break;
+                case "City":
+                    _addresses = _addresses.OrderBy(x => x.City);
+                    ViewData["SortColumn"] = "City";
+                    break;
+
+                case "AddressValue desc":
+                    _addresses = _addresses.OrderByDescending(x => x.AddressValue);
+                    ViewData["SortColumn"] = "Area";
+                    break;
+                case "AddressValue":
+                    _addresses = _addresses.OrderBy(x => x.AddressValue);
+                    ViewData["SortColumn"] = "AddressValue";
+                    break;
+
+                default:
+                    _addresses = _addresses.OrderByDescending(x => x.AddressId);
+                    break;
+            }
+
+
+            int pageSize = 50;
+            int pageNumber = (page ?? 1);
+
+            return PartialView(_addresses.ToList().ToPagedList(pageNumber, pageSize));
         }
 
         // Список адрес для модального вікна
@@ -78,10 +160,10 @@ namespace Sunny_House.Controllers
         {
 
             List<Person> _persons = (from person in db.Persons
-					 join personplace in db.PersonPlaces on person.PersonId equals personplace.PersonId 
-					 join address in db.Addresses on personplace.AddressId equals address.AddressId
-					 where address.AddressId == id
-                     select person).ToList();
+                                     join personplace in db.PersonPlaces on person.PersonId equals personplace.PersonId
+                                     join address in db.Addresses on personplace.AddressId equals address.AddressId
+                                     where address.AddressId == id
+                                     select person).ToList();
 
             return PartialView(_persons);
         }
@@ -89,18 +171,18 @@ namespace Sunny_House.Controllers
         public PartialViewResult AdRelExercisesPartial(int? id)
         {
             List<Exercise> _exercises = (from exercise in db.Exercises
-                                     join address in db.Addresses on exercise.AddressId equals address.AddressId
-                                     where address.AddressId == id
-                                     select exercise).ToList();
+                                         join address in db.Addresses on exercise.AddressId equals address.AddressId
+                                         where address.AddressId == id
+                                         select exercise).ToList();
             return PartialView(_exercises);
         }
-        
+
         public PartialViewResult AdRelCommentsPartial(int? id)
         {
             List<Comment> _comments = (from comment in db.Comments
-                                     join address in db.Addresses on comment.AddressId equals address.AddressId
-                                     where address.AddressId == id
-                                     select comment).ToList();
+                                       join address in db.Addresses on comment.AddressId equals address.AddressId
+                                       where address.AddressId == id
+                                       select comment).ToList();
             return PartialView(_comments);
         }
 
@@ -236,7 +318,7 @@ namespace Sunny_House.Controllers
                 {
                     try
                     {
-        
+
                         db.Entry(model.PersonPlace).State = EntityState.Modified;
                         db.SaveChanges();
 
@@ -246,7 +328,7 @@ namespace Sunny_House.Controllers
                         dbContextTransaction.Commit();
 
                         TempData["MessageOk"] = "Информация о адресе успешно обновлена";
-                        return RedirectToAction("ShowPlaces", "Home", new {PersonId = Request.QueryString["PersonId"]});
+                        return RedirectToAction("ShowPlaces", "Home", new { PersonId = Request.QueryString["PersonId"] });
                     }
                     catch (Exception ex)
                     {
@@ -303,7 +385,7 @@ namespace Sunny_House.Controllers
                     TempData["MessageError"] = "Удаление адреса невозможно. В таблице отзывов имеются связанные данные.";
                     return RedirectToAction("AdShow");
                 }
-               
+
                 else
                 {
                     Address address = db.Addresses.Find(id);

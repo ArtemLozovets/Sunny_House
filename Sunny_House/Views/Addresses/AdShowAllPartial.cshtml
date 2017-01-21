@@ -1,27 +1,73 @@
-﻿@model IEnumerable<Sunny_House.Models.Address>
+﻿@model PagedList.IPagedList<Sunny_House.Models.Address>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<label id="SortColumn" hidden>@ViewData["SortColumn"]</label>   
 
 <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Alias)
+            @Ajax.ActionLink("Псевдоним", "AdShowAllPartial", new
+           {
+               SortBy = ViewBag.SortAlias,
+               CitySearchString = Request["CitySearchString"],
+               AddressSearchString = Request["AddressSearchString"],
+           }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateAd", LoadingElementId = "loadingImg" }, new { @id = "Alias" })
+            <i id="AliasArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.PostCode)
+            @Ajax.ActionLink("Индекс", "AdShowAllPartial", new
+           {
+               SortBy = ViewBag.SortPostCode,
+               CitySearchString = Request["CitySearchString"],
+               AddressSearchString = Request["AddressSearchString"],
+           }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateAd", LoadingElementId = "loadingImg" }, new { @id = "PostCode" })
+            <i id="PostCodeArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Country)
+            @Ajax.ActionLink("Страна", "AdShowAllPartial", new
+           {
+               SortBy = ViewBag.SortCountry,
+               CitySearchString = Request["CitySearchString"],
+               AddressSearchString = Request["AddressSearchString"],
+           }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateAd", LoadingElementId = "loadingImg" }, new { @id = "Country" })
+            <i id="CountryArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Region)
+            @Ajax.ActionLink("Область", "AdShowAllPartial", new
+           {
+               SortBy = ViewBag.SortRegion,
+               CitySearchString = Request["CitySearchString"],
+               AddressSearchString = Request["AddressSearchString"],
+           }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateAd", LoadingElementId = "loadingImg" }, new { @id = "Region" })
+            <i id="RegionArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Area)
+           @Ajax.ActionLink("Район", "AdShowAllPartial", new
+           {
+               SortBy = ViewBag.SortArea,
+               CitySearchString = Request["CitySearchString"],
+               AddressSearchString = Request["AddressSearchString"],
+           }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateAd", LoadingElementId = "loadingImg" }, new { @id = "Area" })
+        <i id="AreaArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.City)
+           @Ajax.ActionLink("Город", "AdShowAllPartial", new
+           {
+               SortBy = ViewBag.SortCity,
+               CitySearchString = Request["CitySearchString"],
+               AddressSearchString = Request["AddressSearchString"],
+           }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateAd", LoadingElementId = "loadingImg" }, new { @id = "City" })
+        <i id="CityArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AddressValue)
+            @Ajax.ActionLink("Адрес", "AdShowAllPartial", new
+           {
+               SortBy = ViewBag.SortAddressValue,
+               CitySearchString = Request["CitySearchString"],
+               AddressSearchString = Request["AddressSearchString"],
+           }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateAd", LoadingElementId = "loadingImg" }, new { @id = "AddressValue" })
+            <i id="AddressValueArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th style="width:160px; min-width:160px;"></th>
     </tr>
@@ -70,4 +116,18 @@
     }
 
 </table>
+
+<hr />
+Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("AdShowAllPartial", "Addresses",
+                             new
+                             {
+                                 CitySearchString = Request["CitySearchString"],
+                                 AddressSearchString = Request["AddressSearchString"],
+                                 SortBy = Request["SortBy"],
+                                 page,
+                             }),
+                             PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
+                             new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "updateAd" }))
 
