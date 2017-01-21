@@ -2,9 +2,17 @@
 @{
     ViewBag.Title = "Редактирование адреса";
     // Получаем значения широты и долготы места для передачи в скрипт jquery-gmaps-latlon-picker.js
-    String[] substrings = @Model.GeoTag.ToString().Split(' ');
-    String _latVal = substrings[0];
-    String _longVal = substrings[1];
+    String _latVal = "49.58968242088729";
+    String _longVal = "34.551658630371094";
+    String _zoomVal = "13";
+    
+    if (!string.IsNullOrEmpty(Model.GeoTag))
+    {
+        String[] substrings = @Model.GeoTag.ToString().Split(' ');
+        _latVal = substrings[0];
+        _longVal = substrings[1];
+        _zoomVal = "18";
+    }
 }
 
 <h2>Адрес</h2>
@@ -109,7 +117,7 @@
                         <div class="gllpMap" style="width:auto; height:450px;"></div>
                         <input type="hidden" class="gllpLatitude" value="@_latVal" />
                         <input type="hidden" class="gllpLongitude" value="@_longVal" />
-                        <input type="hidden" class="gllpZoom" value="18" />
+                        <input type="hidden" class="gllpZoom" value="@_zoomVal" />
                     </fieldset>
                 </div>
             </div>

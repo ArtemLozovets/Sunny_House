@@ -250,6 +250,7 @@
     <Content Include="Content\Images\icon_top.png" />
     <Content Include="Content\Images\loader.gif" />
     <Content Include="Content\Images\trash.png" />
+    <Content Include="Content\jquery-gmaps-latlon-picker.css" />
     <Content Include="Content\jquery.datetimepicker.min.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\Progress.css" />
