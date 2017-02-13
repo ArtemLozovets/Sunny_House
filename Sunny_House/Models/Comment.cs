@@ -5,6 +5,8 @@ namespace Sunny_House.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
+    using System.Data.Entity;
+    using System.Linq;
 
     [Table("Comment")]
     public partial class Comment
@@ -45,6 +47,24 @@ namespace Sunny_House.Models
 
         [Display(Name = "Подпись")]
         public int? SignPersonId { get; set; }
+
+        [Display(Name = "Идентификатор сущности")]
+        public Guid RelGuid { get; set; }
+
+        [NotMapped]
+        public List<Attachment> AttList
+        {
+            get
+            {
+                List<Attachment> _attList = new List<Attachment>();
+                using (var db = new SunnyModel())
+                {
+                    _attList = db.Attachments.Where(x => x.RelGuid == RelGuid).ToList();
+                }
+                return _attList;
+            }
+            set { }
+        }
 
         public virtual Address Address { get; set; }
 

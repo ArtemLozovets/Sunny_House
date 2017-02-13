@@ -201,6 +201,7 @@ namespace Sunny_House.Models
         public DbSet<AspVisitor> AspVisitors { get; set; }
         public DbSet<Potential—lient> Potential—lients { get; set; }
         public DbSet<STask> STask { get; set; }
+        public virtual DbSet<Attachment> Attachments { get; set; }
 
         #region Fluent API
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

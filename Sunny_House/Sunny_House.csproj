@@ -175,6 +175,7 @@
     <Compile Include="Areas\Administrator\Controllers\UsersManagementController.cs" />
     <Compile Include="Areas\Administrator\Models\UsersManagementViewModel.cs" />
     <Compile Include="Controllers\AddressesController.cs" />
+    <Compile Include="Controllers\AttachmentController.cs" />
     <Compile Include="Controllers\AutoCompleteController.cs" />
     <Compile Include="Controllers\CommentsController.cs" />
     <Compile Include="Controllers\CommunicationsController.cs" />
@@ -200,6 +201,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\AspVisitors.cs" />
+    <Compile Include="Models\Attachment.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\CommentSource.cs" />
     <Compile Include="Models\Communication.cs" />
@@ -236,6 +238,7 @@
   <ItemGroup>
     <Content Include="bin\Sunny_House.dll" />
     <Content Include="bin\Sunny_House.pdb" />
+    <Content Include="Content\Attachment.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -246,6 +249,7 @@
     <Content Include="Content\fullcalendar.min.css" />
     <Content Include="Content\fullcalendar.print.css" />
     <Content Include="Content\Images\err403.jpg" />
+    <Content Include="Content\Images\floader.gif" />
     <Content Include="Content\Images\gear.gif" />
     <Content Include="Content\Images\icon_top.png" />
     <Content Include="Content\Images\loader.gif" />
@@ -518,6 +522,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Attachment\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
