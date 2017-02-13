@@ -27,6 +27,8 @@
         <h4>Добавить отзыв</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.RelGuid)
+
         <div class="row">
             <div class="col-lg-6 col-md-6">
                 <div class="form-group">
@@ -309,8 +311,8 @@
                         }, 1000);
 
                         $("#uploadFile").val('');
-                        var _span = "<span class='attFile' id=" + result.attId + " style='displaborder:1px silver solid; margin:20px; padding:3px; border-radius:3px; cursor:pointer;'>";
-                        var _i = " <i class='glyphicon glyphicon-remove' style='color:#BF3030;'></i></span>";
+                        var _span = "<span class='attFile' id=" + result.attId + ">";
+                        var _i = " <i class='glyphicon glyphicon-remove attFileI'></i></span>";
                         $("#attContainer").append(_span + result.fileName + _i);
 
                     },

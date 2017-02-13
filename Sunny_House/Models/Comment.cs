@@ -66,6 +66,10 @@ namespace Sunny_House.Models
             set { }
         }
 
+        [NotMapped]
+        public int AttCount{get; set;}
+        
+
         public virtual Address Address { get; set; }
 
         public virtual Event Event { get; set; }

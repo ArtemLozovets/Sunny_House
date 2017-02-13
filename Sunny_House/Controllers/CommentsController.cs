@@ -81,6 +81,7 @@ namespace Sunny_House.Controllers
             Comment _comment = new Comment();
             _comment.Date = DateTime.Now;
             _comment.Rating = 1;
+            _comment.RelGuid = Guid.NewGuid();
 
             return View(_comment);
         }
@@ -88,7 +89,7 @@ namespace Sunny_House.Controllers
         // POST: Comments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CommentCreate([Bind(Include = "CommentId,SourceId,Date,Text,Rating,AboutPersonId,EventId,ExerciseId,AddressId,SignPersonId")] Comment comment)
+        public async Task<ActionResult> CommentCreate([Bind(Include = "CommentId,SourceId,Date,Text,Rating,AboutPersonId,EventId,ExerciseId,AddressId,SignPersonId,RelGuid")] Comment comment)
         {
             if (ModelState.IsValid)
             {
@@ -462,7 +463,7 @@ namespace Sunny_House.Controllers
 
 
             var comments = (from comment in db.Comments
-                            where (comment.CommentId == CommentId || CommentId == null) && 
+                            where (comment.CommentId == CommentId || CommentId == null) &&
                             (comment.Rating >= _minRating && comment.Rating <= _maxRating) &&
                             (comment.Date >= _startDate && comment.Date <= _endDate) &&
                             (comment.SourceId == SourceId || SourceId == null) &&
@@ -487,7 +488,8 @@ namespace Sunny_House.Controllers
                                 Exercise = comment.Exercise,
                                 Address = comment.Address,
                                 Person1 = comment.Person ?? null,
-                                Person = comment.Person1 ?? null
+                                Person = comment.Person1 ?? null,
+                                RelGuid = comment.RelGuid
                             }).AsEnumerable().Select(x => new Comment
                              {
                                  CommentId = x.CommentId,
@@ -502,8 +504,8 @@ namespace Sunny_House.Controllers
                                  AboutPersonFIO = x.Person1 == null ? "" : (x.Person1.FirstName + " " + x.Person1.LastName).TrimStart(),
                                  SignPersonId = x.Person == null ? 0 : x.Person.PersonId,
                                  AboutPersonId = x.Person1 == null ? 0 : x.Person1.PersonId,
+                                 AttCount =  db.Attachments.Where(z => z.RelGuid == x.RelGuid).Count()
                              }).OrderByDescending(x => x.Date);
-
 
             switch (SortBy)
             {

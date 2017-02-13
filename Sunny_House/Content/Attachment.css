@@ -19,4 +19,14 @@
         display: block;
     }
 
+.attFile{
+    display:inline-block; 
+    border:1px silver solid; 
+    margin:0 4px 4px 0 !important; 
+    padding:3px; border-radius:3px; 
+    cursor:pointer;
+}
 
+.attFileI{
+    color:#BF3030;
+}
