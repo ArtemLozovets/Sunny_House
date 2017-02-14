@@ -37,6 +37,9 @@ namespace Sunny_House.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
+           // Guid _RelGuid = db.Comments.FirstOrDefault(x => x.CommentId == id).RelGuid;
+
             var _comment = (from comment in db.Comments
                             where comment.CommentId == id
                             select new
@@ -50,7 +53,8 @@ namespace Sunny_House.Controllers
                                 Exercise = comment.Exercise,
                                 Address = comment.Address,
                                 Person1 = comment.Person ?? null,
-                                Person = comment.Person1 ?? null
+                                Person = comment.Person1 ?? null,
+                                RelGuid = comment.RelGuid
                             }).AsEnumerable().Select(x => new Comment
                             {
                                 CommentId = x.CommentId,
@@ -65,6 +69,7 @@ namespace Sunny_House.Controllers
                                 AboutPersonFIO = x.Person1 == null ? "" : (x.Person1.FirstName + " " + x.Person1.LastName).TrimStart(),
                                 SignPersonId = x.Person == null ? 0 : x.Person.PersonId,
                                 AboutPersonId = x.Person1 == null ? 0 : x.Person1.PersonId,
+                                AttList = db.Attachments.Where(z => z.RelGuid == x.RelGuid).ToList()
                             }).FirstOrDefault();
             if (_comment == null)
             {

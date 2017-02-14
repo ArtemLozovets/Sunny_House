@@ -27,10 +27,22 @@
         <dt>
             @Html.DisplayNameFor(model => model.Text)
         </dt>
-        <dd class="breakWord" style="max-width:500px;">
+        <dd class="breakWord" style="max-width:500px; text-align:justify;">
             @Html.DisplayFor(model => model.Text)
         </dd>
 
+        @if (Model.AttList.Count() > 0)
+        {
+            <dt><strong>Вложения</strong></dt>
+            <dd>
+                @foreach (var item in Model.AttList)
+                {
+                    <span style="margin-right:10px;">
+                        @Html.ActionLink(item.FileName, "GetFile","Attachment", new { id = item.Id }, null)
+                    </span>
+                }
+            </dd>
+        }
         <dt>
             @Html.DisplayNameFor(model => model.Rating)
         </dt>

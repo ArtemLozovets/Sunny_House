@@ -30,7 +30,7 @@ namespace Sunny_House.Models
 
         [Display(Name = "Оценка")]
         [Required(ErrorMessage = "Необходимо указать оценку")]
-        [Range(1, Int16.MaxValue, ErrorMessage="Значение поля \"Оценка\" должно находится в диапазоне от 1 до 32767")]
+        [Range(1, Int16.MaxValue, ErrorMessage = "Значение поля \"Оценка\" должно находится в диапазоне от 1 до 32767")]
         public int? Rating { get; set; }
 
         [Display(Name = "О персоне")]
@@ -51,24 +51,27 @@ namespace Sunny_House.Models
         [Display(Name = "Идентификатор сущности")]
         public Guid RelGuid { get; set; }
 
-        [NotMapped]
-        public List<Attachment> AttList
-        {
-            get
-            {
-                List<Attachment> _attList = new List<Attachment>();
-                using (var db = new SunnyModel())
-                {
-                    _attList = db.Attachments.Where(x => x.RelGuid == RelGuid).ToList();
-                }
-                return _attList;
-            }
-            set { }
-        }
+        //[NotMapped]
+        //public List<Attachment> AttList
+        //{
+        //    get
+        //    {
+        //        List<Attachment> _attList = new List<Attachment>();
+        //        using (var db = new SunnyModel())
+        //        {
+        //            _attList = db.Attachments.Where(x => x.RelGuid == RelGuid).ToList();
+        //        }
+        //        return _attList;
+        //    }
+        //    set { }
+        //}
 
         [NotMapped]
-        public int AttCount{get; set;}
-        
+        public List<Attachment> AttList { get; set; }
+
+        [NotMapped]
+        public int AttCount { get; set; }
+
 
         public virtual Address Address { get; set; }
 
