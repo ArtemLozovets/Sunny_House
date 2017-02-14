@@ -27,6 +27,11 @@
     cursor:pointer;
 }
 
+.attFile:hover{
+    background-color:lavender;
+    color:#BF3030;
+}
+
 .attFileI{
     color:#BF3030;
 }

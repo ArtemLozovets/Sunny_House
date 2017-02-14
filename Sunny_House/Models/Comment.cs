@@ -51,20 +51,20 @@ namespace Sunny_House.Models
         [Display(Name = "Идентификатор сущности")]
         public Guid RelGuid { get; set; }
 
-        //[NotMapped]
-        //public List<Attachment> AttList
-        //{
-        //    get
-        //    {
-        //        List<Attachment> _attList = new List<Attachment>();
-        //        using (var db = new SunnyModel())
-        //        {
-        //            _attList = db.Attachments.Where(x => x.RelGuid == RelGuid).ToList();
-        //        }
-        //        return _attList;
-        //    }
-        //    set { }
-        //}
+        [NotMapped]
+        public List<Attachment> AttListGetter
+        {
+            get
+            {
+                List<Attachment> _attList = new List<Attachment>();
+                using (var db = new SunnyModel())
+                {
+                    _attList = db.Attachments.Where(x => x.RelGuid == RelGuid).ToList();
+                }
+                return _attList;
+            }
+            set { }
+        }
 
         [NotMapped]
         public List<Attachment> AttList { get; set; }

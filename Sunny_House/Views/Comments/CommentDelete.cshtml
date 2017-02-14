@@ -32,6 +32,19 @@
             @Html.DisplayFor(model => model.Text)
         </dd>
 
+        @if (Model.AttListGetter.Count() > 0)
+        {
+            <dt><strong>Вложения</strong></dt>
+            <dd>
+                @foreach (var item in Model.AttListGetter)
+                {
+                    <span style="margin-right:10px;">
+                        @Html.ActionLink(item.FileName, "GetFile", "Attachment", new { id = item.Id }, null)
+                    </span>
+                }
+            </dd>
+        }
+
         <dt>
             @Html.DisplayNameFor(model => model.Rating)
         </dt>

@@ -38,7 +38,7 @@ namespace Sunny_House.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-           // Guid _RelGuid = db.Comments.FirstOrDefault(x => x.CommentId == id).RelGuid;
+            // Guid _RelGuid = db.Comments.FirstOrDefault(x => x.CommentId == id).RelGuid;
 
             var _comment = (from comment in db.Comments
                             where comment.CommentId == id
@@ -199,7 +199,7 @@ namespace Sunny_House.Controllers
         // POST: Comments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CommentEdit([Bind(Include = "CommentId,SourceId,Date,Text,Rating,AboutPersonId,EventId,ExerciseId,AddressId,SignPersonId")] Comment comment)
+        public async Task<ActionResult> CommentEdit([Bind(Include = "CommentId,SourceId,Date,Text,Rating,AboutPersonId,EventId,ExerciseId,AddressId,SignPersonId,RelGuid")] Comment comment)
         {
             if (ModelState.IsValid)
             {
@@ -273,20 +273,44 @@ namespace Sunny_House.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CommentDeleteConfirmed(int id)
         {
-            try
+            Comment comment = await db.Comments.FindAsync(id);
+            using (var dbContextTransaction = db.Database.BeginTransaction())
             {
-                Comment comment = await db.Comments.FindAsync(id);
-                db.Comments.Remove(comment);
-                await db.SaveChangesAsync();
-                TempData["MessageOk"] = "Отзыв успешно удален";
-                return RedirectToAction("CommentShow");
-            }
+                try
+                {
 
-            catch (Exception ex)
-            {
-                ViewBag.ErMes = ex.Message;
-                ViewBag.ErStack = ex.StackTrace;
-                return View("Error");
+                    string AttachmentPath = System.Configuration.ConfigurationManager.AppSettings["AttachmentPath"];
+
+                    var _attList = db.Attachments.Where(x => x.RelGuid == comment.RelGuid).ToList();
+
+                    db.Attachments.RemoveRange(db.Attachments.Where(x => x.RelGuid == comment.RelGuid));
+                    db.SaveChanges();
+
+                    db.Comments.Remove(comment);
+                    db.SaveChanges();
+
+                    foreach (var item in _attList)
+                    {
+                        string fullPath = AttachmentPath + item.ServerFileName.ToString();
+                        if (System.IO.File.Exists(fullPath))
+                        {
+                            System.IO.File.Delete(fullPath);
+                        }
+                    }
+
+                    dbContextTransaction.Commit();
+                    TempData["Res"] = "Отзыв успешно удален";
+                   
+                    return RedirectToAction("CommentShow");
+                }
+
+                catch (Exception ex)
+                {
+                    dbContextTransaction.Rollback();
+                    ViewBag.ErMes = ex.Message;
+                    ViewBag.ErStack = ex.StackTrace;
+                    return View("Error");
+                }
             }
         }
 
@@ -509,7 +533,7 @@ namespace Sunny_House.Controllers
                                  AboutPersonFIO = x.Person1 == null ? "" : (x.Person1.FirstName + " " + x.Person1.LastName).TrimStart(),
                                  SignPersonId = x.Person == null ? 0 : x.Person.PersonId,
                                  AboutPersonId = x.Person1 == null ? 0 : x.Person1.PersonId,
-                                 AttCount =  db.Attachments.Where(z => z.RelGuid == x.RelGuid).Count()
+                                 AttCount = db.Attachments.Where(z => z.RelGuid == x.RelGuid).Count()
                              }).OrderByDescending(x => x.Date);
 
             switch (SortBy)
