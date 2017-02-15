@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Sunny_House.Models;
+using System.IO;
 
 namespace Sunny_House.Controllers
 {
@@ -56,7 +57,6 @@ namespace Sunny_House.Controllers
             return Json("NaN", JsonRequestBehavior.AllowGet);
         }
 
-
         [HttpPost]
         public JsonResult AttDelete()
         {
@@ -91,21 +91,36 @@ namespace Sunny_House.Controllers
             }
         }
 
-        public FileResult GetFile(int? id)
+        public ActionResult GetFile(int? id)
         {
-            var _file = db.Attachments.FirstOrDefault(f => f.Id == id);
-            string _fName = _file.FileName.ToString();
-            string _fGuid = _file.ServerFileName.ToString();
-            string AttachmentPath = System.Configuration.ConfigurationManager.AppSettings["AttachmentPath"];
+            try
+            {
+                var _file = db.Attachments.FirstOrDefault(f => f.Id == id);
+                string _fName = _file.FileName.ToString();
+                string _fGuid = _file.ServerFileName.ToString();
+                string AttachmentPath = System.Configuration.ConfigurationManager.AppSettings["AttachmentPath"];
 
-            // Путь к файлу
-            //string file_path = Server.MapPath("~/App_Data/Upload/" +_fGuid);
-            string file_path = (AttachmentPath + _fGuid);
-            // Тип файла - content-type
-            string file_type = "multipart/mixed";
-            // Имя файла - необязательно
-            string file_name = _fName;
-            return File(file_path, file_type, file_name);
+                // Путь к файлу
+                //string file_path = Server.MapPath("~/App_Data/Upload/" +_fGuid);
+                string file_path = (AttachmentPath + _fGuid);
+                // Тип файла - content-type
+                string file_type = "multipart/mixed";
+                // Имя файла - необязательно
+                string file_name = _fName;
+
+                if (System.IO.File.Exists(file_path)) return File(file_path, file_type, file_name);
+                else 
+                {
+                    ViewBag.ErMes = "Файл " + file_name + " не найден.";
+                    return View("Error");      
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErMes = ex.Message;
+                ViewBag.ErStack = ex.StackTrace;
+                return View("Error");                
+            }
         }
 
 
