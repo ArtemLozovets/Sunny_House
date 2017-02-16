@@ -7,6 +7,7 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using System.Data.Entity;
 using Sunny_House.Models;
+using Sunny_House.Jobs;
 
 namespace Sunny_House
 {
@@ -18,6 +19,9 @@ namespace Sunny_House
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            //===Sheduler===
+            FileServiceScheduler.Start();
         }
     }
 }
