@@ -353,40 +353,47 @@
                 if (window.FormData !== undefined) {
                     var data = new FormData();
                     var RelGUID = "@Model.RelGuid.ToString()";
-                    for (var x = 0; x < files.length; x++) {
-                        data.append("file" + x, files[x]);
-                    }
-                    data.append("GUID", RelGUID);
+                    var MaxAttSize = parseInt(@ViewBag.MaxAttSize);
 
-                    $.ajax({
-                        type: "POST",
-                        url: '@Url.Action("Upload", "Attachment")',
-                        contentType: false,
-                        processData: false,
-                        data: data,
-                        success: function (result) {
+                    if (files[0].size <= MaxAttSize) {
+                        data.append("file" + 0, files[0]);
+                        data.append("GUID", RelGUID);
 
-                            setTimeout(function () {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("Upload", "Attachment")',
+                            contentType: false,
+                            processData: false,
+                            data: data,
+                            success: function (result) {
+
+                                setTimeout(function () {
+                                    $('#floader').hide(10);
+                                }, 1000);
+
+                                $("#uploadFile").val('');
+                                var _span = "<span class='attFile' id=" + result.attId + ">";
+                                var _i = " <i class='glyphicon glyphicon-remove attFileI'></i></span>";
+                                $("#attContainer").append(_span + result.fileName + _i);
+
+                            },
+                            error: function (xhr, status, p3) {
                                 $('#floader').hide(10);
-                                // Ваш скрипт
-                            }, 1000);
+                                alert(xhr.responseText);
+                            }
+                        });
+                    }
+                    else {
+                        alert('Размер файла не должен превышать ' + MaxAttSize + ' байт!');
+                        $('#floader').hide(10);
+                    }
+                }
 
-                            $("#uploadFile").val('');
-                            var _span = "<span class='attFile' id=" + result.attId + ">";
-                            var _i = " <i class='glyphicon glyphicon-remove attFileI'></i></span>";
-                            $("#attContainer").append(_span + result.fileName + _i);
-
-                        },
-                        error: function (xhr, status, p3) {
-                            $('#floader').hide(10);
-                            alert(xhr.responseText);
-                        }
-                    });
-                } else {
+                else {
                     alert("Браузер не поддерживает загрузку файлов HTML5!");
                 }
             }
         });
 
-    </script>
+</script>
 }

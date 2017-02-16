@@ -10,6 +10,9 @@ using System.Web.Mvc;
 using Sunny_House.Models;
 using PagedList;
 using PagedList.Mvc;
+using System.Web.Configuration;
+using System.Configuration;
+
 
 namespace Sunny_House.Controllers
 {
@@ -82,6 +85,8 @@ namespace Sunny_House.Controllers
         public ActionResult CommentCreate()
         {
             ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName");
+            
+            ViewBag.MaxAttSize = GetMaxAttSize();
 
             Comment _comment = new Comment();
             _comment.Date = DateTime.Now;
@@ -145,6 +150,8 @@ namespace Sunny_House.Controllers
                     ViewData["AddressName"] = _ad.Alias;
                 }
 
+                ViewBag.MaxAttSize = GetMaxAttSize();
+
                 return View(comment);
             }
         }
@@ -192,6 +199,8 @@ namespace Sunny_House.Controllers
             {
                 ViewData["AddressName"] = _ad.Alias;
             }
+
+            ViewBag.MaxAttSize = GetMaxAttSize();
 
             return View(comment);
         }
@@ -249,6 +258,8 @@ namespace Sunny_House.Controllers
                     ViewData["AddressName"] = _ad.Alias;
                 }
 
+                ViewBag.MaxAttSize = GetMaxAttSize();
+
                 return View(comment);
             }
         }
@@ -300,7 +311,7 @@ namespace Sunny_House.Controllers
 
                     dbContextTransaction.Commit();
                     TempData["Res"] = "Отзыв успешно удален";
-                   
+
                     return RedirectToAction("CommentShow");
                 }
 
@@ -312,6 +323,17 @@ namespace Sunny_House.Controllers
                     return View("Error");
                 }
             }
+        }
+
+        private int GetMaxAttSize() // Функция чтения значения MaxRequestLength из файла web.config
+        {
+            int MaxAttSize = 10240000;
+            HttpRuntimeSection section = ConfigurationManager.GetSection("system.web/httpRuntime") as HttpRuntimeSection;
+            if (section != null)
+            {
+                MaxAttSize = (section.MaxRequestLength * 1024);
+            }
+            return MaxAttSize;
         }
 
         #endregion
