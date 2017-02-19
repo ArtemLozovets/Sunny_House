@@ -37,7 +37,8 @@ namespace Sunny_House.Controllers
                     {
                         FileName = fileName,
                         ServerFileName = _fileGuid,
-                        RelGuid = _relGUID
+                        RelGuid = _relGUID,
+                        CreateDT = DateTime.Now
                     };
 
                     db.Attachments.Add(_att);

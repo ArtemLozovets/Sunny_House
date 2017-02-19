@@ -98,7 +98,8 @@
                    }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateC", LoadingElementId = "loadingImg" }, new { @id = "SignPerson" })
             <i id="SignPersonArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
-
+        
+        <th><i class="glyphicon glyphicon-paperclip"></i></th>
         <th>Дополнительно</th>
         <th></th>
     </tr>
@@ -131,6 +132,14 @@
                 @if (item.SignPersonId != 0)
                 {
                     @Html.ActionLink(item.SignPersonFIO, "ShowPersons", "Home", new { PersonId = @item.SignPersonId }, new { target = "_blank" })
+                }
+            </td>
+
+            <td style="min-width:60px; text-align:center">
+                @if (item.AttCount > 0)
+                { <a href='@Url.Action("CommentDetails", "Comments", new { id = item.CommentId })' style="color:chocolate; display:block; margin-top:2px;">
+                    @item.AttCount@Html.Raw("&nbsp;")<i class="glyphicon glyphicon-paperclip"></i>
+                </a>
                 }
             </td>
 

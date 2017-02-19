@@ -4,8 +4,10 @@
     ViewBag.Title = "Добавить";
 }
 <link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
+<link href="~/Content/Attachment.css" rel="stylesheet" />
 
 <h2><i class="fa fa-commenting fa-1x"></i> Отзывы</h2>
+
 
 <div id="modDialog" class="modal fade">
     <div id="dialogContent" class="modal-dialog" style="width:660px;"></div>
@@ -26,6 +28,8 @@
         <h4>Добавить отзыв</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.RelGuid)
+
         <div class="row">
             <div class="col-lg-6 col-md-6">
                 <div class="form-group">
@@ -52,12 +56,17 @@
                     </div>
                 </div>
 
-                @*<div class="form-group">
-                    <label id="FileLabel" class="control-label  col-sm-4">Вложения</label>
-                    <div class="col-sm-8">
-                        <input type="file" name="file" id="file" class="form-control" />
+                <div class="form-group">
+                    @Html.Label("Вложенные файлы", htmlAttributes: new { @class = "control-label col-sm-4" })
+                    <div class="col-md-8">
+                        <label class="btn btn-default btn-file">
+                            <i class="glyphicon glyphicon-paperclip"></i> Добавить файл <input type="file" name="upload" id="uploadFile" hidden>
+                        </label>
+                        <span style="display:none; margin:0 6px;" id="floader"><img src="~/Content/Images/floader.gif" /></span>
+                        <div id="attContainer" style="margin-top:10px;">
+                        </div>
                     </div>
-                </div>*@
+                </div>
 
             </div>
 
@@ -231,5 +240,100 @@
                 $("#charNum").text('(' + LeftCount + ')');
             }
         }
+    </script>
+
+
+    <script type="text/javascript">
+        //Блок скриптов для работы с вложенными файлами
+
+        //Функция удаления вложения по клику
+        $(document).on('click', '.attFile', function (e) {
+
+            $('#floader').show(10);
+
+            var data = new FormData();
+            var _attId = $(this).attr('Id')
+            data.append("attId", _attId);
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AttDelete", "Attachment")',
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function (result) {
+
+                    $('#floader').hide(10);
+
+                    if (result.deleted) {
+                        $("#" + _attId).hide();
+                    }
+                    else {
+                        alert(result.message);
+                    }
+                    //===========================================
+                },
+                error: function (xhr, status, p3) {
+                    $('#floader').hide(10);
+
+                    alert(xhr.responseText);
+                }
+            });
+        });
+
+        //Функция асинхронной отправки файла на сервер
+        $(document).on('change', ':file', function (e) {
+
+
+            $('#floader').show(10);
+
+            e.preventDefault();
+            var files = document.getElementById('uploadFile').files;
+            if (files.length > 0) {
+                if (window.FormData !== undefined) {
+                    var data = new FormData();
+                    var RelGUID = "@Model.RelGuid.ToString()";
+                    var MaxAttSize = parseInt(@ViewBag.MaxAttSize);
+
+                    if (files[0].size <= MaxAttSize) {
+                        data.append("file" + 0, files[0]);
+                        data.append("GUID", RelGUID);
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("Upload", "Attachment")',
+                            contentType: false,
+                            processData: false,
+                            data: data,
+                            success: function (result) {
+
+                                setTimeout(function () {
+                                    $('#floader').hide(10);
+                                }, 1000);
+
+                                $("#uploadFile").val('');
+                                var _span = "<span class='attFile' id=" + result.attId + ">";
+                                var _i = " <i class='glyphicon glyphicon-remove attFileI'></i></span>";
+                                $("#attContainer").append(_span + result.fileName + _i);
+
+                            },
+                            error: function (xhr, status, p3) {
+                                $('#floader').hide(10);
+                                alert(xhr.responseText);
+                            }
+                        });
+                    }
+                    else {
+                        alert('Размер файла не должен превышать ' + MaxAttSize + ' байт!');
+                        $('#floader').hide(10);
+                    }
+                }
+
+                else {
+                    alert("Браузер не поддерживает загрузку файлов HTML5!");
+                }
+            }
+        });
+
     </script>
 }

@@ -19,6 +19,9 @@ namespace Sunny_House.Models
 
         [Display(Name = "Идентификатор сущности")]
         public Guid RelGuid { get; set; }
+
+        public DateTime CreateDT { get; set; }
+       
     }
 
 }

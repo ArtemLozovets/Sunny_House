@@ -1,66 +1,255 @@
 ﻿@model Sunny_House.Models.Exercise
-
 @{
     ViewBag.Title = "Подробно";
+    string ReturnParam = "/Exercises/ExDetails?ObjectId=" + Request.QueryString["ObjectId"];
+    string SuccessReturn = "/Exercises/ExShow";
 }
 
-<h2><i class="fa fa-bell"> Занятия</i></h2>
+<div style="margin-bottom:26px;"><span id="topanchor"></span></div>
 
-<div>
-    <h4>Подробная информация о занятии</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Event.EventName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Event.EventName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Subject)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Subject)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.StartTime)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.StartTime)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.EndTime)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.EndTime)
-        </dd>
-
-        <dt>
-           Место
-        </dt>
-
-        <dd>
-           @Model.Address.City, @Model.Address.AddressValue
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Note)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Note)
-        </dd>
-
-    </dl>
+<div id="loadingImg">
+    <div id="preloadImg">
+        <img src="~/Content/Images/loader.gif" />
+    </div>
 </div>
-<p>
-    <a class="btn btn-default" href='@Url.Action("ExShow", "Exercises")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
-    <a class="btn btn-default" href='@Url.Action("ExEdit", "Exercises", new { id = Model.ExerciseId })'><span class="glyphicon glyphicon-edit"> Редактировать</span></a>
-</p>
+
+<div class="row">
+    <div class="col-lg-5 col-md-6">
+        <div class="panel panel-default fixed" style="min-width:470px;" id="fixedpanel">
+            <div class="panel-heading">
+                <strong><i class="fa fa-bell"></i> Занятие <em class="text-info"> @Html.DisplayFor(model => model.Subject)</em></strong>
+            </div>
+            <div class="panel-body">
+                <div style="text-align:center; margin:0 auto; margin-bottom:4px; width:300px; cursor:pointer" id="resultMessage">
+                    <strong><span class="text-success" id="MessageOk"> @TempData["MessageOk"]</span></strong>
+                    <strong><span class="text-danger" id="MessageError"> @TempData["MessageError"]</span></strong>
+                </div>
+
+                <dl class="dl-horizontal">
+                    <dt>
+                        Мероприятие
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Event.EventName)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Subject)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Subject)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.StartTime)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.StartTime)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EndTime)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.EndTime)
+                    </dd>
+                    <dt>
+                        Место
+                    </dt>
+                    <dd>
+                        @Model.Address.City, @Model.Address.AddressValue
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Note)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Note)
+                    </dd>
+                </dl>
+
+                <div style="margin:10px 0 0 4px; text-align:center;">
+                    <a class="btn btn-default" href='@ViewData["ReturnParam"]' title="Список посещений"><span class="fa fa-bell"> Все занятия</span></a>
+                    <a class="btn btn-default" href='@Url.Action("ExEdit", "Exercises", new { ObjectId = Model.ExerciseId, ReturnParam })' title="Редактировать"><span class="glyphicon glyphicon-edit"> Редактировать</span></a>
+                    <a class="btn btn-default" href='@Url.Action("ExDelete", "Exercises", new { ObjectId = Model.ExerciseId, ReturnParam, SuccessReturn})' title="Удалить"><span class="glyphicon glyphicon-trash"> Удалить</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7 col-md-6">
+        <div class="panel panel-default" style="min-width:500px; min-height:436px;">
+            <div class="panel-heading"><strong><i class="fa fa-bell"></i> Посещения</strong></div>
+            <div class="panel-body" id="tabpanel">
+                <ul class="nav nav-tabs">
+                    @* Вкладки ---------------------------------------------------------------- *@
+                    <li id="ResTab" class="active"><a data-toggle="tab" href="#home"><strong>Посетители</strong></a></li>
+                    <li id="PTCTab"><a data-toggle="tab" href="#menu1"><strong>Регистрация посещения</strong></a></li>
+                </ul>
+                <div class="tab-content">
+                    @* Вкладка посетителей ------------------------------------------- *@
+                    <div id="home" class="tab-pane fade in active">
+                        <div class="col-lg-12 form-inline text-right" style="margin-bottom:12px;">
+                            @using (Ajax.BeginForm("VisitorPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId }, new AjaxOptions { UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "visitform" }))
+                            {
+                                <input class="form-control" type="text" name="SearchString" id="SearchString" placeholder="Фамилия, имя..." style="width:200px; margin:2px 0; display:inline-block">
+                                @Html.DropDownList("RoleSearchString",
+                                                        (IEnumerable<SelectListItem>)ViewData["Roles"], "-Роль-",
+                                                        htmlAttributes: new
+                                                        {
+                                                            @class = "form-control",
+                                                            style = "width:160px; margin:2px 0; display:inline-block;"
+                                                        })
+                                <button type="submit" title="Искать" class="btn btn-default" style="margin-top:-3px;"><i class="glyphicon glyphicon-search"></i></button>
+                                <button type="button" title="Обновить" class="btn btn-default" id="filterclear" style="margin-top:-3px;"><i class="glyphicon glyphicon-refresh"></i></button>
+                            }
+                        </div>
+                        <div id="update">
+                            @Html.Action("VisitorPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId, @SearchString = "", @RoleSearchString = "" })
+                        </div>
+                    </div>
+                    @* Вкладка регистрации ------------------------------------------- *@
+                    <div id="menu1" class="tab-pane fade">
+                        <div class="col-lg-12 form-inline" style="margin-bottom:12px;">
+                            @using (Ajax.BeginForm("PersonsPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId }, new AjaxOptions { UpdateTargetId = "update1", LoadingElementId = "loadingImg" }, new { @id = "personform" }))
+                            {
+                                <div class="col-lg-2 col-md-3 col-sm-3 text-left">
+                                    @Html.RadioButton("FilterMode", "Reserve", true)@Html.Raw("&nbsp;")<span>Бронь</span><br />
+                                    @Html.RadioButton("FilterMode", "All")@Html.Raw("&nbsp;")<span> Все</span>
+                                </div>
+                                <div class="col-lg-10 col-md-9 col-sm-8 text-right">
+                                    <input class="form-control" type="text" name="SearchString" id="SearchString" placeholder="Фамилия, имя..." style="width:200px; margin:2px 0; display:inline-block">
+                                    <button type="submit" title="Искать" class="btn btn-default" style="margin-top:-3px;"><i class="glyphicon glyphicon-search"></i></button>
+                                    <button type="button" title="Обновить" class="btn btn-default" id="personfilterclear" style="margin-top:-3px;"><i class="glyphicon glyphicon-refresh"></i></button>
+                                </div>
+                            }
+                        </div>
+                        <div id="update1">
+                            @Html.Action("PersonsPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId, @SearchString = "" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a href="#" class="scrollup1">Наверх</a>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/circle-progress.min.js"></script>
+    <script src="~/Scripts/toparrow.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            // Очищаем панель сообщений по щелчку в окне
+            $('#resultMessage').click(function () {
+                $('#resultMessage').fadeOut(1000,
+                    function () {
+                        $('#MessageOk').html('');
+                        $('#MessageError').html('');
+                        $('#resultMessage').fadeIn(1000)
+                    });
+            });
+
+            // Сабмит формы при изменении переключателя (Через $('#FilterMode') работает только в одном положении)
+            $('input[name=FilterMode]').change(function () {
+                $('#personform').submit();
+            })
+
+            //Скрипт сохранения активной панели
+            $('body').on('click', 'a[data-toggle="tab"]', function (e) {
+                //Сохраняем значение ссылки активной панели
+                localStorage.setItem('visitorlastTab', $(this).attr('href'));
+            });
+
+            //Открываем сохраненную вкладку если запись существует
+            var visitorlastTab = localStorage.getItem('visitorlastTab');
+            if (visitorlastTab) {
+                $('a[href="' + visitorlastTab + '"]').click();
+            }
+
+            $('#SearchString').focus();
+            $('#loadingImg').hide();
+        });
+
+        $('body').on('click', '#filterclear', function (event) {
+            $('#visitform').trigger('reset');
+            $('#visitform').submit();
+        });
+
+        $('body').on('click', '#personfilterclear', function (event) {
+            $('#personform').trigger('reset');
+            $('#personform').submit();
+        });
+
+        $(window).resize(function () {
+            /*If browser resized, check width again */
+            if ($(window).width() >= 1000) {
+                $('#fixedpanel').addClass('fixed');
+            }
+            else { $('#fixedpanel').removeClass('fixed'); }
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ajaxComplete(function () {
+
+            $('i[id$="Arrow"]').css("visibility", "hidden");
+
+            //Отображаем значки сортировки
+            if ($('#SortColumn').text() != '') {
+                var sortcolumnname = $('#SortColumn').text();
+                var sortcontrol = $('#' + sortcolumnname);
+                if (sortcontrol != null) {
+                    if (sortcontrol.attr('href').indexOf('desc') != -1) {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-top').css("visibility", "visible")
+                    }
+                    else {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-bottom').css("visibility", "visible")
+                    }
+                }
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+
+        //Обработчик щелчка по кнопке выбора персоны
+        function selsubmit(elem) {
+            var _personId = $(elem).data('personid');
+            var _exId = $(elem).data('exid');
+            var _roleId = $('#ddl' + _personId).val();
+            if (_roleId == '') {
+                alert('Необходимо указать роль посетителя!');
+            }
+            else {
+
+                $('#loadingImg').show();
+                $.ajax({
+                    type: 'POST',
+                    url: '/Visits/AddVisitAjax/',
+                    traditional: true,
+                    data: {
+                        ExId: _exId,
+                        RoleId: _roleId,
+                        PersonId: _personId
+                    },
+                    success: function (data) {
+                        $('#loadingImg').hide();
+                        if (!data.Result) {
+                            $("#MessageError").text(data.Message);
+                        }
+                        else {
+                            $("#MessageOk").text(data.Message);
+                            $('#visitform').trigger('reset');
+                            $('#visitform').submit();
+                        }
+                    },
+                    fail: function (data) {
+                        $('#loadingImg').hide();
+                        $("#MessageError").text("Ошибка выполнения запроса");
+                    }
+                });
+            }
+        };
+
+    </script>
+}                   

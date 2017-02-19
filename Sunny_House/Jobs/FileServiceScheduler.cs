@@ -7,7 +7,6 @@ namespace Sunny_House.Jobs
     public class FileServiceScheduler : HttpApplication
     {
 
-        public static ISchedulerFactory scheduleFactory = new StdSchedulerFactory();
         public static void Start()
         {
              ISchedulerFactory schedFact = new StdSchedulerFactory();
@@ -19,9 +18,10 @@ namespace Sunny_House.Jobs
 
             ITrigger trigger = TriggerBuilder.Create()  // создаем триггер
                 .WithIdentity("trigger1", "group1")     // идентифицируем триггер с именем и группой
-                .StartNow()                            // запуск сразу после начала выполнения
-                .WithSimpleSchedule(x => x            // настраиваем выполнение действия
-                    .WithIntervalInSeconds(10)          // через 1 минуту
+                .StartNow()                             // запуск сразу после начала выполнения
+                .WithSimpleSchedule(x => x              // настраиваем выполнение действия
+                    .WithIntervalInHours(4)             // через 4 часа
+                   //.WithIntervalInSeconds(600)             // через 10 sec.
                     .RepeatForever())                   // бесконечное повторение
                 .Build();                               // создаем триггер
 

@@ -1,0 +1,69 @@
+﻿@model IEnumerable<Sunny_House.Models.ReservesViewModel>
+
+@{
+    ViewBag.Title = "Бронирования";
+}
+
+<h2>@ViewData["PersonFIO"]</h2>
+<h4>Список бронирований</h4>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="text-success"> @TempData["MessageOk"]</p>
+        <p class="text-danger">  @TempData["MessageError"]</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <a class="btn btn-default" style="margin:2px 2px;" title="Добавить бронь" href='@Url.Action("ResCreate", "Reserves", new {PersonId = Request.QueryString["PersonId"] })'><span class="glyphicon glyphicon-education"> Добавить бронь</span></a>
+    </div>
+</div>
+
+<table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.EventName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RoleName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Note)
+        </th>
+        <th></th>
+    </tr>
+
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="4">
+                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+            </td>
+        </tr>
+    }
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.EventName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoleName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            <td style="text-align:center; width:90px; min-width:90px;">
+                <a class="btn btn-default btn-sm" title="Редактирование" href='@Url.Action("ResEdit", "Reserves", new { ReserveId = item.ReserveId })'><span class="glyphicon glyphicon-edit"></span></a>
+                <a class="btn btn-default btn-sm" title="Удаление" href='@Url.Action("ResDelete", "Reserves", new { ReserveId = item.ReserveId })'><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<div>
+    <a class="btn btn-default" href='@Url.Action("ShowPersons", "Home", new { PersonId = Request.QueryString["PersonId"]})'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+</div>
