@@ -14,7 +14,7 @@ using Sunny_House.Methods;
 
 namespace Sunny_House.Controllers
 {
-    [Authorize(Roles = "Administrator, User")]
+    [Authorize(Roles = "Administrator, User, Presenter")]
     public class HomeController : Controller
     {
         private SunnyModel db = new SunnyModel();
@@ -25,6 +25,9 @@ namespace Sunny_House.Controllers
             { return RedirectToAction("ShowUsers", new { area = "Administrator", controller = "UsersManagement" }); }
 
             if (User.IsInRole("User"))
+            { return RedirectToAction("ShowPersons", new { area = "", controller = "Home" }); }
+
+            if (User.IsInRole("Presenter"))
             { return RedirectToAction("ShowPersons", new { area = "", controller = "Home" }); }
 
             if (User.IsInRole("Blockeduser"))
@@ -264,8 +267,10 @@ namespace Sunny_House.Controllers
 
         #endregion
 
+
         #region  Список платежів по платнику
         [HttpGet]
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult ShowPayments(int? PersonId)
         {
             if (PersonId == null)
@@ -292,6 +297,7 @@ namespace Sunny_House.Controllers
 
         #region Список платежів
         [HttpGet]
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult ShowAllPayments(string PayerSearchString, string ClientSearchString, int? page, string SortBy, int? EventId)
         {
             // db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Information ------------------------------------

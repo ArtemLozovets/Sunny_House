@@ -5,14 +5,15 @@ namespace Sunny_House.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Sunny_House.Models.SunnyModel>
+    internal sealed class Configuration : DbMigrationsConfiguration<Sunny_House.Models.ApplicationDbContext>
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
+            ContextKey = "Sunny_House.Models.ApplicationDbContext";
         }
 
-        protected override void Seed(Sunny_House.Models.SunnyModel context)
+        protected override void Seed(Sunny_House.Models.ApplicationDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 

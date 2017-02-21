@@ -55,8 +55,8 @@ namespace Sunny_House.Areas.Administrator.Controllers
             List<UsRoleViewModel> usrollist = new List<UsRoleViewModel>();
             UpdateUserInfosViewModel usrolcontext = new UpdateUserInfosViewModel();
 
-            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
-            IdentityRole currentRole = null;
+            var roleManager = new RoleManager<ApplicationRole>(new RoleStore<ApplicationRole>(db));
+            ApplicationRole currentRole = null;
             try
             {
                 users = db.Users.ToList();
@@ -67,7 +67,7 @@ namespace Sunny_House.Areas.Administrator.Controllers
                     {
                         currentRole = roleManager.FindById(roleitem.RoleId);
                         if (currentRole == null) RoleString = "Неопределена";
-                        else RoleString += currentRole.Name.ToString() + " ";
+                        else RoleString += currentRole.Description.ToString() + " ";
                     }
 
                     UsRoleViewModel currentuser = new UsRoleViewModel
@@ -218,7 +218,7 @@ namespace Sunny_House.Areas.Administrator.Controllers
 
                     var _currentuser = HttpContext.User.Identity.GetUserId();
                     ViewBag.CurrentUser = _currentuser;
-                    SelectList _roles = new SelectList(db.Roles.Where(Name => Name.Name != "blockeduser"), "Id", "Name", DUser.Roles.FirstOrDefault().RoleId);
+                    SelectList _roles = new SelectList(db.Roles.Where(Name => Name.Name != "blockeduser"), "Id", "Description", DUser.Roles.FirstOrDefault().RoleId);
                     ViewBag.RolesList = _roles;
                     UpdateUserInfosViewModel currentuser = new UpdateUserInfosViewModel
                     {
@@ -499,7 +499,7 @@ namespace Sunny_House.Areas.Administrator.Controllers
         // GET: /UsersManagement/Register
         public ActionResult Register()
         {
-            SelectList _roles = new SelectList(db.Roles.Where(Name => Name.Name != "blockeduser"), "Name", "Name");
+            SelectList _roles = new SelectList(db.Roles.Where(Name => Name.Name != "blockeduser"), "Name", "Description");
             ViewBag.RolesList = _roles;
             return View();
         }

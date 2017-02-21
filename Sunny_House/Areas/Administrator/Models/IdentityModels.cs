@@ -32,12 +32,26 @@ namespace Sunny_House.Models
 
     }
 
+    public class ApplicationRole : IdentityRole
+    {
+        public ApplicationRole(string name)
+            : base(name)
+        { }
+
+        public ApplicationRole()
+        { }
+
+        public string Description { get; set; }
+    }
+
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
             : base("SunnyModel", throwIfV1Schema: false)
         {
         }
+
+        new public DbSet<ApplicationRole> Roles { get; set; }
 
         public static ApplicationDbContext Create()
         {

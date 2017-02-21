@@ -99,6 +99,17 @@ namespace Sunny_House.Areas.Administrator.Controllers
 
         }
 
+        public string InitRole()
+        {
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
+            var role = new ApplicationRole { Name = "Presenter", Description = "Ведущий" };
+            // добавляем роль в бд
+            roleManager.Create(role);
+
+            db.SaveChanges();
+            return "Complete";
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

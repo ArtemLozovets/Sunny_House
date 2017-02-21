@@ -210,6 +210,14 @@
     <Compile Include="Migrations\201608271026151_Initial.Designer.cs">
       <DependentUpon>201608271026151_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609190742009_InitialCreate.cs" />
+    <Compile Include="Migrations\201609190742009_InitialCreate.Designer.cs">
+      <DependentUpon>201609190742009_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702212118088_InitialSetup.cs" />
+    <Compile Include="Migrations\201702212118088_InitialSetup.Designer.cs">
+      <DependentUpon>201702212118088_InitialSetup.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\AspVisitors.cs" />
@@ -547,6 +555,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201608271026151_Initial.resx">
       <DependentUpon>201608271026151_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609190742009_InitialCreate.resx">
+      <DependentUpon>201609190742009_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702212118088_InitialSetup.resx">
+      <DependentUpon>201702212118088_InitialSetup.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
