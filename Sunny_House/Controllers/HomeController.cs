@@ -419,6 +419,7 @@ namespace Sunny_House.Controllers
         #region Редагування платежу
 
         // GET: Payments/Edit/5
+        [Authorize(Roles = "Administrator, User")]
         public async Task<ActionResult> PaymentEdit(int? id)
         {
             if (id == null)
@@ -445,6 +446,7 @@ namespace Sunny_House.Controllers
 
         // POST: Payments/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> PaymentEdit([Bind(Include = "PaymentId,Sum,Date,Note,PayerId,ClientId,EventId")] Payment payment)
         {
@@ -502,6 +504,7 @@ namespace Sunny_House.Controllers
         #region Видалення платежу
 
         // GET: Payments/Delete/5
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult PaymentDelete(int? id)
         {
             if (id == null)
@@ -518,6 +521,7 @@ namespace Sunny_House.Controllers
 
         // POST: Payments/Delete/5
         [HttpPost, ActionName("PaymentDelete")]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public ActionResult PaymentDeleteConfirmed(int id)
         {
@@ -544,12 +548,14 @@ namespace Sunny_House.Controllers
 
         #region Створення персони
         [HttpGet]
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult AddPerson()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddPerson([Bind(Include = "PersonId,FirstName,LastName,MiddleName,Sex,DateOfBirth,Note,CreateDate")] Person model)
         {
@@ -613,6 +619,7 @@ namespace Sunny_House.Controllers
         #endregion
 
         #region Редагування персони
+        [Authorize(Roles = "Administrator, User")]
         public async Task<ActionResult> PersonEdit(int? PersonId)
         {
             if (PersonId == null)
@@ -629,6 +636,7 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> PersonEdit([Bind(Include = "PersonId,FirstName,LastName,MiddleName,Sex,DateOfBirth,Note,CreateDate")] Person model)
         {
@@ -683,6 +691,7 @@ namespace Sunny_House.Controllers
 
         #region Видалення персони
 
+        [Authorize(Roles = "Administrator, User")]
         public async Task<ActionResult> PersonDelete(int? PersonId)
         {
             if (PersonId == null)
@@ -698,6 +707,7 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost, ActionName("PersonDelete")]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int PersonId)
         {
@@ -789,6 +799,7 @@ namespace Sunny_House.Controllers
 
         #region Створення платежу
         [HttpGet]
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult AddPayment()
         {
             return View();
@@ -796,6 +807,7 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddPayment(Payment model)
         {
@@ -919,6 +931,7 @@ namespace Sunny_House.Controllers
 
         #region Створення місця особи
         [HttpGet]
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult AddPlace(int? ObjectId, int? AddressId)
         {
             if (ObjectId == null) { return RedirectToAction("ShowPersons", "Home"); }
@@ -968,6 +981,7 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddPlace([Bind(Include = "PersonId, AddressId, PlaceName")] int? ObjectId, PersonPlace model)
         {
@@ -1023,7 +1037,7 @@ namespace Sunny_House.Controllers
         #endregion
 
         #region Видалення місця особи
-
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult PersonPlaceDelete(int? id)
         {
             if (id == null)
@@ -1040,6 +1054,7 @@ namespace Sunny_House.Controllers
 
         // POST: PersonPlaces/Delete/5
         [HttpPost, ActionName("PersonPlaceDelete")]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id, int? PersonId, bool? RelAddressDel)
         {

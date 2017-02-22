@@ -14,7 +14,7 @@ using Sunny_House.Methods;
 
 namespace Sunny_House.Controllers
 {
-    [Authorize(Roles = "Administrator, User")]
+    [Authorize(Roles = "Administrator, User, Presenter")]
     public class VisitsController : Controller
     {
         private SunnyModel db = new SunnyModel();

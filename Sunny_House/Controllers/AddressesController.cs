@@ -12,7 +12,7 @@ using PagedList.Mvc;
 
 namespace Sunny_House.Controllers
 {
-    [Authorize(Roles = "Administrator, User")]
+    [Authorize(Roles = "Administrator, User, Presenter")]
     public class AddressesController : Controller
     {
         private SunnyModel db = new SunnyModel();
@@ -193,6 +193,7 @@ namespace Sunny_House.Controllers
 
         //Створення нової адреси
         [HttpGet]
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult AdCreate(int? ObjectId, string RetActionName, string RetControllerName)
         {
             if (ObjectId != null) { ViewBag.ObjectId = ObjectId; }
@@ -203,6 +204,7 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult AdCreate(int? ObjectId, Address model, string RetActionName, string RetControllerName)
         {
             if (ModelState.IsValid)
@@ -241,6 +243,7 @@ namespace Sunny_House.Controllers
         #endregion
 
         // GET: Addresses/Edit/5
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult AdEdit(int? id)
         {
             if (id == null)
@@ -257,6 +260,7 @@ namespace Sunny_House.Controllers
 
         // POST: Addresses/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public ActionResult AdEdit([Bind(Include = "AddressId,Alias,PostCode,Country,Region,Area,City,AddressValue,GeoTag,Note")] Address address)
         {
@@ -283,6 +287,7 @@ namespace Sunny_House.Controllers
         #region Редагування місця особи та адреси
 
         // GET: Addresses/Edit/5
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult AdPlaceEdit(int? id)
         {
             if (id == null)
@@ -309,6 +314,7 @@ namespace Sunny_House.Controllers
 
         // POST: Addresses/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public ActionResult AdPlaceEdit(AdPlaceEditViewModel model)
         {
@@ -346,6 +352,7 @@ namespace Sunny_House.Controllers
         #endregion
 
         // GET: Addresses/Delete/5
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult AdDelete(int? id)
         {
             if (id == null)
@@ -361,6 +368,7 @@ namespace Sunny_House.Controllers
         }
 
         // POST: Addresses/Delete/5
+        [Authorize(Roles = "Administrator, User")]
         [HttpPost, ActionName("AdDelete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

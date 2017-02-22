@@ -11,7 +11,7 @@ using System.Data.Entity.Core.Objects;
 
 namespace Sunny_House.Controllers
 {
-    [Authorize(Roles = "Administrator, User")]
+    [Authorize(Roles = "Administrator, User, Presenter")]
     public class PersonRolesController : Controller
     {
         private SunnyModel db = new SunnyModel();
@@ -23,6 +23,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: PersonRoles/Create
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult RoleCreate()
         {
             return View();
@@ -30,6 +31,7 @@ namespace Sunny_House.Controllers
 
         // POST: PersonRoles/Create
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public ActionResult RoleCreate([Bind(Include = "RoleId,RoleName")] PersonRole personRole)
         {
@@ -59,6 +61,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: PersonRoles/Edit/5
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult RoleEdit(int? id)
         {
             if (id == null)
@@ -75,6 +78,7 @@ namespace Sunny_House.Controllers
 
         // POST: PersonRoles/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public ActionResult RoleEdit([Bind(Include = "RoleId,RoleName")] PersonRole personRole)
         {
@@ -107,6 +111,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: PersonRoles/Delete/5
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult RoleDelete(int? id)
         {
             if (id == null)
@@ -123,6 +128,7 @@ namespace Sunny_House.Controllers
 
         // POST: PersonRoles/Delete/5
         [HttpPost, ActionName("RoleDelete")]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {

@@ -14,7 +14,7 @@ using PagedList.Mvc;
 
 namespace Sunny_House.Controllers
 {
-    [Authorize(Roles = "Administrator, User")]
+    [Authorize(Roles = "Administrator, User, Presenter")]
     public class TasksController : Controller
     {
         private SunnyModel db = new SunnyModel();

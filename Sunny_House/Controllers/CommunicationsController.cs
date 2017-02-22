@@ -11,7 +11,7 @@ using Sunny_House.Models;
 
 namespace Sunny_House.Controllers
 {
-   [Authorize(Roles = "Administrator, User")]
+    [Authorize(Roles = "Administrator, User, Presenter")]
     public class CommunicationsController : Controller
     {
         private SunnyModel db = new SunnyModel();
@@ -62,6 +62,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Communications/Create
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult ComCreate(int? PersonId)
         {
             if (PersonId == null)
@@ -77,6 +78,7 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ComCreate([Bind(Include = "Id,Address_Number,TypeOfCommunicationId,CommName,Note")] Communication communication, int? PersonId)
         {
@@ -129,6 +131,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Communications/Edit/5
+        [Authorize(Roles = "Administrator, User")]
         public async Task<ActionResult> ComEdit(int? id, int? PersonId)
         {
             if (id == null || PersonId == null)
@@ -148,6 +151,7 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ComEdit([Bind(Include = "Id,Address_Number,TypeOfCommunicationId,CommName,Note")] Communication communication, int? PersonId)
         {
@@ -172,6 +176,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Communications/Delete/5
+        [Authorize(Roles = "Administrator, User")]
         public async Task<ActionResult> ComDelete(int? id, int? PersonId)
         {
             if (id == null || PersonId == null)
@@ -190,6 +195,7 @@ namespace Sunny_House.Controllers
 
         // POST: Communications/Delete/5
         [HttpPost, ActionName("ComDelete")]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ComDeleteConfirmed(int id, int? PersonId)
         {
@@ -234,12 +240,12 @@ namespace Sunny_House.Controllers
         // GET: TypeOfCommunications
         public async Task<ActionResult> TCShow()
         {
-            if (Request.Cookies["CommPersonId"] != null) 
+            if (Request.Cookies["CommPersonId"] != null)
             {
                 ViewData["CommPersonId"] = Server.HtmlEncode(Request.Cookies["CommPersonId"].Value);
                 var c = new HttpCookie("CommPersonId");
                 c.Expires = DateTime.Now.AddDays(-1);
-              
+
                 Response.Cookies.Add(c);
             }
             else
@@ -251,6 +257,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: TypeOfCommunications/Create
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult TCCreate()
         {
             return View();
@@ -258,6 +265,7 @@ namespace Sunny_House.Controllers
 
         // POST: TypeOfCommunications/Create
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> TCCreate([Bind(Include = "Id,CommType")] TypeOfCommunication typeOfCommunication)
         {
@@ -269,7 +277,7 @@ namespace Sunny_House.Controllers
                     await db.SaveChangesAsync();
 
                     TempData["MessageOk"] = "Запись успешно добавлена";
-                    
+
                     return RedirectToAction("TCShow");
                 }
                 catch (Exception ex)
@@ -286,6 +294,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: TypeOfCommunications/Delete/5
+        [Authorize(Roles = "Administrator, User")]
         public async Task<ActionResult> TCDelete(int? id)
         {
             if (id == null)
@@ -302,6 +311,7 @@ namespace Sunny_House.Controllers
 
         // POST: TypeOfCommunications/Delete/5
         [HttpPost, ActionName("TCDelete")]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> TCDeleteConfirmed(int id)
         {

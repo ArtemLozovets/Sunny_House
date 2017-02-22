@@ -14,7 +14,7 @@ using PagedList.Mvc;
 
 namespace Sunny_House.Controllers
 {
-    [Authorize(Roles = "Administrator, User")]
+    [Authorize(Roles = "Administrator, User, Presenter")]
     public class ExercisesController : Controller
     {
         private SunnyModel db = new SunnyModel();
@@ -117,7 +117,7 @@ namespace Sunny_House.Controllers
                 return View(_exercises.ToList().ToPagedList(pageNumber, pageSize));
 
             }
-            
+
         }
 
         // GET: Exercises/Details/5
@@ -134,7 +134,7 @@ namespace Sunny_House.Controllers
             }
 
             ViewData["Roles"] = new SelectList(db.PersonRoles, "RoleId", "RoleName");
-            
+
             if (!string.IsNullOrEmpty(ReturnParam))
             {
                 ViewData["ReturnParam"] = ReturnParam;
@@ -143,11 +143,12 @@ namespace Sunny_House.Controllers
             {
                 ViewData["ReturnParam"] = "/Exercises/ExShow";
             }
-            
+
             return View(exercise);
         }
 
         // GET: Exercises/Create
+         [Authorize(Roles = "Administrator, User")]
         public ActionResult ExCreate(int? AddressId, string ReturnUrl)
         {
             string _returnurl = (!String.IsNullOrEmpty(ReturnUrl)) ? ReturnUrl : "/Exercises/ExShow";
@@ -170,6 +171,7 @@ namespace Sunny_House.Controllers
 
         // POST: Exercises/Create
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ExCreate([Bind(Include = "ExerciseId,Subject,StartTime,EndTime,AddressId,Note,EventId")] Exercise exercise, string ReturnUrl)
         {
@@ -214,6 +216,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Exercises/Edit/5
+        [Authorize(Roles = "Administrator, User")]
         public async Task<ActionResult> ExEdit(int? ObjectId, int? AddressId, string ReturnParam)
         {
             if (ObjectId == null)
@@ -254,6 +257,7 @@ namespace Sunny_House.Controllers
 
         // POST: Exercises/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ExEdit([Bind(Include = "ExerciseId,Subject,StartTime,EndTime,AddressId,Note,EventId")] Exercise exercise, string ReturnParam)
         {
@@ -271,7 +275,7 @@ namespace Sunny_House.Controllers
 
                         if (!string.IsNullOrEmpty(ReturnParam))
                         {
-                           return Redirect(ReturnParam);
+                            return Redirect(ReturnParam);
                         }
                         else return RedirectToAction("ExShow");
                     }
@@ -302,6 +306,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Exercises/Delete/5
+        [Authorize(Roles = "Administrator, User")]
         public async Task<ActionResult> ExDelete(int? ObjectId, string ReturnParam, string SuccessReturn)
         {
             if (ObjectId == null)
@@ -333,6 +338,7 @@ namespace Sunny_House.Controllers
 
         // POST: Exercises/Delete/5
         [HttpPost, ActionName("ExDelete")]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ExDeleteConfirmed(int ObjectId, string ReturnParam, string SuccessReturn)
         {
@@ -369,7 +375,7 @@ namespace Sunny_House.Controllers
                 {
                     return Redirect(SuccessReturn);
                 }
-               
+
             }
             catch (Exception ex)
             {
@@ -416,6 +422,7 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult FCEventChange(DateTime Start_Time, DateTime End_Time, int? Ex_Id)
         {
             if (Ex_Id == null || Start_Time == null || End_Time == null)
@@ -442,6 +449,7 @@ namespace Sunny_House.Controllers
 
 
         [HttpPost, ActionName("FCEventDelete")]
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult FCDelete(int? Ex_Id)
         {
             if (Ex_Id == null)

@@ -7,7 +7,7 @@ using Sunny_House.Models;
 
 namespace Sunny_House.Controllers
 {
-    [Authorize(Roles = "Administrator, User")]
+    [Authorize(Roles = "Administrator, User, Presenter")]
     public class AutoCompleteController : Controller
     {
 

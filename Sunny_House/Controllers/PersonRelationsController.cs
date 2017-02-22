@@ -14,7 +14,7 @@ using PagedList.Mvc;
 
 namespace Sunny_House.Controllers
 {
-    [Authorize(Roles = "Administrator, User")]
+    [Authorize(Roles = "Administrator, User, Presenter")]
     public class PersonRelationsController : Controller
     {
         private SunnyModel db = new SunnyModel();
@@ -28,6 +28,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: PersonRelations/Create
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult PRCreate(int? PersonId)
         {
             if (PersonId == null)
@@ -55,6 +56,7 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> PRCreate([Bind(Include = "Id,PersonId,RelPersonId,Relation12,Relation21")] PersonRelation personRelation)
         {
@@ -132,6 +134,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: PersonRelations/Delete/5
+        [Authorize(Roles = "Administrator, User")]
         public async Task<ActionResult> PRDelete(int? id)
         {
             if (id == null)
@@ -149,6 +152,7 @@ namespace Sunny_House.Controllers
 
         // POST: PersonRelations/Delete/5
         [HttpPost, ActionName("PRDelete")]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> PRDeleteConfirmed(int id, int? PersonId)
         {
@@ -218,6 +222,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: RelationTypesCatalogs/Create
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult RTCreate()
         {
             return View();
@@ -225,6 +230,7 @@ namespace Sunny_House.Controllers
 
         // POST: RelationTypesCatalogs/Create
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RTCreate([Bind(Include = "RelTypesId,RelType,TypeSex,ReverseRelType,RevTypeSex")] RelationTypesCatalog relationTypesCatalog)
         {
@@ -252,6 +258,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: RelationTypesCatalogs/Edit/5
+        [Authorize(Roles = "Administrator, User")]
         public async Task<ActionResult> RTEdit(int? id)
         {
             if (id == null)
@@ -268,6 +275,7 @@ namespace Sunny_House.Controllers
 
         // POST: RelationTypesCatalogs/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RTEdit([Bind(Include = "RelTypesId,RelType,TypeSex,ReverseRelType,RevTypeSex")] RelationTypesCatalog relationTypesCatalog)
         {
@@ -294,6 +302,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: RelationTypesCatalogs/Delete/5
+        [Authorize(Roles = "Administrator, User")]
         public async Task<ActionResult> RTDelete(int? id)
         {
             if (id == null)
@@ -310,6 +319,7 @@ namespace Sunny_House.Controllers
 
         // POST: RelationTypesCatalogs/Delete/5
         [HttpPost, ActionName("RTDelete")]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RTDeleteConfirmed(int id)
         {

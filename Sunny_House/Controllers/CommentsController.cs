@@ -17,7 +17,7 @@ using System.Configuration;
 namespace Sunny_House.Controllers
 {
 
-    [Authorize(Roles = "Administrator, User")]
+    [Authorize(Roles = "Administrator, User, Presenter")]
     public class CommentsController : Controller
     {
         private SunnyModel db = new SunnyModel();

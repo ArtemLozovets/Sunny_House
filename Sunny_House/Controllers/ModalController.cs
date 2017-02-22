@@ -11,7 +11,7 @@ using PagedList.Mvc;
 
 namespace Sunny_House.Controllers
 {
-    [Authorize(Roles = "Administrator, User")]
+    [Authorize(Roles = "Administrator, User, Presenter")]
     public class ModalController : Controller
     {
         private SunnyModel db = new SunnyModel();
@@ -110,6 +110,7 @@ namespace Sunny_House.Controllers
 
         }
 
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult PaymentsPersonAsPayer(int? PersonId)
         {
             if (PersonId == null)
@@ -149,6 +150,8 @@ namespace Sunny_House.Controllers
             }
         }
 
+
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult PaymentsPersonAsClient(int? PersonId)
         {
             if (PersonId == null)
@@ -241,7 +244,7 @@ namespace Sunny_House.Controllers
             int pageNumber = (page ?? 1);
 
             return PartialView(_events.ToPagedList(pageNumber, pageSize));
-          
+
         }
 
 

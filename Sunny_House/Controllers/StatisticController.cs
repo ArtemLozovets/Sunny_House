@@ -7,7 +7,7 @@ using Sunny_House.Models;
 
 namespace Sunny_House.Controllers
 {
-     [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator")]
     public class StatisticController : Controller
     {
         private SunnyModel db = new SunnyModel();

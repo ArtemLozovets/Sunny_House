@@ -11,6 +11,7 @@ using System.IO;
 
 namespace Sunny_House.Controllers
 {
+    [Authorize(Roles = "Administrator, User, Presenter")]
     public class AttachmentController : Controller
     {
         private SunnyModel db = new SunnyModel();

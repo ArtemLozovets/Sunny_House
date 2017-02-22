@@ -10,7 +10,7 @@ using Sunny_House.Models;
 
 namespace Sunny_House.Controllers
 {
-    [Authorize(Roles = "Administrator, User")]
+    [Authorize(Roles = "Administrator, User, Presenter")]
     public class PotentialСlientController : Controller
     {
         private SunnyModel db = new SunnyModel();
@@ -38,6 +38,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: PotentialСlient/Create
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult Create()
         {
             ViewBag.EventId = new SelectList(db.Events, "EventId", "EventName");
@@ -46,10 +47,8 @@ namespace Sunny_House.Controllers
             return View();
         }
 
-        // POST: PotentialСlient/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ClientId,PersonId,EventId,RoleId,Note")] PotentialСlient potentialСlient)
         {
@@ -67,6 +66,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: PotentialСlient/Edit/5
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -84,10 +84,9 @@ namespace Sunny_House.Controllers
             return View(potentialСlient);
         }
 
-        // POST: PotentialСlient/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ClientId,PersonId,EventId,RoleId,Note")] PotentialСlient potentialСlient)
         {
@@ -104,6 +103,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: PotentialСlient/Delete/5
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -120,6 +120,7 @@ namespace Sunny_House.Controllers
 
         // POST: PotentialСlient/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {

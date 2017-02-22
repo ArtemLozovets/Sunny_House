@@ -15,7 +15,7 @@ using Sunny_House.Methods;
 
 namespace Sunny_House.Controllers
 {
-    [Authorize(Roles = "Administrator, User")]
+    [Authorize(Roles = "Administrator, User, Presenter")]
     public class ReservesController : Controller
     {
         private SunnyModel db = new SunnyModel();
@@ -68,6 +68,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Reserves/Create
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult ResCreate(int? PersonId)
         {
             if (PersonId == null)
@@ -82,6 +83,7 @@ namespace Sunny_House.Controllers
 
         // POST: Reserves/Create
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public ActionResult ResCreate([Bind(Include = "PersonId,RoleId,Note,EventId")] Reserve reserve)
         {
@@ -119,6 +121,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Reserves/Edit/5
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult ResEdit(int? ReserveId)
         {
             if (ReserveId == null)
@@ -140,6 +143,7 @@ namespace Sunny_House.Controllers
 
         // POST: Reserves/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public ActionResult ResEdit([Bind(Include = "ReserveId,PersonId,RoleId,Note,EventId,ReserveDate")] Reserve reserve)
         {
@@ -187,6 +191,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Reserves/Delete/5
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult ResDelete(int? ReserveId)
         {
             if (ReserveId == null)
@@ -203,6 +208,7 @@ namespace Sunny_House.Controllers
 
         // POST: Reserves/Delete/5
         [HttpPost, ActionName("ResDelete")]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int ReserveId)
         {
@@ -365,6 +371,7 @@ namespace Sunny_House.Controllers
             return PartialView(_persons.ToList().ToPagedList(pageNumber, pageSize));
         }
 
+        [Authorize(Roles = "Administrator, User")]
         public JsonResult AddPotentialClient(int? EventId, int RoleId, int[] PersonsIDS)
         {
             if (EventId == null || PersonsIDS.Length == 0)
@@ -408,6 +415,7 @@ namespace Sunny_House.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         public JsonResult AjaxUpdateInfoes(int? PTCId, string Infoes)
         {
             if (PTCId == null)
@@ -436,6 +444,7 @@ namespace Sunny_House.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         public JsonResult AjaxPTCMoveToReserve(int? PTCId)
         {
             if (PTCId == null)
@@ -494,6 +503,7 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost, ActionName("AjaxPTCDelete")]
+        [Authorize(Roles = "Administrator, User")]
         public JsonResult AjaxPTCDeleteConfirmed(int? PTCId)
         {
             if (PTCId == null)
@@ -514,6 +524,7 @@ namespace Sunny_House.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult DeleteAll(int? EventId)
         {
 
@@ -587,6 +598,7 @@ namespace Sunny_House.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult PTCRefusing(int? PersonId, int? ClientId, int? EventId)
         {
             if (PersonId == null || ClientId == null || EventId == null)
@@ -647,6 +659,7 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public ActionResult PTCRefusing(CommentViewModel model, int? ClientId, int? PersonId)
         {

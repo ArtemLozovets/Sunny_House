@@ -16,7 +16,7 @@ using Sunny_House.Methods;
 
 namespace Sunny_House.Controllers
 {
-    [Authorize(Roles = "Administrator, User")]
+    [Authorize(Roles = "Administrator, User, Presenter")]
     public class EventsController : Controller
     {
         private SunnyModel db = new SunnyModel();
@@ -162,12 +162,14 @@ namespace Sunny_House.Controllers
 
         #region Створення заходу
         // GET: Events/Create
+        [Authorize(Roles = "Administrator, User")]
         [HttpGet]
         public ActionResult ECreate()
         {
             return View();
         }
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ECreate(Event model)
         {
@@ -232,6 +234,7 @@ namespace Sunny_House.Controllers
         #endregion
 
         // GET: Events/Edit/5
+        [Authorize(Roles = "Administrator, User")]
         public async Task<ActionResult> EEdit(int? EventId)
         {
             if (EventId == null)
@@ -256,6 +259,7 @@ namespace Sunny_House.Controllers
 
         // POST: Events/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> EEdit([Bind(Include = "EventId,EventName,StartTime,EndTime,Description,AdministratorId,Note,PlacesCount")] Event @event)
         {
@@ -337,6 +341,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Events/Delete/5
+        [Authorize(Roles = "Administrator, User")]
         public async Task<ActionResult> EDelete(int? EventId)
         {
             if (EventId == null)
@@ -353,6 +358,7 @@ namespace Sunny_House.Controllers
 
         // POST: Events/Delete/5
         [HttpPost, ActionName("EDelete")]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> EDeleteConfirmed(int EventId)
         {
@@ -443,6 +449,7 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         public JsonResult AjaxEventCountChange([Bind(Include = "EventId,EventName,StartTime,EndTime,Description,AdministratorId,Note,PlacesCount")] Event @event)
         {
 
