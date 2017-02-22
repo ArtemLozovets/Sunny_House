@@ -5,9 +5,26 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using System.Web;
+using System.Data.Entity.Migrations;
 
 namespace Sunny_House.Models
 {
+
+    public sealed class ConfigurationB : DbMigrationsConfiguration<ApplicationDbContext>
+    {
+        public ConfigurationB()
+        {
+            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationDataLossAllowed = true;
+            ContextKey = "Sunny_House.Models.ApplicationDbContext";
+        }
+
+        protected override void Seed(ApplicationDbContext db)
+        {
+        }
+    }
+
+ 
     public class ApplicationUser : IdentityUser
     {
         public string FirstName { get; set; }
@@ -44,14 +61,25 @@ namespace Sunny_House.Models
         public string Description { get; set; }
     }
 
+    class AppRoleContextInitializer : MigrateDatabaseToLatestVersion<ApplicationDbContext, ConfigurationB>
+    {
+
+    }
+
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+
+        static ApplicationDbContext()
+        {
+            Database.SetInitializer<ApplicationDbContext>(new AppRoleContextInitializer());
+        }
+
         public ApplicationDbContext()
             : base("SunnyModel", throwIfV1Schema: false)
         {
         }
 
-        new public DbSet<ApplicationRole> Roles { get; set; }
+      //  new public DbSet<ApplicationRole> Roles { get; set; }
 
         public static ApplicationDbContext Create()
         {
