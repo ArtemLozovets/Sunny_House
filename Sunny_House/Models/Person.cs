@@ -104,5 +104,6 @@ namespace Sunny_House.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PotentialÑlient> PotentialClient { get; set; }
+
     }
 }

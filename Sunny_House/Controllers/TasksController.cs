@@ -18,6 +18,7 @@ namespace Sunny_House.Controllers
     public class TasksController : Controller
     {
         private SunnyModel db = new SunnyModel();
+        private ApplicationDbContext aspdb = new ApplicationDbContext();
 
         // GET: Tasks
         public ActionResult TasksShow()
@@ -130,10 +131,16 @@ namespace Sunny_House.Controllers
         // POST: Tasks/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> TaskCreate([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note")] STask sTask, string Subject, string SubjectLock, string ActionName, string ControllerName, string ParameterName, string ParameterValue)
+        public async Task<ActionResult> TaskCreate([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note")] STask sTask, string Subject, string SubjectLock, string ActionName, string ControllerName, string ParameterName, string ParameterValue, string CreatorName)
         {
             try
             {
+                //Получаем идентификатор текущего пользователя
+                if (!String.IsNullOrEmpty(CreatorName))
+                {
+                    sTask.CreatorId = Guid.Parse(aspdb.Users.FirstOrDefault(x => x.UserName == CreatorName).Id.ToString());
+                }
+
                 sTask.TaskComplete = false;
                 sTask.DateOfCreation = DateTime.Today;
                 //Инициализируем имена метода и контроллера для возврата
@@ -192,13 +199,44 @@ namespace Sunny_House.Controllers
         // POST: Tasks/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> TaskEdit([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note")] STask sTask)
+        public async Task<ActionResult> TaskEdit([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note")] STask sTask, string CurrentUser)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(sTask).State = EntityState.Modified;
-                await db.SaveChangesAsync();
-                return RedirectToAction("TasksShow");
+
+                Guid? _currentUserId = null;
+                if (!String.IsNullOrEmpty(CurrentUser))
+                {
+                    _currentUserId = Guid.Parse(aspdb.Users.FirstOrDefault(x => x.UserName == CurrentUser).Id.ToString());
+                }
+                else
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+
+
+                Guid? _creatorId = db.STask.FirstOrDefault(x=>x.STaskId == sTask.STaskId).CreatorId;
+                if (_creatorId == _currentUserId)
+                {
+                    try
+                    {
+                        sTask.CreatorId = _creatorId;
+                        db.Entry(sTask).State = EntityState.Modified;
+                        await db.SaveChangesAsync();
+                        return RedirectToAction("TasksShow");
+                    }
+                    catch (Exception ex)
+                    {
+                        ViewBag.ErMes = ex.Message;
+                        ViewBag.ErStack = ex.StackTrace;
+                        return View("Error");
+                    }
+                }
+                else
+                {
+                    TempData["MessageError"] = "Вы не являетесь создателем данной задачи. Редактирование запрещено.";
+                }
+
             }
             return View(sTask);
         }
@@ -223,10 +261,20 @@ namespace Sunny_House.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            STask sTask = await db.STask.FindAsync(id);
-            db.STask.Remove(sTask);
-            await db.SaveChangesAsync();
-            return RedirectToAction("TasksShow");
+            try
+            {
+                STask sTask = await db.STask.FindAsync(id);
+                db.STask.Remove(sTask);
+                await db.SaveChangesAsync();
+                return RedirectToAction("TasksShow");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErMes = ex.Message;
+                ViewBag.ErStack = ex.StackTrace;
+                return View("Error");
+            }
+
         }
 
         public ActionResult TasksGroupShow(string mode)

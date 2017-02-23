@@ -34,5 +34,8 @@
         [Display(Name = "Описание")]
         public string Note { get; set; }
 
+        [Display(Name = "Описание")]
+        public Guid? CreatorId { get; set; }
+
     }
 }
