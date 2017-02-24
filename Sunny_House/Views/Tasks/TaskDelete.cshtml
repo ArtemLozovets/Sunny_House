@@ -10,6 +10,7 @@
 <div>
     <h4>Удаление задачи</h4>
     <hr />
+
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Date)
@@ -53,12 +54,13 @@
 
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
-
+        @Html.Hidden("CurrentUser", @Context.User.Identity.Name)
         <div class="form-actions no-color">
-            <input type="submit" value="Удалить" class="btn btn-default" /> |
-            @Html.ActionLink("Назад", "TasksShow")
+            <a class="btn btn-default" href='@Url.Action("TasksShow", "Tasks")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+            <button type="submit" title="Удалить задачу" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i> Удалить</button>
         </div>
     }
 </div>

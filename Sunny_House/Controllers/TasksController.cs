@@ -199,7 +199,7 @@ namespace Sunny_House.Controllers
         // POST: Tasks/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> TaskEdit([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note")] STask sTask, string CurrentUser)
+        public async Task<ActionResult> TaskEdit([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note,CreatorId")] STask sTask, string CurrentUser)
         {
             if (ModelState.IsValid)
             {
@@ -214,15 +214,13 @@ namespace Sunny_House.Controllers
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
 
-
-                Guid? _creatorId = db.STask.FirstOrDefault(x=>x.STaskId == sTask.STaskId).CreatorId;
-                if (_creatorId == _currentUserId)
+                if (sTask.CreatorId == _currentUserId || User.IsInRole("Administrator") || User.IsInRole("User"))
                 {
                     try
                     {
-                        sTask.CreatorId = _creatorId;
                         db.Entry(sTask).State = EntityState.Modified;
                         await db.SaveChangesAsync();
+                        TempData["MessageOk"] = "Изменение параметров задачи выполнено успешно";
                         return RedirectToAction("TasksShow");
                     }
                     catch (Exception ex)
@@ -235,6 +233,7 @@ namespace Sunny_House.Controllers
                 else
                 {
                     TempData["MessageError"] = "Вы не являетесь создателем данной задачи. Редактирование запрещено.";
+                    return RedirectToAction("TasksShow");
                 }
 
             }
@@ -259,20 +258,40 @@ namespace Sunny_House.Controllers
         // POST: Tasks/Delete/5
         [HttpPost, ActionName("TaskDelete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(int id, string CurrentUser)
         {
-            try
+            Guid? _currentUserId = null;
+            if (!String.IsNullOrEmpty(CurrentUser))
             {
-                STask sTask = await db.STask.FindAsync(id);
-                db.STask.Remove(sTask);
-                await db.SaveChangesAsync();
-                return RedirectToAction("TasksShow");
+                _currentUserId = Guid.Parse(aspdb.Users.FirstOrDefault(x => x.UserName == CurrentUser).Id.ToString());
             }
-            catch (Exception ex)
+            else
             {
-                ViewBag.ErMes = ex.Message;
-                ViewBag.ErStack = ex.StackTrace;
-                return View("Error");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            STask sTask = await db.STask.FindAsync(id);
+            if (sTask.CreatorId == _currentUserId || User.IsInRole("Administrator") || User.IsInRole("User"))
+            {
+                try
+                {
+                    db.STask.Remove(sTask);
+                    await db.SaveChangesAsync();
+                    TempData["MessageOk"] = "Задача успешно удалена";
+                    return RedirectToAction("TasksShow");
+                }
+
+                catch (Exception ex)
+                {
+                    ViewBag.ErMes = ex.Message;
+                    ViewBag.ErStack = ex.StackTrace;
+                    return View("Error");
+                }
+            }
+            else
+            {
+                TempData["MessageError"] = "Вы не являетесь создателем данной задачи. Удаление запрещено.";
+                return RedirectToAction("TasksShow");
             }
 
         }

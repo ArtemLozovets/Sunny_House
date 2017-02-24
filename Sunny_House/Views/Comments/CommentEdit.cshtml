@@ -29,6 +29,8 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.CommentId)
         @Html.HiddenFor(model => model.RelGuid)
+        @Html.Hidden("CurrentUser", @Context.User.Identity.Name)
+        @Html.HiddenFor(model => model.CreatorId)
 
         <div class="row">
             <div class="col-lg-6 col-md-6">

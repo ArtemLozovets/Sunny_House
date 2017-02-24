@@ -51,6 +51,9 @@ namespace Sunny_House.Models
         [Display(Name = "Идентификатор сущности")]
         public Guid RelGuid { get; set; }
 
+        [Display(Name = "Создатель")]
+        public Guid? CreatorId { get; set; }
+        
         [NotMapped]
         public List<Attachment> AttListGetter
         {

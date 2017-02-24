@@ -59,3 +59,11 @@ c:\Users\RooT\Documents\Visual Studio 2013\Projects\_SunnyHouse\Sunny_House\Sunn
 c:\Users\RooT\Documents\Visual Studio 2013\Projects\_SunnyHouse\Sunny_House\Sunny_House\obj\Debug\Sunny_House.csproj.GenerateResource.Cache
 c:\Users\RooT\Documents\Visual Studio 2013\Projects\_SunnyHouse\Sunny_House\Sunny_House\obj\Debug\Sunny_House.dll
 c:\Users\RooT\Documents\Visual Studio 2013\Projects\_SunnyHouse\Sunny_House\Sunny_House\obj\Debug\Sunny_House.pdb
+c:\Users\RooT\Documents\Visual Studio 2013\Projects\_SunnyHouse\Sunny_House\Sunny_House\bin\Common.Logging.dll
+c:\Users\RooT\Documents\Visual Studio 2013\Projects\_SunnyHouse\Sunny_House\Sunny_House\bin\Quartz.dll
+c:\Users\RooT\Documents\Visual Studio 2013\Projects\_SunnyHouse\Sunny_House\Sunny_House\bin\Common.Logging.pdb
+c:\Users\RooT\Documents\Visual Studio 2013\Projects\_SunnyHouse\Sunny_House\Sunny_House\bin\Common.Logging.xml
+c:\Users\RooT\Documents\Visual Studio 2013\Projects\_SunnyHouse\Sunny_House\Sunny_House\bin\Quartz.pdb
+c:\Users\RooT\Documents\Visual Studio 2013\Projects\_SunnyHouse\Sunny_House\Sunny_House\bin\Quartz.xml
+c:\Users\RooT\Documents\Visual Studio 2013\Projects\_SunnyHouse\Sunny_House\Sunny_House\obj\Debug\Sunny_House.Migrations.InitialCreate.resources
+c:\Users\RooT\Documents\Visual Studio 2013\Projects\_SunnyHouse\Sunny_House\Sunny_House\obj\Debug\Sunny_House.Migrations.InitialSetup.resources

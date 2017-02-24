@@ -21,6 +21,7 @@ namespace Sunny_House.Controllers
     public class CommentsController : Controller
     {
         private SunnyModel db = new SunnyModel();
+        private ApplicationDbContext aspdb = new ApplicationDbContext();
 
 
         #region Область методов комментария
@@ -99,12 +100,22 @@ namespace Sunny_House.Controllers
         // POST: Comments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CommentCreate([Bind(Include = "CommentId,SourceId,Date,Text,Rating,AboutPersonId,EventId,ExerciseId,AddressId,SignPersonId,RelGuid")] Comment comment)
+        public async Task<ActionResult> CommentCreate([Bind(Include = "CommentId,SourceId,Date,Text,Rating,AboutPersonId,EventId,ExerciseId,AddressId,SignPersonId,RelGuid,CreatorId")] Comment comment, string CreatorName)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    //Получаем идентификатор текущего пользователя
+                    if (!String.IsNullOrEmpty(CreatorName))
+                    {
+                        comment.CreatorId = Guid.Parse(aspdb.Users.FirstOrDefault(x => x.UserName == CreatorName).Id.ToString());
+                    }
+                    else
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+
                     db.Comments.Add(comment);
                     await db.SaveChangesAsync();
                     TempData["MessageOk"] = "Отзыв успешно добавлен";
@@ -208,22 +219,41 @@ namespace Sunny_House.Controllers
         // POST: Comments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CommentEdit([Bind(Include = "CommentId,SourceId,Date,Text,Rating,AboutPersonId,EventId,ExerciseId,AddressId,SignPersonId,RelGuid")] Comment comment)
+        public async Task<ActionResult> CommentEdit([Bind(Include = "CommentId,SourceId,Date,Text,Rating,AboutPersonId,EventId,ExerciseId,AddressId,SignPersonId,RelGuid,CreatorId")] Comment comment, string CurrentUser)
         {
             if (ModelState.IsValid)
             {
-                try
+                Guid? _currentUserId = null;
+                if (!String.IsNullOrEmpty(CurrentUser))
                 {
-                    db.Entry(comment).State = EntityState.Modified;
-                    await db.SaveChangesAsync();
-                    TempData["MessageOk"] = "Данные отзыва успешно изменены";
-                    return RedirectToAction("CommentShow");
+                    _currentUserId = Guid.Parse(aspdb.Users.FirstOrDefault(x => x.UserName == CurrentUser).Id.ToString());
                 }
-                catch (Exception ex)
+                else
                 {
-                    ViewBag.ErMes = ex.Message;
-                    ViewBag.ErStack = ex.StackTrace;
-                    return View("Error");
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+
+                if (comment.CreatorId == _currentUserId || User.IsInRole("Administrator") || User.IsInRole("User"))
+                {
+
+                    try
+                    {
+                        db.Entry(comment).State = EntityState.Modified;
+                        await db.SaveChangesAsync();
+                        TempData["MessageOk"] = "Данные отзыва успешно изменены";
+                        return RedirectToAction("CommentShow");
+                    }
+                    catch (Exception ex)
+                    {
+                        ViewBag.ErMes = ex.Message;
+                        ViewBag.ErStack = ex.StackTrace;
+                        return View("Error");
+                    }
+                }
+                else
+                {
+                    TempData["MessageError"] = "Вы не являетесь создателем данного отзыва. Редактирование запрещено.";
+                    return RedirectToAction("CommentShow");
                 }
             }
             else
@@ -282,49 +312,65 @@ namespace Sunny_House.Controllers
         // POST: Comments/Delete/5
         [HttpPost, ActionName("CommentDelete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CommentDeleteConfirmed(int id)
+        public async Task<ActionResult> CommentDeleteConfirmed(int id, string CurrentUser)
         {
-            Comment comment = await db.Comments.FindAsync(id);
-            using (var dbContextTransaction = db.Database.BeginTransaction())
+            Guid? _currentUserId = null;
+            if (!String.IsNullOrEmpty(CurrentUser))
             {
-                try
+                _currentUserId = Guid.Parse(aspdb.Users.FirstOrDefault(x => x.UserName == CurrentUser).Id.ToString());
+            }
+            else
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Comment comment = await db.Comments.FindAsync(id);
+            if (comment.CreatorId == _currentUserId || User.IsInRole("Administrator") || User.IsInRole("User"))
+            {
+                using (var dbContextTransaction = db.Database.BeginTransaction())
                 {
-
-                    string AttachmentPath = System.Configuration.ConfigurationManager.AppSettings["AttachmentPath"];
-
-                    var _attList = db.Attachments.Where(x => x.RelGuid == comment.RelGuid).ToList();
-
-                    db.Attachments.RemoveRange(db.Attachments.Where(x => x.RelGuid == comment.RelGuid));
-                    db.SaveChanges();
-
-                    db.Comments.Remove(comment);
-                    db.SaveChanges();
-
-                    foreach (var item in _attList)
+                    try
                     {
-                        string fullPath = AttachmentPath + item.ServerFileName.ToString();
-                        if (System.IO.File.Exists(fullPath))
+                        string AttachmentPath = System.Configuration.ConfigurationManager.AppSettings["AttachmentPath"];
+
+                        var _attList = db.Attachments.Where(x => x.RelGuid == comment.RelGuid).ToList();
+
+                        db.Attachments.RemoveRange(db.Attachments.Where(x => x.RelGuid == comment.RelGuid));
+                        db.SaveChanges();
+
+                        db.Comments.Remove(comment);
+                        db.SaveChanges();
+
+                        foreach (var item in _attList)
                         {
-                            System.IO.File.Delete(fullPath);
+                            string fullPath = AttachmentPath + item.ServerFileName.ToString();
+                            if (System.IO.File.Exists(fullPath))
+                            {
+                                System.IO.File.Delete(fullPath);
+                            }
                         }
+
+                        dbContextTransaction.Commit();
+                        TempData["MessageOk"] = "Отзыв успешно удален";
+
+                        return RedirectToAction("CommentShow");
                     }
 
-                    dbContextTransaction.Commit();
-                    TempData["Res"] = "Отзыв успешно удален";
-
-                    return RedirectToAction("CommentShow");
-                }
-
-                catch (Exception ex)
-                {
-                    dbContextTransaction.Rollback();
-                    ViewBag.ErMes = ex.Message;
-                    ViewBag.ErStack = ex.StackTrace;
-                    return View("Error");
+                    catch (Exception ex)
+                    {
+                        dbContextTransaction.Rollback();
+                        ViewBag.ErMes = ex.Message;
+                        ViewBag.ErStack = ex.StackTrace;
+                        return View("Error");
+                    }
                 }
             }
+            else
+            {
+                TempData["MessageError"] = "Вы не являетесь создателем данного отзыва. Удаление запрещено.";
+                return RedirectToAction("CommentShow");
+            }
         }
-
         private int GetMaxAttSize() // Функция чтения значения MaxRequestLength из файла web.config
         {
             int MaxAttSize = 10240000;
