@@ -24,6 +24,27 @@
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "ExName" })
             <i id="ExNameArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
+
+        <th>
+            @Ajax.ActionLink("Дата", "AllVisitsPartial", new
+       {
+           SortBy = ViewBag.SortStartTime,
+           SearchString = Request["SearchString"],
+           RoleSearchString = Request["RoleSearchString"]
+       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "StartTime" })
+            <i id="StartTimeArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
+        </th>
+
+        <th>
+            @Ajax.ActionLink("Мероприятие", "AllVisitsPartial", new
+       {
+           SortBy = ViewBag.SortEventName,
+           SearchString = Request["SearchString"],
+           RoleSearchString = Request["RoleSearchString"]
+       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "EventName" })
+            <i id="EventNameArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
+        </th>
+
         <th>
             @Ajax.ActionLink("Роль", "AllVisitsPartial", new
        {
@@ -33,6 +54,7 @@
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "RoleName" })
             <i id="RoleNameArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
+        <th>Примечание</th>
         <th></th>
     </tr>
 
@@ -47,16 +69,25 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>
+            <td style="vertical-align:top !important">
                 @Html.ActionLink(@item.PersonFIO, "ShowPersons", "Home", new { PersonId = @item.VisitorId }, new { target = "_blank" })
             </td>
-            <td>
+            <td style="vertical-align:top !important">
                 @Html.ActionLink(@item.ExName, "ExShow", "Exercises", new { ExerciseId = @item.ExerciseId }, new { target = "_blank" })
             </td>
-            <td>
+            <td style="text-align:center; vertical-align:top !important">
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td style="max-width:100px; vertical-align:top !important">
+                @Html.ActionLink(@item.EventName, "ResShowOfEvent", "Reserves", new { EventId = @item.EventId }, new { target = "_blank" })
+            </td>
+            <td style="vertical-align:top !important">
                 @Html.DisplayFor(modelItem => item.RoleName)
             </td>
-            <td style="text-align:center; width:92px; min-width:92px;">
+            <td class="breakWord" style="max-width:300px; vertical-align:top !important; text-align:justify;">
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            <td style="text-align:center; width:92px; min-width:92px; vertical-align:top !important">
                 <a class="btn btn-default btn-sm" title="Редактировать" href='@Url.Action("VisEdit", "Visits", new { VisitId = item.VisitId })'><span class="glyphicon glyphicon-edit"></span></a>
                 <a class="btn btn-default btn-sm" title="Удалить" href='@Url.Action("VisDelete", "Visits", new { VisitId = item.VisitId })'><span class="glyphicon glyphicon-trash"></span></a>
             </td>

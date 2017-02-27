@@ -20,6 +20,10 @@ namespace Sunny_House.Models
         [Required(ErrorMessage = "Необходимо выбрать роль")]
         public int RoleId { get; set; }
 
+        [StringLength(1000, ErrorMessage = "Примечание должно быть не более 1000 символов ")]
+        [Display(Name = "Примечание")]
+        public string Note { get; set; }
+
         public virtual Exercise Exercise { get; set; }
 
         public virtual Person Person { get; set; }
@@ -37,5 +41,17 @@ namespace Sunny_House.Models
         [NotMapped]
         [Display(Name = "Роль")]
         public string RoleName { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Дата")]
+        [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? StartTime { get; set; }
+
+        [NotMapped]
+        public int EventId { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Мероприятие")]
+        public string EventName { get; set; }
     }
 }

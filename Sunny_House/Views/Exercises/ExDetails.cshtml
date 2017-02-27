@@ -217,6 +217,11 @@
             var _personId = $(elem).data('personid');
             var _exId = $(elem).data('exid');
             var _roleId = $('#ddl' + _personId).val();
+            var _note = $('#note' + _personId).val();
+            if (_note.length > 1000) {
+                alert('Длина примечания не должна превышать 1000 символов!');
+                return;
+            }
             if (_roleId == '') {
                 alert('Необходимо указать роль посетителя!');
             }
@@ -230,7 +235,8 @@
                     data: {
                         ExId: _exId,
                         RoleId: _roleId,
-                        PersonId: _personId
+                        PersonId: _personId,
+                        Note:_note
                     },
                     success: function (data) {
                         $('#loadingImg').hide();
@@ -252,4 +258,5 @@
         };
 
     </script>
+
 }                   

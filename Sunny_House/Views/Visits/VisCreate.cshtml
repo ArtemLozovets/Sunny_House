@@ -26,7 +26,7 @@
                     <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "VisitorId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
                 </div>
                 @Html.HiddenFor(model => model.VisitorId)
-                @Html.ValidationMessageFor(model => model.VisitorId, "", new { @class = "text-danger", @id="VisitorValidator"})
+                @Html.ValidationMessageFor(model => model.VisitorId, "", new { @class = "text-danger", @id = "VisitorValidator" })
             </div>
         </div>
 
@@ -47,6 +47,14 @@
             <div class="col-md-10">
                 @Html.DropDownList("RoleId", null, "-Выберите роль-", htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.RoleId, "", new { @class = "text-danger", @id = "RoleValidator" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Note, "Примечание", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Note, htmlAttributes: new { @class = "form-control", @rows = 5 })
+                @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger", @id = "RoleValidator" })
             </div>
         </div>
 

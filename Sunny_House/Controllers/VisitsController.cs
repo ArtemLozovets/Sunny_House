@@ -40,7 +40,7 @@ namespace Sunny_House.Controllers
         [HttpPost]
         [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> VisCreate([Bind(Include = "VisitorId,ExerciseId,RoleId")] Visit visit)
+        public async Task<ActionResult> VisCreate([Bind(Include = "VisitorId,ExerciseId,RoleId,Note")] Visit visit)
         {
             if (ModelState.IsValid)
             {
@@ -124,7 +124,7 @@ namespace Sunny_House.Controllers
         [HttpPost]
         [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> VisEdit([Bind(Include = "VisitorId,ExerciseId,VisitId,RoleId")] Visit visit)
+        public async Task<ActionResult> VisEdit([Bind(Include = "VisitorId,ExerciseId,VisitId,RoleId,Note")] Visit visit)
         {
             db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Information====================
             if (ModelState.IsValid)
@@ -261,6 +261,8 @@ namespace Sunny_House.Controllers
             ViewBag.SortExName = SortBy == "ExName" ? "ExName desc" : "ExName";
             ViewBag.SortPersonFIO = SortBy == "PersonFIO" ? "PersonFIO desc" : "PersonFIO";
             ViewBag.SortRoleName = SortBy == "RoleName" ? "RoleName desc" : "RoleName";
+            ViewBag.SortStartTime = SortBy == "StartTime" ? "StartTime desc" : "StartTime";
+            ViewBag.SortEventName = SortBy == "EventName" ? "EventName desc" : "EventName";
 
             var visits = (from visit in db.Visits
                           join ex in db.Exercises on visit.ExerciseId equals ex.ExerciseId
@@ -278,7 +280,10 @@ namespace Sunny_House.Controllers
                               RoleId = role.RoleId,
                               PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
                               ExName = ex.Subject,
-                              RoleName = role.RoleName
+                              RoleName = role.RoleName,
+                              Note = visit.Note,
+                              StartTime = ex.StartTime,
+                              EventId = ex.EventId                              
 
                           }).AsEnumerable().Select(x => new Visit
                           {
@@ -288,7 +293,11 @@ namespace Sunny_House.Controllers
                               PersonFIO = x.PersonFIO.Trim(),
                               RoleId = x.RoleId,
                               ExName = x.ExName,
-                              RoleName = x.RoleName
+                              RoleName = x.RoleName,
+                              Note = x.Note,
+                              StartTime = x.StartTime,
+                              EventId = x.EventId,
+                              EventName = db.Events.FirstOrDefault(z=>z.EventId == x.EventId).EventName
                           });
 
 
@@ -319,6 +328,24 @@ namespace Sunny_House.Controllers
                 case "RoleName":
                     visits = visits.OrderBy(x => x.RoleName);
                     ViewData["SortColumn"] = "RoleName";
+                    break;
+
+                case "StartTime desc":
+                    visits = visits.OrderByDescending(x => x.StartTime);
+                    ViewData["SortColumn"] = "StartTime";
+                    break;
+                case "StartTime":
+                    visits = visits.OrderBy(x => x.StartTime);
+                    ViewData["SortColumn"] = "StartTime";
+                    break;
+
+                case "EventName desc":
+                    visits = visits.OrderByDescending(x => x.EventName);
+                    ViewData["SortColumn"] = "EventName";
+                    break;
+                case "EventName":
+                    visits = visits.OrderBy(x => x.EventName);
+                    ViewData["SortColumn"] = "EventName";
                     break;
 
                 default:
@@ -425,7 +452,7 @@ namespace Sunny_House.Controllers
         }
 
         [Authorize(Roles = "Administrator, User")]
-        public JsonResult AddVisitAjax(int? ExId, int? RoleId, int? PersonId)
+        public JsonResult AddVisitAjax(int? ExId, int? RoleId, int? PersonId, string Note)
         {
             if (ExId == null || RoleId == null || PersonId == null)
             {
@@ -443,7 +470,8 @@ namespace Sunny_House.Controllers
                 {
                     VisitorId = PersonId ?? 0,
                     ExerciseId = ExId ?? 0,
-                    RoleId = RoleId ?? 0
+                    RoleId = RoleId ?? 0,
+                    Note = Note
                 };
 
                 db.Visits.Add(_visit);
