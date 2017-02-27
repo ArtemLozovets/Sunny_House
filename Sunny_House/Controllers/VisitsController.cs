@@ -29,6 +29,7 @@ namespace Sunny_House.Controllers
 
 
         // GET: Visits/Create
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult VisCreate()
         {
             ViewBag.RoleId = new SelectList(db.PersonRoles, "RoleId", "RoleName");
@@ -37,6 +38,7 @@ namespace Sunny_House.Controllers
 
         // POST: Visits/Create
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> VisCreate([Bind(Include = "VisitorId,ExerciseId,RoleId")] Visit visit)
         {
@@ -89,6 +91,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Visits/Edit/5
+        [Authorize(Roles = "Administrator, User")]
         public async Task<ActionResult> VisEdit(int? VisitId)
         {
             if (VisitId == null)
@@ -119,6 +122,7 @@ namespace Sunny_House.Controllers
 
         // POST: Visits/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> VisEdit([Bind(Include = "VisitorId,ExerciseId,VisitId,RoleId")] Visit visit)
         {
@@ -159,6 +163,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Visits/Delete/5
+        [Authorize(Roles = "Administrator, User")]
         public async Task<ActionResult> VisDelete(int? VisitId, string ReturnUrl)
         {
             if (VisitId == null)
@@ -181,6 +186,7 @@ namespace Sunny_House.Controllers
 
         // POST: Visits/Delete/5
         [HttpPost, ActionName("VisDelete")]
+        [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int VisitId, string ReturnUrl)
         {
@@ -418,6 +424,7 @@ namespace Sunny_House.Controllers
             return PartialView(_persons.ToList().ToPagedList(pageNumber, pageSize));
         }
 
+        [Authorize(Roles = "Administrator, User")]
         public JsonResult AddVisitAjax(int? ExId, int? RoleId, int? PersonId)
         {
             if (ExId == null || RoleId == null || PersonId == null)
@@ -438,7 +445,7 @@ namespace Sunny_House.Controllers
                     ExerciseId = ExId ?? 0,
                     RoleId = RoleId ?? 0
                 };
-                    
+
                 db.Visits.Add(_visit);
                 db.SaveChanges();
 
