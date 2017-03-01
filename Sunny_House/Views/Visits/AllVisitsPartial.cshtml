@@ -12,7 +12,7 @@
            SortBy = ViewBag.SortPersonFIO,
            SearchString = Request["SearchString"],
            RoleSearchString = Request["RoleSearchString"]
-       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "PersonFIO" })
+       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "PersonFIO" })
             <i id="PersonFIOArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>
@@ -21,7 +21,7 @@
            SortBy = ViewBag.SortExName,
            SearchString = Request["SearchString"],
            RoleSearchString = Request["RoleSearchString"]
-       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "ExName" })
+       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "ExName" })
             <i id="ExNameArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
 
@@ -31,7 +31,7 @@
            SortBy = ViewBag.SortStartTime,
            SearchString = Request["SearchString"],
            RoleSearchString = Request["RoleSearchString"]
-       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "StartTime" })
+       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "StartTime" })
             <i id="StartTimeArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
 
@@ -41,7 +41,7 @@
            SortBy = ViewBag.SortEventName,
            SearchString = Request["SearchString"],
            RoleSearchString = Request["RoleSearchString"]
-       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "EventName" })
+       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "EventName" })
             <i id="EventNameArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
 
@@ -51,7 +51,7 @@
            SortBy = ViewBag.SortRoleName,
            SearchString = Request["SearchString"],
            RoleSearchString = Request["RoleSearchString"]
-       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "RoleName" })
+       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "RoleName" })
             <i id="RoleNameArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>Примечание</th>
@@ -108,4 +108,4 @@
                                  page,
                              }),
                              PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
-                             new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "update" }))
+                             new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "updateV" }))

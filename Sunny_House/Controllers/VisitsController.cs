@@ -255,7 +255,7 @@ namespace Sunny_House.Controllers
             return PartialView(_visitors.ToList().ToPagedList(pageNumber, pageSize));
         }
 
-        public ActionResult AllVisitsPartial(string SearchString, int? RoleSearchString, int? page, string SortBy)
+        public ActionResult AllVisitsPartial(int? RoleSearchString, int? VisitorId, int? EventId, int? ExerciseId, DateTime? StartDate, int? page, string SortBy)
         {
 
             ViewBag.SortExName = SortBy == "ExName" ? "ExName desc" : "ExName";
@@ -264,14 +264,18 @@ namespace Sunny_House.Controllers
             ViewBag.SortStartTime = SortBy == "StartTime" ? "StartTime desc" : "StartTime";
             ViewBag.SortEventName = SortBy == "EventName" ? "EventName desc" : "EventName";
 
+            db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s));//========================================
+
             var visits = (from visit in db.Visits
                           join ex in db.Exercises on visit.ExerciseId equals ex.ExerciseId
                           join person in db.Persons on visit.VisitorId equals person.PersonId
                           join role in db.PersonRoles on visit.RoleId equals role.RoleId
                           where (role.RoleId == RoleSearchString || RoleSearchString == null) &&
-                                    ((person.FirstName.ToUpper().Contains(SearchString.ToUpper()) || string.IsNullOrEmpty(SearchString)) ||
-                                    (person.LastName.ToUpper().Contains(SearchString.ToUpper()) || string.IsNullOrEmpty(SearchString)) ||
-                                    (ex.Subject.ToUpper().Contains(SearchString.ToUpper()) || string.IsNullOrEmpty(SearchString)))
+                                (DbFunctions.TruncateTime(ex.StartTime) == StartDate || StartDate == null) &&
+                                (person.PersonId == VisitorId || VisitorId == null) &&
+                                (ex.ExerciseId == ExerciseId || ExerciseId == null) &&
+                                (ex.Event.EventId == EventId || EventId == null)
+
                           select new
                           {
                               VisitId = visit.VisitId,
@@ -283,7 +287,8 @@ namespace Sunny_House.Controllers
                               RoleName = role.RoleName,
                               Note = visit.Note,
                               StartTime = ex.StartTime,
-                              EventId = ex.EventId                              
+                              EventId = ex.EventId,
+                              EventName = ex.Event.EventName
 
                           }).AsEnumerable().Select(x => new Visit
                           {
@@ -297,7 +302,7 @@ namespace Sunny_House.Controllers
                               Note = x.Note,
                               StartTime = x.StartTime,
                               EventId = x.EventId,
-                              EventName = db.Events.FirstOrDefault(z=>z.EventId == x.EventId).EventName
+                              EventName = x.EventName
                           });
 
 
@@ -353,10 +358,6 @@ namespace Sunny_House.Controllers
                     break;
             }
 
-
-
-            ViewData["SearchString"] = SearchString;
-            ViewData["RoleSearchString"] = RoleSearchString;
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);
