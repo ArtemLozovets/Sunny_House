@@ -39,7 +39,7 @@
                 @Html.DisplayFor(modelItem => item.EndTime)
             </td>
             <td>
-                <a class="btn btn-default btn-sm selPerson"
+                <a class="btn btn-default btn-sm selEx"
                    data-pasteitem="@ViewBag.Mode"
                    data-exid="@item.ExerciseId"
                    onclick="selsubmit(this)"
@@ -57,7 +57,8 @@
 @Html.PagedListPager(Model, page => Url.Action("ExercisesPartialList", "Modal",
                                      new { ExerciseSearchString = @ViewData["ExerciseSearchString"],
                                            StartTimeS = @ViewData["StartTimeS"],
-                                           EndTimeS = @ViewData["EndTimeS"],  
+                                           EndTimeS = @ViewData["EndTimeS"], 
+                                           field = @ViewBag.Mode, 
                                            page }),
                              PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
                              new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "update" }))
