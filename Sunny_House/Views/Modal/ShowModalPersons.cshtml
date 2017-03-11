@@ -43,6 +43,9 @@
             var PersonId = $(elem).data('personid');
             var PasteItem = $(elem).data('pasteitem');
             var PersonPIB = $(elem).data('personpib');
+
+            $("#" + PasteItem).val(PersonId);
+
             if (PasteItem == 'PayerId') $("#PayerLabel").val(PersonPIB);
             if (PasteItem == 'ClientId') $("#ClientLabel").val(PersonPIB);
             if (PasteItem == 'AdministratorId') $("#AdminLabel").val(PersonPIB);
@@ -50,8 +53,7 @@
             if (PasteItem == 'VisitorId') $("#PersonLabel").val(PersonPIB);
             if (PasteItem == 'SignPersonId') $("#SignPersonLabel").val(PersonPIB);
             if (PasteItem == 'AboutPersonId') $("#AboutPersonLabel").val(PersonPIB);
-            if (PasteItem == 'VisitorId') $("#VisitorLabel").val(PersonPIB);
-            $("#" + PasteItem).val(PersonId);
+            if (PasteItem == 'VisitorId') $("#VisitorLabel").val(PersonPIB).trigger('change');// Триггер для автоматического применения фильтра в списке посещений
             $('#modDialog').modal('hide');
         };
     </script>

@@ -3,6 +3,14 @@
 }
 
 <link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
+<style type="text/css">
+    .addonbtn:hover{
+        background-color:white !important;
+        color:#d9534f;
+        cursor:pointer;
+    }
+</style>
+
 
 <h2><i class="fa fa-id-card-o"></i> Посещения</h2>
 
@@ -43,14 +51,14 @@
                 {
                     <div class="col-lg-12 form-inline" style="margin-top:2px; margin-bottom:20px;">
                         <div class="input-group" style="width:300px; margin:0 auto">
-                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <span class="input-group-addon addonbtn" title="Очистить дату" id="DateClear"><i class="fa fa-calendar"></i></span>
                             @Html.TextBox("StartDate", null,
                                                 new
                                                 {
                                                     @style = "width:160px; text-align:center;",
                                                     @type = "text",
                                                     @placeholder = "Начало",
-                                                    @class = "form-control ",
+                                                    @class = "form-control submitcontrol",
                                                     @title = "Дата начала",
                                                     @data_val = "true"
                                                 })
@@ -60,11 +68,11 @@
                                                         (IEnumerable<SelectListItem>)ViewData["Roles"], "-Роль-",
                                                         htmlAttributes: new
                                                         {
-                                                            @class = "form-control",
+                                                            @class = "form-control submitcontrol",
                                                             @style = "width:260px;"
                                                         })
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-filter"></span>
+                            <div class="input-group-addon addonbtn" id="visfilterclear" title="Очистить">
+                                <span class="glyphicon glyphicon-refresh"></span>
                             </div>
                         </div>
                     </div>
@@ -77,7 +85,7 @@
                             <dd>
 
                                 <input type="text" name="VisitorLabel" id="VisitorLabel"
-                                       class="form-control"
+                                       class="form-control submitcontrol"
                                        readonly
                                        title="Щелкните для сброса"
                                        onclick="VisitorClear()"
@@ -92,7 +100,7 @@
                             </dt>
                             <dd>
                                 <input type="text" name="EventLabel" id="EventLabel"
-                                       class="form-control"
+                                       class="form-control submitcontrol"
                                        readonly
                                        title="Щелкните для сброса"
                                        onclick="EventClear()"
@@ -107,23 +115,18 @@
                             </dt>
                             <dd>
                                 <input type="text" name="ExLabel" id="ExLabel"
-                                       class="form-control"
+                                       class="form-control submitcontrol"
                                        readonly
                                        title="Щелкните для сброса"
                                        onclick="ExClear()"
                                        style="margin:2px 0; display:inline-block; cursor:pointer"
                                        value="@ViewData["ExName"]" />
-                                <a class="btn btn-default pModal" style="margin:2px 0; margin-top:-1px; display:inline-block" href='@Url.Action("ShowModalExercises", "Modal", new { field = "ExerciseId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                                <a class="btn btn-default pModal" style="margin:2px 0; margin-top:-1px; display:inline-block" href='@Url.Action("ShowModalExercises", "Modal")'><span class="glyphicon glyphicon-folder-open"></span></a>
                                 @Html.Hidden("ExerciseId")
                             </dd>
 
                         </dl>
 
-                    </div>
-
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-inline text-center" style="margin-top:8px; margin-bottom:2px;">
-                        <button type="submit" title="Искать" class="btn btn-default"><i class="glyphicon glyphicon-search"></i> Искать</button>
-                        @Html.Raw("&nbsp;")<button type="button" title="Обновить" class="btn btn-default" id="filterclear"><i class="glyphicon glyphicon-refresh"></i></button>
                     </div>
                 }
             </div>
@@ -157,7 +160,7 @@
                 });
         });
 
-        $('body').on('click', '#filterclear', function (event) {
+        $('body').on('click', '#visfilterclear', function (event) {
             $('#visitform').trigger('reset');
             $('#visitform').submit();
         });
@@ -216,8 +219,14 @@
             $.ajaxSetup({ cache: false });
 
             $(".pModal").click(function (e) {
-
                 e.preventDefault();
+
+                var _startdate = $("#StartDate").val();
+                this.href = this.href.split('?')[0];
+                alert(this.href);
+                this.href  += "?field=ExerciseId" + "&_startdate=" + _startdate;
+                alert(this.href);
+
                 $.get(this.href, function (data) {
                     $('#dialogContent').html(data);
                     $('#modDialog').modal('show');
@@ -237,7 +246,7 @@
         });
 
         //Скрипт очистки полей формы и сброса параметров фильтрации
-        $('body').on('click', '#filterclear', function (event) {
+        $('body').on('click', '#visfilterclear', function (event) {
             $('#visitform').trigger('reset');
 
             $('#VisitorId').val(null);
@@ -247,6 +256,12 @@
             $('#visitform').submit();
         });
 
+        $('body').on('click', '#DateClear', function (event) {
+            $('#StartDate').val('');
+            $('#visitform').submit();
+        });
+
+
     </script>
 
     <script type="text/javascript">
@@ -255,16 +270,26 @@
         function VisitorClear() {
             $('#VisitorLabel').val('');
             $('#VisitorId').val(null);
+            $("#visitform").submit();
         }
 
         function EventClear() {
             $('#EventLabel').val('');
             $('#EventId').val(null);
+            $("#visitform").submit();
         }
 
         function ExClear() {
             $('#ExLabel').val('');
             $('#ExerciseId').val(null);
+            $("#visitform").submit();
         }
     </script>
+
+    <script type="text/javascript">
+        $(".submitcontrol").bind('change', function () {
+            $("#visitform").submit();
+        });
+    </script>
+
 }

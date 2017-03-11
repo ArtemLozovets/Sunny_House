@@ -41,8 +41,8 @@
     function selsubmit(elem) {
         var EventId = $(elem).data('eventid');
         var EventName = $(elem).data('eventname');
-        $("#EventLabel").val(EventName);
         $("#EventId").val(EventId);
+        $("#EventLabel").val(EventName).trigger('change'); //Триггер для автоматического применения фильтра в списке посещений
         $('#modDialog').modal('hide');
     };
 </script>

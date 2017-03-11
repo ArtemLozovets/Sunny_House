@@ -323,18 +323,24 @@ namespace Sunny_House.Controllers
         }
 
 
-        public ActionResult ShowModalExercises(string field)
+        public ActionResult ShowModalExercises(string field, string _startdate)
         {
+            if (_startdate != "" && _startdate != null)
+            {
+                DateTime StartDate;
+                DateTime.TryParse(_startdate, out StartDate);
+                ViewBag.FilterDate = StartDate;
+            }
             ViewBag.Mode = field;
+
             return PartialView();
         }
 
         [HttpGet]
-        public ActionResult ExercisesPartialList(string field, int? page)
+        public ActionResult ExercisesPartialList(string field, int? page, DateTime? FilterDate)
         {
             ViewBag.Mode = field;
-            var _result = db.Exercises.ToList();
-
+            var _result = db.Exercises.Where(e => DbFunctions.TruncateTime(e.StartTime) == FilterDate || FilterDate == null).ToList();
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);
@@ -343,16 +349,21 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
-        public ActionResult ExercisesPartialList(string field, string ExerciseSearchString, DateTime? StartTimeS, DateTime? EndTimeS, int? page)
+        public ActionResult ExercisesPartialList(string field, string ExerciseSearchString, DateTime? StartTimeS, DateTime? EndTimeS, int? page, DateTime? FilterDate)
         {
             ViewBag.Mode = field;
 
             ViewData["ExerciseSearchString"] = ExerciseSearchString;
             ViewData["StartTimeS"] = StartTimeS;
             ViewData["EndTimeS"] = EndTimeS;
+            if (FilterDate != null)
+            {
+                ViewBag.FilterDate = FilterDate;
+            }
 
             var _ex = (from ex in db.Exercises
-                       where (ex.Subject.ToUpper().Contains(ExerciseSearchString.ToUpper()) || String.IsNullOrEmpty(ExerciseSearchString)) &&
+                       where (DbFunctions.TruncateTime(ex.StartTime) == FilterDate || FilterDate == null) &&
+                       (ex.Subject.ToUpper().Contains(ExerciseSearchString.ToUpper()) || String.IsNullOrEmpty(ExerciseSearchString)) &&
                        ((ex.StartTime >= StartTimeS || StartTimeS == null) && (ex.EndTime <= EndTimeS || EndTimeS == null))
                        select ex).ToList();
 
