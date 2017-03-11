@@ -59,6 +59,8 @@
                                            StartTimeS = @ViewData["StartTimeS"],
                                            EndTimeS = @ViewData["EndTimeS"],
                                            FilterDate = @ViewBag.FilterDate, 
+                                           FilterVisitor = @ViewBag.FilterVisitor,
+                                           FilterEvent = @ViewBag.FilterEvent,
                                            field = @ViewBag.Mode, 
                                            page }),
                              PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },

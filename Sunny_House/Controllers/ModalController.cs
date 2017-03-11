@@ -16,18 +16,19 @@ namespace Sunny_House.Controllers
     {
         private SunnyModel db = new SunnyModel();
 
-        private List<Person> PersonBySearchString(string PersonSearchString, int? FilterRole, int? FilterEvent)
+        private List<Person> PersonBySearchString(string PersonSearchString, int? FilterRole, int? FilterEvent, int? FilterEx)
         {
             var _persons = (from person in db.Persons
                             from percomm in db.PersonCommunications.Where(pid => person.PersonId == pid.PersonId).Take(1).DefaultIfEmpty()
                             join comm in db.Communications on percomm.CommunicationId equals comm.Id into tmpcomm
-                            join visit in db.Visits on person.PersonId equals visit.VisitorId into tmpvisitor
                             from comm in tmpcomm.DefaultIfEmpty()
-                            from visitor in tmpvisitor.DefaultIfEmpty()
-                            join ex in db.Exercises on visitor.ExerciseId equals ex.ExerciseId into tmpex
-                            from exer in tmpex.DefaultIfEmpty()
-                            where (visitor.RoleId == FilterRole || FilterRole == null) &&
-                                    (exer.EventId == FilterEvent || FilterEvent == null) &&
+                            join visit in db.Visits on person.PersonId equals visit.VisitorId into tmpvisitor
+                            from visit in tmpvisitor.DefaultIfEmpty()
+                            join ex in db.Exercises on visit.ExerciseId equals ex.ExerciseId into tmpex
+                            from ex in tmpex.DefaultIfEmpty()
+                            where (ex.ExerciseId == FilterEx || FilterEx == null) &&
+                                    (visit.RoleId == FilterRole || FilterRole == null) &&
+                                    (ex.EventId == FilterEvent || FilterEvent == null) &&
                                     ((person.FirstName.Contains(PersonSearchString) || String.IsNullOrEmpty(PersonSearchString)) ||
                                     (person.LastName.Contains(PersonSearchString) || String.IsNullOrEmpty(PersonSearchString)) ||
                                     comm.Address_Number.Contains(PersonSearchString))
@@ -55,7 +56,7 @@ namespace Sunny_House.Controllers
         }
 
 
-        public ActionResult ShowModalPersons(string field, int? _roleid, int? _eventid)
+        public ActionResult ShowModalPersons(string field, int? _roleid, int? _eventid, int? _exid)
         {
             if (_roleid != null)
             {
@@ -67,11 +68,16 @@ namespace Sunny_House.Controllers
                 ViewBag.FilterEvent = _eventid;
             }
 
+            if (_exid != null)
+            {
+                ViewBag.FilterEx = _exid;
+            }
+
             ViewBag.Mode = field;
             return PartialView();
         }
 
-        public ActionResult PersonsPartialList(string PersonSearchString, string field, int? page, int? FilterRole, int? FilterEvent)
+        public ActionResult PersonsPartialList(string PersonSearchString, string field, int? page, int? FilterRole, int? FilterEvent, int? FilterEx)
         {
             ViewBag.Mode = field;
             if (FilterRole != null)
@@ -84,15 +90,20 @@ namespace Sunny_House.Controllers
                 ViewBag.FilterEvent = FilterEvent;
             }
 
+            if (FilterEx != null)
+            {
+                ViewBag.FilterEx = FilterEx;
+            }
+
             ViewData["PersonSearchString"] = PersonSearchString;
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);
 
 
-            if (!String.IsNullOrEmpty(PersonSearchString) || FilterRole != null || FilterEvent != null)
+            if (!String.IsNullOrEmpty(PersonSearchString) || FilterRole != null || FilterEvent != null || FilterEx != null)
             {
-                var _persons = PersonBySearchString(PersonSearchString, FilterRole, FilterEvent);
+                var _persons = PersonBySearchString(PersonSearchString, FilterRole, FilterEvent, FilterEx);
                 return PartialView(_persons.ToPagedList(pageNumber, pageSize));
             }
             else
@@ -236,18 +247,24 @@ namespace Sunny_House.Controllers
         }
 
 
-        public ActionResult ShowModalEvents(string field, int? _visitorid)
+        public ActionResult ShowModalEvents(string field, int? _visitorid, int? _exid)
         {
             if (_visitorid != null)
             {
                 ViewBag.FilterVisitor = _visitorid;
             }
+
+            if (_exid != null)
+            {
+                ViewBag.FilterEx = _exid;
+            }
+
             ViewBag.Mode = field;
             return PartialView();
         }
 
         [HttpGet]
-        public ActionResult EventsPartialList(int? page, int? FilterVisitor)
+        public ActionResult EventsPartialList(int? page, int? FilterVisitor, int? FilterEx)
         {
 
             if (FilterVisitor != null)
@@ -255,10 +272,20 @@ namespace Sunny_House.Controllers
                 ViewBag.FilterVisitor = FilterVisitor;
             }
 
-            var _events = (from events in db.Events 
-                           join res in db.Reserves on events.EventId equals res.EventId
-                           join visit in db.Visits on res.PersonId equals visit.VisitorId
-                           where (visit.VisitorId == FilterVisitor || FilterVisitor == null)
+            if (FilterEx != null)
+            {
+                ViewBag.FilterEx = FilterEx;
+            }
+
+            var _events = (from events in db.Events
+                           join res in db.Reserves on events.EventId equals res.EventId into tmpres
+                           from res in tmpres.DefaultIfEmpty()
+                           join visit in db.Visits on res.PersonId equals visit.VisitorId into tmpvisit
+                           from visit in tmpvisit.DefaultIfEmpty()
+                           join ex in db.Exercises on events.EventId equals ex.EventId into tmpex
+                           from ex in tmpex.DefaultIfEmpty()
+                           where (ex.ExerciseId == FilterEx || FilterEx == null) &&
+                                 (visit.VisitorId == FilterVisitor || FilterVisitor == null)
                            select events).Distinct().ToList();
 
             int pageSize = 50;
@@ -268,7 +295,7 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
-        public ActionResult EventsPartialList(string EventsSearchString, DateTime? StartTimeS, DateTime? EndTimeS, int? page, int? FilterVisitor)
+        public ActionResult EventsPartialList(string EventsSearchString, DateTime? StartTimeS, DateTime? EndTimeS, int? page, int? FilterVisitor, int? FilterEx)
         {
 
             ViewData["ExerciseSearchString"] = EventsSearchString;
@@ -279,10 +306,20 @@ namespace Sunny_House.Controllers
                 ViewBag.FilterVisitor = FilterVisitor;
             }
 
+            if (FilterEx != null)
+            {
+                ViewBag.FilterEx = FilterEx;
+            }
+
             var _events = (from events in db.Events
-                           join res in db.Reserves on events.EventId equals res.EventId
-                           join visit in db.Visits on res.PersonId equals visit.VisitorId
-                           where (visit.VisitorId == FilterVisitor || FilterVisitor == null) &&
+                           join res in db.Reserves on events.EventId equals res.EventId into tmpres
+                           from res in tmpres.DefaultIfEmpty()
+                           join visit in db.Visits on res.PersonId equals visit.VisitorId into tmpvisit
+                           from visit in tmpvisit.DefaultIfEmpty()
+                           join ex in db.Exercises on events.EventId equals ex.EventId into tmpex
+                           from ex in tmpex.DefaultIfEmpty()
+                           where (ex.ExerciseId == FilterEx || FilterEx == null) &&
+                                 (visit.VisitorId == FilterVisitor || FilterVisitor == null) &&
                                  (events.EventName.ToUpper().Contains(EventsSearchString.ToUpper()) || String.IsNullOrEmpty(EventsSearchString)) &&
                                  ((events.StartTime >= StartTimeS || StartTimeS == null) && (events.EndTime <= EndTimeS || EndTimeS == null))
                            select events).Distinct().ToList();
@@ -370,7 +407,7 @@ namespace Sunny_House.Controllers
         }
 
 
-        public ActionResult ShowModalExercises(string field, string _startdate)
+        public ActionResult ShowModalExercises(string field, string _startdate, int? _visitorid, int? _eventid)
         {
             if (_startdate != "" && _startdate != null)
             {
@@ -378,41 +415,90 @@ namespace Sunny_House.Controllers
                 DateTime.TryParse(_startdate, out StartDate);
                 ViewBag.FilterDate = StartDate;
             }
-            ViewBag.Mode = field;
+
+            if (_visitorid != null)
+            {
+                ViewBag.FilterVisitor = _visitorid;
+            }
+
+            if (_eventid != null)
+            {
+                ViewBag.FilterEvent = _eventid;
+            }
+
+                ViewBag.Mode = field;
 
             return PartialView();
         }
 
         [HttpGet]
-        public ActionResult ExercisesPartialList(string field, int? page, DateTime? FilterDate)
+        public ActionResult ExercisesPartialList(string field, int? page, DateTime? FilterDate, int? FilterVisitor, int? FilterEvent)
         {
+
+            if (FilterDate != null)
+            {
+                ViewBag.FilterDate = FilterDate;
+            }
+
+            if(FilterVisitor != null)
+            {
+                ViewBag.FilterVisitor = FilterVisitor;
+            }
+
+            if (FilterEvent != null)
+            {
+                ViewBag.FilterEvent = FilterEvent;
+            }
+
             ViewBag.Mode = field;
-            var _result = db.Exercises.Where(e => DbFunctions.TruncateTime(e.StartTime) == FilterDate || FilterDate == null).ToList();
+            var _ex = (from ex in db.Exercises
+                       join visit in db.Visits on ex.ExerciseId equals visit.ExerciseId into tmpvisit
+                       from visit in tmpvisit.DefaultIfEmpty()
+                       where (ex.EventId == FilterEvent || FilterEvent == null) &&
+                             (visit.VisitorId == FilterVisitor || FilterVisitor == null) &&
+                             (DbFunctions.TruncateTime(ex.StartTime) == FilterDate || FilterDate == null)
+                       select ex).Distinct().ToList();
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);
 
-            return PartialView(_result.ToPagedList(pageNumber, pageSize));
+            return PartialView(_ex.ToPagedList(pageNumber, pageSize));
         }
 
         [HttpPost]
-        public ActionResult ExercisesPartialList(string field, string ExerciseSearchString, DateTime? StartTimeS, DateTime? EndTimeS, int? page, DateTime? FilterDate)
+        public ActionResult ExercisesPartialList(string field, string ExerciseSearchString, DateTime? StartTimeS, DateTime? EndTimeS, int? page, DateTime? FilterDate, int? FilterVisitor, int? FilterEvent)
         {
             ViewBag.Mode = field;
 
             ViewData["ExerciseSearchString"] = ExerciseSearchString;
             ViewData["StartTimeS"] = StartTimeS;
             ViewData["EndTimeS"] = EndTimeS;
+           
             if (FilterDate != null)
             {
                 ViewBag.FilterDate = FilterDate;
             }
 
+            if (FilterVisitor != null)
+            {
+                ViewBag.FilterVisitor = FilterVisitor;
+            }
+
+            if (FilterEvent != null)
+            {
+                ViewBag.FilterEvent = FilterEvent;
+            }
+
             var _ex = (from ex in db.Exercises
-                       where (DbFunctions.TruncateTime(ex.StartTime) == FilterDate || FilterDate == null) &&
-                       (ex.Subject.ToUpper().Contains(ExerciseSearchString.ToUpper()) || String.IsNullOrEmpty(ExerciseSearchString)) &&
-                       ((ex.StartTime >= StartTimeS || StartTimeS == null) && (ex.EndTime <= EndTimeS || EndTimeS == null))
-                       select ex).ToList();
+                       join visit in db.Visits on ex.ExerciseId equals visit.ExerciseId into tmpvisit
+                       from visit in tmpvisit.DefaultIfEmpty()
+                       where    (ex.EventId == FilterEvent || FilterEvent == null) &&
+                                (visit.VisitorId == FilterVisitor || FilterVisitor == null) &&                       
+                                (DbFunctions.TruncateTime(ex.StartTime) == FilterDate || FilterDate == null) &&
+                                (ex.Subject.ToUpper().Contains(ExerciseSearchString.ToUpper()) || String.IsNullOrEmpty(ExerciseSearchString)) &&
+                                ((ex.StartTime >= StartTimeS || StartTimeS == null) && 
+                                (ex.EndTime <= EndTimeS || EndTimeS == null))
+                       select ex).Distinct().ToList();
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);

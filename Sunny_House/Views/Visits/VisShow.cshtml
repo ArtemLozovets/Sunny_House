@@ -4,10 +4,10 @@
 
 <link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
 <style type="text/css">
-    .addonbtn:hover{
-        background-color:white !important;
-        color:#d9534f;
-        cursor:pointer;
+    .addonbtn:hover {
+        background-color: white !important;
+        color: #d9534f;
+        cursor: pointer;
     }
 </style>
 
@@ -229,20 +229,24 @@
                 if ($(this).attr('id') == 'VisitorLink') {
                     var _roleid = $('#RoleSearchString').val();
                     var _eventid = $('#EventId').val();
-                    this.href += "?field=VisitorId" + "&_roleid=" + _roleid + "&_eventid="+_eventid;
+                    var _exid = $('#ExerciseId').val();
+                    this.href += "?field=VisitorId" + "&_roleid=" + _roleid + "&_eventid=" + _eventid + "&_exid=" + _exid;
                 }
 
                 if ($(this).attr('id') == 'EventLink') {
                     var _visitorid = $("#VisitorId").val();
-                    this.href += "?field=EventId"+ "&_visitorid="+_visitorid;
+                    var _exid = $('#ExerciseId').val();
+                    this.href += "?field=EventId" + "&_visitorid=" + _visitorid + "&_exid=" + _exid;
                 }
 
                 if ($(this).attr('id') == 'ExLink') {
                     var _startdate = $("#StartDate").val();
-                    this.href += "?field=ExerciseId" + "&_startdate=" + _startdate;
+                    var _visitorid = $("#VisitorId").val();
+                    var _eventid = $('#EventId').val();
+                    this.href += "?field=ExerciseId" + "&_startdate=" + _startdate + "&_visitorid=" + _visitorid + "&_eventid=" + _eventid;
                 }
-                
-                alert(this.href);
+
+               // alert(this.href);
 
                 $.get(this.href, function (data) {
                     $('#dialogContent').html(data);
