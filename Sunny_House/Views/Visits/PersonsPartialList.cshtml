@@ -16,7 +16,7 @@
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update1", LoadingElementId = "loadingImg" }, new { @id = "PersonFIO" })
             <i id="PersonFIOArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
-        <th style="text-align:center;">
+        <th style="text-align:center; min-width:100px;">
             @Ajax.ActionLink("Возраст", "PersonsPartialList", new
        {
            SortBy = ViewBag.SortAge,

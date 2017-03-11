@@ -5,55 +5,55 @@
     </div>
     <div class="row" style="margin:10px 0">
         <div class="col-lg-12 form-inline">
-            @using (Ajax.BeginForm("PersonsPartialList", "Modal", new { @field = @ViewBag.Mode }, new AjaxOptions { UpdateTargetId = "update" }, new { @id = "modalform" }))
+            @using (Ajax.BeginForm("PersonsPartialList", "Modal", new { field = ViewBag.Mode, FilterRole = ViewBag.FilterRole, FilterEvent = ViewBag.FilterEvent }, new AjaxOptions { UpdateTargetId = "update" }, new { @id = "modalform" }))
             {
-                @Html.TextBox("PersonSearchString", null, new { @class = "form-control ", @data_autocomplete_source = @Url.Action("AutocompletePersonFirstName", "AutoComplete"), @placeholder = "Имя, фамилия, тел.", @style = "margin:2px 2px; width:180px; display:inline-block;"})
+                @Html.TextBox("PersonSearchString", null, new { @class = "form-control ", @data_autocomplete_source = @Url.Action("AutocompletePersonFirstName", "AutoComplete"), @placeholder = "Имя, фамилия, тел.", @style = "margin:2px 2px; width:180px; display:inline-block;" })
                 <button type="submit" title="Искать" style="margin:2px 2px; display:inline-block " class="btn btn-default"><i class="glyphicon glyphicon-search"></i> </button>
                 <button type="button" title="Обновить" class="btn btn-default" id="filterclear"><i class="glyphicon glyphicon-refresh"></i></button>
             }
         </div>
     </div>
     <div id="update">
-        @Html.Action("PersonsPartialList", "Modal", new { PersonSearchString = "", field = @ViewBag.Mode })
+        @Html.Action("PersonsPartialList", "Modal", new { PersonSearchString = "", field = ViewBag.Mode, FilterRole = ViewBag.FilterRole, FilterEvent = ViewBag.FilterEvent })
     </div>
 </div>
 
 
-    <script type="text/javascript">
+<script type="text/javascript">
 
-        $(function () {
-            $("[data-autocomplete-source]").each(function () {
-                var target = $(this);
-                target.autocomplete({ source: target.attr("data-autocomplete-source") });
-            });
-
-            $('#PersonSearchString').focus();
-
-            $('#filterclear').click(function (event) {
-                $('#modalform').trigger('reset');
-                $('#modalform').submit();
-            });
-
-            $('#modDialog').on('shown.bs.modal', function () {
-                $("#PersonSearchString").focus();
-            })
+    $(function () {
+        $("[data-autocomplete-source]").each(function () {
+            var target = $(this);
+            target.autocomplete({ source: target.attr("data-autocomplete-source") });
         });
 
-        function selsubmit(elem) {
-            var PersonId = $(elem).data('personid');
-            var PasteItem = $(elem).data('pasteitem');
-            var PersonPIB = $(elem).data('personpib');
+        $('#PersonSearchString').focus();
 
-            $("#" + PasteItem).val(PersonId);
+        $('#filterclear').click(function (event) {
+            $('#modalform').trigger('reset');
+            $('#modalform').submit();
+        });
 
-            if (PasteItem == 'PayerId') $("#PayerLabel").val(PersonPIB);
-            if (PasteItem == 'ClientId') $("#ClientLabel").val(PersonPIB);
-            if (PasteItem == 'AdministratorId') $("#AdminLabel").val(PersonPIB);
-            if (PasteItem == 'RelPersonId') $("#RelPersonLabel").val(PersonPIB);
-            if (PasteItem == 'VisitorId') $("#PersonLabel").val(PersonPIB);
-            if (PasteItem == 'SignPersonId') $("#SignPersonLabel").val(PersonPIB);
-            if (PasteItem == 'AboutPersonId') $("#AboutPersonLabel").val(PersonPIB);
-            if (PasteItem == 'VisitorId') $("#VisitorLabel").val(PersonPIB).trigger('change');// Триггер для автоматического применения фильтра в списке посещений
-            $('#modDialog').modal('hide');
-        };
-    </script>
+        $('#modDialog').on('shown.bs.modal', function () {
+            $("#PersonSearchString").focus();
+        })
+    });
+
+    function selsubmit(elem) {
+        var PersonId = $(elem).data('personid');
+        var PasteItem = $(elem).data('pasteitem');
+        var PersonPIB = $(elem).data('personpib');
+
+        $("#" + PasteItem).val(PersonId);
+
+        if (PasteItem == 'PayerId') $("#PayerLabel").val(PersonPIB);
+        if (PasteItem == 'ClientId') $("#ClientLabel").val(PersonPIB);
+        if (PasteItem == 'AdministratorId') $("#AdminLabel").val(PersonPIB);
+        if (PasteItem == 'RelPersonId') $("#RelPersonLabel").val(PersonPIB);
+        if (PasteItem == 'VisitorId') $("#PersonLabel").val(PersonPIB);
+        if (PasteItem == 'SignPersonId') $("#SignPersonLabel").val(PersonPIB);
+        if (PasteItem == 'AboutPersonId') $("#AboutPersonLabel").val(PersonPIB);
+        if (PasteItem == 'VisitorId') $("#VisitorLabel").val(PersonPIB).trigger('change');// Триггер для автоматического применения фильтра в списке посещений
+        $('#modDialog').modal('hide');
+    };
+</script>

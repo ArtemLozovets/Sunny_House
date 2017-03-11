@@ -16,17 +16,22 @@ namespace Sunny_House.Controllers
     {
         private SunnyModel db = new SunnyModel();
 
-        private List<Person> PersonBySearchString(string PersonSearchString)
+        private List<Person> PersonBySearchString(string PersonSearchString, int? FilterRole, int? FilterEvent)
         {
             var _persons = (from person in db.Persons
                             from percomm in db.PersonCommunications.Where(pid => person.PersonId == pid.PersonId).Take(1).DefaultIfEmpty()
-
                             join comm in db.Communications on percomm.CommunicationId equals comm.Id into tmpcomm
+                            join visit in db.Visits on person.PersonId equals visit.VisitorId into tmpvisitor
                             from comm in tmpcomm.DefaultIfEmpty()
-                            where person.FirstName
-                              .Contains(PersonSearchString) || person.LastName
-                              .Contains(PersonSearchString) || comm.Address_Number.Contains(PersonSearchString)
-                            select person).OrderBy(p => p.PersonId);
+                            from visitor in tmpvisitor.DefaultIfEmpty()
+                            join ex in db.Exercises on visitor.ExerciseId equals ex.ExerciseId into tmpex
+                            from exer in tmpex.DefaultIfEmpty()
+                            where (visitor.RoleId == FilterRole || FilterRole == null) &&
+                                    (exer.EventId == FilterEvent || FilterEvent == null) &&
+                                    ((person.FirstName.Contains(PersonSearchString) || String.IsNullOrEmpty(PersonSearchString)) ||
+                                    (person.LastName.Contains(PersonSearchString) || String.IsNullOrEmpty(PersonSearchString)) ||
+                                    comm.Address_Number.Contains(PersonSearchString))
+                            select person).OrderBy(p => p.PersonId).Distinct();
 
             return _persons.ToList();
         }
@@ -50,23 +55,44 @@ namespace Sunny_House.Controllers
         }
 
 
-        public ActionResult ShowModalPersons(string field)
+        public ActionResult ShowModalPersons(string field, int? _roleid, int? _eventid)
         {
+            if (_roleid != null)
+            {
+                ViewBag.FilterRole = _roleid;
+            }
+
+            if (_eventid != null)
+            {
+                ViewBag.FilterEvent = _eventid;
+            }
+
             ViewBag.Mode = field;
             return PartialView();
         }
 
-        public ActionResult PersonsPartialList(string PersonSearchString, string field, int? page)
+        public ActionResult PersonsPartialList(string PersonSearchString, string field, int? page, int? FilterRole, int? FilterEvent)
         {
             ViewBag.Mode = field;
+            if (FilterRole != null)
+            {
+                ViewBag.FilterRole = FilterRole;
+            }
+
+            if (FilterEvent != null)
+            {
+                ViewBag.FilterEvent = FilterEvent;
+            }
+
             ViewData["PersonSearchString"] = PersonSearchString;
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);
 
-            if (!String.IsNullOrEmpty(PersonSearchString))
+
+            if (!String.IsNullOrEmpty(PersonSearchString) || FilterRole != null || FilterEvent != null)
             {
-                var _persons = PersonBySearchString(PersonSearchString);
+                var _persons = PersonBySearchString(PersonSearchString, FilterRole, FilterEvent);
                 return PartialView(_persons.ToPagedList(pageNumber, pageSize));
             }
             else
@@ -210,16 +236,30 @@ namespace Sunny_House.Controllers
         }
 
 
-        public ActionResult ShowModalEvents(string field)
+        public ActionResult ShowModalEvents(string field, int? _visitorid)
         {
+            if (_visitorid != null)
+            {
+                ViewBag.FilterVisitor = _visitorid;
+            }
             ViewBag.Mode = field;
             return PartialView();
         }
 
         [HttpGet]
-        public ActionResult EventsPartialList(int? page)
+        public ActionResult EventsPartialList(int? page, int? FilterVisitor)
         {
-            var _events = (from events in db.Events select events).ToList();
+
+            if (FilterVisitor != null)
+            {
+                ViewBag.FilterVisitor = FilterVisitor;
+            }
+
+            var _events = (from events in db.Events 
+                           join res in db.Reserves on events.EventId equals res.EventId
+                           join visit in db.Visits on res.PersonId equals visit.VisitorId
+                           where (visit.VisitorId == FilterVisitor || FilterVisitor == null)
+                           select events).Distinct().ToList();
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);
@@ -228,17 +268,24 @@ namespace Sunny_House.Controllers
         }
 
         [HttpPost]
-        public ActionResult EventsPartialList(string EventsSearchString, DateTime? StartTimeS, DateTime? EndTimeS, int? page)
+        public ActionResult EventsPartialList(string EventsSearchString, DateTime? StartTimeS, DateTime? EndTimeS, int? page, int? FilterVisitor)
         {
 
             ViewData["ExerciseSearchString"] = EventsSearchString;
             ViewData["StartTimeS"] = StartTimeS;
             ViewData["EndTimeS"] = EndTimeS;
+            if (FilterVisitor != null)
+            {
+                ViewBag.FilterVisitor = FilterVisitor;
+            }
 
             var _events = (from events in db.Events
-                           where (events.EventName.ToUpper().Contains(EventsSearchString.ToUpper()) || String.IsNullOrEmpty(EventsSearchString)) &&
-                           ((events.StartTime >= StartTimeS || StartTimeS == null) && (events.EndTime <= EndTimeS || EndTimeS == null))
-                           select events).ToList();
+                           join res in db.Reserves on events.EventId equals res.EventId
+                           join visit in db.Visits on res.PersonId equals visit.VisitorId
+                           where (visit.VisitorId == FilterVisitor || FilterVisitor == null) &&
+                                 (events.EventName.ToUpper().Contains(EventsSearchString.ToUpper()) || String.IsNullOrEmpty(EventsSearchString)) &&
+                                 ((events.StartTime >= StartTimeS || StartTimeS == null) && (events.EndTime <= EndTimeS || EndTimeS == null))
+                           select events).Distinct().ToList();
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);

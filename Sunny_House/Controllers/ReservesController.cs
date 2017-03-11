@@ -368,6 +368,12 @@ namespace Sunny_House.Controllers
             int pageSize = 50;
             int pageNumber = (page ?? 1);
 
+            ViewData["EventId"] = EventId;
+            ViewData["MinAge"] = MinAge;
+            ViewData["MaxAge"] = MaxAge;
+            if (RoleId != null) { ViewData["RoleId"] = RoleId; }
+            else { ViewData["RoleId"] = "0"; }
+
             return PartialView(_persons.ToList().ToPagedList(pageNumber, pageSize));
         }
 

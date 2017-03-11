@@ -2,7 +2,6 @@
 @model PagedList.IPagedList<Sunny_House.Models.Person>
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
-
 <table class="table ModalTable">
     <tr>
         <th>
@@ -19,7 +18,6 @@
         </th>
         <th></th>
     </tr>
-
     @if (Model.Count() == 0)
     {
         <tr>
@@ -28,7 +26,6 @@
             </td>
         </tr>
     }
-
     @foreach (var item in Model)
     {
         <tr>
@@ -57,15 +54,17 @@
     }
 </table>
 <hr />
-
 <div style="margin-left:10px;">
     Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
-
     @Html.PagedListPager(Model, page => Url.Action("PersonsPartialList", "Modal",
-                         new { PersonSearchString = ViewData["PersonSearchString"], page, field = ViewBag.Mode }),
+                         new
+                         {
+                             PersonSearchString = ViewData["PersonSearchString"],
+                             FilterRole = ViewBag.FilterRole,
+                             FilterEvent = ViewBag.FilterEvent,
+                             field = ViewBag.Mode,
+                             page
+                         }),
                                  PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
                                                                                          new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "update" }))
 </div>
-
-
-

@@ -91,7 +91,7 @@
                                        onclick="VisitorClear()"
                                        style="margin:2px 0; display:inline-block; cursor:pointer"
                                        value="@ViewData["VisitorId"]" />
-                                <a class="btn btn-default pModal" style="margin:2px 0; margin-top:-1px; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "VisitorId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                                <a id="VisitorLink" class="btn btn-default pModal" style="margin:2px 0; margin-top:-1px; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "VisitorId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
                                 @Html.Hidden("VisitorId")
                             </dd>
 
@@ -106,7 +106,7 @@
                                        onclick="EventClear()"
                                        style="margin:2px 0; display:inline-block; cursor:pointer"
                                        value="@ViewData["EventName"]" />
-                                <a class="btn btn-default pModal" style="margin:2px 0; margin-top:-1px; display:inline-block" href='@Url.Action("ShowModalEvents", "Modal", new { field = "EventId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                                <a id="EventLink" class="btn btn-default pModal" style="margin:2px 0; margin-top:-1px; display:inline-block" href='@Url.Action("ShowModalEvents", "Modal")'><span class="glyphicon glyphicon-folder-open"></span></a>
                                 @Html.Hidden("EventId")
                             </dd>
 
@@ -121,7 +121,7 @@
                                        onclick="ExClear()"
                                        style="margin:2px 0; display:inline-block; cursor:pointer"
                                        value="@ViewData["ExName"]" />
-                                <a class="btn btn-default pModal" style="margin:2px 0; margin-top:-1px; display:inline-block" href='@Url.Action("ShowModalExercises", "Modal")'><span class="glyphicon glyphicon-folder-open"></span></a>
+                                <a id="ExLink" class="btn btn-default pModal" style="margin:2px 0; margin-top:-1px; display:inline-block" href='@Url.Action("ShowModalExercises", "Modal")'><span class="glyphicon glyphicon-folder-open"></span></a>
                                 @Html.Hidden("ExerciseId")
                             </dd>
 
@@ -162,6 +162,9 @@
 
         $('body').on('click', '#visfilterclear', function (event) {
             $('#visitform').trigger('reset');
+            $('#VisitorId').val(null);
+            $('#EventId').val(null);
+            $('#ExerciseId').val(null);
             $('#visitform').submit();
         });
 
@@ -221,10 +224,24 @@
             $(".pModal").click(function (e) {
                 e.preventDefault();
 
-                var _startdate = $("#StartDate").val();
                 this.href = this.href.split('?')[0];
-                alert(this.href);
-                this.href  += "?field=ExerciseId" + "&_startdate=" + _startdate;
+
+                if ($(this).attr('id') == 'VisitorLink') {
+                    var _roleid = $('#RoleSearchString').val();
+                    var _eventid = $('#EventId').val();
+                    this.href += "?field=VisitorId" + "&_roleid=" + _roleid + "&_eventid="+_eventid;
+                }
+
+                if ($(this).attr('id') == 'EventLink') {
+                    var _visitorid = $("#VisitorId").val();
+                    this.href += "?field=EventId"+ "&_visitorid="+_visitorid;
+                }
+
+                if ($(this).attr('id') == 'ExLink') {
+                    var _startdate = $("#StartDate").val();
+                    this.href += "?field=ExerciseId" + "&_startdate=" + _startdate;
+                }
+                
                 alert(this.href);
 
                 $.get(this.href, function (data) {
