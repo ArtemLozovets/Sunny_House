@@ -71,7 +71,7 @@
                                                             @class = "form-control submitcontrol",
                                                             @style = "width:260px;"
                                                         })
-                            <div class="input-group-addon addonbtn" id="visfilterclear" title="Очистить">
+                            <div class="input-group-addon addonbtn" id="visfilterclear" title="Очистить условия фильтрации">
                                 <span class="glyphicon glyphicon-refresh"></span>
                             </div>
                         </div>
@@ -230,13 +230,15 @@
                     var _roleid = $('#RoleSearchString').val();
                     var _eventid = $('#EventId').val();
                     var _exid = $('#ExerciseId').val();
-                    this.href += "?field=VisitorId" + "&_roleid=" + _roleid + "&_eventid=" + _eventid + "&_exid=" + _exid;
+                    var _startdate = $("#StartDate").val();
+                    this.href += "?field=VisitorId" + "&_roleid=" + _roleid + "&_eventid=" + _eventid + "&_exid=" + _exid + "&_startdate=" + _startdate;
                 }
 
                 if ($(this).attr('id') == 'EventLink') {
                     var _visitorid = $("#VisitorId").val();
                     var _exid = $('#ExerciseId').val();
-                    this.href += "?field=EventId" + "&_visitorid=" + _visitorid + "&_exid=" + _exid;
+                    var _startdate = $("#StartDate").val();
+                    this.href += "?field=EventId" + "&_visitorid=" + _visitorid + "&_exid=" + _exid + "&_startdate=" + _startdate;
                 }
 
                 if ($(this).attr('id') == 'ExLink') {
