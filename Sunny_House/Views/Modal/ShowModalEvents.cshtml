@@ -6,7 +6,7 @@
     </div>
     <div class="row" style="margin:10px 0">
         <div class="col-lg-12 form-inline">
-            @using (Ajax.BeginForm("EventsPartialList", "Modal", new { FilterVisitor = ViewBag.FilterVisitor, FilterEx = ViewBag.FilterEx }, new AjaxOptions { UpdateTargetId = "update" }, new { @id = "modalform" }))
+            @using (Ajax.BeginForm("EventsPartialList", "Modal", new { FilterVisitor = ViewBag.FilterVisitor, FilterEx = ViewBag.FilterEx, FilterDate = ViewBag.FilterDate }, new AjaxOptions { UpdateTargetId = "update" }, new { @id = "modalform" }))
             {
                 @Html.TextBox("EventsSearchString", null, new { @class = "form-control ", @data_autocomplete_source = @Url.Action("AutocompleteEventName", "AutoComplete"), @placeholder = "Название...", @style = "margin:2px 2px; width:160px; display:inline-block;" })
                 @Html.TextBox("StartTimeS", null, new { @class = "form-control ", @placeholder = "Начало...", @style = "margin:2px 2px; width:110px; display:inline-block;" })
@@ -17,7 +17,7 @@
         </div>
     </div>
     <div id="update">
-        @Html.Action("EventsPartialList", "Modal", new { EventSearchString = "", FilterVisitor = ViewBag.FilterVisitor, FilterEx = ViewBag.FilterEx })
+        @Html.Action("EventsPartialList", "Modal", new { EventSearchString = "", FilterVisitor = ViewBag.FilterVisitor, FilterEx = ViewBag.FilterEx, FilterDate = ViewBag.FilterDate })
     </div>
 </div>
 
