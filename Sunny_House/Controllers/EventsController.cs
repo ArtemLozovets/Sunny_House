@@ -430,8 +430,9 @@ namespace Sunny_House.Controllers
                                 Num_Address = tmpcomm.FirstOrDefault().Address_Number,
                                 PersonRole = role.RoleName,
                                 DOB = person.DateOfBirth
-                            }).OrderByDescending(r => r.ReserveId).AsEnumerable().Select(e => new PersonsViewModel
+                            }).OrderByDescending(r => r.ReserveId).AsEnumerable().Select(e => new PersonReserveViewModel
                                                 {
+                                                    ReserveId = e.ReserveId,
                                                     PersonId = e.PersonId,
                                                     PersonFIO = e.PersonFIO.Trim(),
                                                     PersonAge = AgeMethods.GetAge(e.DOB),

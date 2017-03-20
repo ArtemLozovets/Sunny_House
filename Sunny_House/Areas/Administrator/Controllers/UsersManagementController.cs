@@ -322,7 +322,7 @@ namespace Sunny_House.Areas.Administrator.Controllers
                 {
                     UserPasswordChangeViewModel passwordchange = new UserPasswordChangeViewModel();
                     passwordchange.Id = User.Id;
-                    passwordchange.Email = User.Email;
+                    passwordchange.UserName = User.UserName;
                     passwordchange.Password = string.Empty;
                     passwordchange.ConfirmPassword = string.Empty;
                     return View(passwordchange);

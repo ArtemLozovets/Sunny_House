@@ -68,7 +68,7 @@ namespace Sunny_House.Models
     public class UserPasswordChangeViewModel
     {
         public string Id { get; set; }
-        public string Email { get; set; }
+        public string UserName { get; set; }
 
         [Required(ErrorMessage = "Необходимо заполнить поле \"Пароль\"")]
         [StringLength(100, ErrorMessage = "Поле \"{0}\" должно содержать больше {2} символів", MinimumLength = 6)]
@@ -77,7 +77,7 @@ namespace Sunny_House.Models
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Подтверждение пароля")]
+        [Display(Name = "Подтверждение")]
         [Compare("Password", ErrorMessage = "Введенные пароли не совпадают")]
         public string ConfirmPassword { get; set; }
     }
@@ -97,7 +97,7 @@ namespace Sunny_House.Models
 
         [DataType(DataType.Password)]
         [Required(ErrorMessage = "Не заполнено поле \"Подтверждение пароля\"")]
-        [Display(Name = "Подтверждение пароля")]
+        [Display(Name = "Подтверждение")]
         [Compare("NewPassword", ErrorMessage = "Введенные пароли не совпадают")]
         public string ConfirmPassword { get; set; }
     }
@@ -152,7 +152,7 @@ namespace Sunny_House.Models
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Подтверждение пароля")]
+        [Display(Name = "Подтверждение")]
         [Compare("Password", ErrorMessage = "Введенные пароли не совпадают")]
         public string ConfirmPassword { get; set; }
 

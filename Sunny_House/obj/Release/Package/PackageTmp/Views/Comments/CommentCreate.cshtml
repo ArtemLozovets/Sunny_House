@@ -29,6 +29,7 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.RelGuid)
+        @Html.Hidden("CreatorName", @Context.User.Identity.Name)
 
         <div class="row">
             <div class="col-lg-6 col-md-6">

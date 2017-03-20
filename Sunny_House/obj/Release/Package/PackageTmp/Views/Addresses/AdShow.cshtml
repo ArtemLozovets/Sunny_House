@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "Адреса";
+}
+
+<h2><i class="fa fa-home"></i> Адреса</h2>
+
+<div id="loadingImg">
+    <div id="preloadImg">
+        <img src="~/Content/Images/loader.gif" />
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6" id="resultMessage" style="display:block; height:30px;">
+        <p class="text-success" id="MessageOk"> @TempData["MessageOk"]</p>
+        <p class="text-danger" id="MessageError">  @TempData["MessageError"]</p>
+    </div>
+</div>
+
+
+@using (Ajax.BeginForm("AdShowAllPartial", "Addresses", new AjaxOptions { UpdateTargetId = "updateAd", LoadingElementId = "loadingImg" }, new { @id = "modalform" }))
+{
+    <div class="row" style="margin:10px 0">
+        <div class="col-lg-3 col-md-4 col-sm-4">
+            <a class="btn btn-default" title="Добавить адрес" style="width:160px;" href='@Url.Action("AdCreate", "Addresses", new { RetActionName = "AdShow", RetControllerName = "Addresses"})'><span class="glyphicon glyphicon-plus"> Добавить адрес</span></a>
+            @Html.Raw("&nbsp;")<button type="button" title="Обновить" class="btn btn-default" id="filterclear"><i class="glyphicon glyphicon-refresh"></i></button>
+        </div>
+        <div class="col-lg-5 col-lg-offset-4 col-md-6 col-md-offset-2 col-sm-8 form-inline">
+
+            @Html.DropDownList("CitySearchString", (IEnumerable<SelectListItem>)ViewData["Cityes"], "-Город-", htmlAttributes: new { @class = "form-control", style = "width:160px; margin:2px 0; display:inline-block;" })
+            <input class="form-control" type="text" id="AddressSearchString" name="AddressSearchString" data-autocomplete-source=@Url.Action("AutocompleteAddressValue", "AutoComplete") placeholder="Псевдоним, адрес..." style="width:200px; margin:2px 0; display:inline-block;">
+            <button type="submit" title="Искать" style="margin-top:-2px;" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+        </div>
+    </div>
+}
+
+
+<div id="updateAd">
+    @Html.Action("AdShowAllPartial", "Addresses")
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            $("[data-autocomplete-source]").each(function () {
+                var target = $(this);
+                target.autocomplete({ source: target.attr("data-autocomplete-source") });
+            });
+
+            $('#AddressSearchString').focus();
+            $('#loadingImg').hide();
+        });
+
+
+        $('body').click(function () {
+            $('#resultMessage').fadeOut(1000,
+                function () {
+                    $('#MessageOk').html('');
+                    $('#MessageError').html('');
+                    $('#resultMessage').fadeIn(1000)
+                });
+        });
+
+
+        $('#filterclear').click(function (event) {
+            $('#modalform').trigger('reset');
+            $('#modalform').submit();
+        });
+
+    </script>
+
+    <script type="text/javascript">
+        $(document).ajaxComplete(function () {
+
+            $('i[id$="Arrow"]').css("visibility", "hidden");
+
+            //Отображаем значки сортировки
+            if ($('#SortColumn').text() != '') {
+                var sortcolumnname = $('#SortColumn').text();
+                var sortcontrol = $('#' + sortcolumnname);
+                if (sortcontrol != null) {
+                    if (sortcontrol.attr('href').indexOf('desc') != -1) {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-top').css("visibility", "visible")
+                    }
+                    else {
+                        $('#' + sortcolumnname + 'Arrow').removeClass().addClass('glyphicon glyphicon-triangle-bottom').css("visibility", "visible")
+                    }
+                }
+            }
+        });
+    </script>
+}

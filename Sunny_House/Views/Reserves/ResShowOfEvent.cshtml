@@ -566,7 +566,34 @@
                 }
             }
 
+            //Скрипт удаления брони с персоны
+            $('body').on('click', '#remreserve', function (event) {
+                event.preventDefault();
+                if (confirm("Удалить бронь?")) {
+                    $.ajaxSetup({ cache: false });
+                    $('#loadingImg').show();
+                    var _id = $(this).data("reserveid");
+                    $.get('/Reserves/AjaxDelete', {
+                        ReserveId: _id,
+                        EventId: "@Model.EventId"                          
+                    },
+                         function (data) {
+                             $('#loadingImg').hide();
+                             if(data.Result){
+                                 $(document.body).animate({ 'scrollTop': $('#topanchor').offset().top-300 }, 1000);
+                                 $('#ReservedCountSpan').text(data.resplaces);
+                                 $('#AllCountSpan').text(data.allplaces);
+                                 RefreshCircleBar(data.percent);
+                                 $('#eventform').submit();
+                             }
+                             else{
+                                 Alert(data.Message);
+                                 $(document.body).animate({ 'scrollTop': $('#topanchor').offset().top -300 }, 1000);
+                             }
+                         });
+                }
+            });
+
         });
     </script>
-
 }

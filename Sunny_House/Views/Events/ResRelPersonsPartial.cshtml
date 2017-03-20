@@ -1,5 +1,5 @@
 ﻿@using PagedList.Mvc;
-@model PagedList.IPagedList<Sunny_House.Models.PersonsViewModel>
+@model PagedList.IPagedList<Sunny_House.Models.PersonReserveViewModel>
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 <table class="table">
@@ -55,6 +55,11 @@
                                   ReturnUrl= "/Reserves/ResShowOfEvent?EventId="+@ViewData["EventId"]
                 })'>
                 <span class="glyphicon glyphicon-link"></span></a>
+
+                <a class="btn btn-default btn-sm" title="Удалить бронь" href="#" data-reserveid="@item.ReserveId" id="remreserve">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </a>
+            
             </td>
         </tr>
     }

@@ -17,7 +17,7 @@
 <p>
     <a title="Статистика событий авторизации в приложении" class="btn btn-default" href="~/Administrator/UsersManagement/LoginAudit">Аудит входа</a>
     <a title="Создание новой учетной записи" class="btn btn-default" href="~/Administrator/UsersManagement/Register">Добавить пользователя</a>
-    <a title="Кнопка доступна в период тестирования приложения. В дальнейшем будет удалена." class="btn btn-default btn-danger" href="~/Administrator/Init/CreateAdmin">Создать Администратора</a>
+    @*<a title="Кнопка доступна в период тестирования приложения. В дальнейшем будет удалена." class="btn btn-default btn-danger" href="~/Administrator/Init/CreateAdmin">Создать Администратора</a>*@
 
 </p>
 
@@ -73,7 +73,7 @@
             </td>
             <td style="text-align:center;">
                 <a class="btn btn-default btn-sm" href='@Url.Action("UpdateUserInfos", "UsersManagement", new { UserId = @item.UId })' title="Редактировать учетные данные"><span class="glyphicon glyphicon-edit"></span></a>
-                @if (@item.URole.Contains("Blockeduser"))
+                @if (@item.URole.Contains("Заблокирован"))
                 {
                     <a class="btn btn-default btn-sm" href='@Url.Action("UnblockUser", "UsersManagement", new {UserId = @item.UId})' title="Разблокировать учетную запись"><span class="glyphicon glyphicon-eye-open"></span></a>
                 }

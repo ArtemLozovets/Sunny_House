@@ -37,7 +37,7 @@ namespace Sunny_House.Models
         [Display(Name = "Дата рождения")]
         [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
-        
+
         [Display(Name = "Номер/Адрес")]
         public string Num_Address { get; set; }
 
@@ -58,6 +58,37 @@ namespace Sunny_House.Models
 
         [NotMapped]
         public int? RoleId { get; set; }
+
+    }
+
+    [NotMapped]
+    public class PersonReserveViewModel
+    {
+        [ScaffoldColumn(false)]
+        public int ReserveId { get; set; }
+
+        [ScaffoldColumn(false)]
+        public int PersonId { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Дата рождения")]
+        [DataType(DataType.Date)]
+        public DateTime? DateOfBirth { get; set; }
+
+        [Display(Name = "Номер/Адрес")]
+        public string Num_Address { get; set; }
+
+        [Display(Name = "ФИО персоны")]
+        public string PersonFIO { get; set; }
+
+        [Display(Name = "Роль")]
+        public string PersonRole { get; set; }
+
+        [Display(Name = "Возраст")]
+        public int? PersonAge { get; set; }
+
+        [Display(Name = "Месяцев")]
+        public int? PersonMonth { get; set; }
 
     }
 
@@ -86,7 +117,7 @@ namespace Sunny_House.Models
 
         [ScaffoldColumn(false)]
         public int PayerId { get; set; }
-        
+
         [ScaffoldColumn(false)]
         public int ClientId { get; set; }
 
@@ -179,7 +210,7 @@ namespace Sunny_House.Models
     {
         [ScaffoldColumn(false)]
         public int ReserveId { get; set; }
-        
+
         [Display(Name = "Персона")]
         public string PersonFIO { get; set; }
 
@@ -211,11 +242,11 @@ namespace Sunny_House.Models
         [Display(Name = "Начало")]
         [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy}")]
         public DateTime StartTime { get; set; }
-        
+
         [Display(Name = "Окончание")]
         [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy}")]
-        public DateTime EndTime{ get; set; }
-        
+        public DateTime EndTime { get; set; }
+
         [Display(Name = "Мест всего")]
         public int FreePlaces { get; set; }
 
@@ -234,7 +265,7 @@ namespace Sunny_House.Models
 
         [Display(Name = "Мероприятие")]
         public string EventName { get; set; }
-      
+
         [Display(Name = "Роль")]
         public string RoleName { get; set; }
 
@@ -293,6 +324,6 @@ namespace Sunny_House.Models
         public string SourceName { get; set; }
 
 
-        
+
     }
 }

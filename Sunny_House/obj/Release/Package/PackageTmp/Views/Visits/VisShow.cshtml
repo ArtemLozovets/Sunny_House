@@ -2,7 +2,21 @@
     ViewBag.Title = "Посещения";
 }
 
+<link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
+<style type="text/css">
+    .addonbtn:hover {
+        background-color: white !important;
+        color: #d9534f;
+        cursor: pointer;
+    }
+</style>
+
+
 <h2><i class="fa fa-id-card-o"></i> Посещения</h2>
+
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog" style="width:660px;"></div>
+</div>
 
 <div id="loadingImg">
     <div id="preloadImg">
@@ -19,26 +33,109 @@
 
 <div class="row">
     <div class="col-md-3 col-lg-3 col-sm-4">
-        <a class="btn btn-default" style="margin:2px 2px;" title="Добавить" href='@Url.Action("VisCreate", "Visits")'><span class="glyphicon glyphicon-plus"> Добавить</span></a>
-    </div>
-    <div class="col-md-9 col-lg-9 col-sm-8 form-inline text-right" style="margin-bottom:12px;">
-        @using (Ajax.BeginForm("AllVisitsPartial", "Visits", null, new AjaxOptions { UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "visitform" }))
-        {
-            <input class="form-control" type="text" title="Тема занятия, фамилия или имя посетителя" name="SearchString" id="SearchString" placeholder="Тема, фамилия, имя..." style="width:200px; margin:2px 0; display:inline-block">
-            @Html.DropDownList("RoleSearchString",
-                                                        (IEnumerable<SelectListItem>)ViewData["Roles"], "-Роль-",
-                                                        htmlAttributes: new
-                                                        {
-                                                            @class = "form-control",
-                                                            style = "width:160px; margin:2px 0; display:inline-block;"
-                                                        })
-            <button type="submit" title="Искать" class="btn btn-default" style="margin-top:-3px;"><i class="glyphicon glyphicon-search"></i></button>
-            <button type="button" title="Обновить" class="btn btn-default" id="filterclear" style="margin-top:-3px;"><i class="glyphicon glyphicon-refresh"></i></button>
-        }
+        <a class="btn btn-default" style="margin:2px 2px; margin-bottom:6px;" title="Добавить" href='@Url.Action("VisCreate", "Visits")'><span class="glyphicon glyphicon-plus"> Добавить</span></a>
     </div>
 </div>
 
-<div id="update">
+@* Панель фильтров --------------------------------- *@
+<div class="panel-group" style="width:100%; min-width:680px; margin: 0 auto 10px !important;">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" href="#collapse1"><span class="text-info"><i class="glyphicon glyphicon-filter"></i> Фильтр</span></a>
+            </h4>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse">
+            <div class="panel-body">
+                @using (Ajax.BeginForm("AllVisitsPartial", "Visits", null, new AjaxOptions { UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "visitform" }))
+                {
+                    <div class="col-lg-12 form-inline" style="margin-top:2px; margin-bottom:20px;">
+                        <div class="input-group" style="width:300px; margin:0 auto">
+                            <span class="input-group-addon addonbtn" title="Очистить дату" id="DateClear"><i class="fa fa-calendar"></i></span>
+                            @Html.TextBox("StartDate", null,
+                                                new
+                                                {
+                                                    @style = "width:160px; text-align:center;",
+                                                    @type = "text",
+                                                    @placeholder = "Начало",
+                                                    @class = "form-control submitcontrol",
+                                                    @title = "Дата начала",
+                                                    @data_val = "true"
+                                                })
+
+                            <span class="input-group-addon" style="border-left: 0; border-right: 0;"><i class="fa fa-link"></i></span>
+                            @Html.DropDownList("RoleSearchString",
+                                                        (IEnumerable<SelectListItem>)ViewData["Roles"], "-Роль-",
+                                                        htmlAttributes: new
+                                                        {
+                                                            @class = "form-control submitcontrol",
+                                                            @style = "width:260px;"
+                                                        })
+                            <div class="input-group-addon addonbtn" id="visfilterclear" title="Очистить условия фильтрации">
+                                <span class="glyphicon glyphicon-refresh"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-inline text-center" style="margin:8px auto; width:540px;">
+                        <dl class="dl-horizontal" id="AboutDL">
+                            <dt>
+                                @Html.Label("Посетитель", htmlAttributes: new { @class = "control-label text-warning text-right" })
+                            </dt>
+                            <dd>
+
+                                <input type="text" name="VisitorLabel" id="VisitorLabel"
+                                       class="form-control submitcontrol"
+                                       readonly
+                                       title="Щелкните для сброса"
+                                       onclick="VisitorClear()"
+                                       style="margin:2px 0; display:inline-block; cursor:pointer"
+                                       value="@ViewData["VisitorId"]" />
+                                <a id="VisitorLink" class="btn btn-default pModal" style="margin:2px 0; margin-top:-1px; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "VisitorId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                                @Html.Hidden("VisitorId")
+                            </dd>
+
+                            <dt>
+                                @Html.Label("Мероприятие", htmlAttributes: new { @class = "control-label text-warning text-right" })
+                            </dt>
+                            <dd>
+                                <input type="text" name="EventLabel" id="EventLabel"
+                                       class="form-control submitcontrol"
+                                       readonly
+                                       title="Щелкните для сброса"
+                                       onclick="EventClear()"
+                                       style="margin:2px 0; display:inline-block; cursor:pointer"
+                                       value="@ViewData["EventName"]" />
+                                <a id="EventLink" class="btn btn-default pModal" style="margin:2px 0; margin-top:-1px; display:inline-block" href='@Url.Action("ShowModalEvents", "Modal")'><span class="glyphicon glyphicon-folder-open"></span></a>
+                                @Html.Hidden("EventId")
+                            </dd>
+
+                            <dt>
+                                @Html.Label("Занятие", htmlAttributes: new { @class = "control-label text-warning text-right" })
+                            </dt>
+                            <dd>
+                                <input type="text" name="ExLabel" id="ExLabel"
+                                       class="form-control submitcontrol"
+                                       readonly
+                                       title="Щелкните для сброса"
+                                       onclick="ExClear()"
+                                       style="margin:2px 0; display:inline-block; cursor:pointer"
+                                       value="@ViewData["ExName"]" />
+                                <a id="ExLink" class="btn btn-default pModal" style="margin:2px 0; margin-top:-1px; display:inline-block" href='@Url.Action("ShowModalExercises", "Modal")'><span class="glyphicon glyphicon-folder-open"></span></a>
+                                @Html.Hidden("ExerciseId")
+                            </dd>
+
+                        </dl>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="updateV">
     @Html.Action("AllVisitsPartial", "Visits", new { @SearchString = "", @RoleSearchString = "" })
 </div>
 
@@ -63,8 +160,11 @@
                 });
         });
 
-        $('body').on('click', '#filterclear', function (event) {
+        $('body').on('click', '#visfilterclear', function (event) {
             $('#visitform').trigger('reset');
+            $('#VisitorId').val(null);
+            $('#EventId').val(null);
+            $('#ExerciseId').val(null);
             $('#visitform').submit();
         });
 
@@ -90,4 +190,129 @@
             }
         });
     </script>
+
+    @*Блок скриптов для работы с DateTimePicker*@
+    <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
+    <script type="text/javascript">
+
+        $.datetimepicker.setLocale('ru');
+
+        // <![CDATA[
+        jQuery(function () {
+            jQuery('#StartDate').datetimepicker({
+                format: 'd/m/Y',
+                formatDate: 'd/m/Y',
+                onShow: function (ct) {
+                    this.setOptions({
+
+                    })
+                },
+                timepicker: false
+            });
+        });
+        // ]]>
+
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $('#loadingImg').hide();
+
+
+            $.ajaxSetup({ cache: false });
+
+            $(".pModal").click(function (e) {
+                e.preventDefault();
+
+                this.href = this.href.split('?')[0];
+
+                if ($(this).attr('id') == 'VisitorLink') {
+                    var _roleid = $('#RoleSearchString').val();
+                    var _eventid = $('#EventId').val();
+                    var _exid = $('#ExerciseId').val();
+                    var _startdate = $("#StartDate").val();
+                    this.href += "?field=VisitorId" + "&_roleid=" + _roleid + "&_eventid=" + _eventid + "&_exid=" + _exid + "&_startdate=" + _startdate;
+                }
+
+                if ($(this).attr('id') == 'EventLink') {
+                    var _visitorid = $("#VisitorId").val();
+                    var _exid = $('#ExerciseId').val();
+                    var _startdate = $("#StartDate").val();
+                    this.href += "?field=EventId" + "&_visitorid=" + _visitorid + "&_exid=" + _exid + "&_startdate=" + _startdate;
+                }
+
+                if ($(this).attr('id') == 'ExLink') {
+                    var _startdate = $("#StartDate").val();
+                    var _visitorid = $("#VisitorId").val();
+                    var _eventid = $('#EventId').val();
+                    this.href += "?field=ExerciseId" + "&_startdate=" + _startdate + "&_visitorid=" + _visitorid + "&_eventid=" + _eventid;
+                }
+
+               // alert(this.href);
+
+                $.get(this.href, function (data) {
+                    $('#dialogContent').html(data);
+                    $('#modDialog').modal('show');
+                });
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $('body').click(function () {
+            $('#resultMessage').fadeOut(1000,
+                function () {
+                    $('#MessageOk').html('');
+                    $('#MessageError').html('');
+                    $('#resultMessage').fadeIn(1000)
+                });
+        });
+
+        //Скрипт очистки полей формы и сброса параметров фильтрации
+        $('body').on('click', '#visfilterclear', function (event) {
+            $('#visitform').trigger('reset');
+
+            $('#VisitorId').val(null);
+            $('#EventId').val(null);
+            $('#ExerciseId').val(null);
+
+            $('#visitform').submit();
+        });
+
+        $('body').on('click', '#DateClear', function (event) {
+            $('#StartDate').val('');
+            $('#visitform').submit();
+        });
+
+
+    </script>
+
+    <script type="text/javascript">
+        //Скрипт очистки значений необязательных полей
+
+        function VisitorClear() {
+            $('#VisitorLabel').val('');
+            $('#VisitorId').val(null);
+            $("#visitform").submit();
+        }
+
+        function EventClear() {
+            $('#EventLabel').val('');
+            $('#EventId').val(null);
+            $("#visitform").submit();
+        }
+
+        function ExClear() {
+            $('#ExLabel').val('');
+            $('#ExerciseId').val(null);
+            $("#visitform").submit();
+        }
+    </script>
+
+    <script type="text/javascript">
+        $(".submitcontrol").bind('change', function () {
+            $("#visitform").submit();
+        });
+    </script>
+
 }

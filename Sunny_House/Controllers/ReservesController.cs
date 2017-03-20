@@ -273,6 +273,35 @@ namespace Sunny_House.Controllers
             return View(_reserves);
         }
 
+        public JsonResult AjaxDelete(int? ReserveId, int? EventId)
+        {
+            if (ReserveId == null || ReserveId == 0 || EventId == null || EventId == 0)
+            {
+                return Json(new { Result = false, Message = "Не указан идентификатор бронирования или мероприятия" }, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                Reserve reserve = db.Reserves.First(e => e.ReserveId == ReserveId);
+                db.Reserves.Remove(reserve);
+                db.SaveChanges();
+
+                //Получаем ID роли "Клиент"
+                int _clientroleid = db.PersonRoles.First(r => r.RoleName.ToUpper() == (string)"Клиент".ToUpper()).RoleId;
+                var @event = db.Events.Find(EventId);
+                var _allplaces = @event.PlacesCount;
+                var _resplaces = db.Reserves.Where(e => e.EventId == EventId && e.RoleId == _clientroleid).Count();
+                double _percent = (Convert.ToDouble(_resplaces)) / (Convert.ToDouble(_allplaces));
+
+                return Json(new { Result = true, Message = "Информация о бронировании удалена", percent = _percent, resplaces = _resplaces, allplaces = _allplaces }, JsonRequestBehavior.AllowGet);
+
+            }
+            catch (Exception)
+                {
+                    return Json(new { Result = false, Message = "Во время выполнения запроса произошла критическая ошибка" }, JsonRequestBehavior.AllowGet);
+                }
+        }
+
         #endregion
 
         #region Блок работы с потенциальными клиентами ------------------------------------------
