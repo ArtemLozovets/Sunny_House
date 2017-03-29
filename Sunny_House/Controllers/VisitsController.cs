@@ -258,6 +258,13 @@ namespace Sunny_House.Controllers
         public ActionResult AllVisitsPartial(int? RoleSearchString, int? VisitorId, int? EventId, int? ExerciseId, DateTime? StartDate, int? page, string SortBy)
         {
 
+            ViewData["RoleSearchString"] = RoleSearchString;
+            ViewData["VisitorId"] = VisitorId;
+            ViewData["EventId"] = EventId;
+            ViewData["ExerciseId"] = ExerciseId;
+            ViewData["StartDate"] = StartDate;
+
+
             ViewBag.SortExName = SortBy == "ExName" ? "ExName desc" : "ExName";
             ViewBag.SortPersonFIO = SortBy == "PersonFIO" ? "PersonFIO desc" : "PersonFIO";
             ViewBag.SortRoleName = SortBy == "RoleName" ? "RoleName desc" : "RoleName";

@@ -10,8 +10,11 @@
             @Ajax.ActionLink("ФИО персоны", "AllVisitsPartial", new
        {
            SortBy = ViewBag.SortPersonFIO,
-           SearchString = Request["SearchString"],
-           RoleSearchString = Request["RoleSearchString"]
+           RoleSearchString = ViewData["RoleSearchString"],
+           VisitorId = ViewData["VisitorId"],
+           EventId = ViewData["EventId"],
+           ExerciseId = ViewData["ExerciseId"],
+           StartDate = ViewData["StartDate"]
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "PersonFIO" })
             <i id="PersonFIOArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -19,8 +22,11 @@
             @Ajax.ActionLink("Занятие", "AllVisitsPartial", new
        {
            SortBy = ViewBag.SortExName,
-           SearchString = Request["SearchString"],
-           RoleSearchString = Request["RoleSearchString"]
+           RoleSearchString = ViewData["RoleSearchString"],
+           VisitorId = ViewData["VisitorId"],
+           EventId = ViewData["EventId"],
+           ExerciseId = ViewData["ExerciseId"],
+           StartDate = ViewData["StartDate"]
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "ExName" })
             <i id="ExNameArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -29,8 +35,11 @@
             @Ajax.ActionLink("Дата", "AllVisitsPartial", new
        {
            SortBy = ViewBag.SortStartTime,
-           SearchString = Request["SearchString"],
-           RoleSearchString = Request["RoleSearchString"]
+           RoleSearchString = ViewData["RoleSearchString"],
+           VisitorId = ViewData["VisitorId"],
+           EventId = ViewData["EventId"],
+           ExerciseId = ViewData["ExerciseId"],
+           StartDate = ViewData["StartDate"]
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "StartTime" })
             <i id="StartTimeArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -39,8 +48,11 @@
             @Ajax.ActionLink("Мероприятие", "AllVisitsPartial", new
        {
            SortBy = ViewBag.SortEventName,
-           SearchString = Request["SearchString"],
-           RoleSearchString = Request["RoleSearchString"]
+           RoleSearchString = ViewData["RoleSearchString"],
+           VisitorId = ViewData["VisitorId"],
+           EventId = ViewData["EventId"],
+           ExerciseId = ViewData["ExerciseId"],
+           StartDate = ViewData["StartDate"]
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "EventName" })
             <i id="EventNameArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -49,8 +61,11 @@
             @Ajax.ActionLink("Роль", "AllVisitsPartial", new
        {
            SortBy = ViewBag.SortRoleName,
-           SearchString = Request["SearchString"],
-           RoleSearchString = Request["RoleSearchString"]
+           RoleSearchString = ViewData["RoleSearchString"],
+           VisitorId = ViewData["VisitorId"],
+           EventId = ViewData["EventId"],
+           ExerciseId = ViewData["ExerciseId"],
+           StartDate = ViewData["StartDate"]
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "RoleName" })
             <i id="RoleNameArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -102,10 +117,13 @@
 @Html.PagedListPager(Model, page => Url.Action("AllVisitsPartial", "Visits",
                              new
                              {
-                                 SearchString = ViewData["SearchString"],
-                                 RoleSearchString = ViewData["RoleSearchString"],
-                                 SortBy = Request["SortBy"],
-                                 page,
+                                RoleSearchString = ViewData["RoleSearchString"],
+                                VisitorId = ViewData["VisitorId"],  
+                                EventId = ViewData["EventId"], 
+                                ExerciseId = ViewData["ExerciseId"],
+                                StartDate = ViewData["StartDate"],
+                                SortBy = Request["SortBy"],
+                                page
                              }),
                              PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
                              new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "updateV" }))
