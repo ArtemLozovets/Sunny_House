@@ -8,7 +8,7 @@
 <div style="margin-bottom:26px;"><span id="topanchor"></span></div>
 
 <div id="modDialog" class="modal fade">
-    <div id="dialogContent" class="modal-dialog"></div>
+    <div id="dialogContent" class="modal-dialog" style="min-width:800px;"></div>
 </div>
 
 
@@ -575,7 +575,7 @@
                     var _id = $(this).data("reserveid");
                     $.get('/Reserves/AjaxDelete', {
                         ReserveId: _id,
-                        EventId: "@Model.EventId"                          
+                        EventId: "@Model.EventId"
                     },
                          function (data) {
                              $('#loadingImg').hide();
@@ -594,6 +594,40 @@
                 }
             });
 
+        });
+    </script>
+
+    <script type="text/javascript">
+        //Скрипт изменения роли при бронировании
+        $("body").on('change', '.roleddl', function myfunction(e) {
+            var elem = e.target;
+            var _reserveId = $(elem).data('reserveid');
+            var _roleId = $(elem).val();
+
+            if (confirm("Изменить роль персоны?")) {
+                $.ajaxSetup({ cache: false });
+                $('#loadingImg').show();
+
+                $.get('/Reserves/AjaxChangeRole', {
+                    ReserveId: _reserveId,
+                    RoleId: _roleId,
+                    EventId: "@Model.EventId"
+                },
+                     function (data) {
+                         $('#loadingImg').hide();
+                         if(data.Result){
+                             $('#ReservedCountSpan').text(data.resplaces);
+                             $('#AllCountSpan').text(data.allplaces);
+                             RefreshCircleBar(data.percent);
+                         }
+                         else{
+                             alert(data.Message);
+                         }
+                     });
+            }
+            else{
+                $('#eventform').submit();
+            }
         });
     </script>
 }

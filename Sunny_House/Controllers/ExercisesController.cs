@@ -52,21 +52,26 @@ namespace Sunny_House.Controllers
 
                 var _exercises = (from ex in db.Exercises
 
-                                  where ((_endDate >= ex.StartTime) && (_startDate <= ex.EndTime)) &&
+                                  where ((_endDate >= DbFunctions.TruncateTime(ex.StartTime)) && (_startDate <= DbFunctions.TruncateTime(ex.EndTime))) &&
                                         (ex.Subject.ToUpper().Contains(SearchString.ToUpper()) || String.IsNullOrEmpty(SearchString))
                                   select ex);
 
                 switch (FilterMode)
                 {
+                    case "Current":
+                        _exercises = _exercises.Where(e => e.EndTime >= DateTime.Now).OrderBy(e => e.StartTime);
+                        break;
+
                     case "All":
+                        _exercises = _exercises.OrderByDescending(e=>e.StartTime);
                         break;
 
                     case "Archive":
-                        _exercises = _exercises.Where(e => e.EndTime < DateTime.Now);
+                        _exercises = _exercises.Where(e => e.EndTime < DateTime.Now).OrderByDescending(e=>e.StartTime);
                         break;
 
                     default:
-                        _exercises = _exercises.Where(e => e.EndTime >= DateTime.Now);
+                        _exercises = _exercises.Where(e => e.EndTime >= DateTime.Now).OrderBy(e => e.StartTime);
                         break;
                 }
 
@@ -109,7 +114,6 @@ namespace Sunny_House.Controllers
                         ViewData["SortColumn"] = "EndTime";
                         break;
                     default:
-                        _exercises = _exercises.OrderByDescending(x => x.ExerciseId);
                         break;
                 }
 

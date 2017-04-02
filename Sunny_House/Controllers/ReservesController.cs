@@ -297,9 +297,40 @@ namespace Sunny_House.Controllers
 
             }
             catch (Exception)
-                {
-                    return Json(new { Result = false, Message = "Во время выполнения запроса произошла критическая ошибка" }, JsonRequestBehavior.AllowGet);
-                }
+            {
+                return Json(new { Result = false, Message = "Во время выполнения запроса произошла критическая ошибка" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        public JsonResult AjaxChangeRole(int? ReserveId, int? RoleId, int? EventId)
+        {
+            if (ReserveId == null || ReserveId == 0 || RoleId == null || RoleId == 0 || EventId == null || EventId == 0)
+            {
+                return Json(new { Result = false, Message = "Неверные входные параметры" }, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                var reserve = new Reserve() { ReserveId = ReserveId ?? 1, RoleId = RoleId ?? 1 };
+                var _res = db.Reserves.FirstOrDefault(r => r.ReserveId == ReserveId);
+                _res.RoleId = RoleId ?? 1;
+
+                db.SaveChanges();
+
+                //Получаем ID роли "Клиент"
+                int _clientroleid = db.PersonRoles.First(r => r.RoleName.ToUpper() == (string)"Клиент".ToUpper()).RoleId;
+                var @event = db.Events.Find(EventId);
+                var _allplaces = @event.PlacesCount;
+                var _resplaces = db.Reserves.Where(e => e.EventId == EventId && e.RoleId == _clientroleid).Count();
+                double _percent = (Convert.ToDouble(_resplaces)) / (Convert.ToDouble(_allplaces));
+
+                return Json(new { Result = true, Message = "Роль изменена", percent = _percent, resplaces = _resplaces, allplaces = _allplaces }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Result = false, Message = "Во время выполнения запроса произошла критическая ошибка:"+ex.Message.ToString() }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         #endregion
@@ -384,15 +415,22 @@ namespace Sunny_House.Controllers
                             {
                                 PersonId = person.PersonId,
                                 PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
-                                DateOfBirth = person.DateOfBirth
+                                DateOfBirth = person.DateOfBirth,
+                                Note = person.Note
                             }).Distinct().AsEnumerable().Select(e => new PersonsViewModel
                             {
                                 PersonId = e.PersonId,
                                 PersonFIO = e.PersonFIO.Trim(),
                                 PersonAge = AgeMethods.GetAge(e.DateOfBirth),
                                 PersonMonth = AgeMethods.GetTotalMonth(e.DateOfBirth),
-                                DateOfBirth = e.DateOfBirth
-                            }).Where(a => a.PersonAge >= MinAge && a.PersonAge <= MaxAge);
+                                DateOfBirth = e.DateOfBirth,
+                                Note = e.Note
+                            }).Where(a => a.PersonAge >= MinAge && a.PersonAge <= MaxAge || a.PersonAge == null);
+
+            if (MinAge > 0 || MaxAge < 100)
+            {
+                _persons = _persons.Where(a => a.PersonAge != null);
+            }
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);
@@ -643,7 +681,7 @@ namespace Sunny_House.Controllers
 
             //Получаем ID источника "Бронирование"
             int _sourceid = db.CommentSources.First(s => s.SourceName.ToUpper() == (string)"Бронирование".ToUpper()).SourceId;
-            
+
             CommentViewModel _comment = new CommentViewModel();
             _comment.EventId = EventId ?? null;
             _comment.SourceId = _sourceid;
@@ -651,7 +689,7 @@ namespace Sunny_House.Controllers
             _comment.SourceName = "Бронирование";
             _comment.EventName = db.Events.FirstOrDefault(e => e.EventId == EventId).EventName.ToString();
             _comment.SignPersonId = ClientId ?? null;
-        
+
             List<RelationViewModel> _rellist = new List<RelationViewModel>();
 
             var _person = (from person in db.Persons
@@ -661,7 +699,7 @@ namespace Sunny_House.Controllers
                                PersonId = person.PersonId,
                                PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName
                            }).Single();
-          
+
             _rellist.Add(_person);
 
             var _result = (from relation in db.PersonRelations
@@ -710,7 +748,7 @@ namespace Sunny_House.Controllers
                     try
                     {
                         db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug information------------------------------------
-                        
+
                         Comment _comment = new Comment
                         {
                             SourceId = model.SourceId,

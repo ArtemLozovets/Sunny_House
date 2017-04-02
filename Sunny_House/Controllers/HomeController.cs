@@ -73,9 +73,11 @@ namespace Sunny_House.Controllers
 
                            join comm in db.Communications on percomm.CommunicationId equals comm.Id into tmpcomm
                            from comm in tmpcomm.DefaultIfEmpty()
-                           where person.FirstName
-                             .Contains(SearchString) || person.LastName
-                             .Contains(SearchString) || comm.Address_Number.Contains(SearchString)
+                           where person.FirstName.Contains(SearchString) 
+                           || person.LastName.Contains(SearchString)
+                           || person.Note.Contains(SearchString)
+                           || comm.Address_Number.Contains(SearchString)
+                           
                            select new
                            {
                                PersonId = person.PersonId,

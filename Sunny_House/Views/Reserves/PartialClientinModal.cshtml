@@ -13,6 +13,9 @@
         <th>
             @Html.DisplayNameFor(model => model.First().DateOfBirth)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().Note)
+        </th>
 
         <th>
             <input type="checkbox" name="checkAll" id="checkAll" />
@@ -50,6 +53,9 @@
 
             <td>
                 @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
             </td>
             <td>
                 <input type="checkbox" name="PersonsIDS" id="PersonsIDS" class="checkPerson" value="@item.PersonId" />

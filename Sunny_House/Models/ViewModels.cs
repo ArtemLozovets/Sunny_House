@@ -90,6 +90,8 @@ namespace Sunny_House.Models
         [Display(Name = "Месяцев")]
         public int? PersonMonth { get; set; }
 
+        public int RoleId { get; set; }
+
     }
 
     [NotMapped]

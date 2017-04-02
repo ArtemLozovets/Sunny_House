@@ -84,14 +84,19 @@ namespace Sunny_House.Controllers
             switch (FilterMode)
             {
                 case "All":
+                    _events = _events.OrderByDescending(e=>e.StartTime);
+                    break;
+
+                case "Current":
+                    _events = _events.Where(e => e.EndTime >= DateTime.Today).OrderBy(e => e.StartTime);
                     break;
 
                 case "Archive":
-                    _events = _events.Where(e => e.EndTime < DateTime.Today);
+                    _events = _events.Where(e => e.EndTime < DateTime.Today).OrderByDescending(e=>e.StartTime);
                     break;
 
                 default:
-                    _events = _events.Where(e => e.EndTime >= DateTime.Today);
+                    _events = _events.Where(e => e.EndTime >= DateTime.Today).OrderBy(e=>e.StartTime);
                     break;
             }
 
@@ -429,6 +434,7 @@ namespace Sunny_House.Controllers
                                 PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
                                 Num_Address = tmpcomm.FirstOrDefault().Address_Number,
                                 PersonRole = role.RoleName,
+                                RoleId = role.RoleId,
                                 DOB = person.DateOfBirth
                             }).OrderByDescending(r => r.ReserveId).AsEnumerable().Select(e => new PersonReserveViewModel
                                                 {
@@ -438,10 +444,12 @@ namespace Sunny_House.Controllers
                                                     PersonAge = AgeMethods.GetAge(e.DOB),
                                                     PersonMonth = AgeMethods.GetTotalMonth(e.DOB),
                                                     Num_Address = e.Num_Address,
-                                                    PersonRole = e.PersonRole
+                                                    PersonRole = e.PersonRole,
+                                                    RoleId = e.RoleId
                                                 });
 
             ViewData["EventId"] = EventId;
+            ViewBag.RoleList = db.PersonRoles.ToList();
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);

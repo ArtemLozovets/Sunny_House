@@ -2,7 +2,13 @@
 @model PagedList.IPagedList<Sunny_House.Models.PersonReserveViewModel>
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
-<table class="table">
+<style type="text/css">
+    .leftheader tr th{
+        text-align:left;
+    }
+</style>
+
+<table class="table ReestrTable leftheader" >
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.First().PersonFIO)
@@ -33,7 +39,18 @@
                 <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Связанные персоны">@Html.DisplayFor(modelItem => item.PersonFIO)</a>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PersonRole)
+                @*@Html.DisplayFor(modelItem => item.PersonRole)*@
+
+                @Html.DropDownList("ddl" + @item.PersonId, new SelectList(ViewBag.RoleList, "RoleId", "RoleName", item.RoleId),
+                                                        null,
+                                                        htmlAttributes: new
+                                                        {
+                                                            @class = "form-control roleddl",
+                                                            style = "width:160px; margin:2px 0; display:inline-block;",
+                                                            data_reserveId = item.ReserveId,
+                                                            id = "ddl" + item.PersonId
+                                                        })
+
             </td>
             @if (item.PersonAge != null && item.PersonAge > 0)
             {
@@ -54,12 +71,13 @@
                                   PersonId = item.PersonId,
                                   ReturnUrl= "/Reserves/ResShowOfEvent?EventId="+@ViewData["EventId"]
                 })'>
-                <span class="glyphicon glyphicon-link"></span></a>
+                    <span class="glyphicon glyphicon-link"></span>
+                </a>
 
                 <a class="btn btn-default btn-sm" title="Удалить бронь" href="#" data-reserveid="@item.ReserveId" id="remreserve">
                     <span class="glyphicon glyphicon-remove"></span>
                 </a>
-            
+
             </td>
         </tr>
     }

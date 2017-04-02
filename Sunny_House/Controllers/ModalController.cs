@@ -503,6 +503,8 @@ namespace Sunny_House.Controllers
         [HttpPost]
         public ActionResult ExercisesPartialList(string field, string ExerciseSearchString, DateTime? StartTimeS, DateTime? EndTimeS, int? page, DateTime? FilterDate, int? FilterVisitor, int? FilterEvent)
         {
+            db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s));
+
             ViewBag.Mode = field;
 
             ViewData["ExerciseSearchString"] = ExerciseSearchString;
@@ -530,9 +532,9 @@ namespace Sunny_House.Controllers
                        where (ex.EventId == FilterEvent || FilterEvent == null) &&
                                 (visit.VisitorId == FilterVisitor || FilterVisitor == null) &&
                                 (DbFunctions.TruncateTime(ex.StartTime) == FilterDate || FilterDate == null) &&
-                                (ex.Subject.ToUpper().Contains(ExerciseSearchString.ToUpper()) || String.IsNullOrEmpty(ExerciseSearchString)) &&
-                                ((ex.StartTime >= StartTimeS || StartTimeS == null) &&
-                                (ex.EndTime <= EndTimeS || EndTimeS == null))
+                               ( (ex.Event.EventName.Contains(ExerciseSearchString) || String.IsNullOrEmpty(ExerciseSearchString)) ||
+                                (ex.Subject.Contains(ExerciseSearchString) || String.IsNullOrEmpty(ExerciseSearchString))) &&
+                                ((DbFunctions.TruncateTime(ex.StartTime) >= StartTimeS || StartTimeS == null) && (DbFunctions.TruncateTime(ex.EndTime) <= EndTimeS || EndTimeS == null))
                        select ex).Distinct().ToList();
 
             int pageSize = 50;

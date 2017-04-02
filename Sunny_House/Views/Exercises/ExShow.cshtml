@@ -7,11 +7,11 @@
 @{
     ViewBag.Title = "Занятия";
 
-        string ReturnParam = "/Exercises/ExShow?FilterMode=" + Request.QueryString["FilterMode"];
-        ReturnParam += "&SearchStartDate=" + Request.QueryString["SearchStartDate"];
-        ReturnParam += "&SearchEndDate=" + Request.QueryString["SearchEndDate"];
-        ReturnParam += "&SearchString=" + Request.QueryString["SearchString"];
-        ReturnParam += "&page=" + Request.QueryString["page"];
+    string ReturnParam = "/Exercises/ExShow?FilterMode=" + Request.QueryString["FilterMode"];
+    ReturnParam += "&SearchStartDate=" + Request.QueryString["SearchStartDate"];
+    ReturnParam += "&SearchEndDate=" + Request.QueryString["SearchEndDate"];
+    ReturnParam += "&SearchString=" + Request.QueryString["SearchString"];
+    ReturnParam += "&page=" + Request.QueryString["page"];
 }
 
 <h2><i class="fa fa-bell"></i> Занятия</h2>
@@ -54,7 +54,7 @@
                 @Html.TextBox("SearchStartDate", null,
                 new
                 {
-                    @style = "width:140px;",
+                    @style = "width:110px;",
                     @type = "text",
                     @class = "form-control ",
                     @placeholder = "Начало",
@@ -67,7 +67,7 @@
                 @Html.TextBox("SearchEndDate", null,
                 new
                 {
-                    @style = "width:140px;",
+                    @style = "width:110px;",
                     @type = "text",
                     @class = "form-control ",
                     @placeholder = "Окончание",
@@ -133,7 +133,7 @@
                 },
                     new { @id = "EventName" })@Html.Raw("&nbsp;")<i id="EventNameArrow"></i>
                 </th>
-                <th>
+                <th style="width:130px;">
                     @Html.ActionLink("Начало", "ExShow",
                 new
                 {
@@ -186,16 +186,16 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Event.EventName)
                     </td>
-                    <td>
+                    <td style="text-align:center;">
                         @Html.DisplayFor(modelItem => item.StartTime)
                     </td>
-                    <td>
+                    <td style="text-align:center;">
                         @Html.DisplayFor(modelItem => item.EndTime)
                     </td>
                     <td>
                         @item.Address.City, @item.Address.AddressValue
                     </td>
-                    <td>
+                    <td style="min-width:140px;">
                         @Html.DisplayFor(modelItem => item.Note)
                     </td>
                     <td style="text-align:center;">
@@ -297,24 +297,24 @@
                 // <![CDATA[
                 jQuery(function () {
                     jQuery('#SearchStartDate').datetimepicker({
-                        format: 'd/m/Y H:i',
+                        format: 'd/m/Y',
                         formatDate: 'd/m/Y',
                         onShow: function (ct) {
                             this.setOptions({
                                 maxDate: jQuery('#SearchEndDate').val() ? jQuery('#SearchEndDate').val() : false
                             })
                         },
-                        timepicker: true
+                        timepicker: false
                     });
                     jQuery('#SearchEndDate').datetimepicker({
-                        format: 'd/m/Y H:i',
+                        format: 'd/m/Y',
                         formatDate: 'd/m/Y',
                         onShow: function (ct) {
                             this.setOptions({
                                 minDate: jQuery('#SearchStartDate').val() ? jQuery('#SearchStartDate').val() : false
                             })
                         },
-                        timepicker: true
+                        timepicker: false
                     });
                 });
                 // ]]>
