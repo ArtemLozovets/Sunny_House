@@ -56,11 +56,16 @@
                     <dd>
                         @Model.Address.City, @Model.Address.AddressValue
                     </dd>
-                    <dt>
+                    <dt style="margin-top:10px;">
                         @Html.DisplayNameFor(model => model.Note)
                     </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.Note)
+                    <dd style="margin-top:10px;">
+                       
+
+                        <div class="input-group" style="width:200px; ">
+                            @Html.TextAreaFor(model => model.Note, new { @class = "form-control", style = "resize:vertical; max-height:200px;", id = "noteTA" })
+                            <span class="input-group-addon btn btn-default glyphicon glyphicon-floppy-save infoesBtn" title="Сохранить" data-exid="@Model.ExerciseId"></span>
+                        </div>
                     </dd>
                 </dl>
 
@@ -257,6 +262,49 @@
             }
         };
 
+    </script>
+
+    <script type="text/javascript">
+        //Сохраняем значение поля "Информация" при потере фокуса поля ввода
+        $('body').on('focusout', '#noteTA', function (e) {
+            $(this).next().trigger('click');
+        });
+
+        //Скрипт обновления поля "Информация"
+        //Работа с представлением ShowPotentialPartial, контроллер ReservesController
+        $('body').on('click', '.infoesBtn', function (event) {
+            event.preventDefault();
+            var elem = $(this).prev();
+            var _infoes = elem.val();
+            var _exId = $(this).data("exid");
+            $('#loadingImg').show();
+            $.ajax({
+                type: 'POST',
+                traditional: true,
+                url: '/Exercises/AjaxUpdateInfoes/',
+                data: {
+                    ExId: _exId,
+                    Infoes: _infoes
+                },
+                success: function (data) {
+                    $('#loadingImg').hide();
+                    if (data.Result) {
+                        //Обновляем грид
+                        elem.css('background-color', '#DDFFDD');
+                    }
+                    else {
+                        //Операция не удалась
+                        elem.css('background-color', '#FFDDDD');
+                    }
+
+                },
+                fail: function (data) {
+                    //Операция не удалась
+                    $('#loadingImg').hide();
+                    elem.css('background-color', '#FFDDDD');
+                }
+            });
+        });
     </script>
 
 }                   

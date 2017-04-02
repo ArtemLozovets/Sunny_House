@@ -112,7 +112,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/16/2017 19:04:18</publishTime>
     </File>
     <File Include="bin/Sunny_House.dll">
-      <publishTime>04/02/2017 18:08:21</publishTime>
+      <publishTime>04/02/2017 20:35:05</publishTime>
     </File>
     <File Include="bin/System.Web.Helpers.dll">
       <publishTime>10/10/2016 19:43:11</publishTime>
@@ -901,7 +901,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/11/2016 21:05:21</publishTime>
     </File>
     <File Include="Views/Exercises/ExDetails.cshtml">
-      <publishTime>04/02/2017 16:42:35</publishTime>
+      <publishTime>04/02/2017 20:34:24</publishTime>
     </File>
     <File Include="Views/Exercises/ExEdit.cshtml">
       <publishTime>12/11/2016 14:49:24</publishTime>
@@ -1156,7 +1156,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/20/2016 19:27:26</publishTime>
     </File>
     <File Include="Views/Reserves/ResShowOfEvent.cshtml">
-      <publishTime>04/02/2017 16:52:25</publishTime>
+      <publishTime>04/02/2017 19:12:33</publishTime>
     </File>
     <File Include="Views/Reserves/ShowModalClient.cshtml">
       <publishTime>04/01/2017 15:32:04</publishTime>

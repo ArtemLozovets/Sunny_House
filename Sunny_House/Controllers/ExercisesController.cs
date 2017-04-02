@@ -479,6 +479,36 @@ namespace Sunny_House.Controllers
             }
         }
 
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
+        public JsonResult AjaxUpdateInfoes(int? exId, string Infoes)
+        {
+            if (exId == null)
+            {
+                return Json(new { Result = false }, JsonRequestBehavior.AllowGet);
+            }
+            try
+            {
+                Exercise _ex = db.Exercises.Find(exId);
+                if (_ex == null)
+                {
+                    return Json(new { Result = false }, JsonRequestBehavior.AllowGet);
+                }
+
+                _ex.Note = Infoes;
+
+                db.Entry(_ex).State = EntityState.Modified;
+                db.SaveChanges();
+                return Json(new { Result = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { Result = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
