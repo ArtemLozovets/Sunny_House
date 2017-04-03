@@ -69,10 +69,10 @@ namespace Sunny_House.Controllers
             {
 
                 _persons = from person in db.Persons
-                           from percomm in db.PersonCommunications.Where(pid => person.PersonId == pid.PersonId).Take(1).DefaultIfEmpty()
-
+                           from percomm in db.PersonCommunications.Where(pid => person.PersonId == pid.PersonId).DefaultIfEmpty()
                            join comm in db.Communications on percomm.CommunicationId equals comm.Id into tmpcomm
                            from comm in tmpcomm.DefaultIfEmpty()
+
                            where person.FirstName.Contains(SearchString) 
                            || person.LastName.Contains(SearchString)
                            || person.Note.Contains(SearchString)

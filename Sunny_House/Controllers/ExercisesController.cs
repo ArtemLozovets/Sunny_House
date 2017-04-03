@@ -53,7 +53,9 @@ namespace Sunny_House.Controllers
                 var _exercises = (from ex in db.Exercises
 
                                   where ((_endDate >= DbFunctions.TruncateTime(ex.StartTime)) && (_startDate <= DbFunctions.TruncateTime(ex.EndTime))) &&
-                                        (ex.Subject.ToUpper().Contains(SearchString.ToUpper()) || String.IsNullOrEmpty(SearchString))
+                                        ((ex.Subject.ToUpper().Contains(SearchString.ToUpper()) || String.IsNullOrEmpty(SearchString)) ||
+                                        (ex.Note.ToUpper().Contains(SearchString.ToUpper()) || String.IsNullOrEmpty(SearchString)) ||
+                                        (ex.Event.EventName.Contains(SearchString) || String.IsNullOrEmpty(SearchString)))
                                   select ex);
 
                 switch (FilterMode)

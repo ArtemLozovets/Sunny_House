@@ -24,6 +24,9 @@ namespace Sunny_House.Models
         [Display(Name = "Примечание")]
         public string Note { get; set; }
 
+        [Display(Name = "Фактическое посещение")]
+        public bool FactVisit { get; set; }
+
         public virtual Exercise Exercise { get; set; }
 
         public virtual Person Person { get; set; }

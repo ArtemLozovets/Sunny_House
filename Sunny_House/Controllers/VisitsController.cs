@@ -234,14 +234,18 @@ namespace Sunny_House.Controllers
                                  PersonFIO = visitor.Person.FirstName + " " + visitor.Person.LastName + " " + visitor.Person.MiddleName,
                                  FirstName = visitor.Person.FirstName,
                                  LastName = visitor.Person.LastName,
-                                 RoleName = visitor.PersonRole.RoleName
+                                 RoleName = visitor.PersonRole.RoleName,
+                                 Note = visitor.Note,
+                                 FactVisit = visitor.FactVisit
                              }).OrderBy(v => v.FirstName).ThenBy(v => v.LastName).AsEnumerable().Select(v => new Visit
                              {
                                  VisitId = v.VisitId,
                                  VisitorId = v.VisitorId,
                                  ExerciseId = v.ExerciseId,
                                  PersonFIO = v.PersonFIO,
-                                 RoleName = v.RoleName
+                                 RoleName = v.RoleName,
+                                 Note = v.Note,
+                                 FactVisit = v.FactVisit
                              });
 
 

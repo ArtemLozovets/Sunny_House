@@ -60,7 +60,7 @@
                         @Html.DisplayNameFor(model => model.Note)
                     </dt>
                     <dd style="margin-top:10px;">
-                       
+
 
                         <div class="input-group" style="width:200px; ">
                             @Html.TextAreaFor(model => model.Note, new { @class = "form-control", style = "resize:vertical; max-height:200px;", id = "noteTA" })
@@ -241,7 +241,7 @@
                         ExId: _exId,
                         RoleId: _roleId,
                         PersonId: _personId,
-                        Note:_note
+                        Note: _note
                     },
                     success: function (data) {
                         $('#loadingImg').hide();
@@ -304,6 +304,14 @@
                     elem.css('background-color', '#FFDDDD');
                 }
             });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $('body').on('change', '.CBFact', function (e) {
+            var elem = e.target;
+            var _visitId = $(elem).data('visitid');
+            alert('Посещение: '+_visitId+'\n Функционал в стадии разработки' );
         });
     </script>
 

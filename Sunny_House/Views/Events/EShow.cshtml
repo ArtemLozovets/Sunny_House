@@ -79,7 +79,7 @@
                     @type = "text",
                     @class = "form-control ",
                     @placeholder = "Название, ответственный...",
-                    @title = "Название, ответственный, описание",
+                    @title = "Название, ответственный, описание, примечание",
                 })
 
                 <div class="input-group-btn">
@@ -188,7 +188,11 @@
 
             @foreach (var item in Model)
             {
-                <tr>
+                string _ttl = "Мероприятие: "+item.EventName+"";
+                _ttl += "\x0A";
+                _ttl += string.IsNullOrEmpty(item.Note) ? "Примечание отсутствует" : "Примечание: " + @item.Note;
+
+                <tr title="@_ttl" style="cursor:pointer">
                     <td>
                         @Html.DisplayFor(modelItem => item.EventName)
                     </td>

@@ -376,7 +376,7 @@ namespace Sunny_House.Controllers
             return PartialView(potentialClients.ToList().ToPagedList(pageNumber, pageSize));
         }
 
-        public ActionResult ShowModalClient(int? EventId, int? MinAge, int? MaxAge, int? RoleId)
+        public ActionResult ShowModalClient(int? EventId, int? MinAge, int? MaxAge, int? RoleId, string PTSearch)
         {
 
             if (EventId == null || MinAge == null || MaxAge == null)
@@ -387,6 +387,7 @@ namespace Sunny_House.Controllers
             ViewData["EventId"] = EventId;
             ViewData["MinAge"] = MinAge;
             ViewData["MaxAge"] = MaxAge;
+            ViewData["PTSearch"] = PTSearch;
             if (RoleId != null) { ViewData["RoleId"] = RoleId; }
             else { ViewData["RoleId"] = "0"; }
 
@@ -394,7 +395,7 @@ namespace Sunny_House.Controllers
         }
 
 
-        public ActionResult PartialClientinModal(int? EventId, int? MinAge, int? MaxAge, int? RoleId, int? page)
+        public ActionResult PartialClientinModal(int? EventId, int? MinAge, int? MaxAge, int? RoleId, int? page, string PTSearch)
         {
             if (EventId == null || MinAge == null || MaxAge == null)
             {
@@ -410,7 +411,16 @@ namespace Sunny_House.Controllers
                             from pr in resjoined.DefaultIfEmpty()
                             join role in db.PersonRoles on pr.RoleId equals role.RoleId into rolejoined
                             from rl in rolejoined.DefaultIfEmpty()
-                            where (pr.RoleId == RoleId || RoleId == null) && (SqlFunctions.DateDiff("day", pr.ReserveDate, DateTime.Today) <= 365 || RoleId == null)
+
+                            from percomm in db.PersonCommunications.Where(pid => person.PersonId == pid.PersonId).DefaultIfEmpty()
+                            join comm in db.Communications on percomm.CommunicationId equals comm.Id into tmpcomm
+                            from comm in tmpcomm.DefaultIfEmpty()
+                            
+                            where (pr.RoleId == RoleId || RoleId == null) && (SqlFunctions.DateDiff("day", pr.ReserveDate, DateTime.Today) <= 365 || RoleId == null) &&
+                                    ((person.FirstName.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch)) ||
+                                        (person.LastName.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch)) ||
+                                        (person.Note.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch)) ||
+                                        (comm.Address_Number.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch))) 
                             select new
                             {
                                 PersonId = person.PersonId,

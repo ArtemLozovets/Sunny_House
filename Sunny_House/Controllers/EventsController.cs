@@ -45,7 +45,8 @@ namespace Sunny_House.Controllers
                            ((_event.EventName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) ||
                             (person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) ||
                             (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) ||
-                            (_event.Description.Contains(SearchString) || string.IsNullOrEmpty(SearchString)))
+                            (_event.Description.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) ||
+                            (_event.Note.Contains(SearchString) || string.IsNullOrEmpty(SearchString)))
                            select new
                            {
                                EventId = _event.EventId,
@@ -57,6 +58,7 @@ namespace Sunny_House.Controllers
                                FirstName = person.FirstName,
                                LastName = person.LastName,
                                MiddleName = person.MiddleName,
+                               Note = _event.Note,
                                PlacesCount = _event.PlacesCount,
                                Percent = ((from res1 in db.Reserves
                                            where (res1.EventId == _event.EventId) && (res1.RoleId == _clientroleid)
@@ -76,6 +78,7 @@ namespace Sunny_House.Controllers
                                FirstName = e.FirstName,
                                LastName = e.LastName,
                                MiddleName = e.MiddleName,
+                               Note = e.Note,
                                PlacesCount = e.PlacesCount,
                                Percent = e.Percent,
                                ResCount = e.ResCount

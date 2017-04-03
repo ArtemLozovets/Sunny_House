@@ -182,6 +182,17 @@
                                                 })
                                                 <span class="input-group-addon" style="border-left: 0; border-right: 0;"><span class="glyphicon glyphicon-filter"></span></span>
                                                 @Html.DropDownList("RoleId", null, "- Роль -", htmlAttributes: new { @class = "form-control", @style = "width:120px;", @title = "Роль" })
+                                                <span class="input-group-addon" style="border-left: 0; border-right: 0;"><span class="glyphicon glyphicon-filter"></span></span>
+                                                @Html.TextBox("PTSearch", null,
+                                                new
+                                                {
+                                                    style = "width:150px;",
+                                                    type = "text",
+                                                    @class = "form-control ",
+                                                    title = "Фамилия, имя, номер телефона, примечание",
+                                                    placeholder = "Персона, тел...",
+                                                    data_val = "true"
+                                                })
                                                 <div class="input-group-btn">
                                                     <button type="submit" title="Добавить" class="btn btn-toolbar groupbtn" id="addpotentialbtn">
                                                         <span class="glyphicon glyphicon-plus"></span>
@@ -298,13 +309,15 @@
                 var minage = $('#minAge').val();
                 var maxage = $('#maxAge').val();
                 var roleid = $('#RoleId').val();
+                var _ptsearch = $('#PTSearch').val();
                 $('#loadingImg').show();
 
                 $.get('/Reserves/ShowModalClient', {
                     EventId:@Model.EventId,
                     MinAge:minage,
                     MaxAge:maxage,
-                    RoleId:roleid
+                    RoleId:roleid,
+                    PTSearch:_ptsearch
                 },
                      function (data) {
                          $('#loadingImg').hide();
