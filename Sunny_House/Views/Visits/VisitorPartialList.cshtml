@@ -49,7 +49,7 @@
                 @Html.CheckBoxFor(modelItem => item.FactVisit, new { @class = "form-control CBFact", style = "width:20px; height:20px;", data_visitid = @item.VisitId })
             </td>
             <td>
-                <div class="input-group">
+                <div class="input-group" style="width:200px;">
                     @Html.TextAreaFor(modelItem => item.Note, new
                    {
                        @class = "form-control notesVIS",
