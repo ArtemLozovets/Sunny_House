@@ -308,11 +308,104 @@
     </script>
 
     <script type="text/javascript">
+        //Скрипт асинхронного изменения значения поля "FactVisit".
         $('body').on('change', '.CBFact', function (e) {
             var elem = e.target;
             var _visitId = $(elem).data('visitid');
-            alert('Посещение: '+_visitId+'\n Функционал в стадии разработки' );
+            var _factState = $(elem).prop('checked');
+
+            if (confirm('Изменить значение свойства "Факт посещения"?')) {
+                $.ajaxSetup({ cache: false });
+                $('#loadingImg').show();
+
+                $.get('/Visits/AjaxFactChange', {
+                    VisitId: _visitId,
+                    factState: _factState
+                },
+                     function (data) {
+                         $('#loadingImg').hide();
+                         if (!data.Result) {
+                             alert(data.Message);
+                         }
+                     });
+            }
+            else {
+                $('#visitform').submit();
+            }
         });
     </script>
+
+   <script type="text/javascript">
+       //Скрипт изменения роли при посещении
+       $("body").on('change', '.roleddl', function myfunction(e) {
+           var elem = e.target;
+           var _visitId = $(elem).data('visitid');
+           var _roleId = $(elem).val();
+
+           if (confirm("Изменить роль персоны?")) {
+               $.ajaxSetup({ cache: false });
+               $('#loadingImg').show();
+
+               $.get('/Visits/AjaxChangeRole', {
+                   VisitId:_visitId,
+                   RoleId: _roleId,
+               },
+                    function (data) {
+                        $('#loadingImg').hide();
+                        if (!data.Result) {
+                            alert(data.Message);
+                        }
+                    });
+           }
+           else {
+               $('#visitform').submit();
+           }
+       });
+</script>
+
+<script type="text/javascript">
+    //Сохраняем значение поля "Примечание" (посетители) при потере фокуса поля ввода
+    $('body').on('focusout', '.notesVIS', function (e) {
+        $(this).next().trigger('click');
+    });
+
+    //Скрипт обновления поля "Информация"
+    //Работа с представлением ShowPotentialPartial, контроллер ReservesController
+    $('body').on('click', '.notesBtn', function (event) {
+        event.preventDefault();
+        var elem = $(this).prev();
+        var _notes = elem.val();
+        var _visitId = $(this).data("visitid");
+        $('#loadingImg').show();
+        $.ajax({
+            type: 'POST',
+            traditional: true,
+            url: '/Visits/AjaxUpdateInfoes/',
+            data: {
+                VisitId: _visitId,
+                Infoes: _notes
+            },
+            success: function (data) {
+                $('#loadingImg').hide();
+                if (data.Result) {
+                    //Обновляем грид
+                    elem.css('background-color', '#DDFFDD');
+                }
+                else {
+                    //Операция не удалась
+                    elem.css('background-color', '#FFDDDD');
+                }
+
+            },
+            fail: function (data) {
+                //Операция не удалась
+                $('#loadingImg').hide();
+                elem.css('background-color', '#FFDDDD');
+            }
+        });
+    });
+</script>
+
+
 
 }                   

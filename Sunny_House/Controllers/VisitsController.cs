@@ -40,7 +40,7 @@ namespace Sunny_House.Controllers
         [HttpPost]
         [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> VisCreate([Bind(Include = "VisitorId,ExerciseId,RoleId,Note")] Visit visit)
+        public async Task<ActionResult> VisCreate([Bind(Include = "VisitorId,ExerciseId,RoleId,Note,FactVisit")] Visit visit)
         {
             if (ModelState.IsValid)
             {
@@ -124,7 +124,7 @@ namespace Sunny_House.Controllers
         [HttpPost]
         [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> VisEdit([Bind(Include = "VisitorId,ExerciseId,VisitId,RoleId,Note")] Visit visit)
+        public async Task<ActionResult> VisEdit([Bind(Include = "VisitorId,ExerciseId,VisitId,RoleId,Note,FactVisit")] Visit visit)
         {
             db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Information====================
             if (ModelState.IsValid)
@@ -234,6 +234,7 @@ namespace Sunny_House.Controllers
                                  PersonFIO = visitor.Person.FirstName + " " + visitor.Person.LastName + " " + visitor.Person.MiddleName,
                                  FirstName = visitor.Person.FirstName,
                                  LastName = visitor.Person.LastName,
+                                 RoleId = visitor.RoleId,
                                  RoleName = visitor.PersonRole.RoleName,
                                  Note = visitor.Note,
                                  FactVisit = visitor.FactVisit
@@ -243,6 +244,7 @@ namespace Sunny_House.Controllers
                                  VisitorId = v.VisitorId,
                                  ExerciseId = v.ExerciseId,
                                  PersonFIO = v.PersonFIO,
+                                 RoleId = v.RoleId,
                                  RoleName = v.RoleName,
                                  Note = v.Note,
                                  FactVisit = v.FactVisit
@@ -252,6 +254,7 @@ namespace Sunny_House.Controllers
             ViewData["SearchString"] = SearchString;
             ViewData["RoleSearchString"] = RoleSearchString;
             ViewData["ExerciseId"] = ExerciseId;
+            ViewBag.RoleList = db.PersonRoles.ToList();
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);
@@ -281,7 +284,8 @@ namespace Sunny_House.Controllers
                           join ex in db.Exercises on visit.ExerciseId equals ex.ExerciseId
                           join person in db.Persons on visit.VisitorId equals person.PersonId
                           join role in db.PersonRoles on visit.RoleId equals role.RoleId
-                          where (role.RoleId == RoleSearchString || RoleSearchString == null) &&
+                          where (visit.FactVisit) &&
+                                (role.RoleId == RoleSearchString || RoleSearchString == null) &&
                                 (DbFunctions.TruncateTime(ex.StartTime) == StartDate || StartDate == null) &&
                                 (person.PersonId == VisitorId || VisitorId == null) &&
                                 (ex.ExerciseId == ExerciseId || ExerciseId == null) &&
@@ -489,12 +493,89 @@ namespace Sunny_House.Controllers
                 db.Visits.Add(_visit);
                 db.SaveChanges();
 
-                return Json(new { Result = true, Message = "Инофрмация о песещении добавлена" }, JsonRequestBehavior.AllowGet);
+                return Json(new { Result = true, Message = "Инофрмация о посещении добавлена" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 string we = ex.Message;
-                return Json(new { Result = false, Message = "Ошибка добавления добавления информации о посещении" }, JsonRequestBehavior.AllowGet);
+                return Json(new { Result = false, Message = "Ошибка добавления информации о посещении" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+
+        [Authorize(Roles = "Administrator, User")]
+        public JsonResult AjaxFactChange(int? VisitId, bool? factState)
+        {
+            if (VisitId == null || factState == null)
+            {
+                return Json(new { Result = false, Message = "Ошибка валидации модели" }, JsonRequestBehavior.AllowGet);
+            }
+            try
+            {
+
+                Visit _visit = db.Visits.Find(VisitId);
+                _visit.FactVisit = factState ?? false;
+                db.SaveChanges();
+
+                return Json(new { Result = true, Message = "Инофрмация о факте посещения обновлена" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                string we = ex.Message;
+                return Json(new { Result = false, Message = "Ошибка обновления информации о факте посещения" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [Authorize(Roles = "Administrator, User")]
+        public JsonResult AjaxChangeRole(int? VisitId, int? RoleId)
+        {
+            if (VisitId == null || VisitId == 0 || RoleId == null || RoleId == 0)
+            {
+                return Json(new { Result = false, Message = "Неверные входные параметры" }, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                Visit _visit = db.Visits.Find(VisitId);
+                _visit.RoleId = RoleId ?? 1;
+
+                db.SaveChanges();
+
+                return Json(new { Result = true, Message = "Роль изменена" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Result = false, Message = "Во время выполнения запроса произошла критическая ошибка:" + ex.Message.ToString() }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
+        public JsonResult AjaxUpdateInfoes(int? VisitId, string Infoes)
+        {
+            if (VisitId == null)
+            {
+                return Json(new { Result = false }, JsonRequestBehavior.AllowGet);
+            }
+            try
+            {
+                Visit _visit = db.Visits.Find(VisitId);
+                if (_visit == null)
+                {
+                    return Json(new { Result = false }, JsonRequestBehavior.AllowGet);
+                }
+
+                _visit.Note = Infoes;
+
+                db.Entry(_visit).State = EntityState.Modified;
+                db.SaveChanges();
+                return Json(new { Result = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { Result = false }, JsonRequestBehavior.AllowGet);
             }
         }
 
