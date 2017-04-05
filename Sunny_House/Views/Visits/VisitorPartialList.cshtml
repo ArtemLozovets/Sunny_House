@@ -32,7 +32,7 @@
     {
         <tr>
             <td>
-                @Html.ActionLink(@item.PersonFIO, "ShowPersons", "Home", new { PersonId = @item.VisitorId }, new { target = "_blank" })
+                <a href="#topanchor" class="showMore" data-personid="@item.VisitorId" title="Подробная информация">@Html.DisplayFor(modelItem => item.PersonFIO)</a>
             </td>
             <td>
                 @Html.DropDownList("ddl" + item.VisitId, new SelectList(ViewBag.RoleList, "RoleId", "RoleName", item.RoleId),

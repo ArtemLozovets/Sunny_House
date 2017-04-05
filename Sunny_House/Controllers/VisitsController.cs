@@ -579,6 +579,26 @@ namespace Sunny_House.Controllers
             }
         }
 
+
+        public ActionResult AjaxShowMore(int? VisitorId)
+        {
+            if (VisitorId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var psinfo = db.Persons.FirstOrDefault(x=>x.PersonId == VisitorId);
+
+            MoreInfoesViewModel _result = new MoreInfoesViewModel();
+            _result.PersonId = psinfo.PersonId;
+            _result.PersonFIO = (psinfo.FirstName + " " + psinfo.LastName + " " + psinfo.MiddleName).Trim();
+            _result.Note = psinfo.Note;
+            _result.VisitsList = db.Visits.Where(x => x.VisitorId == VisitorId).ToList();
+
+            return PartialView(_result);
+
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

@@ -545,6 +545,7 @@
     <Content Include="Views\Visits\PersonsPartialList.cshtml" />
     <Content Include="Views\Comments\CommentShowPartial.cshtml" />
     <Content Include="Views\Statistic\Payment.cshtml" />
+    <Content Include="Views\Visits\AjaxShowMore.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
