@@ -303,6 +303,7 @@ namespace Sunny_House.Controllers
         }
 
 
+        [Authorize(Roles = "Administrator, User")]
         public JsonResult AjaxChangeRole(int? ReserveId, int? RoleId, int? EventId)
         {
             if (ReserveId == null || ReserveId == 0 || RoleId == null || RoleId == 0 || EventId == null || EventId == 0)

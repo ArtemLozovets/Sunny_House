@@ -324,8 +324,16 @@ namespace Sunny_House.Models
 
         [Display(Name = "Источник")]
         public string SourceName { get; set; }
+    }
 
-
-
+    [NotMapped]
+    public class MoreInfoesViewModel
+    {
+        public int PersonId { get; set; }
+        public string PersonFIO { get; set; }
+        public List<CommViewModel> CommList { get; set; }
+        public string Note { get; set; }
+        public List<Visit> VisitsList { get; set; }
+        
     }
 }
