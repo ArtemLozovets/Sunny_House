@@ -40,7 +40,7 @@ namespace Sunny_House.Controllers
         [HttpGet]
         public ActionResult ShowPersons(int? PersonId, string SearchString, int? page, string SortBy, string ReturnUrl)
         {
-            //db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug information------------------------------------
+            db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug information------------------------------------
 
             ViewBag.SortFirstName = SortBy == "FirstName" ? "FirstName desc" : "FirstName";
             ViewBag.SortLastName = SortBy == "LastName" ? "LastName desc" : "LastName";

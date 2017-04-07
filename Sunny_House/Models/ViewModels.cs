@@ -56,8 +56,9 @@ namespace Sunny_House.Models
         [Display(Name = "Примечание")]
         public string Note { get; set; }
 
-        [NotMapped]
         public int? RoleId { get; set; }
+
+        public List<Communication> PersonComm { get; set; }
 
     }
 
@@ -335,5 +336,17 @@ namespace Sunny_House.Models
         public string Note { get; set; }
         public List<Visit> VisitsList { get; set; }
         
+    }
+   
+    [NotMapped]
+    public class TestModel
+    {
+        public int PersonId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string MiddleName { get; set; }
+        public DateTime? DOB { get; set; }
+        public List<string> Address_Num { get; set; }
+
     }
 }
