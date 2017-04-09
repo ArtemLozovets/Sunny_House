@@ -1,39 +1,113 @@
-﻿@model IEnumerable<Sunny_House.Models.RelationViewModel>
+﻿@model Sunny_House.Models.MoreInfoesViewModel
 <div class="modal-content ui-front">
     <div class="modal-header">
         <button class="close" data-dismiss="modal" area-hidden="true">X</button>
-        <h4>Средства связи</h4>
+        <h3><i class="fa fa-user-circle"></i> @Model.PersonFIO</h3>
     </div>
 
-    @if (Model.Count() == 0)
-    {
-        <div style="margin-top:30px;">
-            <p class="text-center text-danger" style="margin-top:12px;">Связанные персоны не найдены<p>
-        </div>
-    }
-
-    <div style="margin-top:30px;">
-
-        @foreach (var item in Model)
-        {
-            <div class="panel-group">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" href="#@item.PersonId">
-                                <span>@Html.DisplayFor(modelItem => item.PersonFIO)</span>
-
-                                <span style="display:block; float:right;">@Html.DisplayFor(modelItem => item.RelationName)</span>
-                            </a>
-                        </h4>
-                    </div>
-                        <div id="@item.PersonId" data-personid="@item.PersonId" class="panel-collapse collapse comm">
-                            <div class="panel-body">
-                            </div>
-                        </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#colnote">Примечание</a>
+                </h4>
+            </div>
+            <div id="colnote" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <p>@Model.PersonNote</p>
                 </div>
             </div>
-        }
+        </div>
 
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#colrel">Связанные персоны</a>
+                </h4>
+            </div>
+            <div id="colrel" class="panel-collapse collapse">
+                <div class="panel-body" style="padding:1px 20px">
+                    @if (Model.RelPerson.Count() == 0)
+                    {
+                        <div style="margin-top:30px;">
+                            <p class="text-center text-danger" style="margin-top:12px;">Связанные персоны не найдены<p>
+                        </div>
+                    }
+
+                    <div style="margin-top:30px;">
+
+                        @foreach (var item in Model.RelPerson)
+                        {
+                            <div class="panel-group">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" href="#@item.PersonId">
+                                                <span>@Html.DisplayFor(modelItem => item.PersonFIO)</span>
+
+                                                <span style="display:block; float:right;">@Html.DisplayFor(modelItem => item.RelationName)</span>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="@item.PersonId" data-personid="@item.PersonId" class="panel-collapse collapse comm">
+                                        <div class="panel-body" style="padding:1px 15px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#colvisit">Посещения</a>
+                </h4>
+            </div>
+            <div id="colvisit" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+                        <tr>
+                            <th>Занятие</th>
+                            <th>Дата</th>
+                            <th>Мероприятие</th>
+                            <th style="min-width:150px;">Примечание</th>
+                        </tr>
+                        @if (Model.VisitsList.Count() == 0)
+                        {
+                            <tr>
+                                <td colspan="4">
+                                    <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var item in Model.VisitsList)
+                        {
+                            <tr>
+                                <td style="vertical-align:top !important">
+                                    @Html.ActionLink(@item.ExName, "ExShow", "Exercises", new { ExerciseId = @item.ExerciseId }, new { target = "_blank" })
+                                </td>
+                                <td style="text-align:center; vertical-align:top !important">
+                                    @Html.DisplayFor(modelItem => item.StartTime)
+                                </td>
+                                <td style="max-width:100px; vertical-align:top !important">
+                                    @Html.ActionLink(@item.EventName, "ResShowOfEvent", "Reserves", new { EventId = @item.EventId }, new { target = "_blank" })
+                                </td>
+                                <td class="breakWord" style="max-width:300px; vertical-align:top !important; text-align:justify;">
+                                    @Html.DisplayFor(modelItem => item.Note)
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    </div>
+
+
+
+</div>

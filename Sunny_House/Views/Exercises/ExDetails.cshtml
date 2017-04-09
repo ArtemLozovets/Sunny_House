@@ -411,21 +411,39 @@
     </script>
 
     <script type="text/javascript">
-        //Отображение модального окна с дополнительной информацией о посетителе
+        //Отображение модального окна со списком связанных персон и средств связи
+        //Представление ShowModalPTCRelations контроллер ReservesCintroller
         $(function () {
-            $('body').on('click', '.showMore', function (event) {
+            $('body').on('click', '.showRelPersons', function (event) {
                 event.preventDefault();
+
                 $.ajaxSetup({ cache: false });
                 $('#loadingImg').show();
-                $.get('/Visits/AjaxShowMore', {
-                    VisitorId: $(this).data('personid')
+                $.get('/Reserves/ShowModalPTCRelations', {
+                    PersonId: $(this).data('personid')
                 },
                      function (data) {
                          $('#dialogContent').html(data);
                          $('#modDialog').modal('show');
+                         $('.comm').first().collapse('show');
                          $('#loadingImg').hide();
                      });
             });
+
+            //Отображение средств связи связанных персон
+            $("body").on('show.bs.collapse', '.comm', function () {
+                AjaxLoadComm($(this).attr('id'));
+            });
+
+            function AjaxLoadComm(_id) {
+                $('#loadingImg').show();
+                $('#' + _id + '>div').delay(100).queue(function (nxt) {
+                    $('#' + _id + '>div').load('/Reserves/AjaxPersonComm', { PersonId: _id }, function () {
+                        $('#loadingImg').hide();
+                    });
+                    nxt();
+                });
+            }
         });
     </script>
 }

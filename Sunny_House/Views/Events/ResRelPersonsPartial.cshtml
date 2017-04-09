@@ -39,7 +39,6 @@
                 <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Связанные персоны">@Html.DisplayFor(modelItem => item.PersonFIO)</a>
             </td>
             <td>
-                @*@Html.DisplayFor(modelItem => item.PersonRole)*@
 
                 @Html.DropDownList("ddl" + @item.PersonId, new SelectList(ViewBag.RoleList, "RoleId", "RoleName", item.RoleId),
                                                         null,

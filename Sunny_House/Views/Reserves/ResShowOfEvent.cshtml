@@ -563,12 +563,11 @@
             });
 
             //Отображение средств связи связанных персон
-            $("body").on('show.bs.collapse', '.collapse', function(){
+            $("body").on('show.bs.collapse', '.comm', function(){
                 AjaxLoadComm($(this).attr('id'));
             });
 
             function AjaxLoadComm(_id){
-                if(_id != "collapse1"){
                     $('#loadingImg').show();
                     $('#'+_id+'>div').delay(100).queue(function(nxt){
                         $('#'+_id+'>div').load('/Reserves/AjaxPersonComm', {PersonId:_id}, function() {
@@ -576,7 +575,6 @@
                         });
                         nxt();
                     });
-                }
             }
 
             //Скрипт удаления брони с персоны

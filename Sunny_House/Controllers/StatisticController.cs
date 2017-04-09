@@ -49,7 +49,7 @@ namespace Sunny_House.Controllers
 
             if (mode == "mvisit" || string.IsNullOrEmpty(mode))
             {
-                var _visitlist = (from t in db.Visits
+                var _visitlistfact = (from t in db.Visits
                                   group t by new { t.Exercise.StartTime.Year, t.Exercise.StartTime.Month, t.FactVisit } into g
                                   where g.Key.Year == Year && g.Key.FactVisit
                                   select new
@@ -58,18 +58,37 @@ namespace Sunny_House.Controllers
                                       Total = g.Count()
                                   });
 
+                var _visitlistall = (from t in db.Visits
+                                      group t by new { t.Exercise.StartTime.Year, t.Exercise.StartTime.Month, t.FactVisit } into g
+                                      where g.Key.Year == Year
+                                      select new
+                                      {
+                                          Month = g.Key.Month,
+                                          Total = g.Count()
+                                      });
 
 
-                List<int?> _visit = new List<int?>();
+                List<int?> _visitfact = new List<int?>();
                 for (int i = 1; i < 13; i++)
                 {
-                    if (_visitlist.FirstOrDefault(x => x.Month == i) != null)
+                    if (_visitlistfact.FirstOrDefault(x => x.Month == i) != null)
                     {
-                        _visit.Add(_visitlist.FirstOrDefault(x => x.Month == i).Total);
+                        _visitfact.Add(_visitlistfact.FirstOrDefault(x => x.Month == i).Total);
                     }
-                    else _visit.Add(0);
+                    else _visitfact.Add(0);
                 }
-                return Json(new { Result = true, Message = String.Format("График посещений за {0} год", Year), ChartData = _visit, Mode = mode }, JsonRequestBehavior.AllowGet);
+
+                List<int?> _visitall = new List<int?>();
+                for (int i = 1; i < 13; i++)
+                {
+                    if (_visitlistall.FirstOrDefault(x => x.Month == i) != null)
+                    {
+                        _visitall.Add(_visitlistall.FirstOrDefault(x => x.Month == i).Total);
+                    }
+                    else _visitall.Add(0);
+                }
+
+                return Json(new { Result = true, Message = String.Format("График посещений за {0} год", Year), ChartData = _visitfact, ChartDataA = _visitall, Mode = mode }, JsonRequestBehavior.AllowGet);
             }
 
             if (mode == "mex" || string.IsNullOrEmpty(mode))
@@ -93,7 +112,26 @@ namespace Sunny_House.Controllers
                     else _ex.Add(0);
                 }
 
-                return Json(new { Result = true, Message = String.Format("Количество занятий в {0} году", Year), ChartData = _ex, Mode = mode }, JsonRequestBehavior.AllowGet);
+                var _evlist = (from t in db.Events
+                               group t by new { t.StartTime.Year, t.StartTime.Month } into g
+                               where g.Key.Year == Year
+                               select new
+                               {
+                                   Month = g.Key.Month,
+                                   Total = g.Count()
+                               });
+
+                List<int?> _ev = new List<int?>();
+                for (int i = 1; i < 13; i++)
+                {
+                    if (_evlist.FirstOrDefault(x => x.Month == i) != null)
+                    {
+                        _ev.Add(_evlist.FirstOrDefault(x => x.Month == i).Total);
+                    }
+                    else _ev.Add(0);
+                }
+
+                return Json(new { Result = true, Message = String.Format("Количество занятий в {0} году", Year), ChartData = _ex, ChartDataA = _ev, Mode = mode }, JsonRequestBehavior.AllowGet);
             }
 
 

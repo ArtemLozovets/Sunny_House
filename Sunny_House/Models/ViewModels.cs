@@ -112,6 +112,16 @@ namespace Sunny_House.Models
     }
 
     [NotMapped]
+    public class MoreInfoesViewModel
+    {
+        public int PersonId {get; set;}
+        public string PersonFIO{get; set;}
+        public string PersonNote { get; set; }
+        public List<RelationViewModel> RelPerson {get; set;}
+        public List<Visit> VisitsList { get; set; }
+    }
+
+    [NotMapped]
     public class PaymentViewModel
     {
         [Key]
@@ -324,17 +334,6 @@ namespace Sunny_House.Models
 
         [Display(Name = "Источник")]
         public string SourceName { get; set; }
-    }
-
-    [NotMapped]
-    public class MoreInfoesViewModel
-    {
-        public int PersonId { get; set; }
-        public string PersonFIO { get; set; }
-        public List<CommViewModel> CommList { get; set; }
-        public string Note { get; set; }
-        public List<Visit> VisitsList { get; set; }
-
     }
 
     [NotMapped]
