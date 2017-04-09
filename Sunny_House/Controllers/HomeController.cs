@@ -42,18 +42,14 @@ namespace Sunny_House.Controllers
         {
             db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug information------------------------------------
 
+            SearchString = String.IsNullOrEmpty(SearchString)? null: SearchString.Trim();
+
             ViewBag.SortFirstName = SortBy == "FirstName" ? "FirstName desc" : "FirstName";
             ViewBag.SortLastName = SortBy == "LastName" ? "LastName desc" : "LastName";
             ViewBag.SortMiddleName = SortBy == "MiddleName" ? "MiddleName desc" : "MiddleName";
             ViewBag.SortAge = SortBy == "Age" ? "Age desc" : "Age";
-            ViewBag.SortNum_Address = SortBy == "Num_Address" ? "Num_Address desc" : "Num_Address";
-
 
             var _persons = from person in db.Persons
-                           from percomm in db.PersonCommunications.Where(pid => person.PersonId == pid.PersonId).Take(1).DefaultIfEmpty()
-
-                           join comm in db.Communications on percomm.CommunicationId equals comm.Id into tmpcomm
-                           from comm in tmpcomm.DefaultIfEmpty()
                            select new
                            {
                                PersonId = person.PersonId,
@@ -62,22 +58,17 @@ namespace Sunny_House.Controllers
                                MiddleName = person.MiddleName,
                                DateOfBirth = person.DateOfBirth,
                                Note = person.Note,
-                               Num_Address = tmpcomm.FirstOrDefault().Address_Number
+                               Address_Num = person.PersonCommunication.Select(ss => ss.Communication.Address_Number).ToList()
                            };
 
             if (!String.IsNullOrEmpty(SearchString))
             {
 
                 _persons = from person in db.Persons
-                           from percomm in db.PersonCommunications.Where(pid => person.PersonId == pid.PersonId).Take(1).DefaultIfEmpty()
-                           join comm in db.Communications on percomm.CommunicationId equals comm.Id into tmpcomm
-                           from comm in tmpcomm.DefaultIfEmpty()
-
-                           where person.FirstName.Contains(SearchString) 
+                           where person.FirstName.Contains(SearchString)
                            || person.LastName.Contains(SearchString)
                            || person.Note.Contains(SearchString)
-                           || comm.Address_Number.Contains(SearchString)
-                           
+                           || person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(SearchString)) 
                            select new
                            {
                                PersonId = person.PersonId,
@@ -86,7 +77,7 @@ namespace Sunny_House.Controllers
                                MiddleName = person.MiddleName,
                                DateOfBirth = person.DateOfBirth,
                                Note = person.Note,
-                               Num_Address = tmpcomm.FirstOrDefault().Address_Number
+                               Address_Num = person.PersonCommunication.Select(ss => ss.Communication.Address_Number).ToList()
                            };
             }
             else
@@ -98,7 +89,7 @@ namespace Sunny_House.Controllers
                         _persons = (from person in _persons
                                     from perrel in db.PersonRelations.Where(pid => person.PersonId == pid.PersonId || person.PersonId == pid.RelPersonId)
                                     where perrel.PersonId == PersonId || perrel.RelPersonId == PersonId
-                                    select person).Distinct();
+                                    select person).GroupBy(x=>x.PersonId).Select(x=>x.FirstOrDefault());
                     }
                     else
                     {
@@ -142,14 +133,6 @@ namespace Sunny_House.Controllers
                     _persons = _persons.OrderBy(x => x.DateOfBirth);
                     ViewData["SortColumn"] = "Age";
                     break;
-                case "Num_Address desc":
-                    _persons = _persons.OrderByDescending(x => x.Num_Address);
-                    ViewData["SortColumn"] = "Num_Address";
-                    break;
-                case "Num_Address":
-                    _persons = _persons.OrderBy(x => x.Num_Address);
-                    ViewData["SortColumn"] = "Num_Address";
-                    break;
                 default:
                     //_persons = _persons.OrderBy(x => x.FirstName);
                     break;
@@ -166,10 +149,10 @@ namespace Sunny_House.Controllers
                 _personsviewmodel.LastName = item.LastName;
                 _personsviewmodel.MiddleName = item.MiddleName;
                 _personsviewmodel.DateOfBirth = item.DateOfBirth;
-                _personsviewmodel.PersonAge =  AgeMethods.GetAge(item.DateOfBirth);
+                _personsviewmodel.PersonAge = AgeMethods.GetAge(item.DateOfBirth);
                 _personsviewmodel.PersonMonth = AgeMethods.GetTotalMonth(item.DateOfBirth);
                 _personsviewmodel.Note = item.Note;
-                _personsviewmodel.Num_Address = item.Num_Address;
+                _personsviewmodel.Address_Num = item.Address_Num;
 
                 _personsviewmodellist.Add(_personsviewmodel);
             }

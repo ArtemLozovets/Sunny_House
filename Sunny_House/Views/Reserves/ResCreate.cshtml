@@ -4,7 +4,7 @@
     ViewBag.Title = "Бронирование";
 }
 
-<h2>@ViewData["PersonFIO"]</h2>
+<h2><i class="fa fa-user-circle"></i> @ViewData["PersonFIO"]</h2>
 
 <div class="row">
     <div class="col-md-6">
@@ -91,7 +91,6 @@
                 $("#EventLabel").width(wd);
             });
         });
-
 
         $('#ReserveForm').submit(function () {
             var flag = false;

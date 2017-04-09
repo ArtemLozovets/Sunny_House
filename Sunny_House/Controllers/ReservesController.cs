@@ -95,11 +95,24 @@ namespace Sunny_House.Controllers
                 try
                 {
                     db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug information------------------------------------
-                    reserve.ReserveDate = DateTime.Now;
-                    db.Reserves.Add(reserve);
-                    db.SaveChanges();
-                    TempData["MessageOk"] = "Информация о бронировании успешно добавлена";
-                    return RedirectToAction("ResShow", "Reserves", new { PersonId = reserve.PersonId });
+
+                    if (db.Reserves.Where(x => x.PersonId == reserve.PersonId && x.EventId == reserve.EventId).Count() == 0)
+                    {
+                        reserve.ReserveDate = DateTime.Now;
+                        db.Reserves.Add(reserve);
+                        db.SaveChanges();
+                        TempData["MessageOk"] = "Информация о бронировании успешно добавлена";
+                        return RedirectToAction("ResShow", "Reserves", new { PersonId = reserve.PersonId });
+                    }
+                    else
+                    {
+                        Person _person = db.Persons.FirstOrDefault(p => p.PersonId == reserve.PersonId);
+                        ViewData["PersonFIO"] = string.Format("{0} {1} {2}", _person.FirstName, _person.LastName, _person.MiddleName);
+                        ViewData["EventName"] = db.Events.FirstOrDefault(e => e.EventId == reserve.EventId).EventName;
+                        TempData["MessageError"] = "Для данной персоны уже было забронировано место!";
+                        ViewBag.RoleId = new SelectList(db.PersonRoles, "RoleId", "RoleName", reserve.RoleId);
+                        return View(reserve);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -330,7 +343,7 @@ namespace Sunny_House.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { Result = false, Message = "Во время выполнения запроса произошла критическая ошибка:"+ex.Message.ToString() }, JsonRequestBehavior.AllowGet);
+                return Json(new { Result = false, Message = "Во время выполнения запроса произошла критическая ошибка:" + ex.Message.ToString() }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -404,6 +417,7 @@ namespace Sunny_House.Controllers
             }
 
             RoleId = RoleId != 0 ? RoleId : null;
+            PTSearch = String.IsNullOrEmpty(PTSearch) ? null : PTSearch.Trim();
 
             db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug information------------------------------------
 
@@ -416,12 +430,12 @@ namespace Sunny_House.Controllers
                             from percomm in db.PersonCommunications.Where(pid => person.PersonId == pid.PersonId).DefaultIfEmpty()
                             join comm in db.Communications on percomm.CommunicationId equals comm.Id into tmpcomm
                             from comm in tmpcomm.DefaultIfEmpty()
-                            
+
                             where (pr.RoleId == RoleId || RoleId == null) && (SqlFunctions.DateDiff("day", pr.ReserveDate, DateTime.Today) <= 365 || RoleId == null) &&
                                     ((person.FirstName.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch)) ||
                                         (person.LastName.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch)) ||
                                         (person.Note.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch)) ||
-                                        (comm.Address_Number.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch))) 
+                                        (comm.Address_Number.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch)))
                             select new
                             {
                                 PersonId = person.PersonId,

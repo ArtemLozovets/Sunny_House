@@ -200,7 +200,6 @@
     <Compile Include="Controllers\ReservesController.cs" />
     <Compile Include="Controllers\StatisticController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
-    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\VisitsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -545,9 +544,8 @@
     <Content Include="Views\Visits\AllVisitsPartial.cshtml" />
     <Content Include="Views\Visits\PersonsPartialList.cshtml" />
     <Content Include="Views\Comments\CommentShowPartial.cshtml" />
-    <Content Include="Views\Statistic\Payment.cshtml" />
+    <Content Include="Views\Statistic\Index.cshtml" />
     <Content Include="Views\Visits\AjaxShowMore.cshtml" />
-    <Content Include="Views\Test\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

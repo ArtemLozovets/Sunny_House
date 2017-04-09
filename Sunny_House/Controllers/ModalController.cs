@@ -18,10 +18,9 @@ namespace Sunny_House.Controllers
 
         private List<Person> PersonBySearchString(string PersonSearchString, int? FilterRole, int? FilterEvent, int? FilterEx, DateTime? FilterDate)
         {
+            PersonSearchString = String.IsNullOrEmpty(PersonSearchString) ? null : PersonSearchString.Trim();
+
             var _persons = (from person in db.Persons
-                            from percomm in db.PersonCommunications.Where(pid => person.PersonId == pid.PersonId).Take(1).DefaultIfEmpty()
-                            join comm in db.Communications on percomm.CommunicationId equals comm.Id into tmpcomm
-                            from comm in tmpcomm.DefaultIfEmpty()
                             join visit in db.Visits on person.PersonId equals visit.VisitorId into tmpvisitor
                             from visit in tmpvisitor.DefaultIfEmpty()
                             join ex in db.Exercises on visit.ExerciseId equals ex.ExerciseId into tmpex
@@ -30,9 +29,10 @@ namespace Sunny_House.Controllers
                                     (ex.ExerciseId == FilterEx || FilterEx == null) &&
                                     (visit.RoleId == FilterRole || FilterRole == null) &&
                                     (ex.EventId == FilterEvent || FilterEvent == null) &&
-                                    ((person.FirstName.Contains(PersonSearchString) || String.IsNullOrEmpty(PersonSearchString)) ||
-                                    (person.LastName.Contains(PersonSearchString) || String.IsNullOrEmpty(PersonSearchString)) ||
-                                    comm.Address_Number.Contains(PersonSearchString))
+                                    (person.FirstName.Contains(PersonSearchString)   ||
+                                     person.LastName.Contains(PersonSearchString)    ||
+                                     person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(PersonSearchString) || String.IsNullOrEmpty(PersonSearchString) ||
+                                     String.IsNullOrEmpty(PersonSearchString)))
                             select person).OrderBy(p => p.PersonId).Distinct();
 
             return _persons.ToList();

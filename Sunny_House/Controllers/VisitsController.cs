@@ -395,7 +395,8 @@ namespace Sunny_House.Controllers
                             join _event in db.Events on reserve.EventId equals _event.EventId
                             join _ex in db.Exercises on _event.EventId equals _ex.EventId
                             where (_ex.ExerciseId == ExerciseId || ExerciseId == null) &&
-                            ((person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)))
+                            ((person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || 
+                             (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)))
                             select new
                             {
                                 PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,

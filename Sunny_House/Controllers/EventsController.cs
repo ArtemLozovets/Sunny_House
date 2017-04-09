@@ -87,7 +87,7 @@ namespace Sunny_House.Controllers
             switch (FilterMode)
             {
                 case "All":
-                    _events = _events.OrderByDescending(e=>e.StartTime);
+                    _events = _events.OrderByDescending(e => e.StartTime);
                     break;
 
                 case "Current":
@@ -95,11 +95,11 @@ namespace Sunny_House.Controllers
                     break;
 
                 case "Archive":
-                    _events = _events.Where(e => e.EndTime < DateTime.Today).OrderByDescending(e=>e.StartTime);
+                    _events = _events.Where(e => e.EndTime < DateTime.Today).OrderByDescending(e => e.StartTime);
                     break;
 
                 default:
-                    _events = _events.Where(e => e.EndTime >= DateTime.Today).OrderBy(e=>e.StartTime);
+                    _events = _events.Where(e => e.EndTime >= DateTime.Today).OrderBy(e => e.StartTime);
                     break;
             }
 
@@ -425,17 +425,17 @@ namespace Sunny_House.Controllers
             var _persons = (from person in db.Persons
                             join reserve in db.Reserves on person.PersonId equals reserve.PersonId
                             join role in db.PersonRoles on reserve.RoleId equals role.RoleId
-                            from percomm in db.PersonCommunications.Where(pid => person.PersonId == pid.PersonId).Take(1).DefaultIfEmpty()
-                            join comm in db.Communications on percomm.CommunicationId equals comm.Id into tmpcomm
-                            from comm in tmpcomm.DefaultIfEmpty()
-                            where (reserve.EventId == EventId) && ((person.FirstName.Contains(SearchString) || String.IsNullOrEmpty(SearchString)) || (person.LastName
-                             .Contains(SearchString) || String.IsNullOrEmpty(SearchString)) || (comm.Address_Number.Contains(SearchString)) || String.IsNullOrEmpty(SearchString))
+                            where (reserve.EventId == EventId) &&
+                            (person.FirstName.Contains(SearchString) ||
+                            person.LastName.Contains(SearchString) ||
+                            person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(SearchString) ||
+                            String.IsNullOrEmpty(SearchString)))
                             select new
                             {
                                 ReserveId = reserve.ReserveId,
                                 PersonId = person.PersonId,
                                 PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
-                                Num_Address = tmpcomm.FirstOrDefault().Address_Number,
+                                Address_Num = person.PersonCommunication.Select(ss => ss.Communication.Address_Number).ToList(),
                                 PersonRole = role.RoleName,
                                 RoleId = role.RoleId,
                                 DOB = person.DateOfBirth
@@ -446,7 +446,7 @@ namespace Sunny_House.Controllers
                                                     PersonFIO = e.PersonFIO.Trim(),
                                                     PersonAge = AgeMethods.GetAge(e.DOB),
                                                     PersonMonth = AgeMethods.GetTotalMonth(e.DOB),
-                                                    Num_Address = e.Num_Address,
+                                                    Num_Address = e.Address_Num,
                                                     PersonRole = e.PersonRole,
                                                     RoleId = e.RoleId
                                                 });

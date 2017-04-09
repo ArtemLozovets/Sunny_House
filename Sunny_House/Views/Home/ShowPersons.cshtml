@@ -48,8 +48,7 @@
                               new { @id = "Age" }) <i id="AgeArrow"></i>
                 </th>
                 <th>
-                    @Html.ActionLink("Номер/Адрес", "ShowPersons", new { SortBy = ViewBag.SortNum_Address, SearchString = Request["SearchString"], PersonId = Request.QueryString["PersonId"] },
-                              new { @id = "Num_Address" }) <i id="Num_AddressArrow"></i>
+                    @Html.DisplayNameFor(model => model.First().Address_Num)
                 </th>
                 <th></th>
             </tr>
@@ -109,7 +108,12 @@
                         </td>
                     }
                     <td>
-                        @Html.DisplayFor(modelItem => item.Num_Address)
+                        @foreach (var addr in item.Address_Num)
+                        {
+                            <p style="padding:0; margin:0">
+                                @addr <br />
+                            </p>
+                        }
                     </td>
                     <td style="text-align:center; width:292px; min-width:292px;">
                         <a class="btn btn-default btn-sm" title="Платежи персоны" href='@Url.Action("ShowPayments", "Home", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-usd"></span></a>

@@ -38,9 +38,6 @@ namespace Sunny_House.Models
         [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
 
-        [Display(Name = "Номер/Адрес")]
-        public string Num_Address { get; set; }
-
         [Display(Name = "ФИО персоны")]
         public string PersonFIO { get; set; }
 
@@ -58,7 +55,9 @@ namespace Sunny_House.Models
 
         public int? RoleId { get; set; }
 
-        public List<Communication> PersonComm { get; set; }
+        [Display(Name = "Номер/Адрес")]
+        public List<string> Address_Num { get; set; }
+
 
     }
 
@@ -77,7 +76,7 @@ namespace Sunny_House.Models
         public DateTime? DateOfBirth { get; set; }
 
         [Display(Name = "Номер/Адрес")]
-        public string Num_Address { get; set; }
+        public List<string> Num_Address { get; set; }
 
         [Display(Name = "ФИО персоны")]
         public string PersonFIO { get; set; }
@@ -335,9 +334,9 @@ namespace Sunny_House.Models
         public List<CommViewModel> CommList { get; set; }
         public string Note { get; set; }
         public List<Visit> VisitsList { get; set; }
-        
+
     }
-   
+
     [NotMapped]
     public class TestModel
     {
