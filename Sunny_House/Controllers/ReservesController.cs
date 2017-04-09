@@ -672,39 +672,35 @@ namespace Sunny_House.Controllers
 
             _rellist.AddRange(_resultRev);
 
-            //List<Visit> _visitList = db.Visits.Where(x => x.VisitorId == PersonId).ToList();
-
             List<Visit> _visitList = (from visit in db.Visits
                           join ex in db.Exercises on visit.ExerciseId equals ex.ExerciseId
                           join person in db.Persons on visit.VisitorId equals person.PersonId
                           join role in db.PersonRoles on visit.RoleId equals role.RoleId
-                          where (visit.FactVisit) && (visit.VisitorId == PersonId)
+                          where (visit.VisitorId == PersonId)
                           select new
                           {
                               VisitId = visit.VisitId,
                               VisitorId = visit.VisitorId,
                               ExerciseId = ex.ExerciseId,
                               RoleId = role.RoleId,
-                              PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
                               ExName = ex.Subject,
-                              RoleName = role.RoleName,
                               Note = visit.Note,
                               StartTime = ex.StartTime,
                               EventId = ex.EventId,
-                              EventName = ex.Event.EventName
+                              EventName = ex.Event.EventName,
+                              FactVisit = visit.FactVisit
                           }).AsEnumerable().Select(x => new Visit
                           {
                               VisitId = x.VisitId,
                               VisitorId = x.VisitorId,
                               ExerciseId = x.ExerciseId,
-                              PersonFIO = x.PersonFIO.Trim(),
                               RoleId = x.RoleId,
                               ExName = x.ExName,
-                              RoleName = x.RoleName,
                               Note = x.Note,
                               StartTime = x.StartTime,
                               EventId = x.EventId,
-                              EventName = x.EventName
+                              EventName = x.EventName,
+                              FactVisit = x.FactVisit
                           }).OrderByDescending(x=>x.StartTime).ToList();
             
             MoreInfoesViewModel _moremodel = new MoreInfoesViewModel();

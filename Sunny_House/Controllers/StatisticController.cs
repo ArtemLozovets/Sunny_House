@@ -19,11 +19,14 @@ namespace Sunny_House.Controllers
 
         public JsonResult GetChart(string mode, int? Year)
         {
+            db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s));
+
             if (Year == null)
             {
                 Year = DateTime.Today.Year;
             }
 
+            // График платежей -------------------------------------------
             if (mode == "mpayment" || string.IsNullOrEmpty(mode))
             {
                 var _paylist = (from t in db.Payments
@@ -46,7 +49,8 @@ namespace Sunny_House.Controllers
                 }
                 return Json(new { Result = true, Message = String.Format("График платежей за {0} год", Year), ChartData = _sum, Mode = mode }, JsonRequestBehavior.AllowGet);
             }
-
+            
+            // График посещений -------------------------------------------
             if (mode == "mvisit" || string.IsNullOrEmpty(mode))
             {
                 var _visitlistfact = (from t in db.Visits
@@ -59,7 +63,7 @@ namespace Sunny_House.Controllers
                                   });
 
                 var _visitlistall = (from t in db.Visits
-                                      group t by new { t.Exercise.StartTime.Year, t.Exercise.StartTime.Month, t.FactVisit } into g
+                                      group t by new { t.Exercise.StartTime.Year, t.Exercise.StartTime.Month} into g
                                       where g.Key.Year == Year
                                       select new
                                       {
@@ -91,6 +95,8 @@ namespace Sunny_House.Controllers
                 return Json(new { Result = true, Message = String.Format("График посещений за {0} год", Year), ChartData = _visitfact, ChartDataA = _visitall, Mode = mode }, JsonRequestBehavior.AllowGet);
             }
 
+
+            // График занятий / мероприятий -------------------------------------------
             if (mode == "mex" || string.IsNullOrEmpty(mode))
             {
                 var _exlist = (from t in db.Exercises

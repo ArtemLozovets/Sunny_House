@@ -87,7 +87,12 @@
                         }
                         @foreach (var item in Model.VisitsList)
                         {
-                            <tr>
+                            var css = string.Empty;
+                            if (!item.FactVisit)
+                            {
+                                css = "background-color:#fdccc6;";
+                            }
+                            <tr style="@css">
                                 <td style="vertical-align:top !important">
                                     @Html.ActionLink(@item.ExName, "ExShow", "Exercises", new { ExerciseId = @item.ExerciseId }, new { target = "_blank" })
                                 </td>
@@ -103,6 +108,7 @@
                             </tr>
                         }
                     </table>
+
                 </div>
             </div>
         </div>
