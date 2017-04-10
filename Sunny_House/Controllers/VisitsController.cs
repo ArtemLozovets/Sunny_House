@@ -262,8 +262,10 @@ namespace Sunny_House.Controllers
             return PartialView(_visitors.ToList().ToPagedList(pageNumber, pageSize));
         }
 
-        public ActionResult AllVisitsPartial(int? RoleSearchString, int? VisitorId, int? EventId, int? ExerciseId, DateTime? StartDate, int? page, string SortBy)
+        public ActionResult AllVisitsPartial(int? RoleSearchString, int? VisitorId, int? EventId, int? ExerciseId, DateTime? StartDate, int? page, string SortBy, string FilterMode)
         {
+
+            bool _fact = String.IsNullOrEmpty(FilterMode) || FilterMode == "Fact" ? true : false; 
 
             ViewData["RoleSearchString"] = RoleSearchString;
             ViewData["VisitorId"] = VisitorId;
@@ -284,7 +286,7 @@ namespace Sunny_House.Controllers
                           join ex in db.Exercises on visit.ExerciseId equals ex.ExerciseId
                           join person in db.Persons on visit.VisitorId equals person.PersonId
                           join role in db.PersonRoles on visit.RoleId equals role.RoleId
-                          where (visit.FactVisit) &&
+                          where (visit.FactVisit == _fact || _fact == false) &&
                                 (role.RoleId == RoleSearchString || RoleSearchString == null) &&
                                 (DbFunctions.TruncateTime(ex.StartTime) == StartDate || StartDate == null) &&
                                 (person.PersonId == VisitorId || VisitorId == null) &&
@@ -303,7 +305,8 @@ namespace Sunny_House.Controllers
                               Note = visit.Note,
                               StartTime = ex.StartTime,
                               EventId = ex.EventId,
-                              EventName = ex.Event.EventName
+                              EventName = ex.Event.EventName,
+                              FactVisit = visit.FactVisit
 
                           }).AsEnumerable().Select(x => new Visit
                           {
@@ -317,7 +320,8 @@ namespace Sunny_House.Controllers
                               Note = x.Note,
                               StartTime = x.StartTime,
                               EventId = x.EventId,
-                              EventName = x.EventName
+                              EventName = x.EventName,
+                              FactVisit = x.FactVisit
                           });
 
 

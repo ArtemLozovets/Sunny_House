@@ -2,6 +2,17 @@
 @using PagedList.Mvc;
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
+<style type="text/css">
+    .red_tr{
+         background-color:#ffcccc !important;
+    }
+
+        .red_tr:hover {
+            background-color:#ffaaaa !important;
+        }
+
+</style>
+
 <label id="SortColumn" hidden>@ViewData["SortColumn"]</label>
 
 <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
@@ -83,30 +94,35 @@
     }
     @foreach (var item in Model)
     {
-        <tr>
-            <td style="vertical-align:top !important">
-                @Html.ActionLink(@item.PersonFIO, "ShowPersons", "Home", new { PersonId = @item.VisitorId }, new { target = "_blank" })
-            </td>
-            <td style="vertical-align:top !important">
-                @Html.ActionLink(@item.ExName, "ExShow", "Exercises", new { ExerciseId = @item.ExerciseId }, new { target = "_blank" })
-            </td>
-            <td style="text-align:center; vertical-align:top !important">
-                @Html.DisplayFor(modelItem => item.StartTime)
-            </td>
-            <td style="max-width:100px; vertical-align:top !important">
-                @Html.ActionLink(@item.EventName, "ResShowOfEvent", "Reserves", new { EventId = @item.EventId }, new { target = "_blank" })
-            </td>
-            <td style="vertical-align:top !important">
-                @Html.DisplayFor(modelItem => item.RoleName)
-            </td>
-            <td class="breakWord" style="max-width:300px; vertical-align:top !important; text-align:justify;">
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
-            <td style="text-align:center; width:92px; min-width:92px; vertical-align:top !important">
-                <a class="btn btn-default btn-sm" title="Редактировать" href='@Url.Action("VisEdit", "Visits", new { VisitId = item.VisitId })'><span class="glyphicon glyphicon-edit"></span></a>
-                <a class="btn btn-default btn-sm" title="Удалить" href='@Url.Action("VisDelete", "Visits", new { VisitId = item.VisitId })'><span class="glyphicon glyphicon-trash"></span></a>
-            </td>
-        </tr>
+         var _class = string.Empty;
+                            if (!item.FactVisit)
+                            {
+                                _class = "red_tr";
+                            }
+    <tr class="@_class">
+        <td style="vertical-align:top !important">
+            @Html.ActionLink(@item.PersonFIO, "ShowPersons", "Home", new { PersonId = @item.VisitorId }, new { target = "_blank" })
+        </td>
+        <td style="vertical-align:top !important">
+            @Html.ActionLink(@item.ExName, "ExShow", "Exercises", new { ExerciseId = @item.ExerciseId }, new { target = "_blank" })
+        </td>
+        <td style="text-align:center; vertical-align:top !important">
+            @Html.DisplayFor(modelItem => item.StartTime)
+        </td>
+        <td style="max-width:100px; vertical-align:top !important">
+            @Html.ActionLink(@item.EventName, "ResShowOfEvent", "Reserves", new { EventId = @item.EventId }, new { target = "_blank" })
+        </td>
+        <td style="vertical-align:top !important">
+            @Html.DisplayFor(modelItem => item.RoleName)
+        </td>
+        <td class="breakWord" style="max-width:300px; vertical-align:top !important; text-align:justify;">
+            @Html.DisplayFor(modelItem => item.Note)
+        </td>
+        <td style="text-align:center; width:92px; min-width:92px; vertical-align:top !important">
+            <a class="btn btn-default btn-sm" title="Редактировать" href='@Url.Action("VisEdit", "Visits", new { VisitId = item.VisitId })'><span class="glyphicon glyphicon-edit"></span></a>
+            <a class="btn btn-default btn-sm" title="Удалить" href='@Url.Action("VisDelete", "Visits", new { VisitId = item.VisitId })'><span class="glyphicon glyphicon-trash"></span></a>
+        </td>
+    </tr>
     }
 
 </table>

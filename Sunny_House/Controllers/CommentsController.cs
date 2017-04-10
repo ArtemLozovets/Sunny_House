@@ -550,8 +550,8 @@ namespace Sunny_House.Controllers
             int _minRating, _maxRating;
             if (string.IsNullOrEmpty(minRating)) { minRating = "1"; }
             if (string.IsNullOrEmpty(maxRating)) { maxRating = "32767"; }
-            if (Int32.TryParse(minRating, out _minRating)) ;
-            if (Int32.TryParse(maxRating, out _maxRating)) ;
+            Int32.TryParse(minRating, out _minRating);
+            Int32.TryParse(maxRating, out _maxRating);
 
             // Блок кода для преобразования значений дат периода фильтрации
             DateTime? _startDate = (String.IsNullOrEmpty(SearchStartDate)) ? Convert.ToDateTime("1900-01-01") : Convert.ToDateTime(SearchStartDate);
