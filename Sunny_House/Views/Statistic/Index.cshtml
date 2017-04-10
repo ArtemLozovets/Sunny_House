@@ -1,0 +1,285 @@
+﻿@{
+    ViewBag.Title = "Статистика";
+}
+
+<div id="loadingImg">
+    <div id="preloadImg">
+        <img src="~/Content/Images/loader.gif" />
+    </div>
+</div>
+
+@Html.Hidden("ModeElem","mpayment")
+
+<style type="text/css">
+    #tmenu {
+        width: 100%;
+        margin: 6px auto;
+        text-align: center;
+    }
+
+        #tmenu ul {
+            list-style-type: none;
+        }
+
+            #tmenu ul li {
+                margin: 2px 6px 0;
+            }
+
+                #tmenu ul li input {
+                    width: 100px;
+                    height: 40px;
+                    outline: 0 !important;
+                    text-decoration: none;
+                    /*font-weight:bold;*/
+                }
+</style>
+
+@{var years = Enumerable
+    .Range(DateTime.Now.Year - 10, 12)
+    .Select(year => new SelectListItem
+    {
+        Value = year.ToString(),
+        Text = year.ToString(),
+        Selected = (year == DateTime.Today.Year)
+    });
+}
+
+<div class="row">
+    <div id="tmenu">
+        <ul class="list-inline">
+            <li>
+                <input type="button" class="btn btn-default statmenu" id="runbtn" name="mpayment" value="Платежи" />
+            </li>
+            <li>
+                <input type="button" class="btn btn-default statmenu" name="mvisit" value="Посещения" />
+            </li>
+            <li>
+                <input type="button" class="btn btn-default statmenu" name="mex" value="Занятия" />
+            </li>
+            <li>
+                @Html.DropDownList("year", years, new
+           {
+               @class = "form-control form-inline",
+               style = "margin:2px; width:100px; height:40px; display:inline-block;",
+               id = "YDDL",
+               //onchange = "document.location.href = '/Statistic/Index?Year=' + this.options[this.selectedIndex].value;"
+           })
+            </li>
+        </ul>
+
+    </div>
+</div>
+
+<h3 class="text-center">
+    <i id="ModeLabel">@ViewBag.Message</i>
+</h3>
+
+<div style="width:810px; margin: 2px auto;" id="cnvdiv">
+    <canvas id="myChart" width="800" height="400"></canvas>
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/Chart.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#loadingImg').hide();
+            $('#runbtn').trigger('click');
+        });
+
+        $(document).ajaxComplete(function () {
+            $(".statmenu").each(function () {
+                $(this).removeClass('btn-success').addClass('btn-default');
+            });
+
+            var currentbtn = $('#ModeElem').val();
+            $("input[name*='" + currentbtn + "']").removeClass('btn-default').addClass('btn-success');
+
+        });
+
+        $('body').on('click', '.statmenu', function (e) {
+            e.preventDefault();
+            var _mode = e.target.name;
+            var _Year = $('#YDDL').val();
+            
+            GetChart(_mode, _Year);
+        });
+
+        $('body').on('change', '#YDDL', function (e) {
+            var _mode = $('#ModeElem').val();
+            var _Year = $('#YDDL').val();
+
+            GetChart(_mode, _Year);
+        });
+
+
+        function GetChart(_mode, _Year) {
+            $('#loadingImg').show();
+            $.get('/Statistic/GetChart', {
+                mode: _mode,
+                Year: _Year,
+            },
+                    function (data) {
+                        $('#loadingImg').hide();
+                        if (data.Result) {
+                            $("#ModeLabel").html(data.Message);
+                            $('#ModeElem').val(data.Mode);
+                            DrawChart(data.Mode, data.ChartData, data.ChartDataA);
+                        }
+                        else {
+                            alert(data.Message);
+                        }
+                    });
+        };
+
+        function DrawChart(mode, ChartData, ChartDataA) {
+
+            $('#myChart').remove();
+            $('#cnvdiv').append('<canvas id="myChart" width="800" height="400"><canvas>');
+
+            var canvas = $('#myChart');
+            var ctx = canvas.get(0).getContext("2d");
+
+            if (mode == "mpayment") {
+                var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Декабрь"],
+                        datasets: [
+                            {
+                                label: 'Платежи',
+                                data: ChartData,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)',
+                                    'rgba(240, 60, 132, 0.2)',
+                                    'rgba(54, 80, 235, 0.2)',
+                                    'rgba(255, 206, 156, 0.2)',
+                                    'rgba(75, 120, 60, 0.2)',
+                                    'rgba(102, 255, 100, 0.2)',
+                                    'rgba(128, 200, 64, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)',
+                                    'rgba(240, 60, 132, 1)',
+                                    'rgba(54, 80, 235, 1)',
+                                    'rgba(255, 206, 156, 1)',
+                                    'rgba(75, 120, 60, 1)',
+                                    'rgba(102, 255, 100, 1)',
+                                    'rgba(128, 200, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+            }
+
+            if (mode == "mvisit") {
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Декабрь"],
+                        datasets: [
+                            {
+                                label: 'Фактические',
+                                data: ChartData,
+                                fill:true,
+                                backgroundColor: "rgba(102,205,170,0.4)",
+                                borderColor: "rgba(102,205,170,1)",
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Всего',
+                                data: ChartDataA,
+                                fill:false,
+                                backgroundColor: "rgba(255,0,0,0.2)",
+                                borderColor: "rgba(255,0,0,0.4)",
+                                borderWidth: 1,
+                                hidden:true
+
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+            }
+
+
+            if (mode == "mex") {
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Декабрь"],
+                        datasets: [
+                            {
+                                label: 'Занятия',
+                                data: ChartData,
+                                fill: true,
+                                lineTension: 0.1,
+                                backgroundColor: "rgba(75,192,192,0.4)",
+                                borderColor: "rgba(75,192,192,1)",
+                                borderCapStyle: 'butt',
+                                borderDash: [],
+                                borderDashOffset: 0.0,
+                                borderJoinStyle: 'miter',
+                                pointBorderColor: "rgba(75,192,192,1)",
+                                pointBackgroundColor: "#fff",
+                                pointBorderWidth: 1,
+                                pointHoverRadius: 5,
+                                pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                                pointHoverBorderColor: "rgba(220,220,220,1)",
+                                pointHoverBorderWidth: 2,
+                                pointRadius: 3,
+                                pointHitRadius: 10,
+                            },
+                            {
+                                    label: 'Мероприятия',
+                                    data: ChartDataA,
+                                    backgroundColor: "rgba(255,0,0,0.2)",
+                                    borderColor: "rgba(255,0,0,0.4)",
+                                    borderWidth: 1,
+                                    hidden:true
+                            }
+                         ]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+            }
+
+        }
+
+    </script>
+}
