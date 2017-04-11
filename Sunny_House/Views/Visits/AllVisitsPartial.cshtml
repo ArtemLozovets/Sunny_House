@@ -25,7 +25,8 @@
            VisitorId = ViewData["VisitorId"],
            EventId = ViewData["EventId"],
            ExerciseId = ViewData["ExerciseId"],
-           StartDate = ViewData["StartDate"]
+           StartDate = ViewData["StartDate"],
+           FilterMode = Request["FilterMode"]
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "PersonFIO" })
             <i id="PersonFIOArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -37,7 +38,8 @@
            VisitorId = ViewData["VisitorId"],
            EventId = ViewData["EventId"],
            ExerciseId = ViewData["ExerciseId"],
-           StartDate = ViewData["StartDate"]
+           StartDate = ViewData["StartDate"],
+           FilterMode = Request["FilterMode"]
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "ExName" })
             <i id="ExNameArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -50,7 +52,8 @@
            VisitorId = ViewData["VisitorId"],
            EventId = ViewData["EventId"],
            ExerciseId = ViewData["ExerciseId"],
-           StartDate = ViewData["StartDate"]
+           StartDate = ViewData["StartDate"],
+           FilterMode = Request["FilterMode"]
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "StartTime" })
             <i id="StartTimeArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -63,7 +66,8 @@
            VisitorId = ViewData["VisitorId"],
            EventId = ViewData["EventId"],
            ExerciseId = ViewData["ExerciseId"],
-           StartDate = ViewData["StartDate"]
+           StartDate = ViewData["StartDate"],
+           FilterMode = Request["FilterMode"]
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "EventName" })
             <i id="EventNameArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -76,7 +80,8 @@
            VisitorId = ViewData["VisitorId"],
            EventId = ViewData["EventId"],
            ExerciseId = ViewData["ExerciseId"],
-           StartDate = ViewData["StartDate"]
+           StartDate = ViewData["StartDate"],
+           FilterMode = Request["FilterMode"]
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateV", LoadingElementId = "loadingImg" }, new { @id = "RoleName" })
             <i id="RoleNameArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
@@ -139,6 +144,7 @@
                                 ExerciseId = ViewData["ExerciseId"],
                                 StartDate = ViewData["StartDate"],
                                 SortBy = Request["SortBy"],
+                                FilterMode = Request["FilterMode"],
                                 page
                              }),
                              PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
