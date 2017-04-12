@@ -193,6 +193,7 @@
     <Compile Include="Controllers\ExercisesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Areas\Administrator\Controllers\InitController.cs" />
+    <Compile Include="Controllers\MailController.cs" />
     <Compile Include="Controllers\ModalController.cs" />
     <Compile Include="Controllers\PersonRelationsController.cs" />
     <Compile Include="Controllers\PersonRolesController.cs" />
@@ -549,6 +550,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Attachment\" />
+    <Folder Include="Views\Mail\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
