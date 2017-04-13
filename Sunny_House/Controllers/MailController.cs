@@ -9,6 +9,9 @@ namespace Sunny_House.Controllers
 {
     public class MailController : Controller
     {
+
+        private const int EmailId = 6;
+
         // GET: Mail
         public ActionResult Index()
         {
@@ -29,13 +32,18 @@ namespace Sunny_House.Controllers
                 {
 
                     var _result = (from personcomm in db.PersonCommunications
-                                   join comm in db.Communications on personcomm.CommunicationId equals comm.Id
-                                   join commtype in db.TypeOfCommunications on comm.TypeOfCommunicationId equals commtype.Id
-                                   where PersonsIDS.Contains(personcomm.PersonId)
-                                   select new 
+                                   from perrel in db.PersonRelations.Where(pid => personcomm.PersonId == pid.PersonId || personcomm.PersonId == pid.RelPersonId)
+                                   join comm in db.Communications.Where(x=>x.TypeOfCommunicationId == EmailId) on personcomm.CommunicationId equals comm.Id
+                                   where (PersonsIDS.Contains(perrel.PersonId) || PersonsIDS.Contains(perrel.RelPersonId))
+                                   select new
                                    {
-                                       Email_Address = comm.Address_Number
-                                   }).AsEnumerable().Where(e => ValidEmail(e.Email_Address)).Select(i=>i.Email_Address).ToList();
+                                       Address_Number = comm.Address_Number
+                                   }).Select(i => i.Address_Number).Distinct().ToList();
+
+                    if (_result.Count() == 0)
+                    {
+                        return Json(new { Result = false, Message = "Адреса електронной почты не найдены"}, JsonRequestBehavior.AllowGet);
+                    }
 
                     return Json(new { Result = true, Message = "All Right!", EmList = _result }, JsonRequestBehavior.AllowGet);
                 }
@@ -47,12 +55,12 @@ namespace Sunny_House.Controllers
 
         }
 
-        private static bool ValidEmail(string email)
-        {
-            if (email == "")
-                return false;
-            else
-                return new System.Text.RegularExpressions.Regex(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$").IsMatch(email);
-        }
+        //private static bool ValidEmail(string email)
+        //{
+        //    if (email == "")
+        //        return false;
+        //    else
+        //        return new System.Text.RegularExpressions.Regex(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$").IsMatch(email);
+        //}
     }
 }
