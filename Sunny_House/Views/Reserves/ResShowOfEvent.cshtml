@@ -660,7 +660,7 @@
             $(this).blur();
             
             var PersonsIDSArray = new Array();
-            $(".showRelPersons").each(function () {
+            $(".EmlCl").each(function () {
                 PersonsIDSArray.push($(this).data('personid'));
             });
 
@@ -673,8 +673,7 @@
                 },
                 success: function (data) {
                     if (data.Result) {
-                        alert(data.EmList);
-                        $('body').append('<a id="emlink" href="mailto:'+data.EmList+'">&nbsp;</a>');
+                        $('body').append('<a id="emlink" href="mailto:'+data.EmList+'?subject=Приглашаем Вас принять участие в мероприятии <<@Model.EventName>>">&nbsp;</a>');
                         $('#emlink')[0].click();
                     }
                     else {

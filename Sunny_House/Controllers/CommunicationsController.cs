@@ -309,6 +309,7 @@ namespace Sunny_House.Controllers
             return View(typeOfCommunication);
         }
 
+        [Authorize(Roles = "Administrator, User")]
         // POST: TypeOfCommunications/Delete/5
         [HttpPost, ActionName("TCDelete")]
         [Authorize(Roles = "Administrator, User")]
@@ -317,6 +318,12 @@ namespace Sunny_House.Controllers
         {
             try
             {
+                if (id == 6)
+                {
+                    string _message = "Вид связи \"Электронная почта\" является системным и не может быть удален!";
+                    TempData["MessageError"] = _message;
+                    return RedirectToAction("TCShow", "Communications");
+                } 
 
                 if (db.TypeOfCommunications.First(i => i.Id == id).Communication.Any())
                 {

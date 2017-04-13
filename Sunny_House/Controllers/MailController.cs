@@ -33,16 +33,17 @@ namespace Sunny_House.Controllers
 
                     var _result = (from personcomm in db.PersonCommunications
                                    from perrel in db.PersonRelations.Where(pid => personcomm.PersonId == pid.PersonId || personcomm.PersonId == pid.RelPersonId)
-                                   join comm in db.Communications.Where(x=>x.TypeOfCommunicationId == EmailId) on personcomm.CommunicationId equals comm.Id
+                                   from comm in db.Communications.Where(x=>x.Id == personcomm.CommunicationId && x.TypeOfCommunicationId == EmailId)
                                    where (PersonsIDS.Contains(perrel.PersonId) || PersonsIDS.Contains(perrel.RelPersonId))
                                    select new
                                    {
+                                       PersonId = perrel.PersonId,
                                        Address_Number = comm.Address_Number
-                                   }).Select(i => i.Address_Number).Distinct().ToList();
+                                   }).GroupBy(x=>x.PersonId).Select(x=>x.FirstOrDefault()).Select(i=>i.Address_Number).Distinct().ToList();
 
                     if (_result.Count() == 0)
                     {
-                        return Json(new { Result = false, Message = "Адреса електронной почты не найдены"}, JsonRequestBehavior.AllowGet);
+                        return Json(new { Result = false, Message = "Адреса электронной почты не найдены"}, JsonRequestBehavior.AllowGet);
                     }
 
                     return Json(new { Result = true, Message = "All Right!", EmList = _result }, JsonRequestBehavior.AllowGet);
