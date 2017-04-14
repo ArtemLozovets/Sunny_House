@@ -658,7 +658,7 @@
     <script type="text/javascript">
         $('body').on('click', '#SendMail', function (e) {
             $(this).blur();
-            
+
             var PersonsIDSArray = new Array();
             $(".EmlCl").each(function () {
                 PersonsIDSArray.push($(this).data('personid'));
@@ -673,7 +673,7 @@
                 },
                 success: function (data) {
                     if (data.Result) {
-                        $('body').append('<a id="emlink" href="mailto:'+data.EmList+'?subject=Приглашаем Вас принять участие в мероприятии <<@Model.EventName>>">&nbsp;</a>');
+                        $('body').append('<a id="emlink" href="mailto:'+data.EmList+'?subject=Приглашаем Вас принять участие в мероприятии &ldquo;@Model.EventName&rdquo;">&nbsp;</a>');
                         $('#emlink')[0].click();
                     }
                     else {
