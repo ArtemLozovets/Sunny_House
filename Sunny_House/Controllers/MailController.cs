@@ -31,16 +31,6 @@ namespace Sunny_House.Controllers
                 using (SunnyModel db = new SunnyModel())
                 {
 
-                    //var _result = (from personcomm in db.PersonCommunications
-                    //               from perrel in db.PersonRelations.Where(pid => personcomm.PersonId == pid.PersonId || personcomm.PersonId == pid.RelPersonId)
-                    //               from comm in db.Communications.Where(x=>x.Id == personcomm.CommunicationId && x.TypeOfCommunicationId == EmailId)
-                    //               where (PersonsIDS.Contains(perrel.PersonId) || PersonsIDS.Contains(perrel.RelPersonId))
-                    //               select new
-                    //               {
-                    //                   PersonId = perrel.PersonId,
-                    //                   Address_Number = comm.Address_Number
-                    //               }).GroupBy(x=>x.PersonId).Select(x=>x.FirstOrDefault()).Select(i=>i.Address_Number).Distinct().ToList();
-
                     var _result = (from comm in db.Communications
                                    join perscomm in db.PersonCommunications on comm.Id equals perscomm.Id
                                    from perrel in db.PersonRelations.Where(pid => perscomm.PersonId == pid.PersonId || perscomm.PersonId == pid.RelPersonId)
@@ -66,12 +56,5 @@ namespace Sunny_House.Controllers
 
         }
 
-        //private static bool ValidEmail(string email)
-        //{
-        //    if (email == "")
-        //        return false;
-        //    else
-        //        return new System.Text.RegularExpressions.Regex(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$").IsMatch(email);
-        //}
     }
 }

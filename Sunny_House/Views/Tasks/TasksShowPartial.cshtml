@@ -43,13 +43,13 @@
         <th>
             @Ajax.ActionLink("Вып.", "TasksShowPartial", new
        {
-           SortBy = ViewBag.SortTaskComplete,
+           SortBy = ViewBag.SortComplete,
            SearchString = Request["SearchString"],
            SearchDateOfCreation = Request["SearchDateOfCreation"],
            SearchDate = Request["SearchDate"],
-            TaskComplete = Request["TaskComplete"]
-       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "alltaskslist" }, new { @id = "TaskComplete" })
-            <i id="TaskCompleteArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
+           TaskComplete = Request["TaskComplete"]
+       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "alltaskslist" }, new { @id = "Complete" })
+            <i id="CompleteArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>
             @Ajax.ActionLink("Описание", "TasksShowPartial", new
@@ -62,13 +62,24 @@
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "alltaskslist" }, new { @id = "Note" })
             <i id="NoteArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
+        <th>
+            @Ajax.ActionLink("Ответственный", "TasksShowPartial", new
+       {
+           SortBy = ViewBag.SortResponsible,
+           SearchString = Request["SearchString"],
+           SearchDateOfCreation = Request["SearchDateOfCreation"],
+           SearchDate = Request["SearchDate"],
+           TaskComplete = Request["TaskComplete"]
+       }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "alltaskslist" }, new { @id = "Responsible" })
+            <i id="ResponsibleArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
+        </th>
         <th></th>
     </tr>
 
     @if (Model.Count() == 0)
     {
         <tr>
-            <td colspan="6">
+            <td colspan="7">
                 <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
             </td>
         </tr>
@@ -76,20 +87,25 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>
+            <td style="min-width:100px;">
                 @Html.DisplayFor(modelItem => item.DateOfCreation)
             </td>
-            <td>
+            <td style="min-width:120px;">
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Subject)
             </td>
-            <td style="text-align:center;">
+            <td style="text-align:center; min-width:80px;">
                 @Html.DisplayFor(modelItem => item.TaskComplete)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            <td>
+
+                    @Html.ActionLink(item.PersonFIO, "ShowPersons", "Home", new { PersonId = @item.ResponsibleId }, new { target = "_blank" })
+             
             </td>
             <td style="text-align:center; width:90px; min-width:90px;">
                 <a class="btn btn-default btn-sm" title="Редактирование задачи" href='@Url.Action("TaskEdit", "Tasks", new { id = item.STaskId })'><span class="glyphicon glyphicon-edit"></span></a>

@@ -37,5 +37,12 @@
         [Display(Name = "Создатель")]
         public Guid? CreatorId { get; set; }
 
+        public int? ResponsibleId { get; set; }
+        public virtual Person Person { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Ответственный")]
+        public string PersonFIO { get; set; }
+
     }
 }

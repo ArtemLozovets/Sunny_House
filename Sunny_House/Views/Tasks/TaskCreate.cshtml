@@ -7,6 +7,9 @@
 
 <h2>Задачи</h2>
 
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog" style="width:660px;"></div>
+</div>
 
 @using (Html.BeginForm())
 {
@@ -39,6 +42,21 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Ответственный", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="text" name="ResponsibleLabel" id="ResponsibleLabel"
+                       class="form-control"
+                       readonly
+                       style="margin:2px 0; display:inline-block; cursor:pointer"
+                       title="Щелкните для сброса"
+                       onclick="PersonClear()"
+                       value="" />
+                <a class="btn btn-default pModal" style="margin:2px 0; margin-top:-1px; display:inline-block;" href='@Url.Action("ShowModalPersons", "Modal", new { field = "ResponsibleId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                @Html.Hidden("ResponsibleId")
             </div>
         </div>
 
@@ -95,5 +113,34 @@
             }
             return true;
         };
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+
+            $(function () {
+                var widthdelta = 44;
+                var wd = $("#ResponsibleLabel").width() - widthdelta;
+                $("#ResponsibleLabel").width(wd);
+            });
+
+            $.ajaxSetup({ cache: false });
+            $(".pModal").click(function (e) {
+
+                e.preventDefault();
+                $.get(this.href, function (data) {
+                    $('#dialogContent').html(data);
+                    $('#modDialog').modal('show');
+                });
+            });
+        });
+
+       //Скрипт очистки значений необязательных полей
+       function PersonClear() {
+           $('#ResponsibleLabel').val('');
+           $('#ResponsibleId').val(null);
+           $('#ResponsibleLabel').blur();
+
+       }
     </script>
 }

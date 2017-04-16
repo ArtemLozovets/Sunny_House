@@ -125,7 +125,7 @@
                                        title="Щелкните для сброса"
                                        onclick="SignPersonClear()"
                                        value="@ViewData["SignPersonId"]" />
-                                <a class="btn btn-default pModal" style="margin:2px 0; margin-top:-1px; inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "SignPersonId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                                <a class="btn btn-default pModal" style="margin:2px 0; margin-top:-1px; display:inline-block" href='@Url.Action("ShowModalPersons", "Modal", new { field = "SignPersonId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
                                 @Html.Hidden("SignPersonId")
                             </dd>
 
@@ -349,27 +349,32 @@
     <script type="text/javascript">
         //Скрипт очистки значений необязательных полей
         function SignPersonClear() {
-            $('#SignPersonLabel').val('');
+            $('#ResponsibleLabel').val('');
+            $('#ResponsibleLabel').blur();
             $('#SignPersonId').val(null);
         }
 
         function AboutPersonClear() {
             $('#AboutPersonLabel').val('');
+            $('#AboutPersonLabel').blur();
             $('#AboutPersonId').val(null);
         }
 
         function EventClear() {
             $('#EventLabel').val('');
+            $('#EventLabel').blur();
             $('#EventId').val(null);
         }
 
         function ExClear() {
             $('#ExLabel').val('');
+            $('#ExLabel').blur();
             $('#ExerciseId').val(null);
         }
 
         function AddressClear() {
             $('#AddressAliasLabel').val('');
+            $('#AddressAliasLabel').blur();
             $('#AddressId').val(null);
         }
     </script>

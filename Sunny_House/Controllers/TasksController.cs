@@ -29,20 +29,45 @@ namespace Sunny_House.Controllers
         // GET: Tasks
         public ActionResult TasksShowPartial(DateTime? SearchDateOfCreation, DateTime? SearchDate, string SearchString, bool? TaskComplete, int? page, string SortBy)
         {
-
             ViewBag.SortDateOfCreation = SortBy == "DateOfCreation" ? "DateOfCreation desc" : "DateOfCreation";
             ViewBag.SortDate = SortBy == "Date" ? "Date desc" : "Date";
             ViewBag.SortSubject = SortBy == "Subject" ? "Subject desc" : "Subject";
-            ViewBag.SortTaskComplete = SortBy == "TaskComplete" ? "TaskComplete desc" : "TaskComplete";
+            ViewBag.SortComplete = SortBy == "Complete" ? "Complete desc" : "Complete";
             ViewBag.SortNote = SortBy == "Note" ? "Note desc" : "Note";
-
+            ViewBag.SortResponsible = SortBy == "Responsible" ? "Responsible desc" : "Responsible";
 
             var _tasks = (from task in db.STask
+                          join resp in db.Persons on task.ResponsibleId equals resp.PersonId into resptmp
+                          from resp in resptmp.DefaultIfEmpty()
                           where (task.DateOfCreation == SearchDateOfCreation || SearchDateOfCreation == null)
                           && (task.Date == SearchDate || SearchDate == null)
-                          && ((task.Subject.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || (task.Note.Contains(SearchString) || string.IsNullOrEmpty(SearchString)))
+                          && (task.Subject.Contains(SearchString)
+                                || task.Note.Contains(SearchString)
+                                || resp.FirstName.Contains(SearchString)
+                                || resp.LastName.Contains(SearchString)
+                                || string.IsNullOrEmpty(SearchString))
                           && (task.TaskComplete == TaskComplete || TaskComplete == null)
-                          select task);
+                          select new
+                          {
+                              STaskId = task.STaskId,
+                              DateOfCreation = task.DateOfCreation,
+                              Date = task.Date,
+                              Subject = task.Subject,
+                              TaskComplete = task.TaskComplete,
+                              Note = task.Note,
+                              ResponsibleId = task.ResponsibleId,
+                              PersonFIO = resp.FirstName + " " + resp.LastName + " " + resp.MiddleName
+                          }).AsEnumerable().Select(x => new STask
+                          {
+                              STaskId = x.STaskId,
+                              DateOfCreation = x.DateOfCreation,
+                              Date = x.Date,
+                              Subject = x.Subject,
+                              TaskComplete = x.TaskComplete,
+                              Note = x.Note,
+                              ResponsibleId = x.ResponsibleId,
+                              PersonFIO = x.PersonFIO
+                          });
 
             switch (SortBy)
             {
@@ -70,13 +95,13 @@ namespace Sunny_House.Controllers
                     _tasks = _tasks.OrderBy(x => x.Subject);
                     ViewData["SortColumn"] = "Subject";
                     break;
-                case "TaskComplete desc":
+                case "Complete desc":
                     _tasks = _tasks.OrderByDescending(x => x.TaskComplete);
-                    ViewData["SortColumn"] = "TaskComplete";
+                    ViewData["SortColumn"] = "Complete";
                     break;
-                case "TaskComplete":
+                case "Complete":
                     _tasks = _tasks.OrderBy(x => x.TaskComplete);
-                    ViewData["SortColumn"] = "TaskComplete";
+                    ViewData["SortColumn"] = "Complete";
                     break;
                 case "Note desc":
                     _tasks = _tasks.OrderByDescending(x => x.Note);
@@ -85,6 +110,14 @@ namespace Sunny_House.Controllers
                 case "Note":
                     _tasks = _tasks.OrderBy(x => x.Note);
                     ViewData["SortColumn"] = "Note";
+                    break;
+                case "Responsible desc":
+                    _tasks = _tasks.OrderByDescending(x => x.PersonFIO);
+                    ViewData["SortColumn"] = "Responsible";
+                    break;
+                case "Responsible":
+                    _tasks = _tasks.OrderBy(x => x.PersonFIO);
+                    ViewData["SortColumn"] = "Responsible";
                     break;
                 default:
                     break;
@@ -131,7 +164,7 @@ namespace Sunny_House.Controllers
         // POST: Tasks/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> TaskCreate([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note")] STask sTask, string Subject, string SubjectLock, string ActionName, string ControllerName, string ParameterName, string ParameterValue, string CreatorName)
+        public async Task<ActionResult> TaskCreate([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note,ResponsibleId")] STask sTask, string Subject, string SubjectLock, string ActionName, string ControllerName, string ParameterName, string ParameterValue, string CreatorName)
         {
             try
             {
@@ -193,13 +226,17 @@ namespace Sunny_House.Controllers
             {
                 return HttpNotFound();
             }
+
+            string _fio = db.Persons.Where(x => x.PersonId == sTask.ResponsibleId).Select(z => z.FirstName + " " + z.LastName + " " + z.MiddleName).FirstOrDefault();
+            ViewData["ResponsibleFIO"] = _fio;
+
             return View(sTask);
         }
 
         // POST: Tasks/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> TaskEdit([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note,CreatorId")] STask sTask, string CurrentUser)
+        public async Task<ActionResult> TaskEdit([Bind(Include = "STaskId,Date,DateOfCreation,Subject,TaskComplete,Note,CreatorId, ResponsibleId")] STask sTask, string CurrentUser)
         {
             if (ModelState.IsValid)
             {
@@ -298,7 +335,32 @@ namespace Sunny_House.Controllers
 
         public ActionResult TasksGroupShow(string mode)
         {
-            var _result = db.STask.ToList();
+
+            var _result = (from task in db.STask
+                           join resp in db.Persons on task.ResponsibleId equals resp.PersonId into resptmp
+                           from resp in resptmp.DefaultIfEmpty()
+                           select new
+                           {
+                               STaskId = task.STaskId,
+                               DateOfCreation = task.DateOfCreation,
+                               Date = task.Date,
+                               Subject = task.Subject,
+                               TaskComplete = task.TaskComplete,
+                               Note = task.Note,
+                               ResponsibleId = task.ResponsibleId,
+                               PersonFIO = resp.FirstName + " " + resp.LastName + " " + resp.MiddleName
+                           }).AsEnumerable().Select(x => new STask
+                          {
+                              STaskId = x.STaskId,
+                              DateOfCreation = x.DateOfCreation,
+                              Date = x.Date,
+                              Subject = x.Subject,
+                              TaskComplete = x.TaskComplete,
+                              Note = x.Note,
+                              ResponsibleId = x.ResponsibleId,
+                              PersonFIO = x.PersonFIO
+                          });
+
 
             switch (mode)
             {

@@ -338,6 +338,12 @@ namespace Sunny_House.Models
                 .HasForeignKey(e => e.VisitorId)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<Person>()
+                .HasMany(e => e.STask)
+                .WithOptional(e => e.Person)
+                .HasForeignKey(e => e.ResponsibleId)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<PersonRole>()
                 .HasMany(e => e.Reserve)
                 .WithRequired(e => e.PersonRole)
