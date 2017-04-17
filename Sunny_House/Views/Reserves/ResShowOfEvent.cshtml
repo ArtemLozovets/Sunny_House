@@ -138,14 +138,14 @@
                     @* Вкладка бронирований ------------------------------------------- *@
                     <div id="home" class="tab-pane fade in active">
                         <div class="col-md-12 form-inline" style="margin-bottom:12px;">
-                            @using (Ajax.BeginForm("ResRelPersonsPartial", "Events", new { @EventId = @Model.EventId }, new AjaxOptions { UpdateTargetId = "update" }, new { @id = "eventform" }))
+                            @using (Ajax.BeginForm("ResRelPersonsPartial", "Events", new { @EventId = @Model.EventId }, new AjaxOptions { UpdateTargetId = "upd", LoadingElementId = "loadingImg", InsertionMode=InsertionMode.Replace }, new { @id = "eventform" }))
                             {
                                 <input class="form-control" type="text" name="SearchString" id="SearchString" placeholder="Фамилия, имя, телефон..." style="width:200px; margin:2px 0; display:inline-block">
                                 <button type="submit" title="Искать" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
                                 @Html.Raw("&nbsp;")<button type="button" title="Обновить" class="btn btn-default" id="filterclear"><i class="glyphicon glyphicon-refresh"></i></button>
                             }
                         </div>
-                        <div id="update">
+                        <div id="upd">
                             @Html.Action("ResRelPersonsPartial", "Events", new { @EventId = @Model.EventId, @SearchString = "" })
                         </div>
                     </div>
@@ -389,7 +389,6 @@
         $(document).ready( function() {
             /* Check width on page load*/
             if ( $(window).width() < 1000) {
-                alert($(window).width());
                 $('#fixedpanel').removeClass('fixed');
             }
             else {}
@@ -513,7 +512,7 @@
     </script>
     <script type="text/javascript">
         //Скрипт обновления списка бронирований при активации вкладки "Бронь"
-        $('#ResTab').on('shown.bs.tab', function (e) {
+        $('body').on('shown.bs.tab', '#ResTab', function (e) {
             $('#filterclear').trigger("click");
         })
     </script>
@@ -611,7 +610,7 @@
                                  $('#eventform').submit();
                              }
                              else{
-                                 Alert(data.Message);
+                                 alert(data.Message);
                                  $(document.body).animate({ 'scrollTop': $('#topanchor').offset().top -300 }, 1000);
                              }
                          });

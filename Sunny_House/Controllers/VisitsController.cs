@@ -472,6 +472,55 @@ namespace Sunny_House.Controllers
             return PartialView(_persons.ToList().ToPagedList(pageNumber, pageSize));
         }
 
+
+
+        [Authorize(Roles = "Administrator, User")]
+        public JsonResult AddPreVisitAjax(int? ExId, int[] PersonsIDS)
+        {
+            if (ExId == null || PersonsIDS == null || PersonsIDS.Length == 0)
+            {
+                return Json(new { Result = false, Message = "Ошибка валидации модели" }, JsonRequestBehavior.AllowGet);
+            }
+            try
+            {
+
+                foreach (var PersonId in PersonsIDS)
+                {
+                    if (db.Visits.Where(v => v.Person.PersonId == PersonId && v.ExerciseId == ExId).Count() > 0)
+                    {
+                        string _pers = db.Persons.Where(x => x.PersonId == PersonId).Select(x => x.FirstName + " " + x.LastName + " " + x.MiddleName).FirstOrDefault();
+                        return Json(new { Result = false, Message = String.Format("{0} уже присутствует в списке посещений. Пакет отклонен!", _pers) }, JsonRequestBehavior.AllowGet);
+                    }    
+                }
+
+                //Получаем ID роли "Клиент"
+                int _clientroleid = db.PersonRoles.First(r => r.RoleName.ToUpper() == (string)"Клиент".ToUpper()).RoleId;
+                List<Visit> _visitlist = new List<Visit>();
+                foreach (var visitor in PersonsIDS )
+                {
+                    Visit _visit = new Visit()
+                    {
+                        VisitorId = visitor,
+                        ExerciseId = ExId ?? 0,
+                        RoleId = _clientroleid
+                    };
+                    _visitlist.Add(_visit);
+                }
+
+                db.Visits.AddRange(_visitlist);
+                db.SaveChanges();
+
+                return Json(new { Result = true, Message = "Инофрмация о посещении добавлена" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                string we = ex.Message;
+                return Json(new { Result = false, Message = "Ошибка добавления информации о посещении" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        
+        
+        
         [Authorize(Roles = "Administrator, User")]
         public JsonResult AddVisitAjax(int? ExId, int? RoleId, int? PersonId, string Note)
         {

@@ -559,6 +559,12 @@ namespace Sunny_House.Controllers
                         return Json(new { Result = false, Message = "Потенциальный клиент не найден" }, JsonRequestBehavior.AllowGet);
                     }
 
+                    if (db.Reserves.Where(v => v.PersonId == _client.PersonId && v.EventId == _client.EventId).Count() > 0)
+                    {
+                        string _pers = db.Persons.Where(x => x.PersonId == _client.PersonId).Select(x => x.FirstName + " " + x.LastName + " " + x.MiddleName).FirstOrDefault();
+                        return Json(new { Result = false, Message = String.Format("{0} уже есть в списке забронированных персон", _pers) }, JsonRequestBehavior.AllowGet);
+                    } 
+
                     //Получаем ID роли "Клиент"
                     int _clientroleid = db.PersonRoles.First(r => r.RoleName.ToUpper() == (string)"Клиент".ToUpper()).RoleId;
 

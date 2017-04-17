@@ -82,12 +82,13 @@
         </div>
     </div>
     <div class="col-lg-7 col-md-6">
-        <div class="panel panel-default" style="min-width:500px; min-height:436px;">
+        <div class="panel panel-default" style="min-width:600px; min-height:436px;">
             <div class="panel-heading"><strong><i class="fa fa-bell"></i> Посещения</strong></div>
             <div class="panel-body" id="tabpanel">
                 <ul class="nav nav-tabs">
                     @* Вкладки ---------------------------------------------------------------- *@
                     <li id="ResTab" class="active"><a data-toggle="tab" href="#home"><strong>Посетители</strong></a></li>
+                    <li id="RecTab"><a data-toggle="tab" href="#rec"><strong>Запись</strong></a></li>
                     <li id="PTCTab"><a data-toggle="tab" href="#menu1"><strong>Подбор посетителей</strong></a></li>
                 </ul>
                 <div class="tab-content">
@@ -112,7 +113,13 @@
                             @Html.Action("VisitorPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId, @SearchString = "", @RoleSearchString = "" })
                         </div>
                     </div>
-                    @* Вкладка регистрации ------------------------------------------- *@
+
+                    @* Вкладка Запись ------------------------------------------- *@
+                    <div id="rec" class="tab-pane fade">
+                        <h2 class="text-center text-danger text-uppercase">В разработке</h2>
+                    </div>
+
+                    @* Вкладка подбора посетителей ------------------------------------------- *@
                     <div id="menu1" class="tab-pane fade">
                         <div class="col-lg-12 form-inline" style="margin-bottom:12px;">
                             @using (Ajax.BeginForm("PersonsPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId }, new AjaxOptions { UpdateTargetId = "update1", LoadingElementId = "loadingImg" }, new { @id = "personform" }))
@@ -148,6 +155,13 @@
 
     <script type="text/javascript">
         $(function () {
+
+            /*Check window width*/
+            if ($(window).width() >= 1000) {
+                $('#fixedpanel').addClass('fixed');
+            }
+            else { $('#fixedpanel').removeClass('fixed'); }
+
             // Очищаем панель сообщений по щелчку в окне
             $('#resultMessage').click(function () {
                 $('#resultMessage').fadeOut(1000,
@@ -221,8 +235,58 @@
 
     <script type="text/javascript">
 
-        //Обработчик щелчка по кнопке выбора персоны
+        //Обработчик щелчка по кнопке выбора персон/персоны
         function selsubmit(elem) {
+            var PersonsIDSArray = new Array();
+            if ($(elem).attr('id') == "selAllPersons") {
+                if ($('input[name=FilterMode]:checked').val() == "All") {
+                    alert('Выберите режим фильтрации "Бронь"');
+                    return;
+                }
+                else {
+                    $(".selPerson").each(function (el) {
+                        PersonsIDSArray.push($(this).data('personid'));
+                    });
+                }
+            }
+            else {
+                PersonsIDSArray.push($(elem).data('personid'));
+            }
+
+            var _personsIDS = PersonsIDSArray;
+            var _exId = '@Model.ExerciseId';
+
+            $('#loadingImg').show();
+            $.ajax({
+                type: 'POST',
+                url: '/Visits/AddPreVisitAjax/',
+                traditional: true,
+                data: {
+                    ExId: _exId,
+                    PersonsIdS: _personsIDS,
+                },
+                success: function (data) {
+                    $('#loadingImg').hide();
+                    if (!data.Result) {
+                        $("#MessageOk").text('');
+                        $("#MessageError").text(data.Message);
+                    }
+                    else {
+                        $("#MessageError").text('');
+                        $("#MessageOk").text(data.Message);
+                        $('#visitform').trigger('reset');
+                        $('#visitform').submit();
+                    }
+                },
+                fail: function (data) {
+                    $('#loadingImg').hide();
+                    $("#MessageError").text("Ошибка выполнения запроса");
+                }
+            });
+        };
+
+        //Обработчик щелчка по кнопке выбора персоны
+        function selsubmit_tmp(elem) {
             var _personId = $(elem).data('personid');
             var _exId = $(elem).data('exid');
             var _roleId = $('#ddl' + _personId).val();

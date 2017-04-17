@@ -4,6 +4,11 @@
 @{
     ViewBag.Title = "Персоны";
 }
+
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog" style="min-width:800px;"></div>
+</div>
+
 <h2><i class="fa fa-user-circle"></i> Персоны</h2>
 
 <h3>Реестр персон</h3>
@@ -13,7 +18,9 @@
         <p class="text-danger">  @TempData["MessageError"]</p>
     </div>
 </div>
+
 <label id="SortColumn" hidden>@ViewData["SortColumn"]</label>
+
 <div class="row">
     <div class="col-md-12">
         @using (Html.BeginForm("ShowPersons", "Home", FormMethod.Get))
@@ -66,10 +73,10 @@
                 string ttl = string.Empty;
                 ttl += "ФИО: ";
                 ttl += string.IsNullOrEmpty(item.FirstName) ? "" : item.FirstName + " ";
-                ttl += string.IsNullOrEmpty(item.LastName) ? "" : item.LastName+ " ";
+                ttl += string.IsNullOrEmpty(item.LastName) ? "" : item.LastName + " ";
                 ttl += string.IsNullOrEmpty(item.MiddleName) ? "" : item.MiddleName;
                 ttl += "\x0A";
-                
+
                 if (item.DateOfBirth.HasValue)
                 {
                     ttl += "Дата рождения: " + Html.DisplayFor(modelItem => item.DateOfBirth) + "\x0A";
@@ -79,15 +86,15 @@
                     ttl += "Примечание: " + item.Note;
                 }
 
-                <tr title="@ttl" style="cursor:pointer">
+                <tr title="@ttl" style="cursor:help">
                     <td>
-                        @Html.DisplayFor(modelItem => item.FirstName)
+                        <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Связанные персоны">@Html.DisplayFor(modelItem => item.FirstName)</a>
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.LastName)
+                        <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Связанные персоны">@Html.DisplayFor(modelItem => item.LastName)</a>
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.MiddleName)
+                        <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Связанные персоны">@Html.DisplayFor(modelItem => item.MiddleName)</a>
                     </td>
                     @if (item.PersonAge != null && item.PersonAge > 0)
                     {
@@ -177,4 +184,39 @@
 
     </script>
 
+    <script type="text/javascript">
+        //Отображение модального окна со списком связанных персон и средств связи
+        //Представление ShowModalPTCRelations контроллер ReservesCintroller
+        $(function () {
+            $('body').on('click', '.showRelPersons', function (event) {
+                event.preventDefault();
+                $.ajaxSetup({ cache: false });
+                $('#loadingImg').show();
+                $.get('/Reserves/ShowModalPTCRelations', {
+                    PersonId: $(this).data('personid')
+                },
+                     function (data) {
+                         $('#dialogContent').html(data);
+                         $('#modDialog').modal('show');
+                         $('.comm').first().collapse('show');
+                         $('#loadingImg').hide();
+                     });
+            });
+
+            //Отображение средств связи связанных персон
+            $("body").on('show.bs.collapse', '.comm', function () {
+                AjaxLoadComm($(this).attr('id'));
+            });
+
+            function AjaxLoadComm(_id) {
+                $('#loadingImg').show();
+                $('#' + _id + '>div').delay(100).queue(function (nxt) {
+                    $('#' + _id + '>div').load('/Reserves/AjaxPersonComm', { PersonId: _id }, function () {
+                        $('#loadingImg').hide();
+                    });
+                    nxt();
+                });
+            }
+        });
+    </script>
 }

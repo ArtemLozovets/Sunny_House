@@ -425,11 +425,11 @@ namespace Sunny_House.Controllers
             var _persons = (from person in db.Persons
                             join reserve in db.Reserves on person.PersonId equals reserve.PersonId
                             join role in db.PersonRoles on reserve.RoleId equals role.RoleId
-                            where (reserve.EventId == EventId) &&
-                            (person.FirstName.Contains(SearchString) ||
-                            person.LastName.Contains(SearchString) ||
-                            person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(SearchString) ||
-                            String.IsNullOrEmpty(SearchString)))
+                            where (reserve.EventId == EventId) 
+                            &&(person.FirstName.Contains(SearchString) 
+                                ||person.LastName.Contains(SearchString) 
+                                ||person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(SearchString)
+                                ||String.IsNullOrEmpty(SearchString)))
                             select new
                             {
                                 ReserveId = reserve.ReserveId,
@@ -449,7 +449,7 @@ namespace Sunny_House.Controllers
                                                     Num_Address = e.Address_Num,
                                                     PersonRole = e.PersonRole,
                                                     RoleId = e.RoleId
-                                                });
+                                                }).ToList();
 
             ViewData["EventId"] = EventId;
             ViewBag.RoleList = db.PersonRoles.ToList();

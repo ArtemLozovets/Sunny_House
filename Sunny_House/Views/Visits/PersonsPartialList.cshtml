@@ -1,10 +1,15 @@
 ﻿@using PagedList.Mvc;
 @model PagedList.IPagedList<Sunny_House.Models.PersonsViewModel>
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+<style>
+    #PPLTable tr th{
+        vertical-align:middle !important;
+    }
+</style>
 
 <label id="SortColumn" hidden>@ViewData["SortColumn"]</label>
 
-<table class="table ModalTable">
+<table class="table ModalTable" id="PPLTable">
     <tr>
         <th>
             @Ajax.ActionLink("Персона", "PersonsPartialList", new
@@ -16,8 +21,8 @@
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update1", LoadingElementId = "loadingImg" }, new { @id = "PersonFIO" })
             <i id="PersonFIOArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
-        <th style="text-align:center; min-width:100px;">
-            @Ajax.ActionLink("Возраст", "PersonsPartialList", new
+        <th style="text-align:center; min-width:80px;">
+            @Ajax.ActionLink("Воз.", "PersonsPartialList", new
        {
            SortBy = ViewBag.SortAge,
            SearchString = Request["SearchString"],
@@ -28,7 +33,14 @@
         </th>
         <th>Роль</th>
         <th>Примечание</th>
-        <th></th>
+        <th>
+            <a class="btn btn-default btn-sm"
+               title="Выбрать всех персон"
+               id="selAllPersons"
+               onclick="selsubmit(this)">
+                <span class="glyphicon glyphicon-ok"></span>
+            </a>
+        </th>
     </tr>
     @if (Model.Count() == 0)
     {
@@ -48,7 +60,7 @@
             @if (item.PersonAge != null && item.PersonAge > 0)
             {
                 <td style="text-align:center">
-                    <span class="text-info" title="Дата рождения: @Html.DisplayFor(modelItem => item.DateOfBirth)" style="cursor:pointer">
+                    <span class="text-info" title="Дата рождения: @Html.DisplayFor(modelItem => item.DateOfBirth)" style="cursor:help">
                         @Html.DisplayFor(modelItem => item.PersonAge)
                     </span>
                 </td>
@@ -57,7 +69,7 @@
             {
                 <td style="text-align:center">
                     @if (item.PersonMonth != null)
-                    { <span class="text-success" title="Дата рождения: @Html.DisplayFor(modelItem => item.DateOfBirth)" style="cursor:pointer">
+                    { <span class="text-success" title="Дата рождения: @Html.DisplayFor(modelItem => item.DateOfBirth)" style="cursor:help">
                         @Html.DisplayFor(modelItem => item.PersonMonth) мес.
                     </span> }
                 </td>
@@ -69,20 +81,19 @@
                                                         htmlAttributes: new
                                                         {
                                                             @class = "form-control personddl",
-                                                            style = "width:160px; margin:2px 0; display:inline-block;",
+                                                            style = "width:140px; margin:2px 0; display:inline-block;",
                                                             id = "ddl" + @item.PersonId
                                                         })
             </td>
 
             <td>
-                @Html.TextArea("Note", new { @class = "form-control notearea", @rows = 1, @style="width:200px; max-width:200px;", @id="note"+item.PersonId })
+                @Html.TextArea("Note", new { @class = "form-control notearea", @rows = 1, @style="width:200px; max-width:200px; margin:2px;", @id="note"+item.PersonId })
             </td>
 
             <td>
                 <a class="btn btn-default btn-sm selPerson"
                    title="Регистрация посещения"
                    data-personid="@item.PersonId"
-                   data-exid="@ViewData["ExerciseId"]"
                    onclick="selsubmit(this)">
                     <span class="glyphicon glyphicon-ok"></span>
                 </a>
