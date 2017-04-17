@@ -31,7 +31,6 @@
        }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "update1", LoadingElementId = "loadingImg" }, new { @id = "Age" })
             <i id="AgeArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
-        <th>Роль</th>
         <th>Примечание</th>
         <th>
             <a class="btn btn-default btn-sm"
@@ -76,24 +75,14 @@
             }
 
             <td>
-                @Html.DropDownList("RoleId", new SelectList(ViewBag.RoleList, "RoleId", "RoleName", item.RoleId),
-                                                        "-Роль-",
-                                                        htmlAttributes: new
-                                                        {
-                                                            @class = "form-control personddl",
-                                                            style = "width:140px; margin:2px 0; display:inline-block;",
-                                                            id = "ddl" + @item.PersonId
-                                                        })
-            </td>
-
-            <td>
-                @Html.TextArea("Note", new { @class = "form-control notearea", @rows = 1, @style="width:200px; max-width:200px; margin:2px;", @id="note"+item.PersonId })
+                @Html.DisplayFor(modelItem => item.Note)
             </td>
 
             <td>
                 <a class="btn btn-default btn-sm selPerson"
                    title="Регистрация посещения"
                    data-personid="@item.PersonId"
+                   data-roleid="@item.RoleId"
                    onclick="selsubmit(this)">
                     <span class="glyphicon glyphicon-ok"></span>
                 </a>

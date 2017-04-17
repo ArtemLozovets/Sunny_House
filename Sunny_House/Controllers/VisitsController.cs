@@ -406,7 +406,8 @@ namespace Sunny_House.Controllers
                                 PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
                                 PersonId = person.PersonId,
                                 DateOfBirth = person.DateOfBirth,
-                                RoleId = reserve.RoleId
+                                RoleId = reserve.RoleId,
+                                Note = person.Note
                             }).AsEnumerable().Select(p => new PersonsViewModel
                             {
                                 PersonFIO = p.PersonFIO.TrimStart(),
@@ -414,7 +415,8 @@ namespace Sunny_House.Controllers
                                 PersonAge = AgeMethods.GetAge(p.DateOfBirth),
                                 PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
                                 DateOfBirth = p.DateOfBirth,
-                                RoleId = p.RoleId
+                                RoleId = p.RoleId,
+                                Note = p.Note
                             });
             }
             else
@@ -426,13 +428,15 @@ namespace Sunny_House.Controllers
                                 PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
                                 PersonId = person.PersonId,
                                 DateOfBirth = person.DateOfBirth,
+                                Note = person.Note
                             }).AsEnumerable().Select(p => new PersonsViewModel
                              {
                                  PersonFIO = p.PersonFIO.TrimStart(),
                                  PersonId = p.PersonId,
                                  PersonAge = AgeMethods.GetAge(p.DateOfBirth),
                                  PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
-                                 DateOfBirth = p.DateOfBirth
+                                 DateOfBirth = p.DateOfBirth,
+                                 Note = p.Note
                              });
             }
 
@@ -475,7 +479,7 @@ namespace Sunny_House.Controllers
 
 
         [Authorize(Roles = "Administrator, User")]
-        public JsonResult AddPreVisitAjax(int? ExId, int[] PersonsIDS)
+        public JsonResult AddPreVisitAjax(int? ExId, int[] PersonsIDS, Dictionary<string, int> MDict)
         {
             if (ExId == null || PersonsIDS == null || PersonsIDS.Length == 0)
             {
