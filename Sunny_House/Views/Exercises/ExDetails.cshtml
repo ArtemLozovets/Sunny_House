@@ -8,7 +8,8 @@
 <div style="margin-bottom:26px;"><span id="topanchor"></span></div>
 
 <div id="modDialog" class="modal fade">
-    <div id="dialogContent" class="modal-dialog" style="min-width:800px;"></div>
+    <div id="dialogContent" class="modal-dialog" style="min-width:800px;">
+    </div>
 </div>
 
 <div id="loadingImg">
@@ -234,10 +235,10 @@
     </script>
 
     <script type="text/javascript">
-
         //Обработчик щелчка по кнопке выбора персон/персоны
         function selsubmit(elem) {
             var PersonsIDSArray = new Array();
+
             if ($(elem).attr('id') == "selAllPersons") {
                 if ($('input[name=FilterMode]:checked').val() == "All") {
                     alert('Выберите режим фильтрации "Бронь"');
@@ -245,16 +246,23 @@
                 }
                 else {
                     $(".selPerson").each(function (el) {
-                        PersonsIDSArray.push($(this).data('personid'));
+                        PersonsIDSArray.push(
+                            {
+                                PersonId: $(this).data('personid'),
+                                RoleId: $(this).data('roleid')
+                            });
 
                     });
                 }
             }
             else {
-                PersonsIDSArray.push($(elem).data('personid'));
+                PersonsIDSArray.push(
+                            {
+                                PersonId: $(elem).data('personid'),
+                                RoleId: $(elem).data('roleid')
+                            });
             }
 
-            var _personsIDS = PersonsIDSArray;
             var _exId = '@Model.ExerciseId';
 
             $('#loadingImg').show();
@@ -263,9 +271,10 @@
                 url: '/Visits/AddPreVisitAjax/',
                 traditional: true,
                 data: {
-                    ExId: _exId,
-                    PersonsIdS: _personsIDS,
+                    'ExId': _exId,
+                    'PersonsJSON': JSON.stringify(PersonsIDSArray)
                 },
+                accept: 'application/json',
                 success: function (data) {
                     $('#loadingImg').hide();
                     if (!data.Result) {
@@ -286,51 +295,50 @@
             });
         };
 
-        //Обработчик щелчка по кнопке выбора персоны
-        function selsubmit_tmp(elem) {
-            var _personId = $(elem).data('personid');
-            var _exId = $(elem).data('exid');
-            var _roleId = $('#ddl' + _personId).val();
-            var _note = $('#note' + _personId).val();
-            if (_note.length > 1000) {
-                alert('Длина примечания не должна превышать 1000 символов!');
-                return;
-            }
-            if (_roleId == '') {
-                alert('Необходимо указать роль посетителя!');
-            }
-            else {
+        ////Обработчик щелчка по кнопке выбора персоны
+        //function selsubmit_tmp(elem) {
+        //    var _personId = $(elem).data('personid');
+        //    var _exId = $(elem).data('exid');
+        //    var _roleId = $('#ddl' + _personId).val();
+        //    var _note = $('#note' + _personId).val();
+        //    if (_note.length > 1000) {
+        //        alert('Длина примечания не должна превышать 1000 символов!');
+        //        return;
+        //    }
+        //    if (_roleId == '') {
+        //        alert('Необходимо указать роль посетителя!');
+        //    }
+        //    else {
 
-                $('#loadingImg').show();
-                $.ajax({
-                    type: 'POST',
-                    url: '/Visits/AddVisitAjax/',
-                    traditional: true,
-                    data: {
-                        ExId: _exId,
-                        RoleId: _roleId,
-                        PersonId: _personId,
-                        Note: _note
-                    },
-                    success: function (data) {
-                        $('#loadingImg').hide();
-                        if (!data.Result) {
-                            $("#MessageError").text(data.Message);
-                        }
-                        else {
-                            $("#MessageOk").text(data.Message);
-                            $('#visitform').trigger('reset');
-                            $('#visitform').submit();
-                        }
-                    },
-                    fail: function (data) {
-                        $('#loadingImg').hide();
-                        $("#MessageError").text("Ошибка выполнения запроса");
-                    }
-                });
-            }
-        };
-
+        //        $('#loadingImg').show();
+        //        $.ajax({
+        //            type: 'POST',
+        //            url: '/Visits/AddVisitAjax/',
+        //            traditional: true,
+        //            data: {
+        //                ExId: _exId,
+        //                RoleId: _roleId,
+        //                PersonId: _personId,
+        //                Note: _note
+        //            },
+        //            success: function (data) {
+        //                $('#loadingImg').hide();
+        //                if (!data.Result) {
+        //                    $("#MessageError").text(data.Message);
+        //                }
+        //                else {
+        //                    $("#MessageOk").text(data.Message);
+        //                    $('#visitform').trigger('reset');
+        //                    $('#visitform').submit();
+        //                }
+        //            },
+        //            fail: function (data) {
+        //                $('#loadingImg').hide();
+        //                $("#MessageError").text("Ошибка выполнения запроса");
+        //            }
+        //        });
+        //    }
+        //};
     </script>
 
     <script type="text/javascript">

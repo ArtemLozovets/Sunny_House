@@ -15,9 +15,17 @@ using Sunny_House.Methods;
 namespace Sunny_House.Controllers
 {
     [Authorize(Roles = "Administrator, User, Presenter")]
+
+
     public class VisitsController : Controller
     {
         private SunnyModel db = new SunnyModel();
+
+        private class JSONVisitorModel
+        {
+            public int PersonId { get; set; }
+            public int RoleId { get; set; }
+        }
 
         // GET: Visits
         public ActionResult VisShow()
@@ -476,39 +484,39 @@ namespace Sunny_House.Controllers
             return PartialView(_persons.ToList().ToPagedList(pageNumber, pageSize));
         }
 
-
+        
 
         [Authorize(Roles = "Administrator, User")]
-        public JsonResult AddPreVisitAjax(int? ExId, int[] PersonsIDS, Dictionary<string, int> MDict)
+        public JsonResult AddPreVisitAjax(int? ExId, string PersonsJSON)
         {
-            if (ExId == null || PersonsIDS == null || PersonsIDS.Length == 0)
+            if (ExId == null || String.IsNullOrEmpty(PersonsJSON))
             {
                 return Json(new { Result = false, Message = "Ошибка валидации модели" }, JsonRequestBehavior.AllowGet);
             }
             try
             {
-
-                foreach (var PersonId in PersonsIDS)
-                {
-                    if (db.Visits.Where(v => v.Person.PersonId == PersonId && v.ExerciseId == ExId).Count() > 0)
-                    {
-                        string _pers = db.Persons.Where(x => x.PersonId == PersonId).Select(x => x.FirstName + " " + x.LastName + " " + x.MiddleName).FirstOrDefault();
-                        return Json(new { Result = false, Message = String.Format("{0} уже присутствует в списке посещений. Пакет отклонен!", _pers) }, JsonRequestBehavior.AllowGet);
-                    }    
-                }
-
-                //Получаем ID роли "Клиент"
-                int _clientroleid = db.PersonRoles.First(r => r.RoleName.ToUpper() == (string)"Клиент".ToUpper()).RoleId;
+                string _jsonObject = PersonsJSON.Replace(@"\", string.Empty);
+                var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+                IList<JSONVisitorModel> jsonObject = serializer.Deserialize<IList<JSONVisitorModel>>(_jsonObject);
                 List<Visit> _visitlist = new List<Visit>();
-                foreach (var visitor in PersonsIDS )
+
+                foreach (var Visitor in jsonObject)
                 {
-                    Visit _visit = new Visit()
+                    if (db.Visits.Where(v => v.Person.PersonId ==Visitor.PersonId && v.ExerciseId == ExId).Count() > 0)
                     {
-                        VisitorId = visitor,
-                        ExerciseId = ExId ?? 0,
-                        RoleId = _clientroleid
-                    };
-                    _visitlist.Add(_visit);
+                        string _pers = db.Persons.Where(x => x.PersonId == Visitor.PersonId).Select(x => x.FirstName + " " + x.LastName + " " + x.MiddleName).FirstOrDefault();
+                        return Json(new { Result = false, Message = String.Format("{0} уже присутствует в списке посещений. Пакет отклонен!", _pers) }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        Visit _visit = new Visit()
+                        {
+                            VisitorId = Visitor.PersonId,
+                            ExerciseId = ExId ?? 0,
+                            RoleId = Visitor.RoleId
+                        };
+                        _visitlist.Add(_visit);
+                    }
                 }
 
                 db.Visits.AddRange(_visitlist);
