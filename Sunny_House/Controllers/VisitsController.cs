@@ -222,21 +222,20 @@ namespace Sunny_House.Controllers
         }
 
 
-        public ActionResult VisitorPartialList(int? ExerciseId, string SearchString, int? RoleSearchString, int? page, string Mode)
+        public ActionResult PreVisitorPartialList(int? ExerciseId, string PreSearchString, int? PreRoleSearchString, int? page)
         {
             if (ExerciseId == 0 || ExerciseId == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Mode = String.IsNullOrEmpty(Mode) ? "Pre" : "Fact";
-
             var _visitors = (from visitor in db.Visits
-                             where (visitor.ExerciseId == ExerciseId) 
-                                        && (visitor.Person.FirstName.ToUpper().Contains(SearchString.ToUpper()) 
-                                            || visitor.Person.LastName.ToUpper().Contains(SearchString.ToUpper()) 
-                                            || String.IsNullOrEmpty(SearchString)) 
-                                        && (visitor.RoleId == RoleSearchString || RoleSearchString == null)
+                             where (visitor.ExerciseId == ExerciseId)
+                                        && (visitor.Person.FirstName.ToUpper().Contains(PreSearchString.ToUpper())
+                                            || visitor.Person.LastName.ToUpper().Contains(PreSearchString.ToUpper())
+                                            || String.IsNullOrEmpty(PreSearchString))
+                                        && (visitor.RoleId == PreRoleSearchString || PreRoleSearchString == null)
+                                        && (visitor.FactVisit == false)
                              select new
                              {
                                  VisitId = visitor.VisitId,
@@ -261,12 +260,60 @@ namespace Sunny_House.Controllers
                                  FactVisit = v.FactVisit
                              });
 
+            ViewData["SearchString"] = PreSearchString;
+            ViewData["RoleSearchString"] = PreRoleSearchString;
+            ViewData["ExerciseId"] = ExerciseId;
+            ViewBag.RoleList = db.PersonRoles.ToList();
+
+            int pageSize = 50;
+            int pageNumber = (page ?? 1);
+
+            return PartialView(_visitors.ToList().ToPagedList(pageNumber, pageSize));
+        }
+
+
+        public ActionResult VisitorPartialList(int? ExerciseId, string SearchString, int? RoleSearchString, int? page)
+        {
+            if (ExerciseId == 0 || ExerciseId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var _visitors = (from visitor in db.Visits
+                             where (visitor.ExerciseId == ExerciseId)
+                                        && (visitor.Person.FirstName.ToUpper().Contains(SearchString.ToUpper())
+                                            || visitor.Person.LastName.ToUpper().Contains(SearchString.ToUpper())
+                                            || String.IsNullOrEmpty(SearchString))
+                                        && (visitor.RoleId == RoleSearchString || RoleSearchString == null)
+                                        && (visitor.FactVisit == true)
+                             select new
+                             {
+                                 VisitId = visitor.VisitId,
+                                 VisitorId = visitor.VisitorId,
+                                 ExerciseId = visitor.ExerciseId,
+                                 PersonFIO = visitor.Person.FirstName + " " + visitor.Person.LastName + " " + visitor.Person.MiddleName,
+                                 FirstName = visitor.Person.FirstName,
+                                 LastName = visitor.Person.LastName,
+                                 RoleId = visitor.RoleId,
+                                 RoleName = visitor.PersonRole.RoleName,
+                                 Note = visitor.Note,
+                                 FactVisit = visitor.FactVisit
+                             }).OrderBy(v => v.FirstName).ThenBy(v => v.LastName).AsEnumerable().Select(v => new Visit
+                             {
+                                 VisitId = v.VisitId,
+                                 VisitorId = v.VisitorId,
+                                 ExerciseId = v.ExerciseId,
+                                 PersonFIO = v.PersonFIO,
+                                 RoleId = v.RoleId,
+                                 RoleName = v.RoleName,
+                                 Note = v.Note,
+                                 FactVisit = v.FactVisit
+                             });
 
             ViewData["SearchString"] = SearchString;
             ViewData["RoleSearchString"] = RoleSearchString;
             ViewData["ExerciseId"] = ExerciseId;
             ViewBag.RoleList = db.PersonRoles.ToList();
-            ViewData["Mode"] = Mode;
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);
@@ -277,7 +324,7 @@ namespace Sunny_House.Controllers
         public ActionResult AllVisitsPartial(int? RoleSearchString, int? VisitorId, int? EventId, int? ExerciseId, DateTime? StartDate, int? page, string SortBy, string FilterMode)
         {
 
-            bool _fact = String.IsNullOrEmpty(FilterMode) || FilterMode == "Fact" ? true : false; 
+            bool _fact = String.IsNullOrEmpty(FilterMode) || FilterMode == "Fact" ? true : false;
 
             ViewData["RoleSearchString"] = RoleSearchString;
             ViewData["VisitorId"] = VisitorId;
@@ -411,7 +458,7 @@ namespace Sunny_House.Controllers
                             join _event in db.Events on reserve.EventId equals _event.EventId
                             join _ex in db.Exercises on _event.EventId equals _ex.EventId
                             where (_ex.ExerciseId == ExerciseId || ExerciseId == null) &&
-                            ((person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || 
+                            ((person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) ||
                              (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)))
                             select new
                             {
@@ -488,7 +535,7 @@ namespace Sunny_House.Controllers
             return PartialView(_persons.ToList().ToPagedList(pageNumber, pageSize));
         }
 
-        
+
 
         [Authorize(Roles = "Administrator, User")]
         public JsonResult AddPreVisitAjax(int? ExId, string PersonsJSON)
@@ -506,7 +553,7 @@ namespace Sunny_House.Controllers
 
                 foreach (var Visitor in jsonObject)
                 {
-                    if (db.Visits.Where(v => v.Person.PersonId ==Visitor.PersonId && v.ExerciseId == ExId).Count() > 0)
+                    if (db.Visits.Where(v => v.Person.PersonId == Visitor.PersonId && v.ExerciseId == ExId).Count() > 0)
                     {
                         string _pers = db.Persons.Where(x => x.PersonId == Visitor.PersonId).Select(x => x.FirstName + " " + x.LastName + " " + x.MiddleName).FirstOrDefault();
                         return Json(new { Result = false, Message = String.Format("{0} уже присутствует в списке посещений. Пакет отклонен!", _pers) }, JsonRequestBehavior.AllowGet);
@@ -517,7 +564,8 @@ namespace Sunny_House.Controllers
                         {
                             VisitorId = Visitor.PersonId,
                             ExerciseId = ExId ?? 0,
-                            RoleId = Visitor.RoleId
+                            RoleId = Visitor.RoleId,
+                            FactVisit = false
                         };
                         _visitlist.Add(_visit);
                     }
@@ -534,9 +582,9 @@ namespace Sunny_House.Controllers
                 return Json(new { Result = false, Message = "Ошибка добавления информации о посещении" }, JsonRequestBehavior.AllowGet);
             }
         }
-        
-        
-        
+
+
+
         [Authorize(Roles = "Administrator, User")]
         public JsonResult AddVisitAjax(int? ExId, int? RoleId, int? PersonId, string Note)
         {
@@ -575,18 +623,21 @@ namespace Sunny_House.Controllers
 
 
         [Authorize(Roles = "Administrator, User")]
-        public JsonResult AjaxFactChange(int? VisitId, bool? factState)
+        public JsonResult AjaxFactChange(int[] VisitsArray)
         {
-            if (VisitId == null || factState == null)
+            if (VisitsArray == null || VisitsArray.Length == 0)
             {
                 return Json(new { Result = false, Message = "Ошибка валидации модели" }, JsonRequestBehavior.AllowGet);
             }
             try
             {
 
-                Visit _visit = db.Visits.Find(VisitId);
-                _visit.FactVisit = factState ?? false;
-                db.SaveChanges();
+                foreach (var visit in VisitsArray)
+                {
+                    Visit _visit = db.Visits.Find(visit);
+                    _visit.FactVisit = true;
+                    db.SaveChanges();
+                }
 
                 return Json(new { Result = true, Message = "Инофрмация о факте посещения обновлена" }, JsonRequestBehavior.AllowGet);
             }

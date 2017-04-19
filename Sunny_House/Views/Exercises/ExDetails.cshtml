@@ -96,7 +96,7 @@
                     @* Вкладка посетителей ------------------------------------------- *@
                     <div id="home" class="tab-pane fade in active">
                         <div class="col-lg-12 form-inline text-right" style="margin-bottom:12px;">
-                            @using (Ajax.BeginForm("VisitorPartialList", "Visits", new { ExerciseId = Model.ExerciseId, Mode = "Fact" }, new AjaxOptions { UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "visitform" }))
+                            @using (Ajax.BeginForm("VisitorPartialList", "Visits", new { ExerciseId = Model.ExerciseId }, new AjaxOptions { UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "visitform" }))
                             {
                                 <input class="form-control" type="text" name="SearchString" id="SearchString" placeholder="Фамилия, имя..." style="width:200px; margin:2px 0; display:inline-block">
                                 @Html.DropDownList("RoleSearchString",
@@ -111,18 +111,18 @@
                             }
                         </div>
                         <div id="update">
-                            @Html.Action("VisitorPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId, @SearchString = "", @RoleSearchString = "", Mode = "Fact" })
+                            @Html.Action("VisitorPartialList", "Visits", new { ExerciseId = Model.ExerciseId, SearchString = "", RoleSearchString = "" })
                         </div>
                     </div>
 
                     @* Вкладка Запись ------------------------------------------- *@
                     <div id="rec" class="tab-pane fade">
-                       
+
                         <div class="col-lg-12 form-inline text-right" style="margin-bottom:12px;">
-                            @using (Ajax.BeginForm("VisitorPartialList", "Visits", new { ExerciseId = Model.ExerciseId, Mode = "Rec" }, new AjaxOptions { UpdateTargetId = "preupdate", LoadingElementId = "loadingImg" }, new { @id = "previsitform" }))
+                            @using (Ajax.BeginForm("PreVisitorPartialList", "Visits", new { ExerciseId = Model.ExerciseId }, new AjaxOptions { UpdateTargetId = "preupdate", LoadingElementId = "loadingImg" }, new { @id = "previsitform" }))
                             {
-                                <input class="form-control" type="text" name="SearchString" id="SearchString" placeholder="Фамилия, имя..." style="width:200px; margin:2px 0; display:inline-block">
-                                @Html.DropDownList("RoleSearchString",
+                                <input class="form-control" type="text" name="PreSearchString" id="PreSearchString" placeholder="Фамилия, имя..." style="width:200px; margin:2px 0; display:inline-block">
+                                @Html.DropDownList("PreRoleSearchString",
                                                         (IEnumerable<SelectListItem>)ViewData["Roles"], "-Роль-",
                                                         htmlAttributes: new
                                                         {
@@ -134,9 +134,8 @@
                             }
                         </div>
                         <div id="preupdate">
-                            @Html.Action("VisitorPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId, @SearchString = "", @RoleSearchString = "", Mode = "Pre" })
+                            @Html.Action("PreVisitorPartialList", "Visits", new { ExerciseId = Model.ExerciseId, SearchString = "", RoleSearchString = "" })
                         </div>
-
                     </div>
 
                     @* Вкладка подбора посетителей ------------------------------------------- *@
@@ -259,7 +258,7 @@
     </script>
 
     <script type="text/javascript">
-        //Обработчик щелчка по кнопке выбора персон/персоны
+        //Обработчик щелчка по кнопке выбора персон/персоны вкладки "Подбор посетителей"
         function selsubmit(elem) {
             var PersonsIDSArray = new Array();
 
@@ -319,50 +318,6 @@
             });
         };
 
-        ////Обработчик щелчка по кнопке выбора персоны
-        //function selsubmit_tmp(elem) {
-        //    var _personId = $(elem).data('personid');
-        //    var _exId = $(elem).data('exid');
-        //    var _roleId = $('#ddl' + _personId).val();
-        //    var _note = $('#note' + _personId).val();
-        //    if (_note.length > 1000) {
-        //        alert('Длина примечания не должна превышать 1000 символов!');
-        //        return;
-        //    }
-        //    if (_roleId == '') {
-        //        alert('Необходимо указать роль посетителя!');
-        //    }
-        //    else {
-
-        //        $('#loadingImg').show();
-        //        $.ajax({
-        //            type: 'POST',
-        //            url: '/Visits/AddVisitAjax/',
-        //            traditional: true,
-        //            data: {
-        //                ExId: _exId,
-        //                RoleId: _roleId,
-        //                PersonId: _personId,
-        //                Note: _note
-        //            },
-        //            success: function (data) {
-        //                $('#loadingImg').hide();
-        //                if (!data.Result) {
-        //                    $("#MessageError").text(data.Message);
-        //                }
-        //                else {
-        //                    $("#MessageOk").text(data.Message);
-        //                    $('#visitform').trigger('reset');
-        //                    $('#visitform').submit();
-        //                }
-        //            },
-        //            fail: function (data) {
-        //                $('#loadingImg').hide();
-        //                $("#MessageError").text("Ошибка выполнения запроса");
-        //            }
-        //        });
-        //    }
-        //};
     </script>
 
     <script type="text/javascript">
@@ -408,30 +363,58 @@
         });
     </script>
 
-    <script type="text/javascript">
-        //Скрипт асинхронного изменения значения поля "FactVisit".
-        $('body').on('change', '.CBFact', function (e) {
-            var elem = e.target;
-            var _visitId = $(elem).data('visitid');
-            var _factState = $(elem).prop('checked');
 
-            if (confirm('Изменить значение свойства "Факт посещения"?')) {
+    <script type="text/javascript">
+        //Скрипт обновления списка бронирований при активации вкладки "Бронь"
+        $('body').on('shown.bs.tab', '#ResTab', function (e) {
+            $('#filterclear').trigger("click");
+        })
+
+        $('body').on('shown.bs.tab', '#RecTab', function (e) {
+            $('#prefilterclear').trigger("click");
+        })
+
+        $('body').on('shown.bs.tab', '#PTCTab', function (e) {
+            $('#personfilterclear').trigger("click");
+        })
+
+        //Скрипт асинхронного изменения значения поля "FactVisit".
+        $('body').on('click', '.BTFact', function (elem) {
+            elem.preventDefault();
+
+            if (confirm('Подтвердить посещение?')) {
+                var _VisitsArray = new Array();
+                if ($(this).attr('id') == "allVisitsBT") {
+                    $(".BTFact").each(function (el) {
+                        if ($(this).attr('id') != "allVisitsBT") {
+                            _VisitsArray.push($(this).data('visitid'));
+                        }
+                    });
+                }
+                else {
+                    _VisitsArray.push($(this).data('visitid'));
+                }
+
+                alert(JSON.stringify(_VisitsArray));
+
                 $.ajaxSetup({ cache: false });
                 $('#loadingImg').show();
 
-                $.get('/Visits/AjaxFactChange', {
-                    VisitId: _visitId,
-                    factState: _factState
+                $.post('/Visits/AjaxFactChange', {
+                    VisitsArray: _VisitsArray
                 },
                      function (data) {
                          $('#loadingImg').hide();
                          if (!data.Result) {
                              alert(data.Message);
                          }
+                         else {
+                             $('#previsitform').submit();
+                         }
                      });
             }
             else {
-                $('#visitform').submit();
+                $('#previsitform').submit();
             }
         });
     </script>
