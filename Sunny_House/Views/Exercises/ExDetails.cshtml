@@ -96,7 +96,7 @@
                     @* Вкладка посетителей ------------------------------------------- *@
                     <div id="home" class="tab-pane fade in active">
                         <div class="col-lg-12 form-inline text-right" style="margin-bottom:12px;">
-                            @using (Ajax.BeginForm("VisitorPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId }, new AjaxOptions { UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "visitform" }))
+                            @using (Ajax.BeginForm("VisitorPartialList", "Visits", new { ExerciseId = Model.ExerciseId, Mode = "Fact" }, new AjaxOptions { UpdateTargetId = "update", LoadingElementId = "loadingImg" }, new { @id = "visitform" }))
                             {
                                 <input class="form-control" type="text" name="SearchString" id="SearchString" placeholder="Фамилия, имя..." style="width:200px; margin:2px 0; display:inline-block">
                                 @Html.DropDownList("RoleSearchString",
@@ -111,13 +111,32 @@
                             }
                         </div>
                         <div id="update">
-                            @Html.Action("VisitorPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId, @SearchString = "", @RoleSearchString = "" })
+                            @Html.Action("VisitorPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId, @SearchString = "", @RoleSearchString = "", Mode = "Fact" })
                         </div>
                     </div>
 
                     @* Вкладка Запись ------------------------------------------- *@
                     <div id="rec" class="tab-pane fade">
-                        <h2 class="text-center text-danger text-uppercase">В разработке</h2>
+                       
+                        <div class="col-lg-12 form-inline text-right" style="margin-bottom:12px;">
+                            @using (Ajax.BeginForm("VisitorPartialList", "Visits", new { ExerciseId = Model.ExerciseId, Mode = "Rec" }, new AjaxOptions { UpdateTargetId = "preupdate", LoadingElementId = "loadingImg" }, new { @id = "previsitform" }))
+                            {
+                                <input class="form-control" type="text" name="SearchString" id="SearchString" placeholder="Фамилия, имя..." style="width:200px; margin:2px 0; display:inline-block">
+                                @Html.DropDownList("RoleSearchString",
+                                                        (IEnumerable<SelectListItem>)ViewData["Roles"], "-Роль-",
+                                                        htmlAttributes: new
+                                                        {
+                                                            @class = "form-control",
+                                                            style = "width:160px; margin:2px 0; display:inline-block;"
+                                                        })
+                                <button type="submit" title="Искать" class="btn btn-default" style="margin-top:-3px;"><i class="glyphicon glyphicon-search"></i></button>
+                                <button type="button" title="Обновить" class="btn btn-default" id="prefilterclear" style="margin-top:-3px;"><i class="glyphicon glyphicon-refresh"></i></button>
+                            }
+                        </div>
+                        <div id="preupdate">
+                            @Html.Action("VisitorPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId, @SearchString = "", @RoleSearchString = "", Mode = "Pre" })
+                        </div>
+
                     </div>
 
                     @* Вкладка подбора посетителей ------------------------------------------- *@
@@ -197,6 +216,11 @@
         $('body').on('click', '#filterclear', function (event) {
             $('#visitform').trigger('reset');
             $('#visitform').submit();
+        });
+
+        $('body').on('click', '#prefilterclear', function (event) {
+            $('#previsitform').trigger('reset');
+            $('#previsitform').submit();
         });
 
         $('body').on('click', '#personfilterclear', function (event) {

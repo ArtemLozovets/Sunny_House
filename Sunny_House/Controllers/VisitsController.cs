@@ -222,18 +222,21 @@ namespace Sunny_House.Controllers
         }
 
 
-        public ActionResult VisitorPartialList(int? ExerciseId, string SearchString, int? RoleSearchString, int? page)
+        public ActionResult VisitorPartialList(int? ExerciseId, string SearchString, int? RoleSearchString, int? page, string Mode)
         {
             if (ExerciseId == 0 || ExerciseId == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
+            Mode = String.IsNullOrEmpty(Mode) ? "Pre" : "Fact";
+
             var _visitors = (from visitor in db.Visits
-                             where (visitor.ExerciseId == ExerciseId) &&
-                                    ((visitor.Person.FirstName.ToUpper().Contains(SearchString.ToUpper()) || String.IsNullOrEmpty(SearchString)) ||
-                                      visitor.Person.LastName.ToUpper().Contains(SearchString.ToUpper()) || String.IsNullOrEmpty(SearchString)) &&
-                                    (visitor.RoleId == RoleSearchString || RoleSearchString == null)
+                             where (visitor.ExerciseId == ExerciseId) 
+                                        && (visitor.Person.FirstName.ToUpper().Contains(SearchString.ToUpper()) 
+                                            || visitor.Person.LastName.ToUpper().Contains(SearchString.ToUpper()) 
+                                            || String.IsNullOrEmpty(SearchString)) 
+                                        && (visitor.RoleId == RoleSearchString || RoleSearchString == null)
                              select new
                              {
                                  VisitId = visitor.VisitId,
@@ -263,6 +266,7 @@ namespace Sunny_House.Controllers
             ViewData["RoleSearchString"] = RoleSearchString;
             ViewData["ExerciseId"] = ExerciseId;
             ViewBag.RoleList = db.PersonRoles.ToList();
+            ViewData["Mode"] = Mode;
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);

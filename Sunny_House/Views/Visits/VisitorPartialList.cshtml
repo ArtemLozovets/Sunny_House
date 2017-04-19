@@ -16,7 +16,21 @@
         <th>
             @Html.DisplayNameFor(model => model.First().Note)
         </th>
-        <th></th>
+        @if (ViewData["Mode"].ToString() == "Pre")
+        {
+            <th>
+                <a class="btn btn-default btn-sm"
+                   title="Удалить"
+                   href='#'>
+                    <span class="glyphicon glyphicon-trash"></span>
+                </a>
+            </th>
+        }
+        else
+        {
+            <th></th>
+        }
+
     </tr>
 
     @if (Model.Count() == 0)
