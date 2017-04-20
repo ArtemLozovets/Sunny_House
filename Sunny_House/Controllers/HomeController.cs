@@ -42,7 +42,7 @@ namespace Sunny_House.Controllers
         {
             db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug information------------------------------------
 
-            SearchString = String.IsNullOrEmpty(SearchString)? null: SearchString.Trim();
+            SearchString = String.IsNullOrEmpty(SearchString) ? null : SearchString.Trim();
 
             ViewBag.SortFirstName = SortBy == "FirstName" ? "FirstName desc" : "FirstName";
             ViewBag.SortLastName = SortBy == "LastName" ? "LastName desc" : "LastName";
@@ -68,7 +68,7 @@ namespace Sunny_House.Controllers
                            where person.FirstName.Contains(SearchString)
                            || person.LastName.Contains(SearchString)
                            || person.Note.Contains(SearchString)
-                           || person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(SearchString)) 
+                           || person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(SearchString))
                            select new
                            {
                                PersonId = person.PersonId,
@@ -89,7 +89,7 @@ namespace Sunny_House.Controllers
                         _persons = (from person in _persons
                                     from perrel in db.PersonRelations.Where(pid => person.PersonId == pid.PersonId || person.PersonId == pid.RelPersonId)
                                     where perrel.PersonId == PersonId || perrel.RelPersonId == PersonId
-                                    select person).GroupBy(x=>x.PersonId).Select(x=>x.FirstOrDefault());
+                                    select person).GroupBy(x => x.PersonId).Select(x => x.FirstOrDefault());
                     }
                     else
                     {
@@ -793,10 +793,26 @@ namespace Sunny_House.Controllers
         #region Створення платежу
         [HttpGet]
         [Authorize(Roles = "Administrator, User")]
-        public ActionResult AddPayment()
+        public ActionResult AddPayment(int? EventId, int? ClientId)
         {
-            return View();
+            Payment _payment = new Payment();
+            if (EventId != null && ClientId != null)
+            {
+                int _eventId = EventId ?? 1;
+                int _clientId = ClientId ?? 1;
 
+                ViewData["EventName"] = db.Events.FirstOrDefault(e => e.EventId == _eventId).EventName.ToString();
+                ViewData["ClientPIB"] = db.Persons.Where(p => p.PersonId == _clientId).Select(x => x.FirstName + " " + x.LastName + " " + x.MiddleName).FirstOrDefault();
+
+                _payment.Date = DateTime.Today;
+                _payment.EventId = _eventId;
+                _payment.ClientId = _clientId;
+            }
+            else
+            {
+                _payment.Date = DateTime.Today;
+            }
+            return View(_payment);
         }
 
         [HttpPost]

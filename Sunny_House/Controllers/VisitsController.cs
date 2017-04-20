@@ -291,6 +291,7 @@ namespace Sunny_House.Controllers
                                  VisitId = visitor.VisitId,
                                  VisitorId = visitor.VisitorId,
                                  ExerciseId = visitor.ExerciseId,
+                                 EventId = db.Exercises.Where(e => e.ExerciseId == visitor.ExerciseId).Select(x => x.EventId).FirstOrDefault(),
                                  PersonFIO = visitor.Person.FirstName + " " + visitor.Person.LastName + " " + visitor.Person.MiddleName,
                                  FirstName = visitor.Person.FirstName,
                                  LastName = visitor.Person.LastName,
@@ -303,6 +304,7 @@ namespace Sunny_House.Controllers
                                  VisitId = v.VisitId,
                                  VisitorId = v.VisitorId,
                                  ExerciseId = v.ExerciseId,
+                                 EventId = v.EventId,
                                  PersonFIO = v.PersonFIO,
                                  RoleId = v.RoleId,
                                  RoleName = v.RoleName,
@@ -556,7 +558,7 @@ namespace Sunny_House.Controllers
                     if (db.Visits.Where(v => v.Person.PersonId == Visitor.PersonId && v.ExerciseId == ExId).Count() > 0)
                     {
                         string _pers = db.Persons.Where(x => x.PersonId == Visitor.PersonId).Select(x => x.FirstName + " " + x.LastName + " " + x.MiddleName).FirstOrDefault();
-                        return Json(new { Result = false, Message = String.Format("{0} уже присутствует в списке посещений. Пакет отклонен!", _pers) }, JsonRequestBehavior.AllowGet);
+                        return Json(new { Result = false, Message = String.Format("{0} уже присутствует в списке посещений", _pers) }, JsonRequestBehavior.AllowGet);
                     }
                     else
                     {
@@ -611,12 +613,12 @@ namespace Sunny_House.Controllers
                 db.Visits.Add(_visit);
                 db.SaveChanges();
 
-                return Json(new { Result = true, Message = "Инофрмация о посещении добавлена" }, JsonRequestBehavior.AllowGet);
+                return Json(new { Result = true, Message = "Инофрмация добавлена" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 string we = ex.Message;
-                return Json(new { Result = false, Message = "Ошибка добавления информации о посещении" }, JsonRequestBehavior.AllowGet);
+                return Json(new { Result = false, Message = "Ошибка добавления информации" }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -631,13 +633,8 @@ namespace Sunny_House.Controllers
             }
             try
             {
-
-                foreach (var visit in VisitsArray)
-                {
-                    Visit _visit = db.Visits.Find(visit);
-                    _visit.FactVisit = true;
-                    db.SaveChanges();
-                }
+                db.Visits.Where(x => VisitsArray.Contains(x.VisitId)).ToList().ForEach(x => x.FactVisit = true);
+                db.SaveChanges();
 
                 return Json(new { Result = true, Message = "Инофрмация о факте посещения обновлена" }, JsonRequestBehavior.AllowGet);
             }

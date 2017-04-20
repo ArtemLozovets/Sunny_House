@@ -11,9 +11,6 @@
             @Html.DisplayNameFor(model => model.First().RoleName)
         </th>
         <th>
-            Факт.
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.First().Note)
         </th>
         <th></th>
@@ -45,9 +42,6 @@
                                                             id = "ddl" + item.VisitId
                                                         })
             </td>
-            <td style="text-align:center">
-                @Html.CheckBoxFor(modelItem => item.FactVisit, new { @class = "form-control CBFact", style = "width:20px; height:20px;", data_visitid = @item.VisitId })
-            </td>
             <td>
                 <div class="input-group" style="width:200px;">
                     @Html.TextAreaFor(modelItem => item.Note, new
@@ -61,9 +55,18 @@
                     <span class="input-group-addon btn btn-default glyphicon glyphicon-floppy-save notesBtn" title="Сохранить" data-visitid="@item.VisitId"></span>
                 </div>
             </td>
-            <td>
+            <td style="min-width:92px;">
+                <a class="btn btn-default btn-sm BTPay"
+                   title="Добавить платеж"
+                   style="display:inline-block;"
+                   data-visitid="@item.VisitId"
+                   target ="_blank"
+                   href='@Url.Action("AddPayment", "Home", new {EventId = item.EventId, ClientId = item.VisitorId })'>
+                    +<span class="glyphicon glyphicon-usd"></span>
+                </a>
                 <a class="btn btn-default btn-sm"
-                   title="Удалить"
+                   title="Удалить информацию о посещении"
+                   style="display:inline-block;"
                    href='@Url.Action("VisDelete", "Visits", new { VisitId = item.VisitId, ReturnUrl = "/Exercises/ExDetails?ObjectId=" + @item.ExerciseId })'>
                     <span class="glyphicon glyphicon-trash"></span>
                 </a>

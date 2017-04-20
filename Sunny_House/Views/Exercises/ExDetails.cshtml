@@ -112,7 +112,7 @@
                         </div>
                         <div id="update">
                             @Html.Action("VisitorPartialList", "Visits", new { ExerciseId = Model.ExerciseId, SearchString = "", RoleSearchString = "" })
-                        </div>
+                        </div> 
                     </div>
 
                     @* Вкладка Запись ------------------------------------------- *@
@@ -260,62 +260,69 @@
     <script type="text/javascript">
         //Обработчик щелчка по кнопке выбора персон/персоны вкладки "Подбор посетителей"
         function selsubmit(elem) {
-            var PersonsIDSArray = new Array();
+            if (confirm('Выполнить регистрацию посещений?')) {
+                var PersonsIDSArray = new Array();
 
-            if ($(elem).attr('id') == "selAllPersons") {
-                if ($('input[name=FilterMode]:checked').val() == "All") {
-                    alert('Выберите режим фильтрации "Бронь"');
-                    return;
-                }
-                else {
-                    $(".selPerson").each(function (el) {
-                        PersonsIDSArray.push(
-                            {
-                                PersonId: $(this).data('personid'),
-                                RoleId: $(this).data('roleid')
-                            });
-
-                    });
-                }
-            }
-            else {
-                PersonsIDSArray.push(
-                            {
-                                PersonId: $(elem).data('personid'),
-                                RoleId: $(elem).data('roleid')
-                            });
-            }
-
-            var _exId = '@Model.ExerciseId';
-
-            $('#loadingImg').show();
-            $.ajax({
-                type: 'POST',
-                url: '/Visits/AddPreVisitAjax/',
-                traditional: true,
-                data: {
-                    'ExId': _exId,
-                    'PersonsJSON': JSON.stringify(PersonsIDSArray)
-                },
-                accept: 'application/json',
-                success: function (data) {
-                    $('#loadingImg').hide();
-                    if (!data.Result) {
-                        $("#MessageOk").text('');
-                        $("#MessageError").text(data.Message);
+                if ($(elem).attr('id') == "selAllPersons") {
+                    if ($('input[name=FilterMode]:checked').val() == "All") {
+                        alert('Выберите режим фильтрации "Бронь"');
+                        return;
                     }
                     else {
-                        $("#MessageError").text('');
-                        $("#MessageOk").text(data.Message);
-                        $('#visitform').trigger('reset');
-                        $('#visitform').submit();
+                        if ($('body').find(".selPerson").length > 0) {
+                            $(".selPerson").each(function (el) {
+                                PersonsIDSArray.push(
+                                    {
+                                        PersonId: $(this).data('personid'),
+                                        RoleId: $(this).data('roleid')
+                                    });
+                            });
+                        }
+                        else {
+                            alert('Записи для регистрации отсутствуют');
+                            return;
+                        }
                     }
-                },
-                fail: function (data) {
-                    $('#loadingImg').hide();
-                    $("#MessageError").text("Ошибка выполнения запроса");
                 }
-            });
+                else {
+                    PersonsIDSArray.push(
+                                {
+                                    PersonId: $(elem).data('personid'),
+                                    RoleId: $(elem).data('roleid')
+                                });
+                }
+
+                var _exId = '@Model.ExerciseId';
+
+                $('#loadingImg').show();
+                $.ajax({
+                    type: 'POST',
+                    url: '/Visits/AddPreVisitAjax/',
+                    traditional: true,
+                    data: {
+                        'ExId': _exId,
+                        'PersonsJSON': JSON.stringify(PersonsIDSArray)
+                    },
+                    accept: 'application/json',
+                    success: function (data) {
+                        $('#loadingImg').hide();
+                        if (!data.Result) {
+                            $("#MessageOk").text('');
+                            $("#MessageError").text(data.Message);
+                        }
+                        else {
+                            $("#MessageError").text('');
+                            $("#MessageOk").text(data.Message);
+                            $('#visitform').trigger('reset');
+                            $('#visitform').submit();
+                        }
+                    },
+                    fail: function (data) {
+                        $('#loadingImg').hide();
+                        $("#MessageError").text("Ошибка выполнения запроса");
+                    }
+                });
+            }
         };
 
     </script>
@@ -385,17 +392,21 @@
             if (confirm('Подтвердить посещение?')) {
                 var _VisitsArray = new Array();
                 if ($(this).attr('id') == "allVisitsBT") {
-                    $(".BTFact").each(function (el) {
-                        if ($(this).attr('id') != "allVisitsBT") {
-                            _VisitsArray.push($(this).data('visitid'));
-                        }
-                    });
+                    if ($('body').find(".BTFact").length > 1) {
+                        $(".BTFact").each(function (el) {
+                            if ($(this).attr('id') != "allVisitsBT") {
+                                _VisitsArray.push($(this).data('visitid'));
+                            }
+                        });
+                    }
+                    else {
+                        alert('Записи для подтверждения отсутствуют');
+                        return;
+                    }
                 }
                 else {
                     _VisitsArray.push($(this).data('visitid'));
                 }
-
-                alert(JSON.stringify(_VisitsArray));
 
                 $.ajaxSetup({ cache: false });
                 $('#loadingImg').show();
