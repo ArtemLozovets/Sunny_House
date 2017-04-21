@@ -364,9 +364,11 @@ namespace Sunny_House.Controllers
                                     from _role in joinedrole.DefaultIfEmpty()
                                     join person in db.Persons on client.PersonId equals person.PersonId
                                     where (client.EventId == EventId) &&
-                                        ((person.FirstName.Contains(PTCSearchString) || string.IsNullOrEmpty(PTCSearchString)) ||
-                                        (person.LastName.Contains(PTCSearchString) || string.IsNullOrEmpty(PTCSearchString)) ||
-                                        (_role.RoleName.Contains(PTCSearchString) || string.IsNullOrEmpty(PTCSearchString)))
+                                          (person.FirstName.Contains(PTCSearchString) 
+                                             || person.LastName.Contains(PTCSearchString)
+                                             || _role.RoleName.Contains(PTCSearchString) 
+                                             || string.IsNullOrEmpty(PTCSearchString)
+                                          )
                                     select new
                                     {
                                         PersonId = person.PersonId,
@@ -743,9 +745,9 @@ namespace Sunny_House.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Administrator, User")]
-        public ActionResult PTCRefusing(int? PersonId, int? ClientId, int? EventId)
+        public ActionResult PTCRefusing(int? PersonId, int? ClientId, int? ReserveId, int? EventId, string Mode)
         {
-            if (PersonId == null || ClientId == null || EventId == null)
+            if (PersonId == null || EventId == null || (ClientId == null && Mode == "Pot") || (ReserveId == null && Mode == "Res"))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -753,13 +755,15 @@ namespace Sunny_House.Controllers
             //Получаем ID источника "Бронирование"
             int _sourceid = db.CommentSources.First(s => s.SourceName.ToUpper() == (string)"Бронирование".ToUpper()).SourceId;
 
+            int SignerId = Mode == "Pot" ? ClientId ?? 0 : ReserveId ?? 0;
+
             CommentViewModel _comment = new CommentViewModel();
             _comment.EventId = EventId ?? null;
             _comment.SourceId = _sourceid;
             _comment.Date = DateTime.Now;
             _comment.SourceName = "Бронирование";
             _comment.EventName = db.Events.FirstOrDefault(e => e.EventId == EventId).EventName.ToString();
-            _comment.SignPersonId = ClientId ?? null;
+            _comment.SignPersonId = SignerId;
 
             List<RelationViewModel> _rellist = new List<RelationViewModel>();
 
@@ -805,9 +809,9 @@ namespace Sunny_House.Controllers
         [HttpPost]
         [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
-        public ActionResult PTCRefusing(CommentViewModel model, int? ClientId, int? PersonId)
+        public ActionResult PTCRefusing(CommentViewModel model, int? ClientId, int? ReserveId, int? PersonId, string Mode)
         {
-            if (ClientId == null || PersonId == null)
+            if (PersonId == null || (ClientId == null && Mode == "Pot") || (ReserveId == null && Mode == "Res"))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -833,8 +837,18 @@ namespace Sunny_House.Controllers
                         db.Comments.Add(_comment);
                         db.SaveChanges();
 
-                        PotentialСlient _client = db.PotentialСlients.Find(ClientId);
-                        db.PotentialСlients.Remove(_client);
+
+                        if (Mode == "Pot")
+                        {
+                            PotentialСlient _client = db.PotentialСlients.Find(ClientId);
+                            db.PotentialСlients.Remove(_client);
+                        }
+                        if (Mode == "Res")
+                        {
+                            Reserve _res = db.Reserves.Find(ReserveId);
+                            db.Reserves.Remove(_res);
+                        }
+
                         db.SaveChanges();
                         dbContextTransaction.Commit();
                         TempData["MessageRefusingOk"] = "Операция выполнена успешно";
