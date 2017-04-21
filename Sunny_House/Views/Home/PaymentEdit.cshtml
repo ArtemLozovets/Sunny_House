@@ -18,28 +18,7 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.PaymentId)
-        <div class="form-group">
-            @Html.LabelFor(model => model.PayerId, "Плательщик", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="form-inline">
-                    <input type="text" name="PayerLabel" id="PayerLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["PayerPIB"]" />
-                    <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "PayerId"})'><span class="glyphicon glyphicon-folder-open"></span></a>
-                </div>
-                @Html.HiddenFor(model => model.PayerId, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PayerId, "", new { @class = "text-danger", @id = "PayerValidator" })
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.ClientId, "Клиент", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="form-inline">
-                    <input type="text" name="ClientLabel" id="ClientLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["ClientPIB"]" />
-                    <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "ClientId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
-                </div>
-                @Html.HiddenFor(model => model.ClientId, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ClientId, "", new { @class = "text-danger", @id = "ClientValidator" })
-            </div>
-        </div>
+
         <div class="form-group">
             @Html.LabelFor(model => model.EventId, "Мероприятие", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -51,6 +30,39 @@
                 @Html.ValidationMessageFor(model => model.EventId, "", new { @class = "text-danger", @id = "EventValidator" })
             </div>
         </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClientId, "Клиент", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="form-inline">
+                    <input type="text" name="ClientLabel" id="ClientLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["ClientPIB"]" />
+                    <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "ClientId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
+                </div>
+                @Html.HiddenFor(model => model.ClientId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ClientId, "", new { @class = "text-danger", @id = "ClientValidator" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PayerId, "Плательщик", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="form-inline">
+                    <input type="text" name="PayerLabel" id="PayerLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["PayerPIB"]" />
+                    <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "PayerId"})'><span class="glyphicon glyphicon-folder-open"></span></a>
+                </div>
+                @Html.HiddenFor(model => model.PayerId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PayerId, "", new { @class = "text-danger", @id = "PayerValidator" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @type = "text", @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
+                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" })
+            </div>
+        </div>
+
         <div class="form-group">
             @Html.LabelFor(model => model.Sum, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -66,17 +78,11 @@
                 @Html.ValidationMessageFor(model => model.Sum, "", new { @class = "text-danger" })
             </div>
         </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @type = "text", @class = "form-control", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" } })
-                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger", @data_val_date = "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)" })
-            </div>
-        </div>
+
         <div class="form-group">
             @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.TextAreaFor(model => model.Note, new { @class = "form-control", rows = 2 })
                 @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -161,8 +167,8 @@
         });
 
     </script>
-   
-     @*Блок скриптов для работы с DateTimePicker*@
+
+    @*Блок скриптов для работы с DateTimePicker*@
     <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
     <script type="text/javascript">
 

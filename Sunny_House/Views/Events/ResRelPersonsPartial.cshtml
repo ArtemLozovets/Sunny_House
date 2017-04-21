@@ -3,12 +3,12 @@
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 <style type="text/css">
-    .leftheader tr th{
+    .lfheader tr th{
         text-align:left;
     }
 </style>
 
-<table class="table ReestrTable leftheader" >
+<table class="table ReestrTable lfheader" >
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.First().PersonFIO)
@@ -36,7 +36,7 @@
     {
         <tr>
             <td>
-                <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Связанные персоны">@Html.DisplayFor(modelItem => item.PersonFIO)</a>
+                <a href="#topanchor" class="showRelPersons EmlRes" data-personid="@item.PersonId" title="Связанные персоны">@Html.DisplayFor(modelItem => item.PersonFIO)</a>
             </td>
             <td>
 
@@ -64,7 +64,14 @@
                     { <span class="text-success">@Html.DisplayFor(modelItem => item.PersonMonth) мес.</span> }
                 </td>
             }
-            <td>
+            <td style="min-width:146px;">
+                <a class="btn btn-default btn-sm BTPay"
+                   title="Добавить платеж"
+                   style="display:inline-block;"
+                   target="_blank"
+                   href='@Url.Action("AddPayment", "Home", new {EventId =  ViewData["EventId"], ClientId = item.PersonId })'>
+                    +<span class="glyphicon glyphicon-usd"></span>
+                </a>
                 <a class="btn btn-default btn-sm" title="Связанные персоны" href='@Url.Action("ShowPersons", "Home",
                 new{
                                   PersonId = item.PersonId,

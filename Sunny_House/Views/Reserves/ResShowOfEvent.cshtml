@@ -1,11 +1,13 @@
 ﻿@model Sunny_House.Models.Event
 <link href="~/Content/Progress.css" rel="stylesheet" type="text/css" />
 <style type="text/css">
-    #SendMail:focus, #SendMail:active{
-        outline:none !important;
+
+    .SendMail:focus, .SendMail:active {
+        outline: none !important;
     }
-    #SendMail i {
-        color:#31708F;
+
+    .SendMail i {
+        color: #31708F;
     }
 </style>
 @{
@@ -138,11 +140,21 @@
                     @* Вкладка бронирований ------------------------------------------- *@
                     <div id="home" class="tab-pane fade in active">
                         <div class="col-md-12 form-inline" style="margin-bottom:12px;">
-                            @using (Ajax.BeginForm("ResRelPersonsPartial", "Events", new { @EventId = @Model.EventId }, new AjaxOptions { UpdateTargetId = "upd", LoadingElementId = "loadingImg", InsertionMode=InsertionMode.Replace }, new { @id = "eventform" }))
+                            @using (Ajax.BeginForm("ResRelPersonsPartial", "Events", new { @EventId = @Model.EventId }, new AjaxOptions { UpdateTargetId = "upd", LoadingElementId = "loadingImg", InsertionMode = InsertionMode.Replace }, new { @id = "eventform" }))
                             {
                                 <input class="form-control" type="text" name="SearchString" id="SearchString" placeholder="Фамилия, имя, телефон..." style="width:200px; margin:2px 0; display:inline-block">
-                                <button type="submit" title="Искать" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
-                                @Html.Raw("&nbsp;")<button type="button" title="Обновить" class="btn btn-default" id="filterclear"><i class="glyphicon glyphicon-refresh"></i></button>
+                                <button type="submit" title="Искать" class="btn btn-default" style="margin-top:-2px;">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </button>
+                                @Html.Raw("&nbsp;")
+                                <button type="button" title="Обновить" class="btn btn-default" id="filterclear" style="margin-top:-2px;">
+                                    <i class="glyphicon glyphicon-refresh"></i>
+                                </button>
+                                //Кнопка рассылки Email
+                                <button type="button" class="btn btn-default pull-right SendMail" title="Рассылка" id="SendMailReserve" style="margin-top:2px;">
+                                    <i class="glyphicon glyphicon-envelope"></i>
+                                </button>
+
                             }
                         </div>
                         <div id="upd">
@@ -164,9 +176,9 @@
                                         <a data-toggle="collapse" href="#collapse1"><span class="text-info"><i class="glyphicon glyphicon-filter"></i> Фильтр</span></a>
                                     </h4>
                                     <span style="display:inline-block; float:right;">
-                                        <button type="button" class="btn btn-default" title="Рассылка" id="SendMail" style="margin-top:-7px;">
+                                        <button type="button" class="btn btn-default SendMail" title="Рассылка" id="SendMailPote" style="margin-top:-7px;">
                                             <i class="glyphicon glyphicon-envelope"></i>
-                                        </button> 
+                                        </button>
                                     </span>
                                 </div>
                                 <div id="collapse1" class="panel-collapse collapse">
@@ -580,13 +592,13 @@
             });
 
             function AjaxLoadComm(_id){
-                    $('#loadingImg').show();
-                    $('#'+_id+'>div').delay(100).queue(function(nxt){
-                        $('#'+_id+'>div').load('/Reserves/AjaxPersonComm', {PersonId:_id}, function() {
-                            $('#loadingImg').hide();
-                        });
-                        nxt();
+                $('#loadingImg').show();
+                $('#'+_id+'>div').delay(100).queue(function(nxt){
+                    $('#'+_id+'>div').load('/Reserves/AjaxPersonComm', {PersonId:_id}, function() {
+                        $('#loadingImg').hide();
                     });
+                    nxt();
+                });
             }
 
             //Скрипт удаления брони с персоны
@@ -655,11 +667,21 @@
     </script>
 
     <script type="text/javascript">
-        $('body').on('click', '#SendMail', function (e) {
+        //Скрипт Email-рассылки
+        $('body').on('click', '.SendMail', function (e) {
             $(this).blur();
 
+            var WKClass = null;
+            if($(this).attr('id') == 'SendMailPote'){
+                WKClass = ".EmlCl";
+            }
+            else{
+                WKClass = ".EmlRes";
+            }
+
             var PersonsIDSArray = new Array();
-            $(".EmlCl").each(function () {
+
+            $(WKClass).each(function () {
                 PersonsIDSArray.push($(this).data('personid'));
             });
 
