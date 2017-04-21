@@ -40,7 +40,7 @@ textarea {
         padding: 4px 12px;
     }
 
-        
+
     .ReestrTable tr th {
         text-align: center;
     }
@@ -170,7 +170,7 @@ ul.dropdown-menu {
     display: none;
     text-indent: -9999px;
     background: url('Images/icon_top.png') no-repeat;
-    z-index:999999;
+    z-index: 999999;
 }
 
 /*Блок стилей для дроп-панели календаря*/
@@ -198,7 +198,7 @@ ul.dropdown-menu {
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0.5;
-     z-index: 0;
+    z-index: 0;
 }
 
 
@@ -212,15 +212,15 @@ ul.dropdown-menu {
     margin: 10px auto;
 }
 
-.FCButton:hover{
-   color: #333333;
-	text-decoration: none;
-	background-position: 0 -15px;
-	-webkit-transition: background-position 0.1s linear;
-	   -moz-transition: background-position 0.1s linear;
-	     -o-transition: background-position 0.1s linear;
-	        transition: background-position 0.1s linear;
-}
+    .FCButton:hover {
+        color: #333333;
+        text-decoration: none;
+        background-position: 0 -15px;
+        -webkit-transition: background-position 0.1s linear;
+        -moz-transition: background-position 0.1s linear;
+        -o-transition: background-position 0.1s linear;
+        transition: background-position 0.1s linear;
+    }
 
 .drop-hover {
     background-color: red;
@@ -229,7 +229,7 @@ ul.dropdown-menu {
 #calendar {
     float: right;
     width: 900px;
-    margin-right:4px;
+    margin-right: 4px;
 }
 
 /*Блок стилей для переноса длинной непрерывной последовательности символов*/
@@ -245,8 +245,35 @@ ul.dropdown-menu {
     word-wrap: break-word;
 }
 
-#AboutDL  dt {
-  height:40px;
-  line-height:40px;
+#AboutDL dt {
+    height: 40px;
+    line-height: 40px;
 }
 
+
+/*Блок стилей для мигающих элементов*/
+.blink {
+    -moz-animation: blinker 1s linear infinite;
+    -o-animation: blinker 1s linear infinite;
+    -webkit-animation: blinker 1s linear infinite;
+    animation: blinker 1s linear infinite;
+}
+
+
+@-moz-keyframes blinker {
+    50% {
+        opacity: 0.0;
+    }
+}
+
+@-webkit-keyframes blinker {
+    50% {
+        opacity: 0.0;
+    }
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0.0;
+    }
+}

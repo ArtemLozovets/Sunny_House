@@ -48,7 +48,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title" style="display:inline-block;">
-                    <a data-toggle="collapse" href="#collapse1"><span class="text-info"><i class="glyphicon glyphicon-filter"></i> Фильтр</span></a>
+                    <a data-toggle="collapse" href="#collapse1"><span class="text-info"><i id="blinkicon" class="glyphicon glyphicon-filter"></i> Фильтр</span></a>
                 </h4>
                 <span style="display:inline-block; float:right;">
                     @Html.RadioButton("FilterMode", "Fact", true) <span>Фактические</span>@Html.Raw("&nbsp;")
@@ -179,6 +179,7 @@
             $('#EventId').val(null);
             $('#ExerciseId').val(null);
             $('#visitform').submit();
+            $('#blinkicon').removeClass('blink');
         });
 
     </script>
@@ -328,6 +329,43 @@
         $(".submitcontrol").bind('change', function () {
             $("#visitform").submit();
         });
+    </script>
+
+    <script>
+        function autofilter(elem) {
+            if (event.altKey) {
+                switch ($(elem).data('fparam')) {
+                    case 'person':
+                        $('#VisitorId').val($(elem).data('personid'));
+                        break;
+                    case 'ex':
+                        $('#ExerciseId').val($(elem).data('exid'));
+                        break;
+                    case 'date':
+                        d = $(elem).data('date').split(' ')[0];
+                        $('#StartDate').val(d);
+                        break;
+                    case 'event':
+                        $('#EventId').val($(elem).data('eventid'));
+                        break;
+                    case 'role':
+                        $('#RoleSearchString').val($(elem).data('roleid'));
+                        break;
+                    default:
+                        return;
+                }
+                $('#visitform').submit();
+                $('#blinkicon').addClass('blink');
+            }
+        }
+
+        function resetFilter() {
+            if (event.ctrlKey) {
+                $('#visfilterclear').trigger('click');
+                $('#blinkicon').removeClass('blink');
+            }
+        }
+
     </script>
 
 }
