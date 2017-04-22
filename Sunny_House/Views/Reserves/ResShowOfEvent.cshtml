@@ -1,7 +1,6 @@
 ﻿@model Sunny_House.Models.Event
 <link href="~/Content/Progress.css" rel="stylesheet" type="text/css" />
 <style type="text/css">
-
     .SendMail:focus, .SendMail:active {
         outline: none !important;
     }
@@ -255,6 +254,7 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/circle-progress.min.js"></script>
     <script src="~/Scripts/toparrow.js"></script>
+    <script src="~/Scripts/PersonCard.js"></script>
     <script type="text/javascript">
 
         $(function () {
@@ -568,38 +568,8 @@
 
     <script type="text/javascript">
         //Отображение модального окна со списком связанных персон и средств связи
-        //Представление ShowModalPTCRelations контроллер ReservesCintroller
+        //Представление ShowPersonCard контроллер PersonCardController
         $(function () {
-            $('body').on('click', '.showRelPersons', function (event) {
-                event.preventDefault();
-
-                $.ajaxSetup({ cache: false });
-                $('#loadingImg').show();
-                $.get('/Reserves/ShowModalPTCRelations', {
-                    PersonId: $(this).data('personid')
-                },
-                     function (data) {
-                         $('#dialogContent').html(data);
-                         $('#modDialog').modal('show');
-                         $('.comm').first().collapse('show');
-                         $('#loadingImg').hide();
-                     });
-            });
-
-            //Отображение средств связи связанных персон
-            $("body").on('show.bs.collapse', '.comm', function(){
-                AjaxLoadComm($(this).attr('id'));
-            });
-
-            function AjaxLoadComm(_id){
-                $('#loadingImg').show();
-                $('#'+_id+'>div').delay(100).queue(function(nxt){
-                    $('#'+_id+'>div').load('/Reserves/AjaxPersonComm', {PersonId:_id}, function() {
-                        $('#loadingImg').hide();
-                    });
-                    nxt();
-                });
-            }
 
             //Скрипт удаления брони с персоны
             $('body').on('click', '#remreserve', function (event) {

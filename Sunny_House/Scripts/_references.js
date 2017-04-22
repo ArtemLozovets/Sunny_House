@@ -26,3 +26,4 @@
 /// <reference path="fullcalendar/locale-all.js" />
 /// <reference path="jquery-ui-1.12.1.min.js" />
 /// <reference path="chart.js" />
+/// <reference path="personcard.js" />

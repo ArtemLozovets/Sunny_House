@@ -195,6 +195,7 @@
     <Compile Include="Areas\Administrator\Controllers\InitController.cs" />
     <Compile Include="Controllers\MailController.cs" />
     <Compile Include="Controllers\ModalController.cs" />
+    <Compile Include="Controllers\PersonCardController.cs" />
     <Compile Include="Controllers\PersonRelationsController.cs" />
     <Compile Include="Controllers\PersonRolesController.cs" />
     <Compile Include="Controllers\PotentialСlientController.cs" />
@@ -418,6 +419,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\PersonCard.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\toparrow.js" />
@@ -524,8 +526,7 @@
     <Content Include="Views\Reserves\ShowPotentialPartial.cshtml" />
     <Content Include="Views\Reserves\ShowModalClient.cshtml" />
     <Content Include="Views\Reserves\PartialClientinModal.cshtml" />
-    <Content Include="Views\Reserves\ShowModalPTCRelations.cshtml" />
-    <Content Include="Views\Reserves\AjaxPersonComm.cshtml" />
+    <Content Include="Views\PersonCard\AjaxPersonComm.cshtml" />
     <Content Include="Views\Tasks\TaskCreate.cshtml" />
     <Content Include="Views\Tasks\TaskDelete.cshtml" />
     <Content Include="Views\Tasks\TaskDetails.cshtml" />
@@ -547,6 +548,7 @@
     <Content Include="Views\Comments\CommentShowPartial.cshtml" />
     <Content Include="Views\Statistic\Index.cshtml" />
     <Content Include="Views\Visits\PreVisitorPartialList.cshtml" />
+    <Content Include="Views\PersonCard\ShowPersonCard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
