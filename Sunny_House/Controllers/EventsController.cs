@@ -368,14 +368,14 @@ namespace Sunny_House.Controllers
         [HttpPost, ActionName("EDelete")]
         [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EDeleteConfirmed(int EventId)
+        public ActionResult EDeleteConfirmed(int EventId)
         {
             try
             {
                 string _message = string.Empty;
                 if (db.Events.First(i => i.EventId == EventId).Exercise.Any())
                 {
-                    _message = string.Format("Информация о мероприятии не может быть удалена. В таблице \"Exercise\" есть связанные данные.");
+                    _message = string.Format("Информация о мероприятии не может быть удалена. В таблице занятий есть связанные данные.");
                     TempData["MessageError"] = _message;
 
                     return RedirectToAction("EShow");
@@ -383,7 +383,7 @@ namespace Sunny_House.Controllers
 
                 if (db.Events.First(i => i.EventId == EventId).Reserve.Any())
                 {
-                    _message = string.Format("Информация о мероприятии не может быть удалена. В таблице \"Reserve\" есть связанные данные.");
+                    _message = string.Format("Информация о мероприятии не может быть удалена. В таблице бронирований есть связанные данные.");
                     TempData["MessageError"] = _message;
 
                     return RedirectToAction("EShow");
@@ -391,18 +391,33 @@ namespace Sunny_House.Controllers
 
                 if (db.Events.First(i => i.EventId == EventId).Comment.Any())
                 {
-                    _message = string.Format("Информация о мероприятии не может быть удалена. В таблице \"Comment\" есть связанные данные.");
+                    _message = string.Format("Информация о мероприятии не может быть удалена. В таблице отзывов есть связанные данные.");
                     TempData["MessageError"] = _message;
 
                     return RedirectToAction("EShow");
                 }
 
-                Event @event = await db.Events.FindAsync(EventId);
-                db.Events.Remove(@event);
-                await db.SaveChangesAsync();
+                if (db.Events.First(i => i.EventId == EventId).Payment.Any())
+                {
+                    _message = string.Format("Информация о мероприятии не может быть удалена. В таблице платежей есть связанные данные.");
+                    TempData["MessageError"] = _message;
 
-                _message = "Информация о мероприятии успешно удалена";
-                TempData["MessageOk"] = _message;
+                    return RedirectToAction("EShow");
+                }
+
+                Event @event = db.Events.FirstOrDefault(x=>x.EventId == EventId);
+                if (@event != null)
+                {
+                    db.Events.Remove(@event);
+                    db.SaveChanges();
+                    _message = "Информация о мероприятии успешно удалена";
+                    TempData["MessageOk"] = _message;
+                }
+                else
+                {
+                    _message = string.Format("Информация о мероприятии не может быть удалена. Указанный объект отсутствует в базе данных.");
+                    TempData["MessageError"] = _message;
+                }
 
                 return RedirectToAction("EShow");
             }
@@ -425,11 +440,11 @@ namespace Sunny_House.Controllers
             var _persons = (from person in db.Persons
                             join reserve in db.Reserves on person.PersonId equals reserve.PersonId
                             join role in db.PersonRoles on reserve.RoleId equals role.RoleId
-                            where (reserve.EventId == EventId) 
-                            &&(person.FirstName.Contains(SearchString) 
-                                ||person.LastName.Contains(SearchString) 
-                                ||person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(SearchString)
-                                ||String.IsNullOrEmpty(SearchString)))
+                            where (reserve.EventId == EventId)
+                            && (person.FirstName.Contains(SearchString)
+                                || person.LastName.Contains(SearchString)
+                                || person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(SearchString)
+                                || String.IsNullOrEmpty(SearchString)))
                             select new
                             {
                                 ReserveId = reserve.ReserveId,
