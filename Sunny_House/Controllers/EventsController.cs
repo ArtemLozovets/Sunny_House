@@ -373,41 +373,41 @@ namespace Sunny_House.Controllers
             try
             {
                 string _message = string.Empty;
-                if (db.Events.First(i => i.EventId == EventId).Exercise.Any())
+                if (db.Events.FirstOrDefault(e=>e.EventId == EventId) != null)
                 {
-                    _message = string.Format("Информация о мероприятии не может быть удалена. В таблице занятий есть связанные данные.");
-                    TempData["MessageError"] = _message;
+                    if (db.Events.First(i => i.EventId == EventId).Exercise.Any())
+                    {
+                        _message = string.Format("Информация о мероприятии не может быть удалена. В таблице занятий есть связанные данные.");
+                        TempData["MessageError"] = _message;
 
-                    return RedirectToAction("EShow");
-                }
+                        return RedirectToAction("EShow");
+                    }
 
-                if (db.Events.First(i => i.EventId == EventId).Reserve.Any())
-                {
-                    _message = string.Format("Информация о мероприятии не может быть удалена. В таблице бронирований есть связанные данные.");
-                    TempData["MessageError"] = _message;
+                    if (db.Events.First(i => i.EventId == EventId).Reserve.Any())
+                    {
+                        _message = string.Format("Информация о мероприятии не может быть удалена. В таблице бронирований есть связанные данные.");
+                        TempData["MessageError"] = _message;
 
-                    return RedirectToAction("EShow");
-                }
+                        return RedirectToAction("EShow");
+                    }
 
-                if (db.Events.First(i => i.EventId == EventId).Comment.Any())
-                {
-                    _message = string.Format("Информация о мероприятии не может быть удалена. В таблице отзывов есть связанные данные.");
-                    TempData["MessageError"] = _message;
+                    if (db.Events.First(i => i.EventId == EventId).Comment.Any())
+                    {
+                        _message = string.Format("Информация о мероприятии не может быть удалена. В таблице отзывов есть связанные данные.");
+                        TempData["MessageError"] = _message;
 
-                    return RedirectToAction("EShow");
-                }
+                        return RedirectToAction("EShow");
+                    }
 
-                if (db.Events.First(i => i.EventId == EventId).Payment.Any())
-                {
-                    _message = string.Format("Информация о мероприятии не может быть удалена. В таблице платежей есть связанные данные.");
-                    TempData["MessageError"] = _message;
+                    if (db.Events.First(i => i.EventId == EventId).Payment.Any())
+                    {
+                        _message = string.Format("Информация о мероприятии не может быть удалена. В таблице платежей есть связанные данные.");
+                        TempData["MessageError"] = _message;
 
-                    return RedirectToAction("EShow");
-                }
+                        return RedirectToAction("EShow");
+                    }
 
-                Event @event = db.Events.FirstOrDefault(x=>x.EventId == EventId);
-                if (@event != null)
-                {
+                    Event @event = db.Events.FirstOrDefault(x => x.EventId == EventId);
                     db.Events.Remove(@event);
                     db.SaveChanges();
                     _message = "Информация о мероприятии успешно удалена";
@@ -455,16 +455,16 @@ namespace Sunny_House.Controllers
                                 RoleId = role.RoleId,
                                 DOB = person.DateOfBirth
                             }).OrderByDescending(r => r.ReserveId).AsEnumerable().Select(e => new PersonReserveViewModel
-                                                {
-                                                    ReserveId = e.ReserveId,
-                                                    PersonId = e.PersonId,
-                                                    PersonFIO = e.PersonFIO.Trim(),
-                                                    PersonAge = AgeMethods.GetAge(e.DOB),
-                                                    PersonMonth = AgeMethods.GetTotalMonth(e.DOB),
-                                                    Num_Address = e.Address_Num,
-                                                    PersonRole = e.PersonRole,
-                                                    RoleId = e.RoleId
-                                                }).ToList();
+                            {
+                                ReserveId = e.ReserveId,
+                                PersonId = e.PersonId,
+                                PersonFIO = e.PersonFIO.Trim(),
+                                PersonAge = AgeMethods.GetAge(e.DOB),
+                                PersonMonth = AgeMethods.GetTotalMonth(e.DOB),
+                                Num_Address = e.Address_Num,
+                                PersonRole = e.PersonRole,
+                                RoleId = e.RoleId
+                            }).ToList();
 
             ViewData["EventId"] = EventId;
             ViewBag.RoleList = db.PersonRoles.ToList();
