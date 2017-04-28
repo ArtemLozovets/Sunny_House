@@ -86,7 +86,7 @@ namespace Sunny_House.Controllers
         public ActionResult CommentCreate()
         {
             ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName");
-            
+
             ViewBag.MaxAttSize = GetMaxAttSize();
 
             Comment _comment = new Comment();
@@ -314,62 +314,70 @@ namespace Sunny_House.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CommentDeleteConfirmed(int id, string CurrentUser)
         {
-            Guid? _currentUserId = null;
-            if (!String.IsNullOrEmpty(CurrentUser))
+            if (db.Comments.FirstOrDefault(e => e.CommentId == id) != null)
             {
-                _currentUserId = Guid.Parse(aspdb.Users.FirstOrDefault(x => x.UserName == CurrentUser).Id.ToString());
-            }
-            else
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            Comment comment = await db.Comments.FindAsync(id);
-            if (comment.CreatorId == _currentUserId || User.IsInRole("Administrator") || User.IsInRole("User"))
-            {
-                using (var dbContextTransaction = db.Database.BeginTransaction())
+                Guid? _currentUserId = null;
+                if (!String.IsNullOrEmpty(CurrentUser))
                 {
-                    try
+                    _currentUserId = Guid.Parse(aspdb.Users.FirstOrDefault(x => x.UserName == CurrentUser).Id.ToString());
+                }
+                else
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+
+                Comment comment = await db.Comments.FindAsync(id);
+                if (comment.CreatorId == _currentUserId || User.IsInRole("Administrator") || User.IsInRole("User"))
+                {
+                    using (var dbContextTransaction = db.Database.BeginTransaction())
                     {
-                        string AttachmentPath = System.Configuration.ConfigurationManager.AppSettings["AttachmentPath"];
-
-                        var _attList = db.Attachments.Where(x => x.RelGuid == comment.RelGuid).ToList();
-
-                        db.Attachments.RemoveRange(db.Attachments.Where(x => x.RelGuid == comment.RelGuid));
-                        db.SaveChanges();
-
-                        db.Comments.Remove(comment);
-                        db.SaveChanges();
-
-                        foreach (var item in _attList)
+                        try
                         {
-                            string fullPath = AttachmentPath + item.ServerFileName.ToString();
-                            if (System.IO.File.Exists(fullPath))
+                            string AttachmentPath = System.Configuration.ConfigurationManager.AppSettings["AttachmentPath"];
+
+                            var _attList = db.Attachments.Where(x => x.RelGuid == comment.RelGuid).ToList();
+
+                            db.Attachments.RemoveRange(db.Attachments.Where(x => x.RelGuid == comment.RelGuid));
+                            db.SaveChanges();
+
+                            db.Comments.Remove(comment);
+                            db.SaveChanges();
+
+                            foreach (var item in _attList)
                             {
-                                System.IO.File.Delete(fullPath);
+                                string fullPath = AttachmentPath + item.ServerFileName.ToString();
+                                if (System.IO.File.Exists(fullPath))
+                                {
+                                    System.IO.File.Delete(fullPath);
+                                }
                             }
+
+                            dbContextTransaction.Commit();
+                            TempData["MessageOk"] = "Отзыв успешно удален";
                         }
 
-                        dbContextTransaction.Commit();
-                        TempData["MessageOk"] = "Отзыв успешно удален";
-
-                        return RedirectToAction("CommentShow");
+                        catch (Exception ex)
+                        {
+                            dbContextTransaction.Rollback();
+                            ViewBag.ErMes = ex.Message;
+                            ViewBag.ErStack = ex.StackTrace;
+                            return View("Error");
+                        }
                     }
-
-                    catch (Exception ex)
-                    {
-                        dbContextTransaction.Rollback();
-                        ViewBag.ErMes = ex.Message;
-                        ViewBag.ErStack = ex.StackTrace;
-                        return View("Error");
-                    }
+                }
+                else
+                {
+                    TempData["MessageError"] = "Вы не являетесь создателем данного отзыва. Удаление запрещено.";
+                    return RedirectToAction("CommentShow");
                 }
             }
             else
             {
-                TempData["MessageError"] = "Вы не являетесь создателем данного отзыва. Удаление запрещено.";
-                return RedirectToAction("CommentShow");
+                string _message = string.Format("Отзыв не может быть удален. Указанный объект отсутствует в базе данных.");
+                TempData["MessageError"] = _message;
             }
+
+            return RedirectToAction("CommentShow");
         }
         private int GetMaxAttSize() // Функция чтения значения MaxRequestLength из файла web.config
         {
@@ -588,21 +596,21 @@ namespace Sunny_House.Controllers
                                 Person = comment.Person1 ?? null,
                                 RelGuid = comment.RelGuid
                             }).AsEnumerable().Select(x => new Comment
-                             {
-                                 CommentId = x.CommentId,
-                                 Date = x.Date,
-                                 Text = x.Text,
-                                 Rating = x.Rating,
-                                 CommentSource = x.CommentSource,
-                                 Event = x.Event,
-                                 Exercise = x.Exercise,
-                                 Address = x.Address,
-                                 SignPersonFIO = x.Person == null ? "" : (x.Person.FirstName + " " + x.Person.LastName).TrimStart(),
-                                 AboutPersonFIO = x.Person1 == null ? "" : (x.Person1.FirstName + " " + x.Person1.LastName).TrimStart(),
-                                 SignPersonId = x.Person == null ? 0 : x.Person.PersonId,
-                                 AboutPersonId = x.Person1 == null ? 0 : x.Person1.PersonId,
-                                 AttCount = db.Attachments.Where(z => z.RelGuid == x.RelGuid).Count()
-                             }).OrderByDescending(x => x.Date);
+                            {
+                                CommentId = x.CommentId,
+                                Date = x.Date,
+                                Text = x.Text,
+                                Rating = x.Rating,
+                                CommentSource = x.CommentSource,
+                                Event = x.Event,
+                                Exercise = x.Exercise,
+                                Address = x.Address,
+                                SignPersonFIO = x.Person == null ? "" : (x.Person.FirstName + " " + x.Person.LastName).TrimStart(),
+                                AboutPersonFIO = x.Person1 == null ? "" : (x.Person1.FirstName + " " + x.Person1.LastName).TrimStart(),
+                                SignPersonId = x.Person == null ? 0 : x.Person.PersonId,
+                                AboutPersonId = x.Person1 == null ? 0 : x.Person1.PersonId,
+                                AttCount = db.Attachments.Where(z => z.RelGuid == x.RelGuid).Count()
+                            }).OrderByDescending(x => x.Date);
 
             switch (SortBy)
             {

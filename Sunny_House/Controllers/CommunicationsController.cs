@@ -210,19 +210,29 @@ namespace Sunny_House.Controllers
                 {
                     db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Information====================
 
-                    db.PersonCommunications.RemoveRange(db.PersonCommunications.Where(c => c.CommunicationId == id));
-                    await db.SaveChangesAsync();
+                    if (db.PersonCommunications.FirstOrDefault(e => e.CommunicationId == id) != null)
+                    {
+                        db.PersonCommunications.RemoveRange(db.PersonCommunications.Where(c => c.CommunicationId == id));
+                        await db.SaveChangesAsync();
 
-                    Communication communication = await db.Communications.FindAsync(id);
-                    db.Communications.Remove(communication);
-                    await db.SaveChangesAsync();
+                        Communication communication = await db.Communications.FindAsync(id);
+                        db.Communications.Remove(communication);
+                        await db.SaveChangesAsync();
 
-                    dbContextTransaction.Commit();
+                        dbContextTransaction.Commit();
 
-                    TempData["MessageOK"] = "Информация о средстве связи успешно удалена!";
+                        TempData["MessageOK"] = "Информация о средстве связи успешно удалена!";
+                    }
+
+                    else
+                    {
+                        string _message = string.Format("Информация не может быть удалена. Указанный объект отсутствует в базе данных.");
+                        TempData["MessageError"] = _message;
+                    }
 
                     return RedirectToAction("ComShow", new { PersonId = PersonId });
                 }
+
                 catch (Exception ex)
                 {
                     dbContextTransaction.Rollback();
@@ -318,25 +328,34 @@ namespace Sunny_House.Controllers
         {
             try
             {
-                if (id == 6)
+                if (db.TypeOfCommunications.FirstOrDefault(e => e.Id == id) != null)
                 {
-                    string _message = "Вид связи \"Электронная почта\" является системным и не может быть удален!";
-                    TempData["MessageError"] = _message;
-                    return RedirectToAction("TCShow", "Communications");
-                } 
+                    if (id == 6)
+                    {
+                        string _message = "Вид связи \"Электронная почта\" является системным и не может быть удален!";
+                        TempData["MessageError"] = _message;
+                        return RedirectToAction("TCShow", "Communications");
+                    }
 
-                if (db.TypeOfCommunications.First(i => i.Id == id).Communication.Any())
-                {
-                    string _message = "Данная запись не может быть удалена! В таблице \"Communication\" имеются связанные данные. Удалите связанные данные и повторите попытку.";
-                    TempData["MessageError"] = _message;
-                    return RedirectToAction("TCShow", "Communications");
+                    if (db.TypeOfCommunications.First(i => i.Id == id).Communication.Any())
+                    {
+                        string _message = "Данная запись не может быть удалена! В таблице \"Communication\" имеются связанные данные. Удалите связанные данные и повторите попытку.";
+                        TempData["MessageError"] = _message;
+                        return RedirectToAction("TCShow", "Communications");
+                    }
+
+                    TypeOfCommunication typeOfCommunication = await db.TypeOfCommunications.FindAsync(id);
+                    db.TypeOfCommunications.Remove(typeOfCommunication);
+                    await db.SaveChangesAsync();
+
+                    TempData["MessageOk"] = "Запись успешно удалена";
+
                 }
-
-                TypeOfCommunication typeOfCommunication = await db.TypeOfCommunications.FindAsync(id);
-                db.TypeOfCommunications.Remove(typeOfCommunication);
-                await db.SaveChangesAsync();
-
-                TempData["MessageOk"] = "Запись успешно удалена";
+                else
+                {
+                    string _message = string.Format("Запись не может быть удалена. Указанный объект отсутствует в базе данных.");
+                    TempData["MessageError"] = _message;
+                }
 
                 return RedirectToAction("TCShow");
             }

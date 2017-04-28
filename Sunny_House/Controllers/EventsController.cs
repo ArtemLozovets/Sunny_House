@@ -373,6 +373,7 @@ namespace Sunny_House.Controllers
             try
             {
                 string _message = string.Empty;
+
                 if (db.Events.FirstOrDefault(e=>e.EventId == EventId) != null)
                 {
                     if (db.Events.First(i => i.EventId == EventId).Exercise.Any())

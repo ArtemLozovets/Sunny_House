@@ -19,7 +19,6 @@ namespace Sunny_House.Controllers
     {
         private SunnyModel db = new SunnyModel();
 
-
         // GET: Exercises
         [HttpGet]
         public ActionResult ExShow(int? ExerciseId, string ReturnUrl, string FilterMode, string SearchString, string SearchStartDate, string SearchEndDate, int? page, string SortBy)
@@ -118,7 +117,6 @@ namespace Sunny_House.Controllers
                     default:
                         break;
                 }
-
 
                 return View(_exercises.ToList().ToPagedList(pageNumber, pageSize));
 
@@ -350,24 +348,34 @@ namespace Sunny_House.Controllers
         {
             try
             {
-                if (db.Exercises.First(e => e.ExerciseId == ObjectId).Visit.Any() || db.Exercises.First(e => e.ExerciseId == ObjectId).Comment.Any())
+                if (db.Exercises.FirstOrDefault(e => e.ExerciseId == ObjectId) != null)
                 {
 
-                    TempData["MessageError"] = "Ошибка выполнения операции! В таблице посещений или отзывов имеются связанные данные.";
-
-                    if (!string.IsNullOrEmpty(ReturnParam))
+                    if (db.Exercises.First(e => e.ExerciseId == ObjectId).Visit.Any() || db.Exercises.First(e => e.ExerciseId == ObjectId).Comment.Any())
                     {
-                        return Redirect(ReturnParam);
+
+                        TempData["MessageError"] = "Ошибка выполнения операции! В таблице посещений или отзывов имеются связанные данные.";
+
+                        if (!string.IsNullOrEmpty(ReturnParam))
+                        {
+                            return Redirect(ReturnParam);
+                        }
+                        else return RedirectToAction("ExShow");
                     }
-                    else return RedirectToAction("ExShow");
+
+                    Exercise exercise = await db.Exercises.FindAsync(ObjectId);
+                    db.Exercises.Remove(exercise);
+                    await db.SaveChangesAsync();
+
+                    string _message = "Информация о занятии успешно удалена";
+                    TempData["MessageOk"] = _message;
+
                 }
-
-                Exercise exercise = await db.Exercises.FindAsync(ObjectId);
-                db.Exercises.Remove(exercise);
-                await db.SaveChangesAsync();
-
-                string _message = "Информация о занятии успешно удалена";
-                TempData["MessageOk"] = _message;
+                else
+                {
+                    string _message = string.Format("Запись не может быть удалена. Указанный объект отсутствует в базе данных.");
+                    TempData["MessageError"] = _message;
+                }
 
                 if (string.IsNullOrEmpty(SuccessReturn))
                 {
@@ -383,6 +391,7 @@ namespace Sunny_House.Controllers
                 }
 
             }
+
             catch (Exception ex)
             {
                 ViewBag.ErMes = ex.Message;
@@ -395,7 +404,6 @@ namespace Sunny_House.Controllers
         {
             return View();
         }
-
 
         [HttpGet]
         public ActionResult ShowExercises(DateTime start, DateTime end)
@@ -466,14 +474,22 @@ namespace Sunny_House.Controllers
             try
             {
                 Exercise _exercise = db.Exercises.FirstOrDefault(e => e.ExerciseId == Ex_Id);
-                if (db.Exercises.First(e => e.ExerciseId == Ex_Id).Visit.Any() || db.Exercises.First(e => e.ExerciseId == Ex_Id).Comment.Any())
+                if (_exercise != null)
                 {
-                    return Json(new { Result = false, Message = "Удаление невозможно! \nВ таблице посещений или отзывов имеются связанные данные." }, JsonRequestBehavior.AllowGet);
-                }
+                    if (db.Exercises.First(e => e.ExerciseId == Ex_Id).Visit.Any() || db.Exercises.First(e => e.ExerciseId == Ex_Id).Comment.Any())
+                    {
+                        return Json(new { Result = false, Message = "Удаление невозможно! \nВ таблице посещений или отзывов имеются связанные данные." }, JsonRequestBehavior.AllowGet);
+                    }
 
-                db.Exercises.Remove(_exercise);
-                db.SaveChanges();
-                return Json(new { Result = true, Message = "Успешно выполнено" }, JsonRequestBehavior.AllowGet);
+                    db.Exercises.Remove(_exercise);
+                    db.SaveChanges();
+                    return Json(new { Result = true, Message = "Успешно выполнено" }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new { Result = false, Message = "Удаление невозможно! \nУказанный объект отсутствует в базе данных." }, JsonRequestBehavior.AllowGet);
+                }
+                
             }
             catch (Exception ex)
             {
