@@ -200,11 +200,18 @@ namespace Sunny_House.Controllers
         {
             try
             {
-                Visit visit = await db.Visits.FindAsync(VisitId);
-                db.Visits.Remove(visit);
-                await db.SaveChangesAsync();
-
-                TempData["MessageOk"] = "Информация о посещении успешно удалена";
+                Visit visit = db.Visits.FirstOrDefault(x => x.VisitId == VisitId);
+                if (visit != null)
+                {
+                    db.Visits.Remove(visit);
+                    await db.SaveChangesAsync();
+                    TempData["MessageOk"] = "Информация о посещении успешно удалена";
+                }
+                else
+                {
+                    string _message = string.Format("Удаление невозможно. Указанный объект отсутствует в базе данных.");
+                    TempData["MessageError"] = _message;
+                }
 
                 if (String.IsNullOrEmpty(ReturnUrl))
                 {

@@ -508,25 +508,34 @@ namespace Sunny_House.Controllers
         {
             try
             {
-                //Запрещаем удаление источника "Бронирование" 
-                string _namestring = (string)"Бронирование".ToUpper();
-                string _sourcename = db.CommentSources.Find(id).SourceName.ToUpper();
-                if (_sourcename == _namestring)
+                if (db.Comments.FirstOrDefault(e => e.CommentId == id) != null)
                 {
-                    TempData["MessageError"] = "Источник \"Бронирование\" является системным и не может быть изменен или удален!";
-                    return RedirectToAction("CSShow");
-                }
+                    //Запрещаем удаление источника "Бронирование" 
+                    string _namestring = (string)"Бронирование".ToUpper();
+                    string _sourcename = db.CommentSources.Find(id).SourceName.ToUpper();
+                    if (_sourcename == _namestring)
+                    {
+                        TempData["MessageError"] = "Источник \"Бронирование\" является системным и не может быть изменен или удален!";
+                        return RedirectToAction("CSShow");
+                    }
 
-                if (db.CommentSources.First(i => i.SourceId == id).Comment.Any())
+                    if (db.CommentSources.First(i => i.SourceId == id).Comment.Any())
+                    {
+                        TempData["MessageError"] = "Данный источник не может быть удален, так как имеются связанные записи в таблице отзывов!";
+                        return RedirectToAction("CSShow");
+                    }
+
+                    CommentSource commentSource = await db.CommentSources.FindAsync(id);
+                    db.CommentSources.Remove(commentSource);
+                    await db.SaveChangesAsync();
+                    TempData["MessageOk"] = "Информация об источнике отзывов успешно удалена";
+                   
+                }
+                else
                 {
-                    TempData["MessageError"] = "Данный источник не может быть удален, так как имеются связанные записи в таблице отзывов!";
-                    return RedirectToAction("CSShow");
+                    string _message = string.Format("Удаление невозможно. Указанный объект отсутствует в базе данных.");
+                    TempData["MessageError"] = _message;
                 }
-
-                CommentSource commentSource = await db.CommentSources.FindAsync(id);
-                db.CommentSources.Remove(commentSource);
-                await db.SaveChangesAsync();
-                TempData["MessageOk"] = "Информация об источнике отзывов успешно удалена";
                 return RedirectToAction("CSShow");
             }
             catch (Exception ex)

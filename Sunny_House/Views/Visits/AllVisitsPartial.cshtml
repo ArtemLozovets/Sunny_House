@@ -15,7 +15,7 @@
 
 <label id="SortColumn" hidden>@ViewData["SortColumn"]</label>
 
-<table class="table table-bordered table-striped table-responsive table-hover ReestrTable" onclick="resetFilter()">
+<table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
     <tr>
         <th>
             @Ajax.ActionLink("ФИО персоны", "AllVisitsPartial", new
@@ -105,19 +105,19 @@
                                 _class = "red_tr";
                             }
     <tr class="@_class">
-        <td style="vertical-align:top !important" data-fparam="person" data-personid="@item.VisitorId" onclick="autofilter(this);">
+        <td style="vertical-align:top !important;" data-fparam="person" data-personid="@item.VisitorId" data-personfio="@item.PersonFIO" class="autofilter">
             @Html.ActionLink(@item.PersonFIO, "ShowPersons", "Home", new { PersonId = @item.VisitorId }, new { target = "_blank" })
         </td>
-        <td style="vertical-align:top !important" data-fparam="ex" data-exid="@item.ExerciseId" onclick="autofilter(this);">
+        <td style="vertical-align:top !important" data-fparam="ex" data-exid="@item.ExerciseId" data-exname="@item.ExName" class="autofilter">
             @Html.ActionLink(@item.ExName, "ExShow", "Exercises", new { ExerciseId = @item.ExerciseId }, new { target = "_blank" })
         </td>
-        <td style="text-align:center; vertical-align:top !important" data-fparam="date" data-date="@item.StartTime" onclick="autofilter(this);">
+        <td style="text-align:center; vertical-align:top !important" data-fparam="date" data-date="@item.StartTime" class="autofilter">
             @Html.DisplayFor(modelItem => item.StartTime)
         </td>
-        <td style="max-width:100px; vertical-align:top !important" data-fparam="event" data-eventid="@item.EventId" onclick="autofilter(this);">
+        <td style="max-width:100px; vertical-align:top !important" data-fparam="event" data-eventid="@item.EventId" data-eventname="@item.EventName" class="autofilter">
             @Html.ActionLink(@item.EventName, "ResShowOfEvent", "Reserves", new { EventId = @item.EventId }, new { target = "_blank" })
         </td>
-        <td style="vertical-align:top !important" data-fparam="role" data-roleid="@item.RoleId" onclick="autofilter(this);">
+        <td style="vertical-align:top !important" data-fparam="role" data-roleid="@item.RoleId" class="autofilter">
             @Html.DisplayFor(modelItem => item.RoleName)
         </td>
         <td class="breakWord" style="max-width:300px; vertical-align:top !important; text-align:justify;">

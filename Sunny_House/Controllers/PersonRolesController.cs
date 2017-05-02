@@ -134,41 +134,53 @@ namespace Sunny_House.Controllers
         {
             try
             {
-                //Запрещаем удаление роли "Клиент" 
-                string _namestring = (string)"Клиент".ToUpper();
-                string _rolename = db.PersonRoles.Find(id).RoleName.ToUpper();
-                if (_rolename == _namestring)
+                PersonRole _role = db.PersonRoles.FirstOrDefault(x => x.RoleId == id);
+                if (_role != null)
                 {
-                    TempData["MessageError"] = "Роль \"Клиент\" является системной и не может быть изменена или удалена!";
+                    //Запрещаем удаление роли "Клиент" 
+                    string _namestring = (string)"Клиент".ToUpper();
+                    string _rolename = _role.RoleName.ToUpper();
+                    if (_rolename == _namestring)
+                    {
+                        TempData["MessageError"] = "Роль \"Клиент\" является системной и не может быть изменена или удалена!";
+                        return RedirectToAction("RolesShow");
+                    }
+
+                    if (_role.Visit.Any())
+                    {
+                        string _message = "Роль не может быть удалена, так как имеются связанные данные в таблице посещений";
+                        TempData["MessageError"] = _message;
+                        return RedirectToAction("RolesShow");
+                    }
+
+                    if (_role.Reserve.Any())
+                    {
+                        string _message = "Роль не может быть удалена, так как имеются связанные данные в таблице бронирований";
+                        TempData["MessageError"] = _message;
+                        return RedirectToAction("RolesShow");
+                    }
+
+                    if (_role.PotentialСlient.Any())
+                    {
+                        string _message = "Роль не может быть удалена, так как имеются связанные данные в таблице потенциальных клиентов";
+                        TempData["MessageError"] = _message;
+                        return RedirectToAction("RolesShow");
+                    }
+
+                    db.PersonRoles.Remove(_role);
+                    TempData["MessageOk"] = "Роль успешно удалена";
+                    db.SaveChanges();
                     return RedirectToAction("RolesShow");
                 }
 
-                if (db.PersonRoles.First(i => i.RoleId == id).Visit.Any())
+                else
                 {
-                    string _message = "Роль не может быть удалена, так как имеются связанные данные в таблице посещений";
+                    string _message = string.Format("Удаление невозможно. Указанный объект отсутствует в базе данных.");
                     TempData["MessageError"] = _message;
                     return RedirectToAction("RolesShow");
                 }
 
-                if (db.PersonRoles.First(i => i.RoleId == id).Reserve.Any())
-                {
-                    string _message = "Роль не может быть удалена, так как имеются связанные данные в таблице бронирований";
-                    TempData["MessageError"] = _message;
-                    return RedirectToAction("RolesShow");
-                }
 
-                if (db.PersonRoles.First(i => i.RoleId == id).PotentialСlient.Any())
-                {
-                    string _message = "Роль не может быть удалена, так как имеются связанные данные в таблице потенциальных клиентов";
-                    TempData["MessageError"] = _message;
-                    return RedirectToAction("RolesShow");
-                }
-
-                PersonRole personRole = db.PersonRoles.Find(id);
-                db.PersonRoles.Remove(personRole);
-                TempData["MessageOk"] = "Роль успешно удалена";
-                db.SaveChanges();
-                return RedirectToAction("RolesShow");
             }
             catch (Exception ex)
             {

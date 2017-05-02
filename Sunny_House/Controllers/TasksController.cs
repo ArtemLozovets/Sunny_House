@@ -307,27 +307,36 @@ namespace Sunny_House.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            STask sTask = await db.STask.FindAsync(id);
-            if (sTask.CreatorId == _currentUserId || User.IsInRole("Administrator") || User.IsInRole("User"))
+            STask sTask = db.STask.FirstOrDefault(x=>x.STaskId == id);
+            if (sTask != null)
             {
-                try
+                if (sTask.CreatorId == _currentUserId || User.IsInRole("Administrator") || User.IsInRole("User"))
                 {
-                    db.STask.Remove(sTask);
-                    await db.SaveChangesAsync();
-                    TempData["MessageOk"] = "Задача успешно удалена";
-                    return RedirectToAction("TasksShow");
-                }
+                    try
+                    {
+                        db.STask.Remove(sTask);
+                        await db.SaveChangesAsync();
+                        TempData["MessageOk"] = "Задача успешно удалена";
+                        return RedirectToAction("TasksShow");
+                    }
 
-                catch (Exception ex)
+                    catch (Exception ex)
+                    {
+                        ViewBag.ErMes = ex.Message;
+                        ViewBag.ErStack = ex.StackTrace;
+                        return View("Error");
+                    }
+                }
+                else
                 {
-                    ViewBag.ErMes = ex.Message;
-                    ViewBag.ErStack = ex.StackTrace;
-                    return View("Error");
+                    TempData["MessageError"] = "Вы не являетесь создателем данной задачи. Удаление запрещено.";
+                    return RedirectToAction("TasksShow");
                 }
             }
             else
             {
-                TempData["MessageError"] = "Вы не являетесь создателем данной задачи. Удаление запрещено.";
+                string _message = string.Format("Удаление невозможно. Указанный объект отсутствует в базе данных.");
+                TempData["MessageError"] = _message;
                 return RedirectToAction("TasksShow");
             }
 

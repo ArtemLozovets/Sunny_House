@@ -124,9 +124,12 @@ namespace Sunny_House.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            PotentialСlient potentialСlient = db.PotentialСlients.Find(id);
-            db.PotentialСlients.Remove(potentialСlient);
-            db.SaveChanges();
+            PotentialСlient potentialСlient = db.PotentialСlients.FirstOrDefault(x=>x.ClientId == id);
+            if (potentialСlient != null)
+            {
+                db.PotentialСlients.Remove(potentialСlient);
+                db.SaveChanges();
+            }
             return RedirectToAction("Index");
         }
 

@@ -29,7 +29,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6" id="resultMessage" style="display:block; height:30px;">
+    <div class="col-md-6" id="resultMessage" style="cursor:pointer">
         <p class="text-success" id="MessageOk"> @TempData["MessageOk"]</p>
         <p class="text-danger" id="MessageError">  @TempData["MessageError"]</p>
     </div>
@@ -332,40 +332,35 @@
     </script>
 
     <script>
-        function autofilter(elem) {
-            if (event.altKey) {
-                switch ($(elem).data('fparam')) {
-                    case 'person':
-                        $('#VisitorId').val($(elem).data('personid'));
-                        break;
-                    case 'ex':
-                        $('#ExerciseId').val($(elem).data('exid'));
-                        break;
-                    case 'date':
-                        d = $(elem).data('date').split(' ')[0];
-                        $('#StartDate').val(d);
-                        break;
-                    case 'event':
-                        $('#EventId').val($(elem).data('eventid'));
-                        break;
-                    case 'role':
-                        $('#RoleSearchString').val($(elem).data('roleid'));
-                        break;
-                    default:
-                        return;
-                }
-                $('#visitform').submit();
-                $('#blinkicon').addClass('blink');
+        //Скрипт автофильтрации
+        $('body').on('dblclick', '.autofilter', function (elem) {
+            switch ($(this).data('fparam')) {
+                case 'person':
+                    $('#VisitorId').val($(this).data('personid'));
+                    $('#VisitorLabel').val($(this).data('personfio'));
+                    break;
+                case 'ex':
+                    $('#ExerciseId').val($(this).data('exid'));
+                    $('#ExLabel').val($(this).data('exname'));
+                    break;
+                case 'date':
+                    d = $(this).data('date').split(' ')[0];
+                    $('#StartDate').val(d);
+                    $('#StartDate').val(d);
+                    break;
+                case 'event':
+                    $('#EventId').val($(this).data('eventid'));
+                    $('#EventLabel').val($(this).data('eventname'));
+                    break;
+                case 'role':
+                    $('#RoleSearchString').val($(this).data('roleid'));
+                    break;
+                default:
+                    return;
             }
-        }
-
-        function resetFilter() {
-            if (event.ctrlKey) {
-                $('#visfilterclear').trigger('click');
-                $('#blinkicon').removeClass('blink');
-            }
-        }
-
+            $('#visitform').submit();
+            $('#blinkicon').addClass('blink');
+        });
     </script>
 
 }

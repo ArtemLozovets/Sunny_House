@@ -163,30 +163,38 @@ namespace Sunny_House.Controllers
             try
             {
                 PersonRelation personRelation = await db.PersonRelations.FirstOrDefaultAsync(k => k.Id == id);
-
-                //Шукаємо в якому полі знаходиться ІД персони. PersonId чи RelPersonId.
-                int _relpersonid = personRelation.RelPersonId;
-                int _returnPerson = personRelation.PersonId;
-                if (PersonId == _relpersonid) _returnPerson = _relpersonid;
-
-
-                db.PersonRelations.Remove(personRelation);
-                int _result = await db.SaveChangesAsync();
-                if (_result > 0)
+                if (personRelation != null)
                 {
-                    string _message = "Информация о взаимоотношении удалена из базы данных";
-                    TempData["MessageOk"] = _message;
-                    
-                    return RedirectToAction("ShowRel", "Home", new { PersonId = _returnPerson });
+
+                    //Шукаємо в якому полі знаходиться ІД персони. PersonId чи RelPersonId.
+                    int _relpersonid = personRelation.RelPersonId;
+                    int _returnPerson = personRelation.PersonId;
+                    if (PersonId == _relpersonid) _returnPerson = _relpersonid;
+
+
+                    db.PersonRelations.Remove(personRelation);
+                    int _result = await db.SaveChangesAsync();
+                    if (_result > 0)
+                    {
+                        string _message = "Информация о взаимоотношении удалена из базы данных";
+                        TempData["MessageOk"] = _message;
+
+                        return RedirectToAction("ShowRel", "Home", new { PersonId = _returnPerson });
+                    }
+                    else
+                    {
+                        string _message = "Ошибка удаления";
+                        TempData["MessageError"] = _message;
+
+                        return RedirectToAction("ShowRel", "Home", new { PersonId = _returnPerson });
+                    }
                 }
                 else
                 {
-                    string _message = "Ошибка удаления";
+                    string _message = string.Format("Удаление невозможно. Указанный объект отсутствует в базе данных.");
                     TempData["MessageError"] = _message;
-                  
-                    return RedirectToAction("ShowRel", "Home", new { PersonId = _returnPerson });
+                    return RedirectToAction("ShowRel", "Home", new { PersonId = PersonId });
                 }
-
             }
             catch (Exception ex)
             {
@@ -325,13 +333,21 @@ namespace Sunny_House.Controllers
         {
             try
             {
-                RelationTypesCatalog relationTypesCatalog = await db.RelationTypesCatalogs.FindAsync(id);
-                db.RelationTypesCatalogs.Remove(relationTypesCatalog);
-                await db.SaveChangesAsync();
-                
-                string _message = "Информация о типе взаимоотношений успешно удалена";
-                TempData["MessageOk"] = _message;
-                
+                RelationTypesCatalog relationTypesCatalog = db.RelationTypesCatalogs.FirstOrDefault(x=>x.RelTypesId == id);
+                if (relationTypesCatalog != null)
+                {
+                    db.RelationTypesCatalogs.Remove(relationTypesCatalog);
+                    await db.SaveChangesAsync();
+
+                    string _message = "Информация о типе взаимоотношений успешно удалена";
+                    TempData["MessageOk"] = _message;
+                }
+                else
+                {
+                    string _message = string.Format("Удаление невозможно. Указанный объект отсутствует в базе данных.");
+                    TempData["MessageError"] = _message;
+                }
+
                 return RedirectToAction("RTShow");
             }
             catch (Exception ex)

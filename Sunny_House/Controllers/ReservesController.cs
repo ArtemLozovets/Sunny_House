@@ -227,10 +227,18 @@ namespace Sunny_House.Controllers
         {
             try
             {
-                Reserve reserve = db.Reserves.First(e => e.ReserveId == ReserveId);
-                db.Reserves.Remove(reserve);
-                db.SaveChanges();
-                TempData["MessageOk"] = "Информация о бронировании успешно удалена";
+                Reserve reserve = db.Reserves.FirstOrDefault(e => e.ReserveId == ReserveId);
+                if (reserve != null)
+                {
+                    db.Reserves.Remove(reserve);
+                    db.SaveChanges();
+                    TempData["MessageOk"] = "Информация о бронировании успешно удалена";
+                }
+                else
+                {
+                    string _message = string.Format("Удаление невозможно. Указанный объект отсутствует в базе данных.");
+                    TempData["MessageError"] = _message;
+                }
                 return RedirectToAction("ResShow", new { PersonId = reserve.PersonId });
             }
             catch (Exception ex)
@@ -364,9 +372,9 @@ namespace Sunny_House.Controllers
                                     from _role in joinedrole.DefaultIfEmpty()
                                     join person in db.Persons on client.PersonId equals person.PersonId
                                     where (client.EventId == EventId) &&
-                                          (person.FirstName.Contains(PTCSearchString) 
+                                          (person.FirstName.Contains(PTCSearchString)
                                              || person.LastName.Contains(PTCSearchString)
-                                             || _role.RoleName.Contains(PTCSearchString) 
+                                             || _role.RoleName.Contains(PTCSearchString)
                                              || string.IsNullOrEmpty(PTCSearchString)
                                           )
                                     select new
@@ -565,7 +573,7 @@ namespace Sunny_House.Controllers
                     {
                         string _pers = db.Persons.Where(x => x.PersonId == _client.PersonId).Select(x => x.FirstName + " " + x.LastName + " " + x.MiddleName).FirstOrDefault();
                         return Json(new { Result = false, Message = String.Format("{0} уже есть в списке забронированных персон", _pers) }, JsonRequestBehavior.AllowGet);
-                    } 
+                    }
 
                     //Получаем ID роли "Клиент"
                     int _clientroleid = db.PersonRoles.First(r => r.RoleName.ToUpper() == (string)"Клиент".ToUpper()).RoleId;
@@ -645,7 +653,7 @@ namespace Sunny_House.Controllers
             return RedirectToAction("ResShowOfEvent", "Reserves", new { @EventId });
         }
 
-       
+
         [HttpGet]
         [Authorize(Roles = "Administrator, User")]
         public ActionResult PTCRefusing(int? PersonId, int? ClientId, int? ReserveId, int? EventId, string Mode)

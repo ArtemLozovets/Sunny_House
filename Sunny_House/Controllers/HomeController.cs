@@ -512,13 +512,21 @@ namespace Sunny_House.Controllers
         {
             try
             {
-                Payment payment = db.Payments.Find(id);
-                db.Payments.Remove(payment);
-                db.SaveChanges();
+                Payment payment = db.Payments.FirstOrDefault(x => x.PaymentId == id);
+                if (payment != null)
+                {
+                    db.Payments.Remove(payment);
+                    db.SaveChanges();
+                    TempData["MessageOk"] = "Информация о платеже успешно удалена";
+                }
+                else
+                {
+                    string _message = string.Format("Удаление невозможно. Указанный объект отсутствует в базе данных.");
+                    TempData["MessageError"] = _message;
 
-                TempData["MessageOk"] = "Информация о платеже успешно удалена";
-
+                }
                 return RedirectToAction("ShowAllPayments", "Home");
+
             }
             catch (Exception ex)
             {
@@ -702,82 +710,91 @@ namespace Sunny_House.Controllers
 
                 try
                 {
-                    Person person = await db.Persons.FindAsync(PersonId);
-
-                    if (db.Persons.First(i => i.PersonId == PersonId).Payment.Any() || db.Persons.First(i => i.PersonId == PersonId).Payment1.Any())
-                    {
-                        string _message = string.Format("Персона \"{0} {1} {2} \" не может быть удалена, так как имеются связанные данные в таблице \"Payment\"", person.FirstName, person.LastName, person.MiddleName);
-                        TempData["MessageError"] = _message;
-
-                        return RedirectToAction("ShowPersons", "Home", new { @PersonId = PersonId });
-                    }
-
-                    if (db.Persons.First(i => i.PersonId == PersonId).PersonRelation.Any() || db.Persons.First(i => i.PersonId == PersonId).PersonRelation1.Any())
-                    {
-                        string _message = string.Format("Персона \"{0} {1} {2} \" не может быть удалена, так как имеются связанные данные в таблице \"PersonRelation\"", person.FirstName, person.LastName, person.MiddleName);
-                        TempData["MessageError"] = _message;
-
-                        return RedirectToAction("ShowPersons", "Home", new { @PersonId = PersonId });
-                    }
-
-                    if (db.Persons.First(i => i.PersonId == PersonId).Event.Any())
-                    {
-                        string _message = string.Format("Персона \"{0} {1} {2} \" не может быть удалена, так как имеются связанные данные в таблице \"Event\"", person.FirstName, person.LastName, person.MiddleName);
-                        TempData["MessageError"] = _message;
-
-                        return RedirectToAction("ShowPersons", "Home", new { @PersonId = PersonId });
-                    }
-
-                    if (db.Persons.First(i => i.PersonId == PersonId).Comment.Any())
-                    {
-                        string _message = string.Format("Персона \"{0} {1} {2} \" не может быть удалена, так как имеются связанные данные в таблице \"Comment\"", person.FirstName, person.LastName, person.MiddleName);
-                        TempData["MessageError"] = _message;
-
-                        return RedirectToAction("ShowPersons", "Home", new { @PersonId = PersonId });
-                    }
-
-                    if (db.Persons.First(i => i.PersonId == PersonId).STask.Any())
-                    {
-                        string _message = string.Format("Персона \"{0} {1} {2} \" не может быть удалена, так как имеются связанные данные в таблице задач", person.FirstName, person.LastName, person.MiddleName);
-                        TempData["MessageError"] = _message;
-
-                        return RedirectToAction("ShowPersons", "Home", new { @PersonId = PersonId });
-                    }
-
-                    else
+                    Person person = db.Persons.FirstOrDefault(x => x.PersonId == PersonId);
+                    if (person != null)
                     {
 
-                        db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Information====================
-
-
-                        //Шукаємо всі записи в таблиці PersonRelation, що пов'язані з персоною
-                        List<PersonCommunication> _percommlist = db.PersonCommunications.Where(p => p.PersonId == PersonId).ToList();
-
-                        //Видаляємо діапазон записів з таблиці PersonRelation, що пов'язані з персоною
-                        db.PersonCommunications.RemoveRange(db.PersonCommunications.Where(c => c.PersonId == PersonId));
-                        await db.SaveChangesAsync();
-
-                        //Видаляємо записи з таблиці Communication, що були пов'язані с персоною
-                        foreach (var item in _percommlist)
+                        if (person.Payment.Any() || person.Payment1.Any())
                         {
-                            Communication communication = await db.Communications.FindAsync(item.CommunicationId);
-                            db.Communications.Remove(communication);
-                            await db.SaveChangesAsync();
+                            string _message = string.Format("Персона \"{0} {1} {2} \" не может быть удалена, так как имеются связанные данные в таблице \"Payment\"", person.FirstName, person.LastName, person.MiddleName);
+                            TempData["MessageError"] = _message;
+
+                            return RedirectToAction("ShowPersons", "Home", new { @PersonId = PersonId });
                         }
 
-                        // Видаляємо персону
-                        db.Persons.Remove(person);
-                        await db.SaveChangesAsync();
+                        if (person.PersonRelation.Any() || person.PersonRelation1.Any())
+                        {
+                            string _message = string.Format("Персона \"{0} {1} {2} \" не может быть удалена, так как имеются связанные данные в таблице \"PersonRelation\"", person.FirstName, person.LastName, person.MiddleName);
+                            TempData["MessageError"] = _message;
 
-                        DbContextTransaction.Commit(); //Commit TRansaction
+                            return RedirectToAction("ShowPersons", "Home", new { @PersonId = PersonId });
+                        }
 
-                        string _message = string.Format("Персона \"{0} {1} {2} \" удалена из базы данных", person.FirstName, person.LastName, person.MiddleName);
-                        TempData["MessageOk"] = _message;
+                        if (person.Event.Any())
+                        {
+                            string _message = string.Format("Персона \"{0} {1} {2} \" не может быть удалена, так как имеются связанные данные в таблице \"Event\"", person.FirstName, person.LastName, person.MiddleName);
+                            TempData["MessageError"] = _message;
 
+                            return RedirectToAction("ShowPersons", "Home", new { @PersonId = PersonId });
+                        }
+
+                        if (person.Comment.Any())
+                        {
+                            string _message = string.Format("Персона \"{0} {1} {2} \" не может быть удалена, так как имеются связанные данные в таблице \"Comment\"", person.FirstName, person.LastName, person.MiddleName);
+                            TempData["MessageError"] = _message;
+
+                            return RedirectToAction("ShowPersons", "Home", new { @PersonId = PersonId });
+                        }
+
+                        if (person.STask.Any())
+                        {
+                            string _message = string.Format("Персона \"{0} {1} {2} \" не может быть удалена, так как имеются связанные данные в таблице задач", person.FirstName, person.LastName, person.MiddleName);
+                            TempData["MessageError"] = _message;
+
+                            return RedirectToAction("ShowPersons", "Home", new { @PersonId = PersonId });
+                        }
+
+                        else
+                        {
+
+                            db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Information====================
+
+
+                            //Шукаємо всі записи в таблиці PersonRelation, що пов'язані з персоною
+                            List<PersonCommunication> _percommlist = db.PersonCommunications.Where(p => p.PersonId == PersonId).ToList();
+
+                            //Видаляємо діапазон записів з таблиці PersonRelation, що пов'язані з персоною
+                            db.PersonCommunications.RemoveRange(db.PersonCommunications.Where(c => c.PersonId == PersonId));
+                            await db.SaveChangesAsync();
+
+                            //Видаляємо записи з таблиці Communication, що були пов'язані с персоною
+                            foreach (var item in _percommlist)
+                            {
+                                Communication communication = await db.Communications.FindAsync(item.CommunicationId);
+                                db.Communications.Remove(communication);
+                                await db.SaveChangesAsync();
+                            }
+
+                            // Видаляємо персону
+                            db.Persons.Remove(person);
+                            await db.SaveChangesAsync();
+
+                            DbContextTransaction.Commit(); //Commit TRansaction
+
+                            string _message = string.Format("Персона \"{0} {1} {2} \" удалена из базы данных", person.FirstName, person.LastName, person.MiddleName);
+                            TempData["MessageOk"] = _message;
+                            return RedirectToAction("ShowPersons", "Home");
+                        }
+
+                    }
+                    else
+                    {
+                        string _message = string.Format("Удаление невозможно. Указанный объект отсутствует в базе данных.");
+                        TempData["MessageError"] = _message;
                         return RedirectToAction("ShowPersons", "Home");
                     }
-
                 }
+
                 catch (Exception ex)
                 {
                     DbContextTransaction.Rollback();
@@ -1076,45 +1093,52 @@ namespace Sunny_House.Controllers
             {
                 try
                 {
-                    if (RelAddressDel == false)
+                    PersonPlace _personPlace = db.PersonPlaces.FirstOrDefault(i => i.Id == id);
+                    if (_personPlace != null)
                     {
-                        PersonPlace _personPlace = db.PersonPlaces.FirstOrDefault(i => i.Id == id);
-                        db.PersonPlaces.Remove(_personPlace);
-                        db.SaveChanges();
-                        dbContextTransaction.Commit();
-                        TempData["MessageOk"] = "Запись успешно удалена из базы данных";
-                    }
-                    else
-                    {
-                        PersonPlace _personPlace = db.PersonPlaces.FirstOrDefault(i => i.Id == id);
-
-                        if (db.Addresses
-                                .First(a => a.AddressId == _personPlace.AddressId)
-                                .PersonPlace.Any(i => i.Id != id) || db.Addresses
-                                .First(a => a.AddressId == _personPlace.AddressId)
-                                .Exercise.Any())
+                        if (RelAddressDel == false)
                         {
+
                             db.PersonPlaces.Remove(_personPlace);
                             db.SaveChanges();
                             dbContextTransaction.Commit();
-
-                            TempData["MessageOk"] = "Информация о месте персоны удалена из базы данных";
-                            TempData["MessageError"] = "Удаление адреса невозможно. В таблице персон или занятий имеются связанные данные";
+                            TempData["MessageOk"] = "Запись успешно удалена из базы данных";
                         }
                         else
                         {
-                            db.PersonPlaces.Remove(_personPlace);
-                            db.SaveChanges();
+                            if (db.Addresses
+                                    .First(a => a.AddressId == _personPlace.AddressId)
+                                    .PersonPlace.Any(i => i.Id != id) || db.Addresses
+                                    .First(a => a.AddressId == _personPlace.AddressId)
+                                    .Exercise.Any())
+                            {
+                                db.PersonPlaces.Remove(_personPlace);
+                                db.SaveChanges();
+                                dbContextTransaction.Commit();
 
-                            Address _delAddress = db.Addresses.First(a => a.AddressId == _personPlace.AddressId);
-                            db.Addresses.Remove(_delAddress);
-                            db.SaveChanges();
+                                TempData["MessageOk"] = "Информация о месте персоны удалена из базы данных";
+                                TempData["MessageError"] = "Удаление адреса невозможно. В таблице персон или занятий имеются связанные данные";
+                            }
+                            else
+                            {
+                                db.PersonPlaces.Remove(_personPlace);
+                                db.SaveChanges();
 
-                            TempData["MessageOk"] = "Информация о месте персоны и связанный адрес удалены из базы данных";
+                                Address _delAddress = db.Addresses.First(a => a.AddressId == _personPlace.AddressId);
+                                db.Addresses.Remove(_delAddress);
+                                db.SaveChanges();
 
-                            dbContextTransaction.Commit();
+                                TempData["MessageOk"] = "Информация о месте персоны и связанный адрес удалены из базы данных";
+
+                                dbContextTransaction.Commit();
+                            }
+
                         }
-
+                    }
+                    else
+                    {
+                        string _message = string.Format("Удаление невозможно. Указанный объект отсутствует в базе данных.");
+                        TempData["MessageError"] = _message;
                     }
                     return RedirectToAction("ShowPlaces", "Home", new { PersonId = PersonId });
                 }

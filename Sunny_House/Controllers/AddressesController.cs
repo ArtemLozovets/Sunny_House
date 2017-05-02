@@ -406,7 +406,7 @@ namespace Sunny_House.Controllers
                 }
                 else
                 {
-                    string _message = string.Format("Удаление адреса невозможно. Указанный объект отсутствует в базе данных.");
+                    string _message = string.Format("Удаление невозможно. Указанный объект отсутствует в базе данных.");
                     TempData["MessageError"] = _message;
                 }
 
