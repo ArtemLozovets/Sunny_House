@@ -1,7 +1,7 @@
 ﻿<link href="~/Content/fullcalendar.css" rel="stylesheet" />
 <link href="~/Content/fullcalendar.print.css" rel="stylesheet" media="print" />
 @{
-    ViewBag.Title = "Персоны";
+    ViewBag.Title = "Занятия - Расписание занятий";
 }
 
 <h2><i class="fa fa-bell"></i> Расписание занятий</h2>
@@ -109,14 +109,8 @@
 
                 //=======================Щелчок по событию==========================
                 eventClick: function (calEvent, jsEvent, view) {
-
-                        if (!confirm('Перейти на страницу управления занятием "' + calEvent.title + '"?')) {
-                            return false;
-                        }
-                        else {
                             var UrlStr = '/Exercises/ExDetails?ObjectId=' + calEvent.id;
                             window.open(UrlStr, "_blank");
-                        }
                 },
 
                 //==============================Start===============================

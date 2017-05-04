@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Посещения";
+    ViewBag.Title = "Посещения - Список посещений";
 }
 
 <link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
@@ -157,6 +157,7 @@
 @section Scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/toparrow.js"></script>
+    <script src="~/Scripts/PersonCard.js"></script>
     <script type="text/javascript">
 
         $(function () {
@@ -344,9 +345,7 @@
                     $('#ExLabel').val($(this).data('exname'));
                     break;
                 case 'date':
-                    d = $(this).data('date').split(' ')[0];
-                    $('#StartDate').val(d);
-                    $('#StartDate').val(d);
+                    $('#StartDate').val($(this).data('date'));
                     break;
                 case 'event':
                     $('#EventId').val($(this).data('eventid'));

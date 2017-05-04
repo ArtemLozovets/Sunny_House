@@ -28,10 +28,14 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Visits
-        public ActionResult VisShow()
+        public ActionResult VisShow(int? EventId, string EventName)
         {
             ViewData["Roles"] = new SelectList(db.PersonRoles, "RoleId", "RoleName");
-
+            if (EventId != null)
+            {
+                ViewData["EventId"] = EventId;
+                ViewData["EventName"] = EventName;
+            }
             return View();
         }
 
@@ -441,7 +445,7 @@ namespace Sunny_House.Controllers
                     break;
 
                 default:
-                    visits = visits.OrderByDescending(x => x.VisitId);
+                    visits = visits.OrderByDescending(x => x.StartTime);
                     break;
             }
 

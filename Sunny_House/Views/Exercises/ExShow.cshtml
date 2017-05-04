@@ -5,7 +5,7 @@
 <link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
 
 @{
-    ViewBag.Title = "Занятия";
+    ViewBag.Title = "Занятия - Список занятий";
 
     string ReturnParam = "/Exercises/ExShow?FilterMode=" + Request.QueryString["FilterMode"];
     ReturnParam += "&SearchStartDate=" + Request.QueryString["SearchStartDate"];
@@ -86,6 +86,8 @@
                     @placeholder = "Тема, примечание...",
                     @title = "Тема занятия, название мероприятия, примечание",
                 })
+
+                @Html.Hidden("EventId", ViewData["EventId"])
 
                 <div class="input-group-btn">
                     <button type="submit" class="btn btn-toolbar groupbtn" id="applyfilter">
@@ -199,7 +201,7 @@
                         @Html.DisplayFor(modelItem => item.Note)
                     </td>
                     <td style="text-align:center;">
-                        <a class="btn btn-default btn-sm" title="Подробно" href='@Url.Action("ExDetails", "Exercises", new { ObjectId = item.ExerciseId, ReturnParam })'><span class="glyphicon glyphicon-info-sign"></span></a>
+                        <a class="btn btn-default btn-sm" title="Управление занятием" href='@Url.Action("ExDetails", "Exercises", new { ObjectId = item.ExerciseId, ReturnParam })'><span class="glyphicon glyphicon-info-sign"></span></a>
                         <a class="btn btn-default btn-sm" title="Редактировать" href='@Url.Action("ExEdit", "Exercises", new { ObjectId = item.ExerciseId, ReturnParam })'><span class="glyphicon glyphicon-edit"></span></a>
                         <a class="btn btn-default btn-sm" title="Удалить" href='@Url.Action("ExDelete", "Exercises", new { ObjectId = item.ExerciseId, ReturnParam })'><span class="glyphicon glyphicon-trash"></span></a>
                     </td>

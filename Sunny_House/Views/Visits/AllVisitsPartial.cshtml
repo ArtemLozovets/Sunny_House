@@ -106,12 +106,12 @@
                             }
     <tr class="@_class">
         <td style="vertical-align:top !important;" data-fparam="person" data-personid="@item.VisitorId" data-personfio="@item.PersonFIO" class="autofilter">
-            @Html.ActionLink(@item.PersonFIO, "ShowPersons", "Home", new { PersonId = @item.VisitorId }, new { target = "_blank" })
+            <a href="#topanchor" class="showRelPersons" data-personid="@item.VisitorId" title="Карточка персоны">@Html.DisplayFor(modelItem => item.PersonFIO)</a>
         </td>
         <td style="vertical-align:top !important" data-fparam="ex" data-exid="@item.ExerciseId" data-exname="@item.ExName" class="autofilter">
             @Html.ActionLink(@item.ExName, "ExShow", "Exercises", new { ExerciseId = @item.ExerciseId }, new { target = "_blank" })
         </td>
-        <td style="text-align:center; vertical-align:top !important" data-fparam="date" data-date="@item.StartTime" class="autofilter">
+        <td style="text-align:center; vertical-align:top !important" data-fparam="date" data-date="@Convert.ToDateTime(item.StartTime).ToString("dd'/'MM'/'yyyy")" class=" autofilter">
             @Html.DisplayFor(modelItem => item.StartTime)
         </td>
         <td style="max-width:100px; vertical-align:top !important" data-fparam="event" data-eventid="@item.EventId" data-eventname="@item.EventName" class="autofilter">

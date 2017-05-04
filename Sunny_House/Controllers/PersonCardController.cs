@@ -26,9 +26,20 @@ namespace Sunny_House.Controllers
 
             List<RelationViewModel> _rellist = new List<RelationViewModel>();
 
-            var _result = (from relation in db.PersonRelations
+            var _result = (from person in db.Persons
+                           where person.PersonId == PersonId
+                           select new RelationViewModel
+                           {
+                               PersonId = person.PersonId,
+                               PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
+                               RelationName = "Персона"
+                           }).ToList();
+            
+            _rellist.AddRange(_result);
+
+            _result = (from relation in db.PersonRelations
                            join person in db.Persons on relation.PersonId equals person.PersonId
-                           where relation.RelPersonId == PersonId
+                           where relation.RelPersonId == PersonId 
                            select new RelationViewModel
                            {
                                PersonId = person.PersonId,

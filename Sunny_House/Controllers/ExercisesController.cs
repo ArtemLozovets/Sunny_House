@@ -21,9 +21,14 @@ namespace Sunny_House.Controllers
 
         // GET: Exercises
         [HttpGet]
-        public ActionResult ExShow(int? ExerciseId, string ReturnUrl, string FilterMode, string SearchString, string SearchStartDate, string SearchEndDate, int? page, string SortBy)
+        public ActionResult ExShow(int? ExerciseId, string ReturnUrl, string FilterMode, string SearchString, string SearchStartDate, string SearchEndDate, int? page, string SortBy, int? EventId)
         {
             db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Ingormation --------------------------
+
+            if (EventId != null)
+            {
+                ViewData["EventId"] = EventId;
+            }
 
             ViewBag.SortEventName = SortBy == "EventName" ? "EventName desc" : "EventName";
             ViewBag.SortSubject = SortBy == "Subject" ? "Subject desc" : "Subject";
@@ -50,11 +55,11 @@ namespace Sunny_House.Controllers
                 DateTime? _endDate = (String.IsNullOrEmpty(SearchEndDate)) ? Convert.ToDateTime("2900-01-01") : Convert.ToDateTime(SearchEndDate);
 
                 var _exercises = (from ex in db.Exercises
-
                                   where ((_endDate >= DbFunctions.TruncateTime(ex.StartTime)) && (_startDate <= DbFunctions.TruncateTime(ex.EndTime))) &&
                                         ((ex.Subject.ToUpper().Contains(SearchString.ToUpper()) || String.IsNullOrEmpty(SearchString)) ||
                                         (ex.Note.ToUpper().Contains(SearchString.ToUpper()) || String.IsNullOrEmpty(SearchString)) ||
-                                        (ex.Event.EventName.Contains(SearchString) || String.IsNullOrEmpty(SearchString)))
+                                        (ex.Event.EventName.Contains(SearchString) || String.IsNullOrEmpty(SearchString))) &&
+                                        (ex.EventId == EventId || EventId == null)
                                   select ex);
 
                 switch (FilterMode)

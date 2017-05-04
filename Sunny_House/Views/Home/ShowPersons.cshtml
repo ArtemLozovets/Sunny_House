@@ -2,7 +2,7 @@
 @using PagedList.Mvc;
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 @{
-    ViewBag.Title = "Персоны";
+    ViewBag.Title = "Персоны - Список персон";
 }
 
 <div id="modDialog" class="modal fade">
@@ -88,13 +88,13 @@
 
                 <tr title="@ttl" style="cursor:help">
                     <td>
-                        <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Связанные персоны">@Html.DisplayFor(modelItem => item.FirstName)</a>
+                        <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Карточка персоны">@Html.DisplayFor(modelItem => item.FirstName)</a>
                     </td>
                     <td>
-                        <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Связанные персоны">@Html.DisplayFor(modelItem => item.LastName)</a>
+                        <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Карточка персоны">@Html.DisplayFor(modelItem => item.LastName)</a>
                     </td>
                     <td>
-                        <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Связанные персоны">@Html.DisplayFor(modelItem => item.MiddleName)</a>
+                        <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Карточка персоны">@Html.DisplayFor(modelItem => item.MiddleName)</a>
                     </td>
                     @if (item.PersonAge != null && item.PersonAge > 0)
                     {
