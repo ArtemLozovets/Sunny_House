@@ -193,7 +193,7 @@
                 _ttl += string.IsNullOrEmpty(item.Note) ? "Примечание отсутствует" : "Примечание: " + @item.Note;
 
                 <tr title="@_ttl" style="cursor:pointer">
-                    <td>
+                    <td class="breakWord" style="max-width:200px;">
                         @Html.DisplayFor(modelItem => item.EventName)
                     </td>
                     <td>
@@ -202,7 +202,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.EndTime)
                     </td>
-                    <td>
+                    <td class="breakWord" style="max-width:300px;">
                         @Html.DisplayFor(modelItem => item.Description)
                     </td>
                     <td>
