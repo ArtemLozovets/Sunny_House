@@ -11,6 +11,7 @@ using Sunny_House.Models;
 using PagedList;
 using PagedList.Mvc;
 using Sunny_House.Methods;
+using System.Globalization;
 
 namespace Sunny_House.Controllers
 {
@@ -326,6 +327,9 @@ namespace Sunny_House.Controllers
             ViewData["SearchString"] = SearchString;
             ViewData["RoleSearchString"] = RoleSearchString;
             ViewData["ExerciseId"] = ExerciseId;
+
+            ViewData["EndTime"] = Convert.ToDateTime(db.Exercises.FirstOrDefault(x => x.ExerciseId == ExerciseId).EndTime.ToString());
+            
             ViewBag.RoleList = db.PersonRoles.ToList();
 
             int pageSize = 50;

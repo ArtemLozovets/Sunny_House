@@ -83,14 +83,17 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Comments/Create
-        public ActionResult CommentCreate(int? SignPersonId, int? ExerciseId, DateTime? Date)
+        public ActionResult CommentCreate(int? SignPersonId, int? ExerciseId, DateTime? Date1)
         {
             ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName");
 
             ViewBag.MaxAttSize = GetMaxAttSize();
 
             Comment _comment = new Comment();
-            _comment.Date = Date ?? DateTime.Now;
+
+            DateTime _dt = Date1 ?? DateTime.Now;
+            _dt = DateTime.SpecifyKind(_dt, DateTimeKind.Local);
+            _comment.Date = _dt;
 
             if (SignPersonId != null)
             {
@@ -106,7 +109,6 @@ namespace Sunny_House.Controllers
                 ViewData["EventName"] = _ex.Event.EventName.ToString();
                 ViewData["ExName"] = _ex.Subject.ToString();
             }
-            
             
             _comment.Rating = 1;
             _comment.RelGuid = Guid.NewGuid();
@@ -525,7 +527,7 @@ namespace Sunny_House.Controllers
         {
             try
             {
-                if (db.Comments.FirstOrDefault(e => e.CommentId == id) != null)
+                if (db.CommentSources.FirstOrDefault(e => e.SourceId == id) != null)
                 {
                     //Запрещаем удаление источника "Бронирование" 
                     string _namestring = (string)"Бронирование".ToUpper();
