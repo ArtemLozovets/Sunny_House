@@ -559,6 +559,7 @@ namespace Sunny_House.Controllers
             }
             try
             {
+                int _clientroleid = db.PersonRoles.First(r => r.RoleName.ToUpper() == (string)"Клиент".ToUpper()).RoleId;
                 string _jsonObject = PersonsJSON.Replace(@"\", string.Empty);
                 var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
                 IList<JSONVisitorModel> jsonObject = serializer.Deserialize<IList<JSONVisitorModel>>(_jsonObject);
@@ -577,7 +578,7 @@ namespace Sunny_House.Controllers
                         {
                             VisitorId = Visitor.PersonId,
                             ExerciseId = ExId ?? 0,
-                            RoleId = Visitor.RoleId,
+                            RoleId = Visitor.RoleId == 0 ? _clientroleid : Visitor.RoleId,
                             FactVisit = false
                         };
                         _visitlist.Add(_visit);

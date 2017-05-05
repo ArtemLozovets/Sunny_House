@@ -260,69 +260,67 @@
     <script type="text/javascript">
         //Обработчик щелчка по кнопке выбора персон/персоны вкладки "Подбор посетителей"
         function selsubmit(elem) {
-            if (confirm('Выполнить регистрацию посещений?')) {
-                var PersonsIDSArray = new Array();
+            var PersonsIDSArray = new Array();
 
-                if ($(elem).attr('id') == "selAllPersons") {
-                    if ($('input[name=FilterMode]:checked').val() == "All") {
-                        alert('Выберите режим фильтрации "Бронь"');
-                        return;
-                    }
-                    else {
-                        if ($('body').find(".selPerson").length > 0) {
-                            $(".selPerson").each(function (el) {
-                                PersonsIDSArray.push(
-                                    {
-                                        PersonId: $(this).data('personid'),
-                                        RoleId: $(this).data('roleid')
-                                    });
-                            });
-                        }
-                        else {
-                            alert('Записи для регистрации отсутствуют');
-                            return;
-                        }
-                    }
+            if ($(elem).attr('id') == "selAllPersons") {
+                if ($('input[name=FilterMode]:checked').val() == "All") {
+                    alert('Выберите режим фильтрации "Бронь"');
+                    return;
                 }
                 else {
-                    PersonsIDSArray.push(
+                    if ($('body').find(".selPerson").length > 0) {
+                        $(".selPerson").each(function (el) {
+                            PersonsIDSArray.push(
                                 {
-                                    PersonId: $(elem).data('personid'),
-                                    RoleId: $(elem).data('roleid')
+                                    PersonId: $(this).data('personid'),
+                                    RoleId: $(this).data('roleid')
                                 });
-                }
-
-                var _exId = '@Model.ExerciseId';
-
-                $('#loadingImg').show();
-                $.ajax({
-                    type: 'POST',
-                    url: '/Visits/AddPreVisitAjax/',
-                    traditional: true,
-                    data: {
-                        'ExId': _exId,
-                        'PersonsJSON': JSON.stringify(PersonsIDSArray)
-                    },
-                    accept: 'application/json',
-                    success: function (data) {
-                        $('#loadingImg').hide();
-                        if (!data.Result) {
-                            $("#MessageOk").text('');
-                            $("#MessageError").text(data.Message);
-                        }
-                        else {
-                            $("#MessageError").text('');
-                            $("#MessageOk").text(data.Message);
-                            $('#visitform').trigger('reset');
-                            $('#visitform').submit();
-                        }
-                    },
-                    fail: function (data) {
-                        $('#loadingImg').hide();
-                        $("#MessageError").text("Ошибка выполнения запроса");
+                        });
                     }
-                });
+                    else {
+                        alert('Записи для регистрации отсутствуют');
+                        return;
+                    }
+                }
             }
+            else {
+                PersonsIDSArray.push(
+                            {
+                                PersonId: $(elem).data('personid'),
+                                RoleId: 0
+                            });
+            }
+
+            var _exId = '@Model.ExerciseId';
+
+            $('#loadingImg').show();
+            $.ajax({
+                type: 'POST',
+                url: '/Visits/AddPreVisitAjax/',
+                traditional: true,
+                data: {
+                    'ExId': _exId,
+                    'PersonsJSON': JSON.stringify(PersonsIDSArray)
+                },
+                accept: 'application/json',
+                success: function (data) {
+                    $('#loadingImg').hide();
+                    if (!data.Result) {
+                        $("#MessageOk").text('');
+                        $("#MessageError").text(data.Message);
+                    }
+                    else {
+                        $("#MessageError").text('');
+                        $("#MessageOk").text(data.Message);
+                        $('#visitform').trigger('reset');
+                        $('#visitform').submit();
+                    }
+                },
+                fail: function (data) {
+                    $('#loadingImg').hide();
+                    $("#MessageError").text("Ошибка выполнения запроса");
+                }
+            });
         };
 
     </script>

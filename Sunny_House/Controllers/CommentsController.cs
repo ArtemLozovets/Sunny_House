@@ -83,14 +83,31 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Comments/Create
-        public ActionResult CommentCreate()
+        public ActionResult CommentCreate(int? SignPersonId, int? ExerciseId, DateTime? Date)
         {
             ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName");
 
             ViewBag.MaxAttSize = GetMaxAttSize();
 
             Comment _comment = new Comment();
-            _comment.Date = DateTime.Now;
+            _comment.Date = Date ?? DateTime.Now;
+
+            if (SignPersonId != null)
+            {
+                _comment.SignPersonId = SignPersonId;
+                ViewData["SignPersonFIO"] = db.Persons.Where(x => x.PersonId == SignPersonId).Select(x => x.FirstName + " " + x.LastName + " " + x.MiddleName).First().ToString();
+            }
+
+            if (ExerciseId != null)
+            {
+                var _ex = db.Exercises.FirstOrDefault(x => x.ExerciseId == ExerciseId);
+                _comment.ExerciseId = ExerciseId;
+                _comment.EventId = _ex.EventId;
+                ViewData["EventName"] = _ex.Event.EventName.ToString();
+                ViewData["ExName"] = _ex.Subject.ToString();
+            }
+            
+            
             _comment.Rating = 1;
             _comment.RelGuid = Guid.NewGuid();
 
@@ -529,7 +546,7 @@ namespace Sunny_House.Controllers
                     db.CommentSources.Remove(commentSource);
                     await db.SaveChangesAsync();
                     TempData["MessageOk"] = "Информация об источнике отзывов успешно удалена";
-                   
+
                 }
                 else
                 {

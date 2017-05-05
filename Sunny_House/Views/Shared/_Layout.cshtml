@@ -38,6 +38,14 @@
                             <li>@Html.ActionLink("Отзывы", "CommentShow", "Comments", new { Area = "" }, null)</li>
                         </ul>
                     </li>
+
+                    <li class="dropdown">
+                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Отчеты <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Статистика", "Index", "Statistic", new { Area = "" }, null)</li>
+                        </ul>
+                    </li>
+
                     <li class="dropdown">
                         <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Дополнительно <span class="caret"></span></a>
                         <ul class="dropdown-menu">
@@ -54,7 +62,6 @@
                         <ul class="dropdown-menu">
                             <li>@Html.ActionLink("Пользователи", "ShowUsers", "UsersManagement", new { Area = "Administrator" }, null)</li>
                             <li>@Html.ActionLink("Аудит входа", "LoginAudit", "UsersManagement", new { Area = "Administrator" }, null)</li>
-                            <li>@Html.ActionLink("Статистика", "Index", "Statistic", new { Area = "" }, null)</li>
                         </ul>
                     </li>
                 </ul>

@@ -55,7 +55,7 @@
                     <span class="input-group-addon btn btn-default glyphicon glyphicon-floppy-save notesBtn" title="Сохранить" data-visitid="@item.VisitId"></span>
                 </div>
             </td>
-            <td style="min-width:96px;">
+            <td style="min-width:134px;">
                 <a class="btn btn-default btn-sm BTPay"
                    title="Добавить платеж"
                    style="display:inline-block;"
@@ -63,6 +63,14 @@
                    href='@Url.Action("AddPayment", "Home", new {EventId = item.EventId, ClientId = item.VisitorId })'>
                     +<span class="glyphicon glyphicon-usd"></span>
                 </a>
+
+                <a class="btn btn-default btn-sm"
+                   title="Добавить отзыв"
+                   style="display:inline-block;"
+                   href='@Url.Action("CommentCreate", "Comments", new { SignPersonId = item.VisitorId,  ExerciseId = item.ExerciseId, Date = ite })'>
+                    <span class="glyphicon glyphicon-comment"></span>
+                </a>
+
                 <a class="btn btn-default btn-sm"
                    title="Удалить информацию о посещении"
                    style="display:inline-block;"

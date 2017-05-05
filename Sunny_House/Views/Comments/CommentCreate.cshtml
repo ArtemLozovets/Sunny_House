@@ -1,7 +1,7 @@
 ﻿@model Sunny_House.Models.Comment
 
 @{
-    ViewBag.Title = "Добавить";
+    ViewBag.Title = "Отзывы - Добавление отзыва";
 }
 <link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
 <link href="~/Content/Attachment.css" rel="stylesheet" />
@@ -86,7 +86,7 @@
                     @Html.LabelFor(model => model.SignPersonId, "Подпись", htmlAttributes: new { @class = "control-label text-success col-sm-4" })
                     <div class="col-sm-8">
                         <div class="form-inline">
-                            <input type="text" name="SignPersonLabel" id="SignPersonLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["SignPersonId"]" />
+                            <input type="text" name="SignPersonLabel" id="SignPersonLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["SignPersonFIO"]" />
                             <a class="btn btn-default pModal" style="margin:2px 0; display:inline-block " href='@Url.Action("ShowModalPersons", "Modal", new { field = "SignPersonId" })'><span class="glyphicon glyphicon-folder-open"></span></a>
                         </div>
                         @Html.HiddenFor(model => model.SignPersonId)
@@ -152,7 +152,7 @@
     </div>
 }
 <div>
-    <a class="btn btn-default" href='@Url.Action("CommentShow", "Comments")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+    <a class="btn btn-default" href='@Url.Action("CommentShow", "Comments")'><span class="glyphicon glyphicon-circle-arrow-left"> Список отзывов</span></a>
 </div>
 
 @section Scripts {

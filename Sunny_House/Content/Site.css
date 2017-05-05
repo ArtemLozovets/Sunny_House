@@ -71,6 +71,11 @@ div.modal-content.ui-front {
 }
 
 /* Блок стилей для главного меню */
+
+.nav > li > a {
+    padding:15px 10px;
+}
+
 ul.nav li.dropdown:hover > ul.dropdown-menu {
     display: block;
 }
@@ -279,8 +284,8 @@ ul.dropdown-menu {
 }
 
 /*==========================================*/
-@media only screen and (min-width:990px){
-    .FixedPanel{
-        max-width:480px;
+@media only screen and (min-width:990px) {
+    .FixedPanel {
+        max-width: 480px;
     }
 }
