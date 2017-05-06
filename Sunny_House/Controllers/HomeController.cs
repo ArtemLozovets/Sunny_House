@@ -810,7 +810,7 @@ namespace Sunny_House.Controllers
         #region Створення платежу
         [HttpGet]
         [Authorize(Roles = "Administrator, User")]
-        public ActionResult AddPayment(int? EventId, int? ClientId)
+        public ActionResult AddPayment(int? EventId, int? ClientId, DateTime? PDate)
         {
             Payment _payment = new Payment();
             if (EventId != null && ClientId != null)
@@ -821,7 +821,9 @@ namespace Sunny_House.Controllers
                 ViewData["EventName"] = db.Events.FirstOrDefault(e => e.EventId == _eventId).EventName.ToString();
                 ViewData["ClientPIB"] = db.Persons.Where(p => p.PersonId == _clientId).Select(x => x.FirstName + " " + x.LastName + " " + x.MiddleName).FirstOrDefault();
 
-                _payment.Date = DateTime.Today;
+                DateTime _dt = PDate ?? DateTime.Today;
+                _payment.Date = _dt.Date;
+
                 _payment.EventId = _eventId;
                 _payment.ClientId = _clientId;
             }

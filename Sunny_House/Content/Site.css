@@ -122,6 +122,15 @@ ul.dropdown-menu {
         border-left: #ccc 1px solid;
     }
 
+.addonbtn a {
+        color: #555;
+    }
+
+    .addonbtn:hover {
+        background-color: white !important;
+        color: #d9534f;
+        cursor: pointer;
+    }
 
 .fixed {
     position: fixed;
@@ -289,3 +298,4 @@ ul.dropdown-menu {
         max-width: 480px;
     }
 }
+

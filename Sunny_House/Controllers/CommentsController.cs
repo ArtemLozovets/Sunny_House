@@ -83,7 +83,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Comments/Create
-        public ActionResult CommentCreate(int? SignPersonId, int? ExerciseId, DateTime? Date1)
+        public ActionResult CommentCreate(int? SignPersonId, int? ExerciseId, DateTime? Date1, int? EventId)
         {
             ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName");
 
@@ -109,7 +109,13 @@ namespace Sunny_House.Controllers
                 ViewData["EventName"] = _ex.Event.EventName.ToString();
                 ViewData["ExName"] = _ex.Subject.ToString();
             }
-            
+
+            if (EventId != null)
+            {
+                _comment.EventId = EventId;
+                ViewData["EventName"] = db.Events.FirstOrDefault(x=>x.EventId == EventId).EventName.ToString();
+            }
+
             _comment.Rating = 1;
             _comment.RelGuid = Guid.NewGuid();
 

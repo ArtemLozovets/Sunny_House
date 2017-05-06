@@ -72,12 +72,13 @@
                    href='@Url.Action("AddPayment", "Home", new {EventId =  ViewData["EventId"], ClientId = item.PersonId })'>
                     +<span class="glyphicon glyphicon-usd"></span>
                 </a>
-                <a class="btn btn-default btn-sm" title="Связанные персоны" href='@Url.Action("ShowPersons", "Home",
-                new{
-                                  PersonId = item.PersonId,
-                                  ReturnUrl= "/Reserves/ResShowOfEvent?EventId="+@ViewData["EventId"]
-                })'>
-                    <span class="glyphicon glyphicon-link"></span>
+
+                <a class="btn btn-default btn-sm"
+                   title="Добавить отзыв"
+                   target="_blank"
+                   style="display:inline-block;"
+                   href='@Url.Action("CommentCreate", "Comments", new { SignPersonId = item.PersonId, EventId = ViewData["EventId"] })'>
+                    <span class="glyphicon glyphicon-comment"></span>
                 </a>
 
                 <a class="btn btn-default btn-sm" title="Отказ" href='@Url.Action("PTCRefusing", "Reserves", new

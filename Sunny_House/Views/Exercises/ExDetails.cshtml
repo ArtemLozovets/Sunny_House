@@ -81,7 +81,7 @@
         </div>
     </div>
     <div class="col-lg-7 col-md-6">
-        <div class="panel panel-default" style="min-width:600px; min-height:436px;">
+        <div class="panel panel-default" style="min-width:644px; min-height:436px;">
             <div class="panel-heading"><strong><i class="fa fa-bell"></i> Посещения</strong></div>
             <div class="panel-body" id="tabpanel">
                 <ul class="nav nav-tabs">
@@ -175,10 +175,18 @@
         $(function () {
 
             /*Check window width*/
-            if ($(window).width() >= 1000) {
+            if ($(window).width() >= 1184) {
                 $('#fixedpanel').addClass('fixed');
             }
             else { $('#fixedpanel').removeClass('fixed'); }
+
+            $(window).resize(function () {
+                /*If browser resized, check width again */
+                if ($(window).width() >= 1184) {
+                    $('#fixedpanel').addClass('fixed');
+                }
+                else { $('#fixedpanel').removeClass('fixed'); }
+            });
 
             // Очищаем панель сообщений по щелчку в окне
             $('#resultMessage').click(function () {
@@ -226,13 +234,6 @@
             $('#personform').submit();
         });
 
-        $(window).resize(function () {
-            /*If browser resized, check width again */
-            if ($(window).width() >= 1000) {
-                $('#fixedpanel').addClass('fixed');
-            }
-            else { $('#fixedpanel').removeClass('fixed'); }
-        });
     </script>
 
     <script type="text/javascript">

@@ -60,7 +60,7 @@
                    title="Добавить платеж"
                    style="display:inline-block;"
                    target="_blank"
-                   href='@Url.Action("AddPayment", "Home", new {EventId = item.EventId, ClientId = item.VisitorId })'>
+                   href='@Url.Action("AddPayment", "Home", new {EventId = item.EventId, ClientId = item.VisitorId, PDate = item.StartTime })'>
                     +<span class="glyphicon glyphicon-usd"></span>
                 </a>
 

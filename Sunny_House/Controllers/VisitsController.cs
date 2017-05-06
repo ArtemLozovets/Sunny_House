@@ -303,14 +303,16 @@ namespace Sunny_House.Controllers
                                  VisitId = visitor.VisitId,
                                  VisitorId = visitor.VisitorId,
                                  ExerciseId = visitor.ExerciseId,
-                                 EventId = db.Exercises.Where(e => e.ExerciseId == visitor.ExerciseId).Select(x => x.EventId).FirstOrDefault(),
+                                 //EventId = db.Exercises.Where(e => e.ExerciseId == visitor.ExerciseId).Select(x => x.EventId).FirstOrDefault(),
+                                 EventId = visitor.Exercise.EventId,
+                                 StartTime = visitor.Exercise.StartTime,
                                  PersonFIO = visitor.Person.FirstName + " " + visitor.Person.LastName + " " + visitor.Person.MiddleName,
                                  FirstName = visitor.Person.FirstName,
                                  LastName = visitor.Person.LastName,
                                  RoleId = visitor.RoleId,
                                  RoleName = visitor.PersonRole.RoleName,
                                  Note = visitor.Note,
-                                 FactVisit = visitor.FactVisit
+                                 FactVisit = visitor.FactVisit,
                              }).OrderBy(v => v.FirstName).ThenBy(v => v.LastName).AsEnumerable().Select(v => new Visit
                              {
                                  VisitId = v.VisitId,
@@ -321,7 +323,8 @@ namespace Sunny_House.Controllers
                                  RoleId = v.RoleId,
                                  RoleName = v.RoleName,
                                  Note = v.Note,
-                                 FactVisit = v.FactVisit
+                                 FactVisit = v.FactVisit,
+                                 StartTime = v.StartTime
                              });
 
             ViewData["SearchString"] = SearchString;

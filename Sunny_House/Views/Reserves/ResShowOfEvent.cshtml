@@ -65,38 +65,37 @@
                     <dd class="breakWord">
                         @Html.DisplayFor(model => model.Description)
                     </dd>
-                    <dt>
+                    <dt style="margin-top:4px;">
                         @Html.DisplayNameFor(model => model.Note)
                     </dt>
-                    <dd class="breakWord">
-                        @Html.DisplayFor(model => model.Note)
+                    <dd style="margin-top:10px;" class="breakWord">
+                        <div class="input-group" style="width:200px; ">
+                            @Html.TextAreaFor(model => model.Note, new { @class = "form-control", style = "resize:vertical; max-height:200px;", id = "noteTA", rows = 1 })
+                            <span class="input-group-addon btn btn-default glyphicon glyphicon-floppy-save infoesBtn" title="Сохранить" data-exid="@Model.EventId"></span>
+                        </div>
                     </dd>
                 </dl>
 
 
-                <div style="width:200px; margin:0 auto 6px; text-align:center;">
-                    <p class="text-success"><strong>@TempData["MessageOk"]</strong></p>
-                    <a class="btn btn-default"
-                       title="Добавить задачу"
-                       style="width:150px;"
-                       href='@Url.Action("TaskCreate", "Tasks", new
-                        {
-                            Subject = "Бронирование \"" + Model.EventName + "\"",
-                            SubjectLock = "True",
-                            ControllerName = ViewData["ControllerName"],
-                            ActionName = ViewData["ActionName"],
-                            ParameterName = ViewData["ParameterName"],
-                            ParameterValue = ViewData["ParameterValue"]
-                        })'>
-
-                        <span class="glyphicon glyphicon-tasks"> Задача</span>
-                    </a>
-                </div>
-
                 @using (Html.BeginForm("AjaxEventCountChange", "Events", FormMethod.Post, new { @id = "AjaxSendForm" }))
                 {
                     <div class="input-group" style="width:100px; margin:0 auto;">
-                        <span class="input-group-addon">Мест</span>
+                        <div class="input-group-addon addonbtn">
+                            <a title="Добавить задачу"
+                               href='@Url.Action("TaskCreate", "Tasks", new
+                                    {
+                                        Subject = "Бронирование \"" + Model.EventName + "\"",
+                                        SubjectLock = "True",
+                                        ControllerName = ViewData["ControllerName"],
+                                        ActionName = ViewData["ActionName"],
+                                        ParameterName = ViewData["ParameterName"],
+                                        ParameterValue = ViewData["ParameterValue"]
+                                    })'>
+
+                                <span class="glyphicon glyphicon-tasks"></span>
+                            </a>
+                        </div>
+
                         @Html.EditorFor(model => model.PlacesCount, null,
                     new
                     {
@@ -117,17 +116,21 @@
                     </div>
                     <div style="margin:10px auto; width:90%; text-align:center;">
                         <label for="PlacesCount" class="error text-danger" id="PlacesCountValidator" style="max-width:400px;"></label>
-                        <span id="ajaxresult"></span>
+                        <span id="ajaxresult"><strong class="text-success">@TempData["MessageOk"]</strong></span>
                     </div>
                 }
-                <div style="margin:10px 0 0 4px;">
-                    <a class="btn btn-default" href='@Url.Action("EShow", "Events")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+
+                <div style="margin:10px 0 0 4px; text-align:center;">
+                    <a class="btn btn-default" href='@Url.Action("EShow", "Events")' , title="Список мероприятий"><span class="fa fa-institution"> Все мероприятия</span></a>
+                    <a class="btn btn-default" href='@Url.Action("EventEdit", "Events", new { EventId = Model.EventId })' title="Редактировать"><span class="glyphicon glyphicon-edit"> Редактировать</span></a>
+                    <a class="btn btn-default" href='@Url.Action("EventDelete", "Events", new { EventId = Model.EventId})' title="Удалить"><span class="glyphicon glyphicon-trash"> Удалить</span></a>
                 </div>
+
             </div>
         </div>
     </div>
     <div class="col-lg-7 col-md-6">
-        <div class="panel panel-default" style="min-width:500px; min-height:436px;">
+        <div class="panel panel-default" style="min-width:544px; min-height:436px;">
             <div class="panel-heading"><strong>Бронирование</strong></div>
             <div class="panel-body" id="tabpanel">
                 <ul class="nav nav-tabs">
@@ -400,7 +403,7 @@
         //Настройка фиксации блока подробной информации при изменении размера окна
         $(document).ready( function() {
             /* Check width on page load*/
-            if ( $(window).width() < 1000) {
+            if ( $(window).width() < 1100) {
                 $('#fixedpanel').removeClass('fixed');
             }
             else {}
@@ -408,7 +411,7 @@
 
         $(window).resize(function() {
             /*If browser resized, check width again */
-            if ($(window).width() >= 1000) {
+            if ($(window).width() >= 1100) {
                 $('#fixedpanel').addClass('fixed');
             }
             else {$('#fixedpanel').removeClass('fixed');}
