@@ -38,11 +38,14 @@ namespace Sunny_House.Controllers
             return _persons.ToList();
         }
 
-        private List<Person> PersonById(int PersonId)
+        private List<Person> PersonById(int PersonId, int EventId)
         {
             if (PersonId == 0)
             {
-                var _persons = db.Persons;
+                //var _persons = db.Persons;
+                var _persons = (from person in db.Persons
+                                where (person.Reserve.Any(x => x.EventId == EventId) || EventId == 0)
+                                select person);
                 return _persons.ToList();
             }
             else
@@ -50,7 +53,8 @@ namespace Sunny_House.Controllers
 
                 var _persons = (from person in db.Persons
                                 from perrel in db.PersonRelations.Where(pid => person.PersonId == pid.PersonId || person.PersonId == pid.RelPersonId)
-                                where perrel.PersonId == PersonId || perrel.RelPersonId == PersonId
+                                where (perrel.PersonId == PersonId || perrel.RelPersonId == PersonId) &&
+                                (person.Reserve.Any(x => x.EventId == EventId) || EventId == 0)
                                 select person).OrderBy(p => p.PersonId).Distinct();
                 return _persons.ToList();
             }
@@ -122,6 +126,7 @@ namespace Sunny_House.Controllers
             else
             {
                 int PersonId = 0;
+                int EventId = 0;
                 //Если выбираем плательщика - получить ИД клиента
                 if (field == "PayerId")
                 {
@@ -130,12 +135,17 @@ namespace Sunny_House.Controllers
                         PersonId = Convert.ToInt16(Server.HtmlEncode(HttpContext.Request.Cookies["ClientId"].Value));
                     }
                 }
-                //Если выбираем клиента - получить ИД плательщика
+                //Если выбираем клиента - получить ИД плательщика и ИД мероприятия
                 if (field == "ClientId")
                 {
                     if (HttpContext.Request.Cookies["PayerId"] != null)
                     {
                         PersonId = Convert.ToInt16(Server.HtmlEncode(HttpContext.Request.Cookies["PayerId"].Value));
+                    }
+
+                    if (HttpContext.Request.Cookies["PayEventId"] != null)
+                    {
+                        EventId = Convert.ToInt16(Server.HtmlEncode(HttpContext.Request.Cookies["PayEventId"].Value));
                     }
                 }
 
@@ -154,7 +164,14 @@ namespace Sunny_House.Controllers
                     Response.Cookies.Add(c);
                 }
 
-                var _persons = PersonById(PersonId);
+                if (HttpContext.Request.Cookies["PayEventId"] != null)
+                {
+                    var c = new HttpCookie("PayEventId");
+                    c.Expires = DateTime.Now.AddDays(-1);
+                    Response.Cookies.Add(c);
+                }
+
+                var _persons = PersonById(PersonId, EventId);
                 return PartialView(_persons.ToPagedList(pageNumber, pageSize));
             }
 
