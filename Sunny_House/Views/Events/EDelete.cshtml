@@ -10,6 +10,7 @@
 <div>
     <h4>Удаление мероприятия</h4>
     <hr />
+    @Html.Hidden("ReturnParam", ViewData["ReturnParam"]);
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Person.FirstName)
@@ -72,7 +73,7 @@
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <a class="btn btn-default" href='@Url.Action("EShow", "Events")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+            <a class="btn btn-default" href='@ViewData["ReturnParam"]'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
             <button type="submit" title="Удалить мероприятие" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i> Удалить</button>
         </div>
     }

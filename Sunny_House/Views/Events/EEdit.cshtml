@@ -23,6 +23,7 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.EventId);
+        @Html.Hidden("ReturnParam", ViewData["ReturnParam"]);
 
         <div class="form-group">
             @Html.LabelFor(model => model.EventName, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -85,8 +86,10 @@
     </div>
 }
 <div>
-    <a class="btn btn-default" href='@Url.Action("EShow", "Events")'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+    <a class="btn btn-default" href='@ViewData["ReturnParam"]'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
 </div>
+
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script type="text/javascript">

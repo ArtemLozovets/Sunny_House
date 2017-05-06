@@ -11,6 +11,7 @@
 </style>
 @{
     ViewBag.Title = "Мероприятия - Управление мероприятием";
+    string ReturnParam = "/Reserves/ResShowOfEvent?EventId=" + Model.EventId;
 }
 
 
@@ -70,8 +71,8 @@
                     </dt>
                     <dd style="margin-top:10px;" class="breakWord">
                         <div class="input-group" style="width:200px; ">
-                            @Html.TextAreaFor(model => model.Note, new { @class = "form-control", style = "resize:vertical; max-height:200px;", id = "noteTA", rows = 1 })
-                            <span class="input-group-addon btn btn-default glyphicon glyphicon-floppy-save infoesBtn" title="Сохранить" data-exid="@Model.EventId"></span>
+                            @Html.TextArea("Note", Model.Note, new { @class = "form-control", style = "resize:vertical; max-height:200px;", id = "EVNote", rows = 1 })
+                            <span class="input-group-addon btn btn-default glyphicon glyphicon-floppy-save" id="SaveNotes" title="Сохранить" data-evid="@Model.EventId"></span>
                         </div>
                     </dd>
                 </dl>
@@ -116,14 +117,21 @@
                     </div>
                     <div style="margin:10px auto; width:90%; text-align:center;">
                         <label for="PlacesCount" class="error text-danger" id="PlacesCountValidator" style="max-width:400px;"></label>
-                        <span id="ajaxresult"><strong class="text-success">@TempData["MessageOk"]</strong></span>
+                        <span id="ajaxresult">
+                            <strong class="text-success">
+                                @TempData["MessageOk"]
+                            </strong>
+                            <strong class="text-danger">
+                                @TempData["MessageError"]
+                            </strong>
+                        </span>
                     </div>
                 }
 
                 <div style="margin:10px 0 0 4px; text-align:center;">
                     <a class="btn btn-default" href='@Url.Action("EShow", "Events")' , title="Список мероприятий"><span class="fa fa-institution"> Все мероприятия</span></a>
-                    <a class="btn btn-default" href='@Url.Action("EventEdit", "Events", new { EventId = Model.EventId })' title="Редактировать"><span class="glyphicon glyphicon-edit"> Редактировать</span></a>
-                    <a class="btn btn-default" href='@Url.Action("EventDelete", "Events", new { EventId = Model.EventId})' title="Удалить"><span class="glyphicon glyphicon-trash"> Удалить</span></a>
+                    <a class="btn btn-default" href='@Url.Action("EEdit", "Events", new { EventId = Model.EventId, ReturnParam })' tit title="Редактировать"><span class="glyphicon glyphicon-edit"> Редактировать</span></a>
+                    <a class="btn btn-default" href='@Url.Action("EDelete", "Events", new { EventId = Model.EventId, ReturnParam })' title="Удалить"><span class="glyphicon glyphicon-trash"> Удалить</span></a>
                 </div>
 
             </div>
@@ -679,5 +687,45 @@
                 }
             });
         })
+    </script>
+
+    <script type="text/javascript">
+
+        //Сохраняем значение поля "Примечание" при потере фокуса поля ввода
+        $('body').on('focusout', '#EVNote', function (e) {
+            $(this).next().trigger('click');
+        });
+
+        //Скрипт обновления поля "Примечание"
+        $('body').on('click', '#SaveNotes', function(){
+            var _note = $('#EVNote').val();
+            var _evid = $(this).data('evid');
+
+            $('#loadingImg').show();
+            $.ajax({
+                type: 'POST',
+                url: '/Events/AjaxUpdateInfoes/',
+                data: {
+                    Note: _note,
+                    EventId: _evid                    },
+                success: function (data) {
+                    $('#loadingImg').hide();
+                    if (data.Result) {
+                        //Обновляем грид
+                        $('#EVNote').css('background-color', '#DDFFDD');
+                    }
+                    else {
+                        //Операция не удалась
+                        $('#EVNote').css('background-color', '#FFDDDD');
+                    }
+
+                },
+                fail: function (data) {
+                    //Операция не удалась
+                    $('#loadingImg').hide();
+                    $('#EVNote').css('background-color', '#FFDDDD');
+                }
+            });
+        });
     </script>
 }

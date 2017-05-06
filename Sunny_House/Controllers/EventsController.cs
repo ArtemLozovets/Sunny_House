@@ -243,7 +243,7 @@ namespace Sunny_House.Controllers
 
         // GET: Events/Edit/5
         [Authorize(Roles = "Administrator, User")]
-        public async Task<ActionResult> EEdit(int? EventId)
+        public async Task<ActionResult> EEdit(int? EventId, string ReturnParam)
         {
             if (EventId == null)
             {
@@ -254,6 +254,8 @@ namespace Sunny_House.Controllers
             {
                 return HttpNotFound();
             }
+
+            ViewData["ReturnParam"] = string.IsNullOrEmpty(ReturnParam) ? "/Events/EShow" : ReturnParam;
 
             //Получаем ID роли "Клиент"
             int _clientroleid = db.PersonRoles.First(r => r.RoleName.ToUpper() == (string)"Клиент".ToUpper()).RoleId;
@@ -269,12 +271,16 @@ namespace Sunny_House.Controllers
         [HttpPost]
         [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EEdit([Bind(Include = "EventId,EventName,StartTime,EndTime,Description,AdministratorId,Note,PlacesCount")] Event @event)
+        public async Task<ActionResult> EEdit([Bind(Include = "EventId,EventName,StartTime,EndTime,Description,AdministratorId,Note,PlacesCount")] Event @event, string ReturnParam)
         {
             if (ModelState.IsValid)
             {
                 //Получаем ID роли "Клиент"
                 int _clientroleid = db.PersonRoles.First(r => r.RoleName.ToUpper() == (string)"Клиент".ToUpper()).RoleId;
+
+                ViewData["ReturnParam"] = string.IsNullOrEmpty(ReturnParam) ? "/Events/EShow" : ReturnParam;
+                ReturnParam = string.IsNullOrEmpty(ReturnParam) ? "/Events/EShow" : ReturnParam;
+
 
                 try
                 {
@@ -316,7 +322,7 @@ namespace Sunny_House.Controllers
                     string _message = "Информация о мероприятии успешно обновлена";
                     TempData["MessageOk"] = _message;
 
-                    return RedirectToAction("EShow");
+                    return Redirect(ReturnParam);
                 }
                 catch (Exception ex)
                 {
@@ -350,7 +356,7 @@ namespace Sunny_House.Controllers
 
         // GET: Events/Delete/5
         [Authorize(Roles = "Administrator, User")]
-        public async Task<ActionResult> EDelete(int? EventId)
+        public async Task<ActionResult> EDelete(int? EventId, string ReturnParam)
         {
             if (EventId == null)
             {
@@ -361,6 +367,9 @@ namespace Sunny_House.Controllers
             {
                 return HttpNotFound();
             }
+
+            ViewData["ReturnParam"] = string.IsNullOrEmpty(ReturnParam) ? "/Events/EShow" : ReturnParam;
+
             return View(@event);
         }
 
@@ -368,20 +377,22 @@ namespace Sunny_House.Controllers
         [HttpPost, ActionName("EDelete")]
         [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
-        public ActionResult EDeleteConfirmed(int EventId)
+        public ActionResult EDeleteConfirmed(int EventId, string ReturnParam)
         {
             try
             {
                 string _message = string.Empty;
+                ViewData["ReturnParam"] = string.IsNullOrEmpty(ReturnParam) ? "/Events/EShow" : ReturnParam;
+                ReturnParam = string.IsNullOrEmpty(ReturnParam) ? "/Events/EShow" : ReturnParam;
 
-                if (db.Events.FirstOrDefault(e=>e.EventId == EventId) != null)
+                if (db.Events.FirstOrDefault(e => e.EventId == EventId) != null)
                 {
                     if (db.Events.First(i => i.EventId == EventId).Exercise.Any())
                     {
                         _message = string.Format("Информация о мероприятии не может быть удалена. В таблице занятий есть связанные данные.");
                         TempData["MessageError"] = _message;
 
-                        return RedirectToAction("EShow");
+                        return Redirect(ReturnParam);
                     }
 
                     if (db.Events.First(i => i.EventId == EventId).Reserve.Any())
@@ -389,7 +400,7 @@ namespace Sunny_House.Controllers
                         _message = string.Format("Информация о мероприятии не может быть удалена. В таблице бронирований есть связанные данные.");
                         TempData["MessageError"] = _message;
 
-                        return RedirectToAction("EShow");
+                        return Redirect(ReturnParam);
                     }
 
                     if (db.Events.First(i => i.EventId == EventId).Comment.Any())
@@ -397,7 +408,7 @@ namespace Sunny_House.Controllers
                         _message = string.Format("Информация о мероприятии не может быть удалена. В таблице отзывов есть связанные данные.");
                         TempData["MessageError"] = _message;
 
-                        return RedirectToAction("EShow");
+                        return Redirect(ReturnParam);
                     }
 
                     if (db.Events.First(i => i.EventId == EventId).Payment.Any())
@@ -405,7 +416,7 @@ namespace Sunny_House.Controllers
                         _message = string.Format("Информация о мероприятии не может быть удалена. В таблице платежей есть связанные данные.");
                         TempData["MessageError"] = _message;
 
-                        return RedirectToAction("EShow");
+                        return Redirect(ReturnParam);
                     }
 
                     Event @event = db.Events.FirstOrDefault(x => x.EventId == EventId);
@@ -521,6 +532,37 @@ namespace Sunny_House.Controllers
                 return Json(new { Result = false, Message = "Ошибка валидации модели" }, JsonRequestBehavior.AllowGet);
             }
         }
+
+
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
+        public JsonResult AjaxUpdateInfoes(int? EventId, string Note)
+        {
+            if (EventId == null)
+            {
+                return Json(new { Result = false }, JsonRequestBehavior.AllowGet);
+            }
+            try
+            {
+                Event _event = db.Events.FirstOrDefault(x => x.EventId == EventId);
+                if (_event == null)
+                {
+                    return Json(new { Result = false }, JsonRequestBehavior.AllowGet);
+                }
+
+                _event.Note = Note;
+
+                db.Entry(_event).State = EntityState.Modified;
+                db.SaveChanges();
+                return Json(new { Result = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { Result = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
 
         protected override void Dispose(bool disposing)
         {
