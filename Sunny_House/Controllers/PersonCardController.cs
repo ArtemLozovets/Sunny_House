@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Sunny_House.Methods;
 
 namespace Sunny_House.Controllers
 {
@@ -14,6 +15,11 @@ namespace Sunny_House.Controllers
     {
         private SunnyModel db = new SunnyModel();
 
+        public enum SexTypes
+        {
+            Мужской,
+            Женский
+        }
         // GET: PersonCard
         public ActionResult ShowPersonCard(int? PersonId)
         {
@@ -22,7 +28,7 @@ namespace Sunny_House.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Person _pers = db.Persons.Find(PersonId);
+            Person _pers = db.Persons.FirstOrDefault(x => x.PersonId == PersonId);
 
             List<RelationViewModel> _rellist = new List<RelationViewModel>();
 
@@ -34,18 +40,18 @@ namespace Sunny_House.Controllers
                                PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
                                RelationName = "Персона"
                            }).ToList();
-            
+
             _rellist.AddRange(_result);
 
             _result = (from relation in db.PersonRelations
-                           join person in db.Persons on relation.PersonId equals person.PersonId
-                           where relation.RelPersonId == PersonId 
-                           select new RelationViewModel
-                           {
-                               PersonId = person.PersonId,
-                               PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
-                               RelationName = relation.Relation12
-                           }).ToList();
+                       join person in db.Persons on relation.PersonId equals person.PersonId
+                       where relation.RelPersonId == PersonId
+                       select new RelationViewModel
+                       {
+                           PersonId = person.PersonId,
+                           PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
+                           RelationName = relation.Relation12
+                       }).ToList();
 
             _rellist.AddRange(_result);
 
@@ -92,13 +98,34 @@ namespace Sunny_House.Controllers
                               FactVisit = x.FactVisit
                           }).OrderByDescending(x => x.StartTime).ToList();
 
+
+            List<Comment> _commentlist = (from relation in db.PersonRelations.Where(x => x.RelPersonId == PersonId || x.PersonId == PersonId)
+                                          from comment in db.Comments.Where(x => x.SignPersonId == relation.RelPersonId || x.SignPersonId == relation.PersonId)
+                                          select new
+                                          {
+                                              Date = comment.Date,
+                                              SignPersonFIO = comment.Person1.FirstName+" "+comment.Person1.LastName,
+                                              Text = comment.Text
+                                          }).Take(10).AsEnumerable().Select(x => new Comment
+                                          {
+                                              Date = x.Date,
+                                              SignPersonFIO = x.SignPersonFIO,
+                                              Text = x.Text
+                                          }).OrderByDescending(x=>x.Date).ToList();
+
             MoreInfoesViewModel _moremodel = new MoreInfoesViewModel();
 
             _moremodel.PersonId = _pers.PersonId;
             _moremodel.PersonFIO = _pers.FirstName + " " + _pers.LastName + " " + _pers.MiddleName;
             _moremodel.PersonNote = _pers.Note;
+            _moremodel.Sex = _pers.Sex;
+            _moremodel.PersonAge = AgeMethods.GetAge(_pers.DateOfBirth);
+            _moremodel.PersonMonth = AgeMethods.GetTotalMonth(_pers.DateOfBirth);
+            _moremodel.DateOfBirth = _pers.DateOfBirth;
+
             _moremodel.RelPerson = _rellist;
             _moremodel.VisitsList = _visitList;
+            _moremodel.CommentList = _commentlist;
 
             return PartialView(_moremodel);
         }

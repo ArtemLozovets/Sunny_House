@@ -1,4 +1,18 @@
 ﻿@model Sunny_House.Models.MoreInfoesViewModel
+
+<style type="text/css">
+    span.inf {
+        display: inline-block;
+        margin-right: 10px;
+        padding: 5px;
+    }
+
+    span.badge {
+        padding: 4px 8px;
+        background-color: #5cb85c;
+    }
+</style>
+
 <div class="modal-content ui-front">
     <div class="modal-header">
         <button class="close" data-dismiss="modal" area-hidden="true">X</button>
@@ -10,11 +24,35 @@
         <div class="panel panel-default" style="margin-top:10px;">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                    <a data-toggle="collapse" href="#colnote">Примечание</a>
+                    <a data-toggle="collapse" href="#colnote">Информация о персоне</a>
+                    <span style="display:inline-block; float:right;">
+                        <a class="btn btn-default btn-sm hidebtn"
+                           title="Редактировать"
+                           style="margin-top:-6px;"
+                           target="_blank"
+                           href='@Url.Action("ShowPersons", "Home", new { PersonId = Model.PersonId })'>
+                            <i class="glyphicon glyphicon-edit"></i>
+                        </a>
+                    </span>
                 </h4>
             </div>
             <div id="colnote" class="panel-collapse collapse in">
                 <div class="panel-body">
+                    @if (Model.DateOfBirth != null)
+                    {
+                        <span class="inf">Дата рождения: <span class="badge">@Convert.ToDateTime(Model.DateOfBirth).ToString("dd'/'MM'/'yyyy")г.</span></span>
+                        if (Model.PersonAge != 0)
+                        {
+                            <span class="inf">Возраст: <span class="badge">@Model.PersonAge</span></span>
+                        }
+                        else
+                        {
+                            <span class="inf">Возраст: <span class="badge">@Model.PersonMonth мес.</span></span>
+                        }
+
+                    }
+                    <span class="inf">Пол: <span class="badge">@Model.Sex</span></span><br />
+                    <span class="inf">Примечание:</span>
                     <div class="input-group" style="width:100%;">
                         @Html.TextAreaFor(model => model.PersonNote, new
                    {
@@ -77,13 +115,45 @@
             <div class="panel-heading">
                 <h4 class="panel-title">
                     <a data-toggle="collapse" href="#colcomments">Отзывы</a>
+                    <span style="display:inline-block; float:right;">
+                        <a class="btn btn-default btn-sm hidebtn"
+                           title="Добавить отзыв"
+                           style="margin-top:-6px;"
+                           target="_blank"
+                           href='@Url.Action("CommentCreate", "Comments", new { SignPersonId = Model.PersonId })'>
+                            <i class="glyphicon glyphicon-comment"></i>
+                        </a>
+                    </span>
                 </h4>
             </div>
             <div id="colcomments" class="panel-collapse collapse">
                 <div class="panel-body">
-                    <div id="updateCom" style="min-width:680px;">
-                        <h2 class="text-danger text-center">В РАЗРАБОТКЕ</h2>
-                    </div>
+                    <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+                        <tr>
+                            <th></th>
+                            <th>Отзыв</th>
+                        </tr>
+                        @if (Model.CommentList.Count() == 0)
+                        {
+                            <tr>
+                                <td colspan="2">
+                                    <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var item in Model.CommentList)
+                        {
+                            <tr>
+                                <td style="text-align:center; vertical-align:top !important">
+                                    <span style="padding:10px 0; font-weight:bold">@item.SignPersonFIO</span>
+                                    <span>@item.Date</span>
+                                </td>
+                                <td>
+                                    @item.Text
+                                </td>
+                            </tr>
+                        }
+                    </table>
                 </div>
             </div>
         </div>
