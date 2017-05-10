@@ -51,12 +51,13 @@
                                 new { @id = "MiddleName" }) <i id="MiddleNameArrow"></i>
                 </th>
                 <th>
-                    @Html.ActionLink("Возраст", "ShowPersons", new { SortBy = ViewBag.SortAge, SearchString = Request["SearchString"], PersonId = Request.QueryString["PersonId"] },
+                    @Html.ActionLink("Воз.", "ShowPersons", new { SortBy = ViewBag.SortAge, SearchString = Request["SearchString"], PersonId = Request.QueryString["PersonId"] },
                               new { @id = "Age" }) <i id="AgeArrow"></i>
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.First().Address_Num)
                 </th>
+                <th>Примечание</th>
                 <th></th>
             </tr>
             @if (Model.Count() == 0)
@@ -121,6 +122,9 @@
                                 @addr <br />
                             </p>
                         }
+                    </td>
+                    <td style="min-width:200px;">
+                        @Html.DisplayFor(modelItem => item.Note)
                     </td>
                     <td style="text-align:center; width:292px; min-width:292px;">
                         <a class="btn btn-default btn-sm" title="Платежи персоны" href='@Url.Action("ShowPayments", "Home", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-usd"></span></a>

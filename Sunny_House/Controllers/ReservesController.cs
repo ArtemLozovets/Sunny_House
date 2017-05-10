@@ -446,6 +446,9 @@ namespace Sunny_House.Controllers
                                         (person.LastName.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch)) ||
                                         (person.Note.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch)) ||
                                         (comm.Address_Number.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch)))
+                                        && (!person.Reserve.Any(x=>x.PersonId == person.PersonId && x.EventId == EventId)) 
+                                        && (!person.PotentialClient.Any(x=>x.PersonId == person.PersonId && x.EventId == EventId))
+
                             select new
                             {
                                 PersonId = person.PersonId,

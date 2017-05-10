@@ -478,8 +478,11 @@ namespace Sunny_House.Controllers
                             join _event in db.Events on reserve.EventId equals _event.EventId
                             join _ex in db.Exercises on _event.EventId equals _ex.EventId
                             where (_ex.ExerciseId == ExerciseId || ExerciseId == null) &&
-                            ((person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) ||
-                             (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)))
+                            (person.FirstName.Contains(SearchString) 
+                                || person.LastName.Contains(SearchString) 
+                                || person.Note.Contains(SearchString)
+                                || person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(SearchString))
+                                || string.IsNullOrEmpty(SearchString))
                             select new
                             {
                                 PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
