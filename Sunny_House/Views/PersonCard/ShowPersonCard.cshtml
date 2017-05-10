@@ -27,6 +27,13 @@
                     <a data-toggle="collapse" href="#colnote">Информация о персоне</a>
                     <span style="display:inline-block; float:right;">
                         <a class="btn btn-default btn-sm hidebtn"
+                           title="Добавить отзыв"
+                           style="margin-top:-6px;"
+                           target="_blank"
+                           href='@Url.Action("CommentCreate", "Comments", new { SignPersonId = Model.PersonId })'>
+                            <i class="glyphicon glyphicon-comment"></i>
+                        </a>
+                        <a class="btn btn-default btn-sm hidebtn"
                            title="Редактировать"
                            style="margin-top:-6px;"
                            target="_blank"
@@ -98,7 +105,8 @@
                                             </a>
                                         </h4>
                                     </div>
-                                    <div id="@item.PersonId" data-personid="@item.PersonId" class="panel-collapse collapse comm">
+
+                                    <div id="@item.PersonId" data-havecomm="@item.HaveComm" data-personid="@item.PersonId" class="panel-collapse collapse comm">
                                         <div class="panel-body" style="padding:1px 15px;">
                                         </div>
                                     </div>
@@ -117,11 +125,11 @@
                     <a data-toggle="collapse" href="#colcomments">Отзывы</a>
                     <span style="display:inline-block; float:right;">
                         <a class="btn btn-default btn-sm hidebtn"
-                           title="Добавить отзыв"
+                           title="Все отзывы..."
                            style="margin-top:-6px;"
                            target="_blank"
-                           href='@Url.Action("CommentCreate", "Comments", new { SignPersonId = Model.PersonId })'>
-                            <i class="glyphicon glyphicon-comment"></i>
+                           href='@Url.Action("CommentShow", "Comments", new { SignPersonId = Model.PersonId, Mode = "RelComment" })'>
+                            <i class="glyphicon glyphicon-new-window"></i>
                         </a>
                     </span>
                 </h4>
@@ -144,8 +152,8 @@
                         @foreach (var item in Model.CommentList)
                         {
                             <tr>
-                                <td style="text-align:center; vertical-align:top !important">
-                                    <span style="padding:10px 0; font-weight:bold">@item.SignPersonFIO</span>
+                                <td style="text-align:center; vertical-align:top !important; max-width:70px;">
+                                    <span style="padding:10px 0; font-weight:bold">@item.SignPersonFIO</span><br/>
                                     <span>@item.Date</span>
                                 </td>
                                 <td>
@@ -162,6 +170,15 @@
             <div class="panel-heading">
                 <h4 class="panel-title">
                     <a data-toggle="collapse" href="#colvisit">Посещения</a>
+                    <span style="display:inline-block; float:right;">
+                        <a class="btn btn-default btn-sm hidebtn"
+                           title="Все посещения..."
+                           style="margin-top:-6px;"
+                           target="_blank"
+                           href='@Url.Action("VisShow", "Visits", new { VisitorId = Model.PersonId })'>
+                            <i class="glyphicon glyphicon-new-window"></i>
+                        </a>
+                    </span>
                 </h4>
             </div>
             <div id="colvisit" class="panel-collapse collapse in">

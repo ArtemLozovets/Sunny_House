@@ -11,7 +11,11 @@ $('body').on('click', '.showRelPersons', function (event) {
          function (data) {
              $('#dialogContent').html(data);
              $('#modDialog').modal('show');
-             $('.comm').first().collapse('show');
+             $('.comm').each(function () {
+                 if($(this).data('havecomm') == "True"){
+                     $(this).collapse('show');
+                }
+             });
              $('#loadingImg').hide();
          });
 });

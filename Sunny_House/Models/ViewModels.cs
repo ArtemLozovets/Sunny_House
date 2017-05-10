@@ -109,6 +109,7 @@ namespace Sunny_House.Models
         public string PersonFIO { get; set; }
         public int RelationId { get; set; }
         public int PersonId { get; set; }
+        public bool HaveComm { get; set; }
     }
 
     [NotMapped]

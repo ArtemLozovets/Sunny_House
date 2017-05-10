@@ -53,7 +53,7 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.PersonFIO)
+                <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Карточка персоны">@Html.DisplayFor(modelItem => item.PersonFIO)</a>
             </td>
 
             @if (item.PersonAge != null && item.PersonAge > 0)

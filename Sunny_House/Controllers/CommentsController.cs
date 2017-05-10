@@ -581,123 +581,167 @@ namespace Sunny_House.Controllers
                                 string SearchStartDate, string SearchEndDate,
                                 int? SourceId, string SearchText,
                                 int? SignPersonId, int? AboutPersonId, int? EventId, int? ExerciseId, int? AddressId,
-                                bool? chbAboutPerson, bool? chbEvent, bool? chbEx, bool? chbAddress)
+                                bool? chbAboutPerson, bool? chbEvent, bool? chbEx, bool? chbAddress, string Mode)
         {
-            ViewBag.SortSource = SortBy == "Source" ? "Source desc" : "Source";
-            ViewBag.SortDate = SortBy == "Date" ? "Date desc" : "Date";
-            ViewBag.SortRating = SortBy == "Rating" ? "Rating desc" : "Rating";
-            ViewBag.SortSignPerson = SortBy == "SignPerson" ? "SignPerson desc" : "SignPerson";
-
-            // Блок кода для преобразования минимального и максимального значения рейтинга для фильтра 
-            int _minRating, _maxRating;
-            if (string.IsNullOrEmpty(minRating)) { minRating = "1"; }
-            if (string.IsNullOrEmpty(maxRating)) { maxRating = "32767"; }
-            Int32.TryParse(minRating, out _minRating);
-            Int32.TryParse(maxRating, out _maxRating);
-
-            // Блок кода для преобразования значений дат периода фильтрации
-            DateTime? _startDate = (String.IsNullOrEmpty(SearchStartDate)) ? Convert.ToDateTime("1900-01-01") : Convert.ToDateTime(SearchStartDate);
-            DateTime? _endDate = (String.IsNullOrEmpty(SearchEndDate)) ? Convert.ToDateTime("2900-01-01") : Convert.ToDateTime(SearchEndDate);
-
-
-
-            var comments = (from comment in db.Comments
-                            where (comment.CommentId == CommentId || CommentId == null) &&
-                            (comment.Rating >= _minRating && comment.Rating <= _maxRating) &&
-                            (comment.Date >= _startDate && comment.Date <= _endDate) &&
-                            (comment.SourceId == SourceId || SourceId == null) &&
-                            (comment.Text.Contains(SearchText) || string.IsNullOrEmpty(SearchText)) &&
-                            (comment.SignPersonId == SignPersonId || SignPersonId == null) &&
-                            (comment.AboutPersonId == AboutPersonId || AboutPersonId == null) &&
-                            (comment.EventId == EventId || EventId == null) &&
-                            (comment.ExerciseId == ExerciseId || ExerciseId == null) &&
-                            (comment.AddressId == AddressId || AddressId == null) &&
-                            (comment.AboutPersonId.HasValue || chbAboutPerson == false || chbAboutPerson == null) &&
-                            (comment.EventId.HasValue || chbEvent == false || chbEvent == null) &&
-                            (comment.ExerciseId.HasValue || chbEx == false || chbEx == null) &&
-                            (comment.AddressId.HasValue || chbAddress == false || chbAddress == null)
-                            select new
-                            {
-                                CommentId = comment.CommentId,
-                                Date = comment.Date,
-                                Text = comment.Text,
-                                Rating = comment.Rating,
-                                CommentSource = comment.CommentSource,
-                                Event = comment.Event,
-                                Exercise = comment.Exercise,
-                                Address = comment.Address,
-                                Person1 = comment.Person ?? null,
-                                Person = comment.Person1 ?? null,
-                                RelGuid = comment.RelGuid
-                            }).AsEnumerable().Select(x => new Comment
-                            {
-                                CommentId = x.CommentId,
-                                Date = x.Date,
-                                Text = x.Text,
-                                Rating = x.Rating,
-                                CommentSource = x.CommentSource,
-                                Event = x.Event,
-                                Exercise = x.Exercise,
-                                Address = x.Address,
-                                SignPersonFIO = x.Person == null ? "" : (x.Person.FirstName + " " + x.Person.LastName).TrimStart(),
-                                AboutPersonFIO = x.Person1 == null ? "" : (x.Person1.FirstName + " " + x.Person1.LastName).TrimStart(),
-                                SignPersonId = x.Person == null ? 0 : x.Person.PersonId,
-                                AboutPersonId = x.Person1 == null ? 0 : x.Person1.PersonId,
-                                AttCount = db.Attachments.Where(z => z.RelGuid == x.RelGuid).Count()
-                            }).OrderByDescending(x => x.Date);
-
-            switch (SortBy)
-            {
-                case "Source desc":
-                    comments = comments.OrderByDescending(x => x.CommentSource.SourceName);
-                    ViewData["SortColumn"] = "Source";
-                    break;
-                case "Source":
-                    comments = comments.OrderBy(x => x.CommentSource.SourceName);
-                    ViewData["SortColumn"] = "Source";
-                    break;
-
-                case "Date desc":
-                    comments = comments.OrderByDescending(x => x.Date);
-                    ViewData["SortColumn"] = "Date";
-                    break;
-                case "Date":
-                    comments = comments.OrderBy(x => x.Date);
-                    ViewData["SortColumn"] = "Date";
-                    break;
-
-                case "Rating desc":
-                    comments = comments.OrderByDescending(x => x.Rating);
-                    ViewData["SortColumn"] = "Rating";
-                    break;
-                case "Rating":
-                    comments = comments.OrderBy(x => x.Rating);
-                    ViewData["SortColumn"] = "Rating";
-                    break;
-
-                case "SignPerson desc":
-                    comments = comments.OrderByDescending(x => x.SignPersonFIO);
-                    ViewData["SortColumn"] = "SignPerson";
-                    break;
-                case "SignPerson":
-                    comments = comments.OrderBy(x => x.SignPersonFIO);
-                    ViewData["SortColumn"] = "SignPerson";
-                    break;
-
-                default:
-                    comments = comments.OrderByDescending(x => x.Date);
-                    break;
-            }
-
-            ViewData["chbAboutPerson"] = chbAboutPerson;
-            ViewData["chbEvent"] = chbEvent;
-            ViewData["chbEx"] = chbEx;
-            ViewData["chbAddress"] = chbAddress;
-
             int pageSize = 50;
             int pageNumber = (page ?? 1);
 
-            return PartialView(comments.ToList().ToPagedList(pageNumber, pageSize));
+            if (!String.IsNullOrEmpty(Mode) && Mode == "RelComment")
+            {
+                var _comments = (from relation in db.PersonRelations.Where(x => x.RelPersonId == SignPersonId || x.PersonId == SignPersonId)
+                                 from comment in db.Comments.Where(x => x.SignPersonId == relation.RelPersonId || x.SignPersonId == relation.PersonId)
+                                 select new
+                                 {
+                                     CommentId = comment.CommentId,
+                                     Date = comment.Date,
+                                     Text = comment.Text,
+                                     Rating = comment.Rating,
+                                     CommentSource = comment.CommentSource,
+                                     Event = comment.Event,
+                                     Exercise = comment.Exercise,
+                                     Address = comment.Address,
+                                     Person1 = comment.Person ?? null,
+                                     Person = comment.Person1 ?? null,
+                                     RelGuid = comment.RelGuid
+                                 }).Distinct().AsEnumerable().Select(x => new Comment
+                                 {
+                                     CommentId = x.CommentId,
+                                     Date = x.Date,
+                                     Text = x.Text,
+                                     Rating = x.Rating,
+                                     CommentSource = x.CommentSource,
+                                     Event = x.Event,
+                                     Exercise = x.Exercise,
+                                     Address = x.Address,
+                                     SignPersonFIO = x.Person == null ? "" : (x.Person.FirstName + " " + x.Person.LastName).TrimStart(),
+                                     AboutPersonFIO = x.Person1 == null ? "" : (x.Person1.FirstName + " " + x.Person1.LastName).TrimStart(),
+                                     SignPersonId = x.Person == null ? 0 : x.Person.PersonId,
+                                     AboutPersonId = x.Person1 == null ? 0 : x.Person1.PersonId,
+                                     AttCount = db.Attachments.Where(z => z.RelGuid == x.RelGuid).Count()
+                                 }).OrderByDescending(x => x.Date);
+
+                pageSize = Int32.MaxValue;
+
+                return PartialView(_comments.ToList().ToPagedList(pageNumber, pageSize));
+
+            }
+
+            else
+            {
+
+                ViewBag.SortSource = SortBy == "Source" ? "Source desc" : "Source";
+                ViewBag.SortDate = SortBy == "Date" ? "Date desc" : "Date";
+                ViewBag.SortRating = SortBy == "Rating" ? "Rating desc" : "Rating";
+                ViewBag.SortSignPerson = SortBy == "SignPerson" ? "SignPerson desc" : "SignPerson";
+
+                // Блок кода для преобразования минимального и максимального значения рейтинга для фильтра 
+                int _minRating, _maxRating;
+                if (string.IsNullOrEmpty(minRating)) { minRating = "1"; }
+                if (string.IsNullOrEmpty(maxRating)) { maxRating = "32767"; }
+                Int32.TryParse(minRating, out _minRating);
+                Int32.TryParse(maxRating, out _maxRating);
+
+                // Блок кода для преобразования значений дат периода фильтрации
+                DateTime? _startDate = (String.IsNullOrEmpty(SearchStartDate)) ? Convert.ToDateTime("1900-01-01") : Convert.ToDateTime(SearchStartDate);
+                DateTime? _endDate = (String.IsNullOrEmpty(SearchEndDate)) ? Convert.ToDateTime("2900-01-01") : Convert.ToDateTime(SearchEndDate);
+
+
+
+                var comments = (from comment in db.Comments
+                                where (comment.CommentId == CommentId || CommentId == null) &&
+                                (comment.Rating >= _minRating && comment.Rating <= _maxRating) &&
+                                (comment.Date >= _startDate && comment.Date <= _endDate) &&
+                                (comment.SourceId == SourceId || SourceId == null) &&
+                                (comment.Text.Contains(SearchText) || string.IsNullOrEmpty(SearchText)) &&
+                                (comment.SignPersonId == SignPersonId || SignPersonId == null) &&
+                                (comment.AboutPersonId == AboutPersonId || AboutPersonId == null) &&
+                                (comment.EventId == EventId || EventId == null) &&
+                                (comment.ExerciseId == ExerciseId || ExerciseId == null) &&
+                                (comment.AddressId == AddressId || AddressId == null) &&
+                                (comment.AboutPersonId.HasValue || chbAboutPerson == false || chbAboutPerson == null) &&
+                                (comment.EventId.HasValue || chbEvent == false || chbEvent == null) &&
+                                (comment.ExerciseId.HasValue || chbEx == false || chbEx == null) &&
+                                (comment.AddressId.HasValue || chbAddress == false || chbAddress == null)
+                                select new
+                                {
+                                    CommentId = comment.CommentId,
+                                    Date = comment.Date,
+                                    Text = comment.Text,
+                                    Rating = comment.Rating,
+                                    CommentSource = comment.CommentSource,
+                                    Event = comment.Event,
+                                    Exercise = comment.Exercise,
+                                    Address = comment.Address,
+                                    Person1 = comment.Person ?? null,
+                                    Person = comment.Person1 ?? null,
+                                    RelGuid = comment.RelGuid
+                                }).AsEnumerable().Select(x => new Comment
+                                {
+                                    CommentId = x.CommentId,
+                                    Date = x.Date,
+                                    Text = x.Text,
+                                    Rating = x.Rating,
+                                    CommentSource = x.CommentSource,
+                                    Event = x.Event,
+                                    Exercise = x.Exercise,
+                                    Address = x.Address,
+                                    SignPersonFIO = x.Person == null ? "" : (x.Person.FirstName + " " + x.Person.LastName).TrimStart(),
+                                    AboutPersonFIO = x.Person1 == null ? "" : (x.Person1.FirstName + " " + x.Person1.LastName).TrimStart(),
+                                    SignPersonId = x.Person == null ? 0 : x.Person.PersonId,
+                                    AboutPersonId = x.Person1 == null ? 0 : x.Person1.PersonId,
+                                    AttCount = db.Attachments.Where(z => z.RelGuid == x.RelGuid).Count()
+                                }).OrderByDescending(x => x.Date);
+
+                switch (SortBy)
+                {
+                    case "Source desc":
+                        comments = comments.OrderByDescending(x => x.CommentSource.SourceName);
+                        ViewData["SortColumn"] = "Source";
+                        break;
+                    case "Source":
+                        comments = comments.OrderBy(x => x.CommentSource.SourceName);
+                        ViewData["SortColumn"] = "Source";
+                        break;
+
+                    case "Date desc":
+                        comments = comments.OrderByDescending(x => x.Date);
+                        ViewData["SortColumn"] = "Date";
+                        break;
+                    case "Date":
+                        comments = comments.OrderBy(x => x.Date);
+                        ViewData["SortColumn"] = "Date";
+                        break;
+
+                    case "Rating desc":
+                        comments = comments.OrderByDescending(x => x.Rating);
+                        ViewData["SortColumn"] = "Rating";
+                        break;
+                    case "Rating":
+                        comments = comments.OrderBy(x => x.Rating);
+                        ViewData["SortColumn"] = "Rating";
+                        break;
+
+                    case "SignPerson desc":
+                        comments = comments.OrderByDescending(x => x.SignPersonFIO);
+                        ViewData["SortColumn"] = "SignPerson";
+                        break;
+                    case "SignPerson":
+                        comments = comments.OrderBy(x => x.SignPersonFIO);
+                        ViewData["SortColumn"] = "SignPerson";
+                        break;
+
+                    default:
+                        comments = comments.OrderByDescending(x => x.Date);
+                        break;
+                }
+
+                ViewData["chbAboutPerson"] = chbAboutPerson;
+                ViewData["chbEvent"] = chbEvent;
+                ViewData["chbEx"] = chbEx;
+                ViewData["chbAddress"] = chbAddress;
+
+                return PartialView(comments.ToList().ToPagedList(pageNumber, pageSize));
+            }
         }
 
         #endregion

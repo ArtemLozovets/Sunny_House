@@ -38,7 +38,8 @@ namespace Sunny_House.Controllers
                            {
                                PersonId = person.PersonId,
                                PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
-                               RelationName = "Персона"
+                               RelationName = "Персона",
+                               HaveComm = db.PersonCommunications.Any(x=>x.PersonId == PersonId)
                            }).ToList();
 
             _rellist.AddRange(_result);
@@ -50,7 +51,8 @@ namespace Sunny_House.Controllers
                        {
                            PersonId = person.PersonId,
                            PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
-                           RelationName = relation.Relation12
+                           RelationName = relation.Relation12,
+                           HaveComm = db.PersonCommunications.Any(x => x.PersonId == relation.PersonId)
                        }).ToList();
 
             _rellist.AddRange(_result);
@@ -62,7 +64,8 @@ namespace Sunny_House.Controllers
                               {
                                   PersonId = person.PersonId,
                                   PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
-                                  RelationName = relation.Relation21
+                                  RelationName = relation.Relation21,
+                                  HaveComm = db.PersonCommunications.Any(x => x.PersonId == relation.RelPersonId)
                               }).ToList();
 
             _rellist.AddRange(_resultRev);
@@ -84,7 +87,7 @@ namespace Sunny_House.Controllers
                                           EventId = ex.EventId,
                                           EventName = ex.Event.EventName,
                                           FactVisit = visit.FactVisit
-                                      }).AsEnumerable().Select(x => new Visit
+                                      }).Distinct().Take(30).AsEnumerable().Select(x => new Visit
                           {
                               VisitId = x.VisitId,
                               VisitorId = x.VisitorId,
@@ -106,7 +109,7 @@ namespace Sunny_House.Controllers
                                               Date = comment.Date,
                                               SignPersonFIO = comment.Person1.FirstName+" "+comment.Person1.LastName,
                                               Text = comment.Text
-                                          }).Take(10).AsEnumerable().Select(x => new Comment
+                                          }).Distinct().Take(10).AsEnumerable().Select(x => new Comment
                                           {
                                               Date = x.Date,
                                               SignPersonFIO = x.SignPersonFIO,
