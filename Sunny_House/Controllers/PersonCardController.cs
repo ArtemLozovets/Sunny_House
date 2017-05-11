@@ -109,12 +109,12 @@ namespace Sunny_House.Controllers
                                               Date = comment.Date,
                                               SignPersonFIO = comment.Person1.FirstName+" "+comment.Person1.LastName,
                                               Text = comment.Text
-                                          }).Distinct().Take(10).AsEnumerable().Select(x => new Comment
+                                          }).Distinct().OrderByDescending(x => x.Date).Take(10).AsEnumerable().Select(x => new Comment
                                           {
                                               Date = x.Date,
                                               SignPersonFIO = x.SignPersonFIO,
                                               Text = x.Text
-                                          }).OrderByDescending(x=>x.Date).ToList();
+                                          }).ToList();
 
             MoreInfoesViewModel _moremodel = new MoreInfoesViewModel();
 

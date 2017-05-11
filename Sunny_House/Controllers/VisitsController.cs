@@ -504,7 +504,11 @@ namespace Sunny_House.Controllers
             else
             {
                 _persons = (from person in db.Persons
-                            where (person.FirstName.Contains(SearchString) || string.IsNullOrEmpty(SearchString)) || (person.LastName.Contains(SearchString) || string.IsNullOrEmpty(SearchString))
+                            where (person.FirstName.Contains(SearchString)
+                                || person.LastName.Contains(SearchString)
+                                || person.Note.Contains(SearchString)
+                                || person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(SearchString))
+                                || string.IsNullOrEmpty(SearchString))
                             select new
                             {
                                 PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
