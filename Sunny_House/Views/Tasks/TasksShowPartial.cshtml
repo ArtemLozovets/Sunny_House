@@ -104,8 +104,8 @@
             </td>
             <td>
 
-                    @Html.ActionLink(item.PersonFIO, "ShowPersons", "Home", new { PersonId = @item.ResponsibleId }, new { target = "_blank" })
-             
+                @Html.ActionLink(item.PersonFIO, "ShowPersons", "Home", new { PersonId = @item.ResponsibleId }, new { target = "_blank" })
+
             </td>
             <td style="text-align:center; width:90px; min-width:90px;">
                 <a class="btn btn-default btn-sm" title="Редактирование задачи" href='@Url.Action("TaskEdit", "Tasks", new { id = item.STaskId })'><span class="glyphicon glyphicon-edit"></span></a>
@@ -115,9 +115,12 @@
     }
 
 </table>
-<hr />
-<div>
-    Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+@if (Model.PageCount > 0)
+{
+    @:<hr />
+    @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
+    @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
     @Html.PagedListPager(Model, page => Url.Action("TasksShowPartial", "Tasks",
                                  new
                                  {
@@ -131,4 +134,4 @@
                                           PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
                                                                                              new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "alltaskslist" }))
 
-</div>
+}

@@ -98,7 +98,7 @@
                    }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateC", LoadingElementId = "loadingImg" }, new { @id = "SignPerson" })
             <i id="SignPersonArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
-        
+
         <th><i class="glyphicon glyphicon-paperclip"></i></th>
         <th>Дополнительно</th>
         <th></th>
@@ -178,16 +178,20 @@
                 <a class="btn btn-default btn-sm" title="Редактирование отзыва" href='@Url.Action("CommentEdit", "Comments", new { id = item.CommentId })'><span class="glyphicon glyphicon-edit"></span></a>
                 <a class="btn btn-default btn-sm" title="Удаление отзыва" href='@Url.Action("CommentDelete", "Comments", new { id = item.CommentId })'><span class="glyphicon glyphicon-trash"></span></a>
             </td>
-        </tr> 
+        </tr>
 
     }
 
 </table>
 
-<hr />
-Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+@if (Model.PageCount > 0)
+{
+    @:<hr />
+    @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
+    @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
 
-@Html.PagedListPager(Model, page => Url.Action("CommentShowPartial", "Comments",
+
+    @Html.PagedListPager(Model, page => Url.Action("CommentShowPartial", "Comments",
                              new
                              {
                                  page,
@@ -203,8 +207,9 @@
                                  chbEvent = ViewData["chbEvent"],
                                  chbEx = ViewData["chbEx"],
                                  chbAddress = ViewData["chbAddress"]
-                                 
+
                              }),
                              PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
                              new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "updateC" }))
 
+}

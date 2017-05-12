@@ -3,14 +3,13 @@
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 <style type="text/css">
-    .red_tr{
-         background-color:#ffcccc !important;
+    .red_tr {
+        background-color: #ffcccc !important;
     }
 
         .red_tr:hover {
-            background-color:#ffaaaa !important;
+            background-color: #ffaaaa !important;
         }
-
 </style>
 
 <label id="SortColumn" hidden>@ViewData["SortColumn"]</label>
@@ -99,53 +98,59 @@
     }
     @foreach (var item in Model)
     {
-         var _class = string.Empty;
-                            if (!item.FactVisit)
-                            {
-                                _class = "red_tr";
-                            }
-    <tr class="@_class">
-        <td style="vertical-align:top !important;" data-fparam="person" data-personid="@item.VisitorId" data-personfio="@item.PersonFIO" class="autofilter">
-            <a href="#topanchor" class="showRelPersons" data-personid="@item.VisitorId" title="Карточка персоны">@Html.DisplayFor(modelItem => item.PersonFIO)</a>
-        </td>
-        <td style="vertical-align:top !important" data-fparam="ex" data-exid="@item.ExerciseId" data-exname="@item.ExName" class="autofilter">
-            @Html.ActionLink(@item.ExName, "ExShow", "Exercises", new { ExerciseId = @item.ExerciseId }, new { target = "_blank" })
-        </td>
-        <td style="text-align:center; vertical-align:top !important" data-fparam="date" data-date="@Convert.ToDateTime(item.StartTime).ToString("dd'/'MM'/'yyyy")" class=" autofilter">
-            @Html.DisplayFor(modelItem => item.StartTime)
-        </td>
-        <td style="max-width:100px; vertical-align:top !important" data-fparam="event" data-eventid="@item.EventId" data-eventname="@item.EventName" class="autofilter">
-            @Html.ActionLink(@item.EventName, "ResShowOfEvent", "Reserves", new { EventId = @item.EventId }, new { target = "_blank" })
-        </td>
-        <td style="vertical-align:top !important" data-fparam="role" data-roleid="@item.RoleId" class="autofilter">
-            @Html.DisplayFor(modelItem => item.RoleName)
-        </td>
-        <td class="breakWord" style="max-width:300px; vertical-align:top !important; text-align:justify;">
-            @Html.DisplayFor(modelItem => item.Note)
-        </td>
-        <td style="text-align:center; width:92px; min-width:92px; vertical-align:top !important">
-            <a class="btn btn-default btn-sm" title="Редактировать" href='@Url.Action("VisEdit", "Visits", new { VisitId = item.VisitId })'><span class="glyphicon glyphicon-edit"></span></a>
-            <a class="btn btn-default btn-sm" title="Удалить" href='@Url.Action("VisDelete", "Visits", new { VisitId = item.VisitId })'><span class="glyphicon glyphicon-trash"></span></a>
-        </td>
-    </tr>
+        var _class = string.Empty;
+        if (!item.FactVisit)
+        {
+            _class = "red_tr";
+        }
+        <tr class="@_class">
+            <td style="vertical-align:top !important;" data-fparam="person" data-personid="@item.VisitorId" data-personfio="@item.PersonFIO" class="autofilter">
+                <a href="#topanchor" class="showRelPersons" data-personid="@item.VisitorId" title="Карточка персоны">@Html.DisplayFor(modelItem => item.PersonFIO)</a>
+            </td>
+            <td style="vertical-align:top !important" data-fparam="ex" data-exid="@item.ExerciseId" data-exname="@item.ExName" class="autofilter">
+                @Html.ActionLink(@item.ExName, "ExShow", "Exercises", new { ExerciseId = @item.ExerciseId }, new { target = "_blank" })
+            </td>
+            <td style="text-align:center; vertical-align:top !important" data-fparam="date" data-date="@Convert.ToDateTime(item.StartTime).ToString("dd'/'MM'/'yyyy")" class=" autofilter">
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td style="max-width:100px; vertical-align:top !important" data-fparam="event" data-eventid="@item.EventId" data-eventname="@item.EventName" class="autofilter">
+                @Html.ActionLink(@item.EventName, "ResShowOfEvent", "Reserves", new { EventId = @item.EventId }, new { target = "_blank" })
+            </td>
+            <td style="vertical-align:top !important" data-fparam="role" data-roleid="@item.RoleId" class="autofilter">
+                @Html.DisplayFor(modelItem => item.RoleName)
+            </td>
+            <td class="breakWord" style="max-width:300px; vertical-align:top !important; text-align:justify;">
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            <td style="text-align:center; width:92px; min-width:92px; vertical-align:top !important">
+                <a class="btn btn-default btn-sm" title="Редактировать" href='@Url.Action("VisEdit", "Visits", new { VisitId = item.VisitId })'><span class="glyphicon glyphicon-edit"></span></a>
+                <a class="btn btn-default btn-sm" title="Удалить" href='@Url.Action("VisDelete", "Visits", new { VisitId = item.VisitId })'><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+        </tr>
     }
 
 </table>
 
-<hr />
-Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+@if (Model.PageCount > 0)
+{
+    @:<hr />
+    @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
+    @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
 
-@Html.PagedListPager(Model, page => Url.Action("AllVisitsPartial", "Visits",
+
+    @Html.PagedListPager(Model, page => Url.Action("AllVisitsPartial", "Visits",
                              new
                              {
-                                RoleSearchString = ViewData["RoleSearchString"],
-                                VisitorId = ViewData["VisitorId"],  
-                                EventId = ViewData["EventId"], 
-                                ExerciseId = ViewData["ExerciseId"],
-                                StartDate = ViewData["StartDate"],
-                                SortBy = Request["SortBy"],
-                                FilterMode = Request["FilterMode"],
-                                page
+                                 RoleSearchString = ViewData["RoleSearchString"],
+                                 VisitorId = ViewData["VisitorId"],
+                                 EventId = ViewData["EventId"],
+                                 ExerciseId = ViewData["ExerciseId"],
+                                 StartDate = ViewData["StartDate"],
+                                 SortBy = Request["SortBy"],
+                                 FilterMode = Request["FilterMode"],
+                                 page
                              }),
                              PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
                              new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "updateV" }))
+
+}

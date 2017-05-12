@@ -2,7 +2,7 @@
 @using PagedList.Mvc;
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
-<label id="SortColumn" hidden>@ViewData["SortColumn"]</label>   
+<label id="SortColumn" hidden>@ViewData["SortColumn"]</label>
 
 <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
     <tr>
@@ -43,22 +43,22 @@
             <i id="RegionArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>
-           @Ajax.ActionLink("Район", "AdShowAllPartial", new
+            @Ajax.ActionLink("Район", "AdShowAllPartial", new
            {
                SortBy = ViewBag.SortArea,
                CitySearchString = Request["CitySearchString"],
                AddressSearchString = Request["AddressSearchString"],
            }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateAd", LoadingElementId = "loadingImg" }, new { @id = "Area" })
-        <i id="AreaArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
+            <i id="AreaArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>
-           @Ajax.ActionLink("Город", "AdShowAllPartial", new
+            @Ajax.ActionLink("Город", "AdShowAllPartial", new
            {
                SortBy = ViewBag.SortCity,
                CitySearchString = Request["CitySearchString"],
                AddressSearchString = Request["AddressSearchString"],
            }, new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "updateAd", LoadingElementId = "loadingImg" }, new { @id = "City" })
-        <i id="CityArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
+            <i id="CityArrow" class="glyphicon glyphicon-triangle-top" style="visibility:hidden"></i>
         </th>
         <th>
             @Ajax.ActionLink("Адрес", "AdShowAllPartial", new
@@ -117,10 +117,14 @@
 
 </table>
 
-<hr />
-Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+@if (Model.PageCount > 0)
+{
+    @:<hr />
+    @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
+    @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
 
-@Html.PagedListPager(Model, page => Url.Action("AdShowAllPartial", "Addresses",
+
+    @Html.PagedListPager(Model, page => Url.Action("AdShowAllPartial", "Addresses",
                              new
                              {
                                  CitySearchString = Request["CitySearchString"],
@@ -131,3 +135,4 @@
                              PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
                              new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "updateAd" }))
 
+}

@@ -65,11 +65,11 @@
                 </a>
 
                 <a class="btn btn-default btn-sm"
-                    title="Добавить отзыв"
-                    target = "_blank"
-                    style="display:inline-block;"
-                    href='@Url.Action("CommentCreate", "Comments", new { SignPersonId = item.VisitorId, ExerciseId = item.ExerciseId, Date1 = ViewData["EndTime"] })'>
-                <span class="glyphicon glyphicon-comment"></span>
+                   title="Добавить отзыв"
+                   target="_blank"
+                   style="display:inline-block;"
+                   href='@Url.Action("CommentCreate", "Comments", new { SignPersonId = item.VisitorId, ExerciseId = item.ExerciseId, Date1 = ViewData["EndTime"] })'>
+                    <span class="glyphicon glyphicon-comment"></span>
                 </a>
 
                 <a class="btn btn-default btn-sm"
@@ -84,10 +84,14 @@
 
 </table>
 
-<hr />
-Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+@if (Model.PageCount > 0)
+{
+    @:<hr />
+    @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
+    @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
 
-@Html.PagedListPager(Model, page => Url.Action("VisitorPartialList", "Visits",
+
+    @Html.PagedListPager(Model, page => Url.Action("VisitorPartialList", "Visits",
                              new
                              {
                                  ExerciseId = ViewData["ExerciseId"],
@@ -97,3 +101,5 @@
                              }),
                              PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
                              new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "update" }))
+
+}

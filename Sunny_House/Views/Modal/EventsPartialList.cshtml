@@ -29,37 +29,40 @@
         </tr>
     }
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.EventName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StartTime)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EndTime)
-        </td>
-        <td>
-            @item.Person.FirstName @item.Person.LastName @item.Person.MiddleName
-        </td>
-        <td>
-            <a class="btn btn-default btn-sm selEvent"
-               data-eventid="@item.EventId"
-               onclick="selsubmit(this)"
-               data-eventname="@item.EventName">
-                <span class="glyphicon glyphicon-ok"></span>
-            </a>
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.EventName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndTime)
+            </td>
+            <td>
+                @item.Person.FirstName @item.Person.LastName @item.Person.MiddleName
+            </td>
+            <td>
+                <a class="btn btn-default btn-sm selEvent"
+                   data-eventid="@item.EventId"
+                   onclick="selsubmit(this)"
+                   data-eventname="@item.EventName">
+                    <span class="glyphicon glyphicon-ok"></span>
+                </a>
+            </td>
+        </tr>
+    }
 
 </table>
 
-<hr />
-Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
-
-@Html.PagedListPager(Model, page => Url.Action("EventsPartialList", "Modal",
+@if (Model.PageCount > 0)
+{
+    @:<hr />
+    @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
+    @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
+    @Html.PagedListPager(Model, page => Url.Action("EventsPartialList", "Modal",
                                      new
                                      {
                                          ExerciseSearchString = @ViewData["EventsSearchString"],
@@ -72,3 +75,5 @@
                                      }),
                              PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
                              new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "update" }))
+
+}

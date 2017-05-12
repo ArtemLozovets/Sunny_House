@@ -30,7 +30,7 @@
                 <a href="#topanchor" class="showRelPersons EmlCl" data-personid="@item.PersonId" title="Связанные персоны">@Html.DisplayFor(modelItem => item.PersonFIO)</a>
             </td>
             <td>
-                <div class="input-group"style="width:200px; ">
+                <div class="input-group" style="width:200px; ">
                     <textarea class="form-control custom-control infoesInput" rows="1" cols="200">@item.Infoes</textarea>
                     <span class="input-group-addon btn btn-default glyphicon glyphicon-floppy-save infoesBtn" title="Сохранить" data-ptcid="@item.ClientId"></span>
                 </div>
@@ -51,8 +51,12 @@
 
 </table>
 
-<hr />
-    Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+@if (Model.PageCount > 0)
+{
+    @:<hr />
+    @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
+    @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
+
 
     @Html.PagedListPager(Model, page => Url.Action("ShowPotentialPartial", "Reserves",
                                  new { @EventId = Request.QueryString["EventId"], @SearchString = ViewData["SearchString"], page }),
@@ -60,4 +64,4 @@
                                  new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "update_potential" }))
 
 
-
+}

@@ -2,8 +2,8 @@
 @model PagedList.IPagedList<Sunny_House.Models.PersonsViewModel>
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 <style>
-    #PPLTable tr th{
-        vertical-align:middle !important;
+    #PPLTable tr th {
+        vertical-align: middle !important;
     }
 </style>
 
@@ -90,9 +90,14 @@
         </tr>
     }
 </table>
-<hr />
-<div style="margin-left:10px;">
-    Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+
+
+@if (Model.PageCount > 0)
+{
+    @:<hr />
+    @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
+    @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
     @Html.PagedListPager(Model, page => Url.Action("PersonsPartialList", "Visits",
                          new
                          {
@@ -104,4 +109,4 @@
                          }),
                                  PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
                                                                                          new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "update1" }))
-</div>
+}

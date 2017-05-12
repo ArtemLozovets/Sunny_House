@@ -8,7 +8,7 @@
             @Html.DisplayNameFor(model => model.First().PersonFIO)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.First().PersonAge) 
+            @Html.DisplayNameFor(model => model.First().PersonAge)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.First().DateOfBirth)
@@ -40,14 +40,14 @@
             @if (item.PersonAge != null && item.PersonAge > 0)
             {
                 <td>
-                   <span class="text-info">@Html.DisplayFor(modelItem => item.PersonAge)</span>
+                    <span class="text-info">@Html.DisplayFor(modelItem => item.PersonAge)</span>
                 </td>
             }
             else
             {
                 <td>
-                   @if (item.PersonMonth != null)
-                   { <span class="text-success">@Html.DisplayFor(modelItem => item.PersonMonth) мес.</span> }
+                    @if (item.PersonMonth != null)
+                    { <span class="text-success">@Html.DisplayFor(modelItem => item.PersonMonth) мес.</span> }
                 </td>
             }
 
@@ -65,21 +65,28 @@
 
 </table>
 
-<hr />
-    Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+@if (Model.PageCount > 0)
+{
+    @:<hr />
+    @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
+    @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
+
 
     @Html.PagedListPager(Model, page => Url.Action("PartialClientinModal", "Reserves",
-                         new { 
+                         new
+                         {
                              EventId = ViewData["EventId"],
                              MinAge = ViewData["MinAge"],
                              MaxAge = ViewData["MaxAge"],
-                             RoleId = ViewData["RoleId"], 
-                             page 
+                             RoleId = ViewData["RoleId"],
+                             page
                          }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
                                                                                          new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "update" }))
+}
+
 
 <script type="text/javascript">
-//Работа с чекбоксами
+    //Работа с чекбоксами
     $(function () {
         $("#checkAll").change(function () {
             $("#adderror").text("");
@@ -108,4 +115,4 @@
             }
         });
     });
-    </script>
+</script>

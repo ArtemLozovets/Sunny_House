@@ -58,9 +58,16 @@
     }
 </table>
 <a href="#" class="scrollup1">Наверх</a>
-<hr />
-Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
-@Html.PagedListPager(Model, page => Url.Action("RTShow", "PersonRelations", new { page }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
+
+
+@if (Model.PageCount > 0)
+{
+    @:<hr />
+    @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
+    @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
+    @Html.PagedListPager(Model, page => Url.Action("RTShow", "PersonRelations", new { page }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
+}
+
 
 @section Scripts {
     <script src="~/Scripts/toparrow.js"></script>

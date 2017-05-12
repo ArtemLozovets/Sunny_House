@@ -186,7 +186,7 @@
                         @Html.DisplayFor(modelItem => item.Subject)
                     </td>
                     <td>
-                        @Html.ActionLink(item.Event.EventName, "ResShowOfEvent", "Reserves", new { EventId = item.EventId }, new { target="_blank"})
+                        @Html.ActionLink(item.Event.EventName, "ResShowOfEvent", "Reserves", new { EventId = item.EventId }, new { target = "_blank" })
                     </td>
                     <td style="text-align:center;">
                         @Html.DisplayFor(modelItem => item.StartTime)
@@ -210,10 +210,14 @@
 
         </table>
 
-        <hr />
-        Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+        @if (Model.PageCount > 0)
+        {
+            @:<hr />
+            @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
+            @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
 
-        @Html.PagedListPager(Model, page => Url.Action("ExShow", "Exercises",
+
+            @Html.PagedListPager(Model, page => Url.Action("ExShow", "Exercises",
                              new
                              {
                                  FilterMode = Request.QueryString["FilterMode"],
@@ -225,6 +229,7 @@
                                  SortBy = Request["SortBy"]
                              }),
                          new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
+        }
 
 
         @if (ViewBag.ReturnUrl != null)
