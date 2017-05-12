@@ -159,11 +159,31 @@ namespace Sunny_House.Models
         [Display(Name = "Плательщик")]
         public string PayerPIB { get; set; }
 
+        [Display(Name = "Фамилия плательщика")]
+        public string pFirstName { get; set; }
+
+        [Display(Name = "Имя плательщика")]
+        public string pLastName { get; set; }
+
+        [Display(Name = "Отчество плательщика")]
+        public string pMiddleName { get; set; }
+
         [Display(Name = "ФИО клиента")]
         public string PIB { get; set; }
 
+        [Display(Name = "Фамилия клиента")]
+        public string сFirstName { get; set; }
+
+        [Display(Name = "Имя клиента")]
+        public string cLastName { get; set; }
+
+        [Display(Name = "Отчество клиента")]
+        public string cMiddleName { get; set; }
+
         [Display(Name = "Мероприятие")]
         public string EventName { get; set; }
+
+        public int EventId { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:F}", ApplyFormatInEditMode = true)]
         [Display(Name = "Сумма")]

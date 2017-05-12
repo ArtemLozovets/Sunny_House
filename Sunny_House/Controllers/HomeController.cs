@@ -283,7 +283,7 @@ namespace Sunny_House.Controllers
         #region Список платежів
         [HttpGet]
         [Authorize(Roles = "Administrator, User")]
-        public ActionResult ShowAllPayments(string PayerSearchString, string ClientSearchString, int? page, string SortBy, int? EventId)
+        public ActionResult ShowAllPayments(string PayerSearchString, string ClientSearchString, int? page, string SortBy, int? EventId, int? PayerId, int? ClientId)
         {
             // db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug Information ------------------------------------
 
@@ -292,40 +292,67 @@ namespace Sunny_House.Controllers
                 ViewBag.EventName = db.Events.FirstOrDefault(e => e.EventId == EventId).EventName.ToString();
             }
 
+            if (PayerId != null)
+            {
+                ViewBag.PayerFIO = db.Persons.Where(e => e.PersonId == PayerId).Select(x => x.FirstName + " " + x.LastName + " " + x.MiddleName).FirstOrDefault().ToString();
+            }
+
+            if (ClientId != null)
+            {
+                ViewBag.ClientFIO = db.Persons.Where(e => e.PersonId == ClientId).Select(x => x.FirstName + " " + x.LastName + " " + x.MiddleName).FirstOrDefault().ToString();
+            }
+
             ViewBag.SortPayerPIB = SortBy == "PayerPIB" ? "PayerPIB desc" : "PayerPIB";
             ViewBag.SortPIB = SortBy == "PIB" ? "PIB desc" : "PIB";
             ViewBag.SortEventName = SortBy == "EventName" ? "EventName desc" : "EventName";
             ViewBag.SortSum = SortBy == "Sum" ? "Sum desc" : "Sum";
             ViewBag.SortPayDate = SortBy == "PayDate" ? "PayDate desc" : "PayDate";
 
-            var _result = from payments in db.Payments
-                          join payer in db.Persons on payments.PayerId equals payer.PersonId
-                          join client in db.Persons on payments.ClientId equals client.PersonId
-                          join @event in db.Events on payments.EventId equals @event.EventId
-                          where payments.EventId == EventId || EventId == null
-                          select new
-                          {
-                              Id = @payments.PaymentId,
-                              pId = payer.PersonId,
-                              pFirstName = payer.FirstName,
-                              pLastName = payer.LastName,
-                              pMiddleName = payer.MiddleName,
-                              cId = client.PersonId,
-                              cFirstName = client.FirstName,
-                              cLastName = client.LastName,
-                              cMiddleName = client.MiddleName,
-                              eventName = @event.EventName,
-                              Sum = (decimal)payments.Sum,
-                              PayDate = payments.Date,
-                              Note = payments.Note
-                          };
+            var _result = (from payments in db.Payments
+                           join payer in db.Persons on payments.PayerId equals payer.PersonId
+                           join client in db.Persons on payments.ClientId equals client.PersonId
+                           join @event in db.Events on payments.EventId equals @event.EventId
+                           where (payments.EventId == EventId || EventId == null) 
+                                    && ((payments.PayerId == PayerId || PayerId == null) && (payments.ClientId == ClientId || ClientId == null)) 
+                                    && (payer.FirstName.Contains(PayerSearchString) || payer.LastName.Contains(PayerSearchString) || String.IsNullOrEmpty(PayerSearchString))
+                                    && (client.FirstName.Contains(ClientSearchString) || client.LastName.Contains(ClientSearchString) || String.IsNullOrEmpty(ClientSearchString))
 
+                           select new
+                           {
+                               Id = @payments.PaymentId,
+                               pId = payer.PersonId,
+                               pFirstName = payer.FirstName,
+                               pLastName = payer.LastName,
+                               pMiddleName = payer.MiddleName,
+                               cId = client.PersonId,
+                               cFirstName = client.FirstName,
+                               cLastName = client.LastName,
+                               cMiddleName = client.MiddleName,
+                               eventName = @event.EventName,
+                               eventId = @event.EventId,
+                               Sum = (decimal)payments.Sum,
+                               PayDate = payments.Date,
+                               Note = payments.Note
 
-            _result = _result.Where(r => ((r.pFirstName
-                .Contains(PayerSearchString) || PayerSearchString == null) || (r.pLastName
-                .Contains(PayerSearchString) || PayerSearchString == null)) && ((r.cFirstName
-                .Contains(ClientSearchString) || ClientSearchString == null) || (r.cLastName
-                .Contains(ClientSearchString) || ClientSearchString == null)));
+                           }).AsEnumerable().Select(x => new PaymentViewModel {
+                               Id = x.Id,
+                               PayerId = x.pId,
+                               pFirstName = x.pFirstName,
+                               pLastName = x.pLastName,
+                               pMiddleName = x.pMiddleName,
+                               ClientId = x.cId,
+                               сFirstName = x.cFirstName,
+                               cLastName = x.cLastName,
+                               cMiddleName = x.cMiddleName,
+                               PayerPIB = String.Format("{0} {1} {2}", x.pFirstName, x.pLastName, x.pMiddleName),
+                               PIB = String.Format("{0} {1} {2}", x.cFirstName, x.cLastName, x.cMiddleName),
+                               EventName = x.eventName,
+                               EventId = x.eventId,
+                               Sum = (double)x.Sum,
+                               PayDate = x.PayDate,
+                               Note = x.Note
+                           });
+
 
             switch (SortBy)
             {
@@ -334,23 +361,23 @@ namespace Sunny_House.Controllers
                     ViewData["SortColumn"] = "PayerPIB";
                     break;
                 case "PayerPIB":
-                    _result = _result.OrderBy(x => x.pFirstName).ThenBy(x => x.pLastName).ThenBy(x => x.pMiddleName);
+                    _result = _result.OrderBy(x => x.pFirstName).ThenByDescending(x => x.pLastName).ThenByDescending(x => x.pMiddleName);
                     ViewData["SortColumn"] = "PayerPIB";
                     break;
                 case "PIB desc":
-                    _result = _result.OrderByDescending(x => x.cFirstName).ThenByDescending(x => x.cLastName).ThenByDescending(x => x.cMiddleName);
+                    _result = _result.OrderByDescending(x => x.сFirstName).ThenByDescending(x => x.cLastName).ThenByDescending(x => x.cMiddleName);
                     ViewData["SortColumn"] = "PIB";
                     break;
                 case "PIB":
-                    _result = _result.OrderBy(x => x.cFirstName).ThenBy(x => x.cLastName).ThenBy(x => x.cMiddleName);
+                    _result = _result.OrderBy(x => x.сFirstName).ThenByDescending(x => x.cLastName).ThenByDescending(x => x.cMiddleName);
                     ViewData["SortColumn"] = "PIB";
                     break;
                 case "EventName desc":
-                    _result = _result.OrderByDescending(x => x.eventName);
+                    _result = _result.OrderByDescending(x => x.EventName);
                     ViewData["SortColumn"] = "EventName";
                     break;
                 case "EventName":
-                    _result = _result.OrderBy(x => x.eventName);
+                    _result = _result.OrderBy(x => x.EventName);
                     ViewData["SortColumn"] = "EventName";
                     break;
                 case "Sum desc":
@@ -374,30 +401,11 @@ namespace Sunny_House.Controllers
                     break;
             }
 
-            List<PaymentViewModel> _paylist = new List<PaymentViewModel>();
-            foreach (var item in _result)
-            {
-                PaymentViewModel _payment = new PaymentViewModel
-                {
-                    Id = item.Id,
-                    PayerId = item.pId,
-                    ClientId = item.cId,
-                    PayerPIB = String.Format("{0} {1} {2}", item.pFirstName, item.pLastName, item.pMiddleName),
-                    PIB = String.Format("{0} {1} {2}", item.cFirstName, item.cLastName, item.cMiddleName),
-                    EventName = item.eventName,
-                    Sum = (double)item.Sum,
-                    PayDate = item.PayDate,
-                    Note = item.Note
-                };
-                _paylist.Add(_payment);
-            }
-            if (_paylist.Count() == 0) { TempData["MessageError"] = "Платежи не найдены"; }
-
-
+           
             int pageSize = 50;
             int pageNumber = (page ?? 1);
 
-            return View(_paylist.ToPagedList(pageNumber, pageSize));
+            return View(_result.ToPagedList(pageNumber, pageSize));
         }
         #endregion
 

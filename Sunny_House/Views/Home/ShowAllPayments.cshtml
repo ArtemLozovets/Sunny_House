@@ -34,6 +34,8 @@
             @Html.TextBox("PayerSearchString", null, new { @class = "form-control", data_autocomplete_source = @Url.Action("AutocompletePayer", "AutoComplete"), @placeholder = "Плательщик", style = "margin:2px 2px; width:180px; display:inline-block;" })
             @Html.TextBox("ClientSearchString", null, new { @class = "form-control", data_autocomplete_source = @Url.Action("AutocompleteClient", "AutoComplete"), @placeholder = "Клиент", style = "margin:2px 2px; width:180px; display:inline-block;" })
             @Html.Hidden("EventId", Request.QueryString["EventId"])
+            @Html.Hidden("PayerId")
+            @Html.Hidden("ClientId")
 
             <button type="submit" title="Искать" style="margin-top:-3px; display:inline-block " class="btn btn-default"><i class="glyphicon glyphicon-search"></i> </button>
         </div>
@@ -42,8 +44,19 @@
 
 @if (Request.QueryString["EventId"] != null && !string.IsNullOrEmpty(ViewBag.EventName))
 {
-    <p class="text-info"><strong><i class="fa fa-institution"></i> Мероприятие: "@ViewBag.EventName"</strong></p>
+    <p class="text-info"><strong>Мероприятие: "@ViewBag.EventName"</strong></p>
 }
+
+@if (Request.QueryString["PayerId"] != null && !string.IsNullOrEmpty(ViewBag.PayerFIO))
+{
+    <p class="text-info"><strong>Плательщик: "@ViewBag.PayerFIO"</strong></p>
+}
+
+@if (Request.QueryString["ClientId"] != null && !string.IsNullOrEmpty(ViewBag.ClientFIO))
+{
+    <p class="text-info"><strong>Клиент: "@ViewBag.ClientFIO"</strong></p>
+}
+
 <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
     <tr>
         <th>
@@ -52,7 +65,9 @@
                        SortBy = ViewBag.SortPayerPIB,
                        PayerSearchString = Request["PayerSearchString"],
                        ClientSearchString = Request["ClientSearchString"],
-                       EventId = Request["EventId"]
+                       EventId = Request["EventId"],
+                       ClientId = Request.QueryString["ClientId"],
+                       PayerId = Request.QueryString["PayerId"]
                    },
                    new { @id = "PayerPIB" })@Html.Raw("&nbsp;")<i id="PayerPIBArrow"></i>
             </th>
@@ -62,7 +77,9 @@
                        SortBy = ViewBag.SortPIB,
                        PayerSearchString = Request["PayerSearchString"],
                        ClientSearchString = Request["ClientSearchString"],
-                       EventId = Request["EventId"]
+                       EventId = Request["EventId"],
+                       ClientId = Request.QueryString["ClientId"],
+                       PayerId = Request.QueryString["PayerId"]
                    },
                    new { @id = "PIB" })@Html.Raw("&nbsp;")<i id="PIBArrow"></i>
             </th>
@@ -72,7 +89,9 @@
                        SortBy = ViewBag.SortEventName,
                        PayerSearchString = Request["PayerSearchString"],
                        ClientSearchString = Request["ClientSearchString"],
-                       EventId = Request["EventId"]
+                       EventId = Request["EventId"],
+                       ClientId = Request.QueryString["ClientId"],
+                       PayerId = Request.QueryString["PayerId"]
                    },
                    new { @id = "EventName" })@Html.Raw("&nbsp;")<i id="EventNameArrow"></i>
             </th>
@@ -83,7 +102,9 @@
                        SortBy = ViewBag.SortSum,
                        PayerSearchString = Request["PayerSearchString"],
                        ClientSearchString = Request["ClientSearchString"],
-                       EventId = Request["EventId"]
+                       EventId = Request["EventId"],
+                       ClientId = Request.QueryString["ClientId"],
+                       PayerId = Request.QueryString["PayerId"]
                    },
                    new { @id = "Sum" })@Html.Raw("&nbsp;")<i id="SumArrow"></i>
             </th>
@@ -93,7 +114,9 @@
                        SortBy = ViewBag.SortPayDate,
                        PayerSearchString = Request["PayerSearchString"],
                        ClientSearchString = Request["ClientSearchString"],
-                       EventId = Request["EventId"]
+                       EventId = Request["EventId"],
+                       ClientId = Request.QueryString["ClientId"],
+                       PayerId = Request.QueryString["PayerId"]
                    },
                    new { @id = "PayDate" })@Html.Raw("&nbsp;")<i id="PayDateArrow"></i>
             </th>
@@ -115,14 +138,14 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>
+                <td class="autofilter" data-payerid="@item.PayerId"  data-payername="@item.PayerPIB" data-fparam="payer">
                     @Html.ActionLink(@item.PayerPIB, "ShowPersons", "Home", new { PersonId = @item.PayerId }, null)
                 </td>
-                <td>
+                <td class="autofilter" data-clientid="@item.ClientId" data-clientname="@item.PIB" data-fparam="client">
                     @Html.ActionLink(@item.PIB, "ShowPersons", "Home", new { PersonId = @item.ClientId }, null)
                 </td>
 
-                <td>
+                <td class="autofilter" data-eventid=@item.EventId data-fparam="event">
                     @Html.DisplayFor(modelItem => item.EventName)
                 </td>
 
@@ -152,19 +175,22 @@
         @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
         @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
 
-
         @Html.PagedListPager(Model, page => Url.Action("ShowAllPayments", "Home",
                                          new
                                          {
                                              PayerSearchString = Request.QueryString["PayerSearchString"],
                                              ClientSearchString = Request.QueryString["ClientSearchString"],
                                              EventId = Request["EventId"],
+                                             ClientId = Request.QueryString["ClientId"],
+                                             PayerId = Request.QueryString["PayerId"],
                                              page,
                                              SortBy = Request["SortBy"]
                                          }),
                          new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
 
     }
+
+
 
     @section Scripts {
         @Scripts.Render("~/bundles/jqueryval")
@@ -212,4 +238,29 @@
             });
         </script>
         <script src="~/Scripts/toparrow.js"></script>
+
+        <script>
+            //Скрипт автофильтрации
+            $('body').on('dblclick', '.autofilter', function (elem) {
+
+                   switch ($(this).data('fparam')) {
+                    case 'payer':
+                        $('#PayerId').val($(this).data('payerid'));
+                        $('#pName').text($(this).data('payername'));
+                        break;
+                    case 'client':
+                        $('#ClientId').val($(this).data('clientid'));
+                        $('#cName').text($(this).data('clientname'));
+                        break;
+                    case 'event':
+                        $('#EventId').val($(this).data('eventid'));
+                        break;
+                    default:
+                        return;
+                }
+
+                $('#paymentsform').submit();
+                $('#blinkicon').addClass('blink');
+            });
+        </script>
     }
