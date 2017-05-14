@@ -8,15 +8,15 @@
 
 <style type="text/css">
     span.payfilterlabel {
-        white-space:nowrap;
-        margin-right:20px;
-        margin-top:6px;
-        display:inline-block;
+        white-space: nowrap;
+        margin-right: 20px;
+        margin-top: 6px;
+        display: inline-block;
     }
 
     span.label {
         padding: 4px 8px;
-        font-size:+10pt;
+        font-size: +10pt;
     }
 </style>
 
@@ -157,10 +157,10 @@
         {
             <tr>
                 <td class="autofilter" data-payerid="@item.PayerId" data-payername="@item.PayerPIB" data-fparam="payer">
-                    @Html.ActionLink(@item.PayerPIB, "ShowPersons", "Home", new { PersonId = @item.PayerId }, null)
+                    <a href="#topanchor" class="showRelPersons" data-personid="@item.PayerId" title="Карточка персоны">@Html.DisplayFor(modelItem => item.PayerPIB)</a>
                 </td>
                 <td class="autofilter" data-clientid="@item.ClientId" data-clientname="@item.PIB" data-fparam="client">
-                    @Html.ActionLink(@item.PIB, "ShowPersons", "Home", new { PersonId = @item.ClientId }, null)
+                    <a href="#topanchor" class="showRelPersons" data-personid="@item.ClientId" title="Карточка персоны">@Html.DisplayFor(modelItem => item.PIB)</a>
                 </td>
 
                 <td class="autofilter" data-eventid=@item.EventId data-fparam="event">
@@ -192,14 +192,6 @@
         @:<hr />
         @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
         @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
-
-
-
-
-
-
-
-
         @Html.PagedListPager(Model, page => Url.Action("ShowAllPayments", "Home",
                                          new
                                          {
@@ -219,6 +211,7 @@
 
     @section Scripts {
         @Scripts.Render("~/bundles/jqueryval")
+        <script src="~/Scripts/PersonCard.js"></script>
         <script type="text/javascript">
             $(function () {
                 $("[data-autocomplete-source]").each(function () {
