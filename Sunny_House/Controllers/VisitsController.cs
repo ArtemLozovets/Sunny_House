@@ -501,6 +501,35 @@ namespace Sunny_House.Controllers
                                 Note = p.Note
                             });
             }
+
+            if(FilterMode == "Potential")
+            {
+                _persons = (from pot in db.PotentialСlients
+                            join person in db.Persons on pot.PersonId equals person.PersonId
+                            join ev in db.Events on pot.EventId equals ev.EventId
+                            where (ev.Exercise.Any(z=>z.ExerciseId == ExerciseId))
+                                    && (person.FirstName.Contains(SearchString)
+                                        || person.LastName.Contains(SearchString)
+                                        || person.Note.Contains(SearchString)
+                                        || person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(SearchString))
+                                        || string.IsNullOrEmpty(SearchString))
+                                select new
+                                {
+                                    PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
+                                    PersonId = person.PersonId,
+                                    DateOfBirth = person.DateOfBirth,
+                                    Note = person.Note
+                                }).AsEnumerable().Select(p => new PersonsViewModel
+                                {
+                                    PersonFIO = p.PersonFIO.TrimStart(),
+                                    PersonId = p.PersonId,
+                                    PersonAge = AgeMethods.GetAge(p.DateOfBirth),
+                                    PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
+                                    DateOfBirth = p.DateOfBirth,
+                                    Note = p.Note
+                                });
+            }
+
             else
             {
                 _persons = (from person in db.Persons

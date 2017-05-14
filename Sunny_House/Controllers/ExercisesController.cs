@@ -28,6 +28,22 @@ namespace Sunny_House.Controllers
             if (EventId != null)
             {
                 ViewData["EventId"] = EventId;
+                ViewBag.EventName = db.Events.FirstOrDefault(e => e.EventId == EventId).EventName.ToString(); 
+            }
+
+            if (ExerciseId != null)
+            {
+                ViewBag.Subject = db.Exercises.FirstOrDefault(e => e.ExerciseId == ExerciseId).Subject.ToString();
+            }
+
+            if (!String.IsNullOrEmpty(SearchStartDate))
+            {
+                ViewBag.StartDateText = SearchStartDate;
+            }
+
+            if (!String.IsNullOrEmpty(SearchEndDate))
+            {
+                ViewBag.EndDateText = SearchEndDate;
             }
 
             ViewBag.SortEventName = SortBy == "EventName" ? "EventName desc" : "EventName";

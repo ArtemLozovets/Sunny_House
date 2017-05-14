@@ -4,6 +4,20 @@
 
 <link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
 
+<style type="text/css">
+    span.payfilterlabel {
+        white-space: nowrap;
+        margin-right: 20px;
+        margin-top: 6px;
+        display: inline-block;
+    }
+
+    span.label {
+        padding: 4px 8px;
+        font-size: +10pt;
+    }
+</style>
+
 @{
     ViewBag.Title = "Занятия - Список занятий";
 
@@ -29,7 +43,7 @@
 {
     <div class="row">
         <div class="col-lg-4 col-md-4">
-            @if (Request.QueryString["FilterMode"] == "Current" || Request.QueryString["FilterMode"] == null)
+            @if (Request.QueryString["FilterMode"] == "Current" || String.IsNullOrEmpty(Request.QueryString["FilterMode"]))
             {
                 <p class="text-info"><strong>Режим отображения: ДЕЙСТВУЮЩИЕ</strong></p>
             }
@@ -42,9 +56,9 @@
                 <p class="text-info"><strong>Режим отображения: ВСЕ</strong></p>
             }
 
-            @Html.RadioButton("FilterMode", "Current", true) <span>Действующие</span>@Html.Raw("&nbsp;")
-            @Html.RadioButton("FilterMode", "Archive") <span> Архив</span>@Html.Raw("&nbsp;")
-            @Html.RadioButton("FilterMode", "All") <span> Все</span>
+            @Html.RadioButton("FilterMode", "Current", true, new { id = "rb1" }) <label for="rb1">Действующие</label>@Html.Raw("&nbsp;")
+            @Html.RadioButton("FilterMode", "Archive", new { id = "rb2" }) <label for="rb2"> Архив</label>@Html.Raw("&nbsp;")
+            @Html.RadioButton("FilterMode", "All", new { id = "rb3" }) <label for="rb3"> Все</label>
 
         </div>
         <div class="col-lg-7 col-lg-offset-1 col-md-8">
@@ -88,6 +102,10 @@
                 })
 
                 @Html.Hidden("EventId", ViewData["EventId"])
+                @Html.Hidden("ExerciseId")
+                @Html.Hidden("StartTime")
+                @Html.Hidden("EndTime")
+
 
                 <div class="input-group-btn">
                     <button type="submit" class="btn btn-toolbar groupbtn" id="applyfilter">
@@ -106,6 +124,28 @@
     </p>
 }
 
+<div style="margin:0" class="row">
+    @if (Request.QueryString["ExerciseId"] != null && !string.IsNullOrEmpty(ViewBag.Subject))
+    {
+        <span class="text-info payfilterlabel"><span class="label label-success">Занятие:</span> @ViewBag.Subject</span>
+    }
+
+    @if (Request.QueryString["EventId"] != null && !string.IsNullOrEmpty(ViewBag.EventName))
+    {
+        <span class="text-info payfilterlabel"><span class="label label-success">Мероприятие:</span> "@ViewBag.EventName"</span>
+    }
+
+    @if (Request.QueryString["StartTime"] != null && !string.IsNullOrEmpty(ViewBag.StartDateText))
+    {
+        <span class="text-info payfilterlabel"><span class="label label-success">Начало периода:</span> @ViewBag.StartDateText</span>
+    }
+
+    @if (Request.QueryString["EndTime"] != null && !string.IsNullOrEmpty(ViewBag.EndDateText))
+    {
+        <span class="text-info payfilterlabel"><span class="label label-success">Окончание периода:</span> @ViewBag.EndDateText</span>
+    }
+
+</div>
 
 <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
     <tr>
@@ -182,16 +222,16 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>
+                    <td class="autofilter" data-exid="@item.ExerciseId" data-exname="@item.Subject" data-fparam="subj">
                         @Html.DisplayFor(modelItem => item.Subject)
                     </td>
-                    <td>
+                    <td class="autofilter" data-eventid="@item.Event.EventId" data-eventname="@item.Event.EventName" data-fparam="event">
                         @Html.ActionLink(item.Event.EventName, "ResShowOfEvent", "Reserves", new { EventId = item.EventId }, new { target = "_blank" })
                     </td>
-                    <td style="text-align:center;">
+                    <td style="text-align:center;" class="autofilter" data-starttime="@Convert.ToDateTime(item.StartTime).ToString("dd'/'MM'/'yyyy")" data-fparam="starttime">
                         @Html.DisplayFor(modelItem => item.StartTime)
                     </td>
-                    <td style="text-align:center;">
+                    <td style="text-align:center;" class="autofilter" data-endtime="@Convert.ToDateTime(item.EndTime).ToString("dd'/'MM'/'yyyy")" data-fparam="endtime">
                         @Html.DisplayFor(modelItem => item.EndTime)
                     </td>
                     <td>
@@ -215,6 +255,36 @@
             @:<hr />
             @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
             @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
             @Html.PagedListPager(Model, page => Url.Action("ExShow", "Exercises",
@@ -337,4 +407,38 @@
                     return true;
                 };
             </script>
+
+            <script type="text/javascript">
+                //Скрипт автофильтрации
+                $('body').on('dblclick', '.autofilter', function (elem) {
+
+                    switch ($(this).data('fparam')) {
+                        case 'subj':
+                            $('#ExerciseId').val($(this).data('exid'));
+                            //$('#pName').text($(this).data('payername'));
+                            break;
+                        case 'event':
+                            $('#EventId').val($(this).data('eventid'));
+                            //$('#cName').text($(this).data('clientname'));
+                            break;
+                        case 'starttime':
+                            var d = $(this).data('starttime');
+                            d = d.split(' ')[0];
+                            $('#SearchStartDate').val(d);
+
+                            break;
+                        case 'endtime':
+                            var d = $(this).data('endtime');
+                            d = d.split(' ')[0];
+                            $('#SearchEndDate').val(d);
+                            break;
+                        default:
+                            return;
+                    }
+
+                    $('#ExForm').submit();
+                });
+            </script>
+
         }
+

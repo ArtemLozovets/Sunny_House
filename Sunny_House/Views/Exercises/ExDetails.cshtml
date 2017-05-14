@@ -141,11 +141,12 @@
                         <div class="col-lg-12 form-inline" style="margin-bottom:12px;">
                             @using (Ajax.BeginForm("PersonsPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId }, new AjaxOptions { UpdateTargetId = "update1", LoadingElementId = "loadingImg" }, new { @id = "personform" }))
                             {
-                                <div class="col-lg-2 col-md-3 col-sm-3 text-left">
-                                    @Html.RadioButton("FilterMode", "Reserve", true)@Html.Raw("&nbsp;")<span>Бронь</span><br />
-                                    @Html.RadioButton("FilterMode", "All")@Html.Raw("&nbsp;")<span> Все</span>
+                                <div class="row">
+                                    @Html.RadioButton("FilterMode", "Reserve", true, new { id="rb1" })@Html.Raw("&nbsp;")<label for="rb1" style="margin-right:10px;">Бронь</label>
+                                    @Html.RadioButton("FilterMode", "Potential", new { id = "rb2" })@Html.Raw("&nbsp;")<label for="rb2" style="margin-right:10px;">Потенциальные клиенты</label>
+                                    @Html.RadioButton("FilterMode", "All", new { id = "rb3" })@Html.Raw("&nbsp;")<label for="rb3"> Все</label>
                                 </div>
-                                <div class="col-lg-10 col-md-9 col-sm-8 text-right">
+                                <div class="row text-right">
                                     <input class="form-control" type="text" name="SearchString" id="SearchString" placeholder="Фамилия, имя..." style="width:200px; margin:2px 0; display:inline-block">
                                     <button type="submit" title="Искать" class="btn btn-default" style="margin-top:-3px;"><i class="glyphicon glyphicon-search"></i></button>
                                     <button type="button" title="Обновить" class="btn btn-default" id="personfilterclear" style="margin-top:-3px;"><i class="glyphicon glyphicon-refresh"></i></button>

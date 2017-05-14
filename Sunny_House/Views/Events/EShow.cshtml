@@ -37,9 +37,9 @@
                 <p class="text-info"><strong>Режим отображения: ВСЕ</strong></p>
             }
 
-            @Html.RadioButton("FilterMode", "Current", true) <span>Действующие</span>@Html.Raw("&nbsp;")
-            @Html.RadioButton("FilterMode", "Archive") <span> Архив</span>@Html.Raw("&nbsp;")
-            @Html.RadioButton("FilterMode", "All") <span> Все</span>
+            @Html.RadioButton("FilterMode", "Current", true, new { id = "rb1" }) <label for="rb1">Действующие</label>@Html.Raw("&nbsp;")
+            @Html.RadioButton("FilterMode", "Archive", new { id = "rb2" }) <label for="rb2"> Архив</label>@Html.Raw("&nbsp;")
+            @Html.RadioButton("FilterMode", "All", new { id = "rb3" }) <label for="rb3"> Все</label>
 
         </div>
         <div class="col-lg-6 col-lg-offset-2 col-md-8">

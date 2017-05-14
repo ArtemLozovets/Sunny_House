@@ -6,6 +6,21 @@
     ViewBag.Title = "Платежи - Список платежей";
 }
 
+<style type="text/css">
+    span.payfilterlabel {
+        white-space:nowrap;
+        margin-right:20px;
+        margin-top:6px;
+        display:inline-block;
+    }
+
+    span.label {
+        padding: 4px 8px;
+        font-size:+10pt;
+    }
+</style>
+
+
 <h2><i class="fa fa-credit-card"></i> Реестр платежей</h2>
 
 <div class="row">
@@ -29,6 +44,7 @@
             <a class="btn btn-default" title="Обновить" style="margin:2px 2px ;" href='@Url.Action("ShowAllPayments", "Home")'><span class="glyphicon glyphicon-refresh"></span></a>
         </div>
         <div class="form-inline text-right">
+
             <a class="btn btn-default pModal" title="Фильтр по мероприятию" style="margin-top:-3px; display:inline-block " href='@Url.Action("ShowModalEvents", "Modal", new { field = "EventId" })'><i class="fa fa-institution"></i></a>
 
             @Html.TextBox("PayerSearchString", null, new { @class = "form-control", data_autocomplete_source = @Url.Action("AutocompletePayer", "AutoComplete"), @placeholder = "Плательщик", style = "margin:2px 2px; width:180px; display:inline-block;" })
@@ -41,21 +57,23 @@
         </div>
     </div>
 }
+<div style="margin:0" class="row">
+    @if (Request.QueryString["EventId"] != null && !string.IsNullOrEmpty(ViewBag.EventName))
+    {
+        <span class="text-info payfilterlabel"><span class="label label-success">Мероприятие:</span> "@ViewBag.EventName"</span>
+    }
 
-@if (Request.QueryString["EventId"] != null && !string.IsNullOrEmpty(ViewBag.EventName))
-{
-    <p class="text-info"><strong>Мероприятие: "@ViewBag.EventName"</strong></p>
-}
+    @if (Request.QueryString["PayerId"] != null && !string.IsNullOrEmpty(ViewBag.PayerFIO))
+    {
+        <span class="text-info payfilterlabel"><span class="label label-success">Плательщик:</span> @ViewBag.PayerFIO</span>
+    }
 
-@if (Request.QueryString["PayerId"] != null && !string.IsNullOrEmpty(ViewBag.PayerFIO))
-{
-    <p class="text-info"><strong>Плательщик: "@ViewBag.PayerFIO"</strong></p>
-}
+    @if (Request.QueryString["ClientId"] != null && !string.IsNullOrEmpty(ViewBag.ClientFIO))
+    {
+        <span class="text-info payfilterlabel"><span class="label label-success">Клиент:</span> @ViewBag.ClientFIO</span>
+    }
 
-@if (Request.QueryString["ClientId"] != null && !string.IsNullOrEmpty(ViewBag.ClientFIO))
-{
-    <p class="text-info"><strong>Клиент: "@ViewBag.ClientFIO"</strong></p>
-}
+</div>
 
 <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
     <tr>
@@ -138,7 +156,7 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td class="autofilter" data-payerid="@item.PayerId"  data-payername="@item.PayerPIB" data-fparam="payer">
+                <td class="autofilter" data-payerid="@item.PayerId" data-payername="@item.PayerPIB" data-fparam="payer">
                     @Html.ActionLink(@item.PayerPIB, "ShowPersons", "Home", new { PersonId = @item.PayerId }, null)
                 </td>
                 <td class="autofilter" data-clientid="@item.ClientId" data-clientname="@item.PIB" data-fparam="client">
@@ -174,6 +192,13 @@
         @:<hr />
         @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
         @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
+
+
+
+
+
+
+
 
         @Html.PagedListPager(Model, page => Url.Action("ShowAllPayments", "Home",
                                          new
@@ -243,7 +268,7 @@
             //Скрипт автофильтрации
             $('body').on('dblclick', '.autofilter', function (elem) {
 
-                   switch ($(this).data('fparam')) {
+                switch ($(this).data('fparam')) {
                     case 'payer':
                         $('#PayerId').val($(this).data('payerid'));
                         $('#pName').text($(this).data('payername'));
@@ -260,7 +285,6 @@
                 }
 
                 $('#paymentsform').submit();
-                $('#blinkicon').addClass('blink');
             });
         </script>
     }
