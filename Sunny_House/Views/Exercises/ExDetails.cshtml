@@ -35,7 +35,7 @@
                         Мероприятие
                     </dt>
                     <dd class="breakWord" style="max-width:200px;">
-                        @Html.DisplayFor(model => model.Event.EventName)
+                        @Html.ActionLink(Model.Event.EventName, "ResShowOfEvent", "Reserves", new { EventId = Model.Event.EventId }, null)
                     </dd>
                     <dt>
                         @Html.DisplayNameFor(model => model.Subject)

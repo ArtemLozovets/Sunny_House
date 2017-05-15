@@ -32,7 +32,11 @@
     <div class="col-lg-5 col-md-6">
         <div class="panel panel-default fixed FixedPanel" style="min-width:470px;" id="fixedpanel">
             <div class="panel-heading breakWord">
-                <strong>Мероприятие <em class="text-info"> @Html.DisplayFor(model => model.EventName)</em></strong>
+                <strong>
+                    Мероприятие: <em class="text-info">
+                        @Html.ActionLink(Model.EventName, "ExShow", "Exercises", new { EventId = Model.EventId }, new { title="Связанные занятия"})
+                    </em>
+                </strong>
             </div>
             <div class="panel-body">
                 <div class="text-center">

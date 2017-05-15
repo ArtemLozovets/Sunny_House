@@ -332,7 +332,7 @@ namespace Sunny_House.Controllers
             ViewData["ExerciseId"] = ExerciseId;
 
             ViewData["EndTime"] = Convert.ToDateTime(db.Exercises.FirstOrDefault(x => x.ExerciseId == ExerciseId).EndTime.ToString());
-            
+
             ViewBag.RoleList = db.PersonRoles.ToList();
 
             int pageSize = 50;
@@ -471,48 +471,18 @@ namespace Sunny_House.Controllers
 
             IEnumerable<PersonsViewModel> _persons;
 
-            if (FilterMode == "Reserve" || String.IsNullOrEmpty(FilterMode))
+            switch (FilterMode)
             {
-                _persons = (from reserve in db.Reserves
-                            join person in db.Persons on reserve.PersonId equals person.PersonId
-                            join _event in db.Events on reserve.EventId equals _event.EventId
-                            join _ex in db.Exercises on _event.EventId equals _ex.EventId
-                            where (_ex.ExerciseId == ExerciseId || ExerciseId == null) &&
-                            (person.FirstName.Contains(SearchString) 
-                                || person.LastName.Contains(SearchString) 
-                                || person.Note.Contains(SearchString)
-                                || person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(SearchString))
-                                || string.IsNullOrEmpty(SearchString))
-                            select new
-                            {
-                                PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
-                                PersonId = person.PersonId,
-                                DateOfBirth = person.DateOfBirth,
-                                RoleId = reserve.RoleId,
-                                Note = person.Note
-                            }).AsEnumerable().Select(p => new PersonsViewModel
-                            {
-                                PersonFIO = p.PersonFIO.TrimStart(),
-                                PersonId = p.PersonId,
-                                PersonAge = AgeMethods.GetAge(p.DateOfBirth),
-                                PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
-                                DateOfBirth = p.DateOfBirth,
-                                RoleId = p.RoleId,
-                                Note = p.Note
-                            });
-            }
-
-            if(FilterMode == "Potential")
-            {
-                _persons = (from pot in db.PotentialСlients
-                            join person in db.Persons on pot.PersonId equals person.PersonId
-                            join ev in db.Events on pot.EventId equals ev.EventId
-                            where (ev.Exercise.Any(z=>z.ExerciseId == ExerciseId))
-                                    && (person.FirstName.Contains(SearchString)
-                                        || person.LastName.Contains(SearchString)
-                                        || person.Note.Contains(SearchString)
-                                        || person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(SearchString))
-                                        || string.IsNullOrEmpty(SearchString))
+                case "Potential":
+                    _persons = (from pot in db.PotentialСlients
+                                join person in db.Persons on pot.PersonId equals person.PersonId
+                                join ev in db.Events on pot.EventId equals ev.EventId
+                                where (ev.Exercise.Any(z => z.ExerciseId == ExerciseId))
+                                        && (person.FirstName.Contains(SearchString)
+                                            || person.LastName.Contains(SearchString)
+                                            || person.Note.Contains(SearchString)
+                                            || person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(SearchString))
+                                            || string.IsNullOrEmpty(SearchString))
                                 select new
                                 {
                                     PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
@@ -528,11 +498,10 @@ namespace Sunny_House.Controllers
                                     DateOfBirth = p.DateOfBirth,
                                     Note = p.Note
                                 });
-            }
+                    break;
 
-            else
-            {
-                _persons = (from person in db.Persons
+                case "All":
+                     _persons = (from person in db.Persons
                             where (person.FirstName.Contains(SearchString)
                                 || person.LastName.Contains(SearchString)
                                 || person.Note.Contains(SearchString)
@@ -553,6 +522,37 @@ namespace Sunny_House.Controllers
                                  DateOfBirth = p.DateOfBirth,
                                  Note = p.Note
                              });
+                    break;
+                
+                default:
+                    _persons = (from reserve in db.Reserves
+                                join person in db.Persons on reserve.PersonId equals person.PersonId
+                                join _event in db.Events on reserve.EventId equals _event.EventId
+                                join _ex in db.Exercises on _event.EventId equals _ex.EventId
+                                where (_ex.ExerciseId == ExerciseId || ExerciseId == null) &&
+                                (person.FirstName.Contains(SearchString)
+                                    || person.LastName.Contains(SearchString)
+                                    || person.Note.Contains(SearchString)
+                                    || person.PersonCommunication.Select(ss => ss.Communication).Any(zz => zz.Address_Number.Contains(SearchString))
+                                    || string.IsNullOrEmpty(SearchString))
+                                select new
+                                {
+                                    PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
+                                    PersonId = person.PersonId,
+                                    DateOfBirth = person.DateOfBirth,
+                                    RoleId = reserve.RoleId,
+                                    Note = person.Note
+                                }).AsEnumerable().Select(p => new PersonsViewModel
+                                {
+                                    PersonFIO = p.PersonFIO.TrimStart(),
+                                    PersonId = p.PersonId,
+                                    PersonAge = AgeMethods.GetAge(p.DateOfBirth),
+                                    PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
+                                    DateOfBirth = p.DateOfBirth,
+                                    RoleId = p.RoleId,
+                                    Note = p.Note
+                                });
+                    break;
             }
 
             switch (SortBy)

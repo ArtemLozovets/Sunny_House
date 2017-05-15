@@ -157,6 +157,8 @@
                     SearchStartDate = Request.QueryString["SearchStartDate"],
                     SearchEndDate = Request.QueryString["SearchEndDate"],
                     SearchString = Request["SearchString"],
+                    EventId = Request.QueryString["EventId"],
+                    ExerciseId = Request.QueryString["ExerciseId"],
                     ReturnUrl = ViewData["ReturnUrl"],
                     SortBy = ViewBag.SortSubject
                 },
@@ -170,6 +172,8 @@
                     SearchStartDate = Request.QueryString["SearchStartDate"],
                     SearchEndDate = Request.QueryString["SearchEndDate"],
                     SearchString = Request["SearchString"],
+                    EventId = Request.QueryString["EventId"],
+                    ExerciseId = Request.QueryString["ExerciseId"],
                     ReturnUrl = ViewData["ReturnUrl"],
                     SortBy = ViewBag.SortEventName
                 },
@@ -183,6 +187,8 @@
                     SearchStartDate = Request.QueryString["SearchStartDate"],
                     SearchEndDate = Request.QueryString["SearchEndDate"],
                     SearchString = Request["SearchString"],
+                    EventId = Request.QueryString["EventId"],
+                    ExerciseId = Request.QueryString["ExerciseId"],
                     ReturnUrl = ViewData["ReturnUrl"],
                     SortBy = ViewBag.SortStartTime
                 },
@@ -196,6 +202,8 @@
                     SearchStartDate = Request.QueryString["SearchStartDate"],
                     SearchEndDate = Request.QueryString["SearchEndDate"],
                     SearchString = Request["SearchString"],
+                    EventId = Request.QueryString["EventId"],
+                    ExerciseId = Request.QueryString["ExerciseId"],
                     ReturnUrl = ViewData["ReturnUrl"],
                     SortBy = ViewBag.SortEndTime
                 },
@@ -226,7 +234,7 @@
                         @Html.DisplayFor(modelItem => item.Subject)
                     </td>
                     <td class="autofilter" data-eventid="@item.Event.EventId" data-eventname="@item.Event.EventName" data-fparam="event">
-                        @Html.ActionLink(item.Event.EventName, "ResShowOfEvent", "Reserves", new { EventId = item.EventId }, new { target = "_blank" })
+                        @Html.ActionLink(item.Event.EventName, "ResShowOfEvent", "Reserves", new { EventId = item.EventId }, new { target = "_self" })
                     </td>
                     <td style="text-align:center;" class="autofilter" data-starttime="@Convert.ToDateTime(item.StartTime).ToString("dd'/'MM'/'yyyy")" data-fparam="starttime">
                         @Html.DisplayFor(modelItem => item.StartTime)
@@ -264,6 +272,8 @@
                                  SearchStartDate = Request.QueryString["SearchStartDate"],
                                  SearchEndDate = Request.QueryString["SearchEndDate"],
                                  SearchString = Request.QueryString["SearchString"],
+                                 EventId = Request.QueryString["EventId"],
+                                 ExerciseId = Request.QueryString["ExerciseId"],
                                  ReturnUrl = ViewData["ReturnUrl"],
                                  page,
                                  SortBy = Request["SortBy"]
