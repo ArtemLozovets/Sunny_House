@@ -32,7 +32,7 @@
                 @Html.DisplayFor(modelItem => item.Subject)
             </td>
             <td>
-                @Html.ActionLink(item.Event.EventName, "ResShowOfEvent", "Reserves", new { EventId = item.Event.EventId }, new { target = "_blank" })
+                @Html.ActionLink(item.Event.EventName, "ResShowOfEvent", "Reserves", new { EventId = item.Event.EventId }, new { target = "_self" })
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartTime)

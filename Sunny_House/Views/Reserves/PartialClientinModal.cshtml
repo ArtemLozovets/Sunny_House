@@ -35,7 +35,7 @@
     {
         <tr>
             <td>
-                @Html.ActionLink(item.PersonFIO, "ShowPersons", "Home", new { PersonId = item.PersonId }, new { target = "_blank" })
+                @Html.ActionLink(item.PersonFIO, "ShowPersons", "Home", new { PersonId = item.PersonId }, new { target = "_self" })
             </td>
             @if (item.PersonAge != null && item.PersonAge > 0)
             {

@@ -59,14 +59,14 @@
                 <a class="btn btn-default btn-sm BTPay"
                    title="Добавить платеж"
                    style="display:inline-block;"
-                   target="_blank"
+                   target="_self"
                    href='@Url.Action("AddPayment", "Home", new {EventId = item.EventId, ClientId = item.VisitorId, PDate = item.StartTime })'>
                     +<span class="glyphicon glyphicon-usd"></span>
                 </a>
 
                 <a class="btn btn-default btn-sm"
                    title="Добавить отзыв"
-                   target="_blank"
+                   target="_self"
                    style="display:inline-block;"
                    href='@Url.Action("CommentCreate", "Comments", new { SignPersonId = item.VisitorId, ExerciseId = item.ExerciseId, Date1 = ViewData["EndTime"] })'>
                     <span class="glyphicon glyphicon-comment"></span>

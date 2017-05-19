@@ -56,7 +56,7 @@
         <dd>
             @if (Model.SignPersonId != 0)
             {
-                @Html.ActionLink(Model.SignPersonFIO, "ShowPersons", "Home", new { PersonId = Model.SignPersonId }, new { target = "_blank" })
+                @Html.ActionLink(Model.SignPersonFIO, "ShowPersons", "Home", new { PersonId = Model.SignPersonId }, new { target = "_self" })
             }
         </dd>
 
@@ -68,7 +68,7 @@
 
             @if (Model.AboutPersonId != 0)
             {
-                @Html.ActionLink(Model.AboutPersonFIO, "ShowPersons", "Home", new { PersonId = Model.AboutPersonId }, new { target = "_blank" })
+                @Html.ActionLink(Model.AboutPersonFIO, "ShowPersons", "Home", new { PersonId = Model.AboutPersonId }, new { target = "_self" })
             }
         </dd>
 
@@ -78,7 +78,7 @@
         <dd>
             @if (Model.Event != null)
             {
-                @Html.ActionLink(Model.Event.EventName, "ResShowOfEvent", "Reserves", new { EventId = Model.Event.EventId }, new { target = "_blank" })
+                @Html.ActionLink(Model.Event.EventName, "ResShowOfEvent", "Reserves", new { EventId = Model.Event.EventId }, new { target = "_self" })
             }
         </dd>
 
@@ -88,7 +88,7 @@
         <dd>
             @if (Model.Exercise != null)
             {
-                @Html.ActionLink(Model.Exercise.Subject, "ExDetails", "Exercises", new { ObjectId = Model.Exercise.ExerciseId }, new { target = "_blank" })
+                @Html.ActionLink(Model.Exercise.Subject, "ExDetails", "Exercises", new { ObjectId = Model.Exercise.ExerciseId }, new { target = "_self" })
             }
         </dd>
 
@@ -99,7 +99,7 @@
         <dd>
             @if (Model.Address != null)
             {
-                @Html.ActionLink(Model.Address.Alias, "AdDetails", "Addresses", new { Id = Model.Address.AddressId }, new { target = "_blank" })
+                @Html.ActionLink(Model.Address.Alias, "AdDetails", "Addresses", new { Id = Model.Address.AddressId }, new { target = "_self" })
             }
         </dd>
 

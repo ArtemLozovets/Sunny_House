@@ -29,14 +29,14 @@
                         <a class="btn btn-default btn-sm hidebtn"
                            title="Добавить отзыв"
                            style="margin-top:-6px;"
-                           target="_blank"
+                           target="_self"
                            href='@Url.Action("CommentCreate", "Comments", new { SignPersonId = Model.PersonId })'>
                             <i class="glyphicon glyphicon-comment"></i>
                         </a>
                         <a class="btn btn-default btn-sm hidebtn"
                            title="Редактировать"
                            style="margin-top:-6px;"
-                           target="_blank"
+                           target="_self"
                            href='@Url.Action("ShowPersons", "Home", new { PersonId = Model.PersonId })'>
                             <i class="glyphicon glyphicon-edit"></i>
                         </a>
@@ -127,7 +127,7 @@
                         <a class="btn btn-default btn-sm hidebtn"
                            title="Все отзывы..."
                            style="margin-top:-6px;"
-                           target="_blank"
+                           target="_self"
                            href='@Url.Action("CommentShow", "Comments", new { SignPersonId = Model.PersonId, Mode = "RelComment" })'>
                             <i class="glyphicon glyphicon-new-window"></i>
                         </a>
@@ -174,7 +174,7 @@
                         <a class="btn btn-default btn-sm hidebtn"
                            title="Все посещения..."
                            style="margin-top:-6px;"
-                           target="_blank"
+                           target="_self"
                            href='@Url.Action("VisShow", "Visits", new { VisitorId = Model.PersonId })'>
                             <i class="glyphicon glyphicon-new-window"></i>
                         </a>
@@ -207,13 +207,13 @@
                             }
                             <tr style="@css">
                                 <td style="vertical-align:top !important">
-                                    @Html.ActionLink(@item.ExName, "ExShow", "Exercises", new { ExerciseId = @item.ExerciseId }, new { target = "_blank" })
+                                    @Html.ActionLink(@item.ExName, "ExShow", "Exercises", new { ExerciseId = @item.ExerciseId }, new { target = "_self" })
                                 </td>
                                 <td style="text-align:center; vertical-align:top !important">
                                     @Html.DisplayFor(modelItem => item.StartTime)
                                 </td>
                                 <td style="max-width:100px; vertical-align:top !important">
-                                    @Html.ActionLink(@item.EventName, "ResShowOfEvent", "Reserves", new { EventId = @item.EventId }, new { target = "_blank" })
+                                    @Html.ActionLink(@item.EventName, "ResShowOfEvent", "Reserves", new { EventId = @item.EventId }, new { target = "_self" })
                                 </td>
                                 <td class="breakWord" style="max-width:300px; vertical-align:top !important; text-align:justify;">
                                     @Html.DisplayFor(modelItem => item.Note)

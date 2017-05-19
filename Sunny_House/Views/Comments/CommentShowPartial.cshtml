@@ -131,7 +131,7 @@
             <td style="vertical-align:top !important">
                 @if (item.SignPersonId != 0)
                 {
-                    @Html.ActionLink(item.SignPersonFIO, "ShowPersons", "Home", new { PersonId = @item.SignPersonId }, new { target = "_blank" })
+                    @Html.ActionLink(item.SignPersonFIO, "ShowPersons", "Home", new { PersonId = @item.SignPersonId }, new { target = "_self" })
                 }
             </td>
 
@@ -147,28 +147,28 @@
                 @if (item.AboutPersonId != 0)
                 {
                     <span>
-                        О персоне: @Html.ActionLink(item.AboutPersonFIO, "ShowPersons", "Home", new { PersonId = @item.AboutPersonId }, new { target = "_blank" })
+                        О персоне: @Html.ActionLink(item.AboutPersonFIO, "ShowPersons", "Home", new { PersonId = @item.AboutPersonId }, new { target = "_self" })
                     </span><br />
                 }
 
                 @if (item.Event != null)
                 {
                     <span>
-                        О мероприятии: @Html.ActionLink(item.Event.EventName, "ResShowOfEvent", "Reserves", new { EventId = @item.Event.EventId }, new { target = "_blank" })
+                        О мероприятии: @Html.ActionLink(item.Event.EventName, "ResShowOfEvent", "Reserves", new { EventId = @item.Event.EventId }, new { target = "_self" })
                     </span> <br />
                 }
 
                 @if (item.Exercise != null)
                 {
                     <span>
-                        О занятии: @Html.ActionLink(item.Exercise.Subject, "ExDetails", "Exercises", new { ObjectId = @item.Exercise.ExerciseId }, new { target = "_blank" })
+                        О занятии: @Html.ActionLink(item.Exercise.Subject, "ExDetails", "Exercises", new { ObjectId = @item.Exercise.ExerciseId }, new { target = "_self" })
                     </span> <br />
                 }
 
                 @if (item.Address != null)
                 {
                     <span>
-                        О месте: @Html.ActionLink(item.Address.Alias, "AdDetails", "Addresses", new { Id = @item.Address.AddressId }, new { target = "_blank" })
+                        О месте: @Html.ActionLink(item.Address.Alias, "AdDetails", "Addresses", new { Id = @item.Address.AddressId }, new { target = "_self" })
                     </span>
                 }
             </td>
