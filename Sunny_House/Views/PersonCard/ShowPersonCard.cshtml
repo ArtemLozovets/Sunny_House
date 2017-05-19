@@ -147,7 +147,7 @@
                 <div class="panel-body">
                     <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
                         <tr>
-                            <th></th>
+                            <th style="width:140px;"></th>
                             <th>Отзыв</th>
                         </tr>
                         @if (Model.CommentList.Count() == 0)
@@ -161,7 +161,7 @@
                         @foreach (var item in Model.CommentList)
                         {
                             <tr>
-                                <td style="text-align:center; vertical-align:top !important; max-width:70px;">
+                                <td style="text-align:center; vertical-align:top !important;">
                                     @if (!string.IsNullOrWhiteSpace(item.SignPersonFIO))
                                     {
                                         <span style="padding:10px 0; font-weight:bold">@item.SignPersonFIO</span><br />
