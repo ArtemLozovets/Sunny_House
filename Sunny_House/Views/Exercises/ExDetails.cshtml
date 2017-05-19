@@ -142,7 +142,7 @@
                             @using (Ajax.BeginForm("PersonsPartialList", "Visits", new { @ExerciseId = @Model.ExerciseId }, new AjaxOptions { UpdateTargetId = "update1", LoadingElementId = "loadingImg" }, new { @id = "personform" }))
                             {
                                 <div class="row">
-                                    @Html.RadioButton("FilterMode", "Reserve", true, new { id="rb1" })@Html.Raw("&nbsp;")<label for="rb1" style="margin-right:10px;">Бронь</label>
+                                    @Html.RadioButton("FilterMode", "Reserve", true, new { id = "rb1" })@Html.Raw("&nbsp;")<label for="rb1" style="margin-right:10px;">Бронь</label>
                                     @Html.RadioButton("FilterMode", "Potential", new { id = "rb2" })@Html.Raw("&nbsp;")<label for="rb2" style="margin-right:10px;">Потенциальные клиенты</label>
                                     @Html.RadioButton("FilterMode", "All", new { id = "rb3" })@Html.Raw("&nbsp;")<label for="rb3"> Все</label>
                                 </div>
@@ -326,7 +326,7 @@
 
     </script>
 
-    <script type="text/javascript">
+    <script>
         //Сохраняем значение поля "Информация" при потере фокуса поля ввода
         $('body').on('focusout', '#noteTA', function (e) {
             $(this).next().trigger('click');
@@ -457,7 +457,7 @@
         });
     </script>
 
-    <script type="text/javascript">
+    <script>
         //Сохраняем значение поля "Примечание" (посетители) при потере фокуса поля ввода
         $('body').on('focusout', '.notesVIS', function (e) {
             $(this).next().trigger('click');
@@ -500,4 +500,61 @@
         });
     </script>
 
+    <script>
+
+        //Скрипт обновления полей "Примечание" вкладки "Подбор посетителей"
+        //Метод "AjaxUpdatePreInfoes" контроллера "ExercisesController"
+
+        $('body').on('focusout', '.preInfoesInput', function (e) {
+            $(this).next().trigger('click');
+        });
+
+                
+        $('body').on('click', '.preInfoesBtn', function (event) {
+            event.preventDefault();
+            var elem = $(this).prev();
+            var _infoes = elem.val();
+            var _fmode = $(this).data('fmode');
+
+            switch ($(this).data('fmode')) {
+                case 'reserve':
+                    var _entityId = $(this).data('resid');
+                    break;
+                case 'potential':
+                    var _entityId = $(this).data('potid');
+                    break;
+                default:
+                    return;
+            }
+
+            $('#loadingImg').show();
+            $.ajax({
+                type: 'POST',
+                traditional: true,
+                url: '/Exercises/AjaxUpdatePreInfoes/',
+                data: {
+                    EntityId: _entityId,
+                    FilterMode: _fmode,
+                    Infoes: _infoes
+                },
+                success: function (data) {
+                    $('#loadingImg').hide();
+                    if (data.Result) {
+                        //Обновляем грид
+                        elem.css('background-color', '#DDFFDD');
+                    }
+                    else {
+                        //Операция не удалась
+                        elem.css('background-color', '#FFDDDD');
+                    }
+
+                },
+                fail: function (data) {
+                    //Операция не удалась
+                    $('#loadingImg').hide();
+                    elem.css('background-color', '#FFDDDD');
+                }
+            });
+        });
+    </script>
 }

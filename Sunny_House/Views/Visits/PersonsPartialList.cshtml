@@ -11,7 +11,7 @@
 
 <table class="table ModalTable" id="PPLTable">
     <tr>
-        <th>
+        <th style="min-width:90px;">
             @Ajax.ActionLink("Персона", "PersonsPartialList", new
        {
            SortBy = ViewBag.SortPersonFIO,
@@ -75,7 +75,22 @@
             }
 
             <td>
-                @Html.DisplayFor(modelItem => item.Note)
+                @if (ViewData["FMode"] == "all")
+                {
+                    @Html.DisplayFor(modelItem => item.Note)
+                }
+                else
+                {
+                    <div class="input-group" style="width:200px; ">
+                        <textarea class="form-control custom-control preInfoesInput" rows="1" cols="200">@item.Note</textarea>
+                        <span class="input-group-addon btn btn-default glyphicon glyphicon-floppy-save preInfoesBtn" 
+                              title="Сохранить" 
+                              data-potid="@item.PotentialId" 
+                              data-resid="@item.ReserveId" 
+                              data-fmode="@ViewData["FMode"]">
+                        </span>
+                    </div>
+                }
             </td>
 
             <td>

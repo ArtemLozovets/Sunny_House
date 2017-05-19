@@ -488,7 +488,8 @@ namespace Sunny_House.Controllers
                                     PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
                                     PersonId = person.PersonId,
                                     DateOfBirth = person.DateOfBirth,
-                                    Note = person.Note
+                                    Note = pot.Infoes,
+                                    PotentialId = pot.ClientId
                                 }).AsEnumerable().Select(p => new PersonsViewModel
                                 {
                                     PersonFIO = p.PersonFIO.TrimStart(),
@@ -496,8 +497,11 @@ namespace Sunny_House.Controllers
                                     PersonAge = AgeMethods.GetAge(p.DateOfBirth),
                                     PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
                                     DateOfBirth = p.DateOfBirth,
-                                    Note = p.Note
+                                    Note = p.Note,
+                                    PotentialId = p.PotentialId
                                 });
+
+                    ViewData["FMode"] = "potential";
                     break;
 
                 case "All":
@@ -522,6 +526,7 @@ namespace Sunny_House.Controllers
                                  DateOfBirth = p.DateOfBirth,
                                  Note = p.Note
                              });
+                     ViewData["FMode"] = "all";
                     break;
                 
                 default:
@@ -541,7 +546,8 @@ namespace Sunny_House.Controllers
                                     PersonId = person.PersonId,
                                     DateOfBirth = person.DateOfBirth,
                                     RoleId = reserve.RoleId,
-                                    Note = person.Note
+                                    Note = reserve.Note,
+                                    ReserveId = reserve.ReserveId
                                 }).AsEnumerable().Select(p => new PersonsViewModel
                                 {
                                     PersonFIO = p.PersonFIO.TrimStart(),
@@ -550,8 +556,10 @@ namespace Sunny_House.Controllers
                                     PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
                                     DateOfBirth = p.DateOfBirth,
                                     RoleId = p.RoleId,
-                                    Note = p.Note
+                                    Note = p.Note,
+                                    ReserveId = p.ReserveId
                                 });
+                    ViewData["FMode"] = "reserve";
                     break;
             }
 

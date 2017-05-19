@@ -37,7 +37,7 @@
                            title="Редактировать"
                            style="margin-top:-6px;"
                            target="_self"
-                           href='@Url.Action("ShowPersons", "Home", new { PersonId = Model.PersonId })'>
+                           href='@Url.Action("PersonEdit", "Home", new { PersonId = Model.PersonId })'>
                             <i class="glyphicon glyphicon-edit"></i>
                         </a>
                     </span>
@@ -79,6 +79,15 @@
             <div class="panel-heading">
                 <h4 class="panel-title">
                     <a data-toggle="collapse" href="#colrel">Связанные персоны</a>
+                    <span style="display:inline-block; float:right;">
+                        <a class="btn btn-default btn-sm hidebtn"
+                           title="Список персон"
+                           style="margin-top:-6px;"
+                           target="_self"
+                           href='@Url.Action("ShowPersons", "Home", new { PersonId = Model.PersonId })'>
+                            <i class="glyphicon glyphicon-new-window"></i>
+                        </a>
+                    </span>
                 </h4>
             </div>
             <div id="colrel" class="panel-collapse collapse in">
@@ -153,7 +162,10 @@
                         {
                             <tr>
                                 <td style="text-align:center; vertical-align:top !important; max-width:70px;">
-                                    <span style="padding:10px 0; font-weight:bold">@item.SignPersonFIO</span><br/>
+                                    @if (!string.IsNullOrWhiteSpace(item.SignPersonFIO))
+                                    {
+                                        <span style="padding:10px 0; font-weight:bold">@item.SignPersonFIO</span><br />
+                                    }
                                     <span>@item.Date</span>
                                 </td>
                                 <td>

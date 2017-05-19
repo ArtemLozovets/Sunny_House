@@ -28,7 +28,7 @@ namespace Sunny_House.Controllers
             if (EventId != null)
             {
                 ViewData["EventId"] = EventId;
-                ViewBag.EventName = db.Events.FirstOrDefault(e => e.EventId == EventId).EventName.ToString(); 
+                ViewBag.EventName = db.Events.FirstOrDefault(e => e.EventId == EventId).EventName.ToString();
             }
 
             if (ExerciseId != null)
@@ -85,11 +85,11 @@ namespace Sunny_House.Controllers
                         break;
 
                     case "All":
-                        _exercises = _exercises.OrderByDescending(e=>e.StartTime);
+                        _exercises = _exercises.OrderByDescending(e => e.StartTime);
                         break;
 
                     case "Archive":
-                        _exercises = _exercises.Where(e => e.EndTime < DateTime.Now).OrderByDescending(e=>e.StartTime);
+                        _exercises = _exercises.Where(e => e.EndTime < DateTime.Now).OrderByDescending(e => e.StartTime);
                         break;
 
                     default:
@@ -173,7 +173,7 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Exercises/Create
-         [Authorize(Roles = "Administrator, User")]
+        [Authorize(Roles = "Administrator, User")]
         public ActionResult ExCreate(int? AddressId, string ReturnUrl)
         {
             string _returnurl = (!String.IsNullOrEmpty(ReturnUrl)) ? ReturnUrl : "/Exercises/ExShow";
@@ -510,7 +510,7 @@ namespace Sunny_House.Controllers
                 {
                     return Json(new { Result = false, Message = "Удаление невозможно! \nУказанный объект отсутствует в базе данных." }, JsonRequestBehavior.AllowGet);
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -547,6 +547,57 @@ namespace Sunny_House.Controllers
             }
         }
 
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator, User")]
+        public JsonResult AjaxUpdatePreInfoes(int? EntityId, string Infoes, string FilterMode)
+        {
+            if (EntityId == null || String.IsNullOrEmpty(FilterMode) || FilterMode == "all")
+            {
+                return Json(new { Result = false }, JsonRequestBehavior.AllowGet);
+            }
+            try
+            {
+
+                switch (FilterMode)
+                {
+                    case "potential":
+                        PotentialСlient _client = db.PotentialСlients.FirstOrDefault(x => x.ClientId == EntityId);
+                        if (_client == null)
+                        {
+                            return Json(new { Result = false }, JsonRequestBehavior.AllowGet);
+                        }
+
+                        _client.Infoes = Infoes;
+
+                        db.Entry(_client).State = EntityState.Modified;
+                        db.SaveChanges();
+                        break;
+
+                    case "reserve":
+                        Reserve _reserve = db.Reserves.FirstOrDefault(x => x.ReserveId == EntityId);
+                        if (_reserve == null)
+                        {
+                            return Json(new { Result = false }, JsonRequestBehavior.AllowGet);
+                        }
+
+                        _reserve.Note = Infoes;
+
+                        db.Entry(_reserve).State = EntityState.Modified;
+                        db.SaveChanges();
+                        break;
+
+                    default:
+                        break;
+                }
+
+                return Json(new { Result = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { Result = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         protected override void Dispose(bool disposing)
         {

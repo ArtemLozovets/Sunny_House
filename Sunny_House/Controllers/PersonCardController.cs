@@ -103,7 +103,7 @@ namespace Sunny_House.Controllers
 
 
             List<Comment> _commentlist = (from relation in db.PersonRelations.Where(x => x.RelPersonId == PersonId || x.PersonId == PersonId)
-                                          from comment in db.Comments.Where(x => x.SignPersonId == relation.RelPersonId || x.SignPersonId == relation.PersonId)
+                                          from comment in db.Comments.Where(x => x.SignPersonId == relation.RelPersonId || x.SignPersonId == relation.PersonId || x.AboutPersonId == PersonId)
                                           select new
                                           {
                                               Date = comment.Date,

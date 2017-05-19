@@ -55,8 +55,14 @@ namespace Sunny_House.Models
 
         public int? RoleId { get; set; }
 
+        public int? ReserveId { get; set; }
+
+        public int? PotentialId { get; set; }
+
         [Display(Name = "Номер/Адрес")]
         public List<string> Address_Num { get; set; }
+
+
 
 
     }
