@@ -131,7 +131,7 @@
             <td style="vertical-align:top !important">
                 @if (item.SignPersonId != 0)
                 {
-                    @Html.ActionLink(item.SignPersonFIO, "ShowPersons", "Home", new { PersonId = @item.SignPersonId }, new { target = "_self" })
+                    <a href="#topanchor" class="showRelPersons" data-personid="@item.SignPersonId" title="Карточка персоны">@Html.DisplayFor(modelItem => item.SignPersonFIO)</a>
                 }
             </td>
 
@@ -147,7 +147,7 @@
                 @if (item.AboutPersonId != 0)
                 {
                     <span>
-                        О персоне: @Html.ActionLink(item.AboutPersonFIO, "ShowPersons", "Home", new { PersonId = @item.AboutPersonId }, new { target = "_self" })
+                        О персоне: <a href="#topanchor" class="showRelPersons" data-personid="@item.AboutPersonId" title="Карточка персоны">@Html.DisplayFor(modelItem => item.AboutPersonFIO)</a>
                     </span><br />
                 }
 
