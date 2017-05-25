@@ -1,7 +1,7 @@
-﻿@model Sunny_House.Models.Reserve
+﻿@model Sunny_House.Models.PotentialСlient
 
 @{
-    ViewBag.Title = "Бронирования - Добавление";
+    ViewBag.Title = "Потенциальные клиенты - Добавление";
 }
 
 <h2><i class="fa fa-user-circle"></i> @ViewData["PersonFIO"]</h2>
@@ -17,12 +17,12 @@
     <div id="dialogContent" class="modal-dialog" style="width:660px;"></div>
 </div>
 
-@using (Html.BeginForm("ResCreate", "Reserves", FormMethod.Post, new { id = "ReserveForm" }))
+@using (Html.BeginForm("PCCreate", "PotentialClient", FormMethod.Post, new { id = "ReserveForm" }))
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>Добавить бронь</h4>
+        <h4>Добавление клиента</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
@@ -49,10 +49,10 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Infoes, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Infoes, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Infoes, "", new { @class = "text-danger" })
             </div>
         </div>
 

@@ -278,6 +278,8 @@ namespace Sunny_House.Models
         [Display(Name = "Мероприятие")]
         public string EventName { get; set; }
 
+        public int EventId { get; set; }
+
         [Display(Name = "Мест всего")]
         public int FreePlaces { get; set; }
 

@@ -44,6 +44,7 @@ namespace Sunny_House.Controllers
                                  ReserveId = reserves.ReserveId,
                                  PersonId = person.PersonId,
                                  EventName = _event.EventName,
+                                 EventId = _event.EventId,
                                  RoleName = role.RoleName,
                                  Note = reserves.Note
                              }
@@ -58,6 +59,7 @@ namespace Sunny_House.Controllers
                     ReserveId = item.ReserveId,
                     EventName = item.EventName,
                     RoleName = item.RoleName,
+                    EventId = item.EventId,
                     Note = item.Note
                 };
                 _resviewModelList.Add(_reserveViewModel);

@@ -199,7 +199,7 @@
     <Compile Include="Controllers\PersonCardController.cs" />
     <Compile Include="Controllers\PersonRelationsController.cs" />
     <Compile Include="Controllers\PersonRolesController.cs" />
-    <Compile Include="Controllers\PotentialСlientController.cs" />
+    <Compile Include="Controllers\PotentialClientController.cs" />
     <Compile Include="Controllers\ReservesController.cs" />
     <Compile Include="Controllers\StatisticController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
@@ -519,11 +519,11 @@
     <Content Include="Views\Reserves\ResShowAll.cshtml" />
     <Content Include="Views\Events\ResRelPersonsPartial.cshtml" />
     <Content Include="Views\Reserves\ResShowOfEvent.cshtml" />
-    <Content Include="Views\PotentialСlient\Create.cshtml" />
-    <Content Include="Views\PotentialСlient\Delete.cshtml" />
-    <Content Include="Views\PotentialСlient\Details.cshtml" />
-    <Content Include="Views\PotentialСlient\Edit.cshtml" />
-    <Content Include="Views\PotentialСlient\Index.cshtml" />
+    <Content Include="Views\PotentialClient\PCCreate.cshtml" />
+    <Content Include="Views\PotentialClient\Delete.cshtml" />
+    <Content Include="Views\PotentialClient\Details.cshtml" />
+    <Content Include="Views\PotentialClient\Edit.cshtml" />
+    <Content Include="Views\PotentialClient\Index.cshtml" />
     <Content Include="Views\Reserves\ShowPotentialPartial.cshtml" />
     <Content Include="Views\Reserves\ShowModalClient.cshtml" />
     <Content Include="Views\Reserves\PartialClientinModal.cshtml" />

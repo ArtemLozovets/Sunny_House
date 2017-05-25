@@ -16,7 +16,8 @@
 
 <div class="row">
     <div class="col-md-6">
-        <a class="btn btn-default" style="margin:2px 2px;" title="Добавить бронь" href='@Url.Action("ResCreate", "Reserves", new {PersonId = Request.QueryString["PersonId"] })'><span class="glyphicon glyphicon-education"> Добавить бронь</span></a>
+        <a class="btn btn-default" style="margin:2px 2px;" title="Добавить бронь" href='@Url.Action("ResCreate", "Reserves", new {PersonId = Request.QueryString["PersonId"] })'><span class="glyphicon glyphicon-plus"></span> Бронь</a>
+        <a class="btn btn-default" style="margin:2px 2px;" title="Добавить в список потенциальных клиентов" href='@Url.Action("PCCreate", "PotentialClient", new { PersonId = Request.QueryString["PersonId"] })'><span class="glyphicon glyphicon-plus"></span> Потенциальный клиент</a>
     </div>
 </div>
 
@@ -47,7 +48,7 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.EventName)
+                @Html.ActionLink(item.EventName, "ResShowOfEvent", "Reserves", new { EventId = item.EventId }, new { target = "_self"})
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.RoleName)
