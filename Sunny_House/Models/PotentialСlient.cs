@@ -32,5 +32,13 @@
         public virtual Event Event { get; set; }
         public virtual Person Person { get; set; }
         public virtual PersonRole PersonRole { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Мероприятие")]
+        public string EventName { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Роль")]
+        public string RoleName { get; set; }
     }
 }

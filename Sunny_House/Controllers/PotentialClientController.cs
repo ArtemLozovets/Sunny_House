@@ -111,8 +111,9 @@ namespace Sunny_House.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.EventId = new SelectList(db.Events, "EventId", "EventName", potentialСlient.EventId);
-            ViewBag.PersonId = new SelectList(db.Persons, "PersonId", "FirstName", potentialСlient.PersonId);
+            Person _person = db.Persons.FirstOrDefault(p => p.PersonId == potentialСlient.PersonId);
+            ViewData["PersonFIO"] = string.Format("{0} {1} {2}", _person.FirstName, _person.LastName, _person.MiddleName);
+            ViewData["EventName"] = potentialСlient.Event.EventName;
             ViewBag.RoleId = new SelectList(db.PersonRoles, "RoleId", "RoleName", potentialСlient.RoleId);
             return View(potentialСlient);
         }
@@ -121,18 +122,30 @@ namespace Sunny_House.Controllers
         [HttpPost]
         [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ClientId,PersonId,EventId,RoleId,Note")] PotentialСlient potentialСlient)
+        public ActionResult Edit([Bind(Include = "ClientId,PersonId,EventId,RoleId,Infoes")] PotentialСlient potentialСlient)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Entry(potentialСlient).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.Entry(potentialСlient).State = EntityState.Modified;
+                    db.SaveChanges();
+                    TempData["MessageOk"] = "Информация успешно изменена";
+                    return RedirectToAction("ResShow", "Reserves", new { PersonId = potentialСlient.PersonId });
+                }
+                ViewBag.EventId = new SelectList(db.Events, "EventId", "EventName", potentialСlient.EventId);
+                ViewBag.PersonId = new SelectList(db.Persons, "PersonId", "FirstName", potentialСlient.PersonId);
+                ViewBag.RoleId = new SelectList(db.PersonRoles, "RoleId", "RoleName", potentialСlient.RoleId);
+                return View(potentialСlient);
             }
-            ViewBag.EventId = new SelectList(db.Events, "EventId", "EventName", potentialСlient.EventId);
-            ViewBag.PersonId = new SelectList(db.Persons, "PersonId", "FirstName", potentialСlient.PersonId);
-            ViewBag.RoleId = new SelectList(db.PersonRoles, "RoleId", "RoleName", potentialСlient.RoleId);
-            return View(potentialСlient);
+            catch (Exception ex)
+            {
+                ViewBag.ErMes = ex.Message;
+                ViewBag.ErStack = ex.StackTrace;
+                return View("Error");
+            }
+            
+            
         }
 
         // GET: PotentialСlient/Delete/5
@@ -157,14 +170,73 @@ namespace Sunny_House.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            PotentialСlient potentialСlient = db.PotentialСlients.FirstOrDefault(x=>x.ClientId == id);
-            if (potentialСlient != null)
+            try
             {
-                db.PotentialСlients.Remove(potentialСlient);
-                db.SaveChanges();
+                PotentialСlient potentialСlient = db.PotentialСlients.FirstOrDefault(x => x.ClientId == id);
+                if (potentialСlient != null)
+                {
+                    db.PotentialСlients.Remove(potentialСlient);
+                    db.SaveChanges();
+                    TempData["MessageOk"] = "Информация успешно удалена";
+                }
+                return RedirectToAction("ResShow", "Reserves", new { PersonId = potentialСlient.PersonId });
             }
-            return RedirectToAction("Index");
+            catch (Exception ex)
+            {
+                ViewBag.ErMes = ex.Message;
+                ViewBag.ErStack = ex.StackTrace;
+                return View("Error");
+            }
+           
         }
+
+
+        public ActionResult PTPotential4Person(int? PersonId)
+        {
+            if (PersonId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug information------------------------------------
+
+            Person _person = db.Persons.FirstOrDefault(p => p.PersonId == PersonId);
+            ViewData["PersonFIO"] = String.Format("{0} {1} {2}", _person.FirstName, _person.LastName, _person.MiddleName);
+
+            var _potential = (from potential in db.PotentialСlients
+                              join _event in db.Events on potential.EventId equals _event.EventId
+                              join person in db.Persons on potential.PersonId equals person.PersonId
+                              join role in db.PersonRoles on potential.RoleId equals role.RoleId
+                              select new
+                              {
+                                  ClientId = potential.ClientId,
+                                  PersonId = person.PersonId,
+                                  EventName = _event.EventName,
+                                  EventId = _event.EventId,
+                                  RoleName = role.RoleName,
+                                  Infoes = potential.Infoes
+                              }
+                             ).Where(p => p.PersonId == PersonId || PersonId == null);
+
+
+            List<PotentialСlient> _potviewModelList = new List<PotentialСlient>();
+            foreach (var item in _potential)
+            {
+                PotentialСlient _potviewModel = new PotentialСlient
+                {
+                    ClientId = item.ClientId,
+                    EventName = item.EventName,
+                    RoleName = item.RoleName,
+                    EventId = item.EventId,
+                    Infoes = item.Infoes
+                };
+                _potviewModelList.Add(_potviewModel);
+
+            };
+
+            return PartialView(_potviewModelList);
+        }
+
 
         protected override void Dispose(bool disposing)
         {

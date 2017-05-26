@@ -34,39 +34,7 @@ namespace Sunny_House.Controllers
 
             Person _person = db.Persons.FirstOrDefault(p => p.PersonId == PersonId);
             ViewData["PersonFIO"] = String.Format("{0} {1} {2}", _person.FirstName, _person.LastName, _person.MiddleName);
-
-            var _reserves = (from reserves in db.Reserves
-                             join _event in db.Events on reserves.EventId equals _event.EventId
-                             join person in db.Persons on reserves.PersonId equals person.PersonId
-                             join role in db.PersonRoles on reserves.RoleId equals role.RoleId
-                             select new
-                             {
-                                 ReserveId = reserves.ReserveId,
-                                 PersonId = person.PersonId,
-                                 EventName = _event.EventName,
-                                 EventId = _event.EventId,
-                                 RoleName = role.RoleName,
-                                 Note = reserves.Note
-                             }
-                             ).Where(p => p.PersonId == PersonId || PersonId == null);
-
-
-            List<ReservesViewModel> _resviewModelList = new List<ReservesViewModel>();
-            foreach (var item in _reserves)
-            {
-                ReservesViewModel _reserveViewModel = new ReservesViewModel
-                {
-                    ReserveId = item.ReserveId,
-                    EventName = item.EventName,
-                    RoleName = item.RoleName,
-                    EventId = item.EventId,
-                    Note = item.Note
-                };
-                _resviewModelList.Add(_reserveViewModel);
-
-            };
-
-            return View(_resviewModelList);
+            return View();
         }
 
         // GET: Reserves/Create
@@ -822,6 +790,54 @@ namespace Sunny_House.Controllers
 
             return View(model);
         }
+
+
+        public ActionResult PTReserve4Person(int? PersonId)
+        {
+            if (PersonId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug information------------------------------------
+
+            Person _person = db.Persons.FirstOrDefault(p => p.PersonId == PersonId);
+            ViewData["PersonFIO"] = String.Format("{0} {1} {2}", _person.FirstName, _person.LastName, _person.MiddleName);
+
+            var _reserves = (from reserves in db.Reserves
+                             join _event in db.Events on reserves.EventId equals _event.EventId
+                             join person in db.Persons on reserves.PersonId equals person.PersonId
+                             join role in db.PersonRoles on reserves.RoleId equals role.RoleId
+                             select new
+                             {
+                                 ReserveId = reserves.ReserveId,
+                                 PersonId = person.PersonId,
+                                 EventName = _event.EventName,
+                                 EventId = _event.EventId,
+                                 RoleName = role.RoleName,
+                                 Note = reserves.Note
+                             }
+                             ).Where(p => p.PersonId == PersonId || PersonId == null);
+
+
+            List<ReservesViewModel> _resviewModelList = new List<ReservesViewModel>();
+            foreach (var item in _reserves)
+            {
+                ReservesViewModel _reserveViewModel = new ReservesViewModel
+                {
+                    ReserveId = item.ReserveId,
+                    EventName = item.EventName,
+                    RoleName = item.RoleName,
+                    EventId = item.EventId,
+                    Note = item.Note
+                };
+                _resviewModelList.Add(_reserveViewModel);
+
+            };
+
+            return PartialView(_resviewModelList);
+        }
+
 
         #endregion
 

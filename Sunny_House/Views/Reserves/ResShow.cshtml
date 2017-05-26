@@ -1,10 +1,8 @@
-﻿@model IEnumerable<Sunny_House.Models.ReservesViewModel>
-
-@{
+﻿@{
     ViewBag.Title = "Бронирования - Список";
 }
 
-<h2>@ViewData["PersonFIO"]</h2>
+<h2><i class="fa fa-user-circle"></i>&nbsp;@ViewData["PersonFIO"]</h2>
 <h4>Список бронирований</h4>
 
 <div class="row">
@@ -14,57 +12,75 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row" style="margin-bottom:20px;">
     <div class="col-md-6">
         <a class="btn btn-default" style="margin:2px 2px;" title="Добавить бронь" href='@Url.Action("ResCreate", "Reserves", new {PersonId = Request.QueryString["PersonId"] })'><span class="glyphicon glyphicon-plus"></span> Бронь</a>
         <a class="btn btn-default" style="margin:2px 2px;" title="Добавить в список потенциальных клиентов" href='@Url.Action("PCCreate", "PotentialClient", new { PersonId = Request.QueryString["PersonId"] })'><span class="glyphicon glyphicon-plus"></span> Потенциальный клиент</a>
     </div>
 </div>
 
-<table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.EventName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.RoleName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Note)
-        </th>
-        <th></th>
-    </tr>
-
-    @if (Model.Count() == 0)
-    {
-        <tr>
-            <td colspan="4">
-                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
-            </td>
-        </tr>
-    }
-
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.ActionLink(item.EventName, "ResShowOfEvent", "Reserves", new { EventId = item.EventId }, new { target = "_self"})
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RoleName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
-            <td style="text-align:center; width:90px; min-width:90px;">
-                <a class="btn btn-default btn-sm" title="Редактирование" href='@Url.Action("ResEdit", "Reserves", new { ReserveId = item.ReserveId })'><span class="glyphicon glyphicon-edit"></span></a>
-                <a class="btn btn-default btn-sm" title="Удаление" href='@Url.Action("ResDelete", "Reserves", new { ReserveId = item.ReserveId })'><span class="glyphicon glyphicon-trash"></span></a>
-            </td>
-        </tr>
-    }
-
-</table>
-
-<div>
-    <a class="btn btn-default" href='@Url.Action("ShowPersons", "Home", new { PersonId = Request.QueryString["PersonId"]})'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+<div class="row">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="panel-title">
+                    <span id="col1" class="glyphicon glyphicon-triangle-top"></span>
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        Бронирование
+                    </a>
+                </span>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    @Html.Action("PTReserve4Person", "Reserves", new { PersonId = Request.QueryString["PersonId"].ToString() })
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="panel-title">
+                    <span id="col2" class="glyphicon glyphicon-triangle-bottom"></span>
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                        Потенциальные клиенты
+                    </a>
+                </span>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    @Html.Action("PTPotential4Person", "PotentialClient", new { PersonId = Request.QueryString["PersonId"].ToString() })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <a class="btn btn-default" href='@Url.Action("ShowPersons", "Home", new { PersonId = Request.QueryString["PersonId"]})'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
+    </div>
 </div>
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        //Скрипт изменения значка раскрытия панели аккордеона
+        $(document).ready(function () {
+
+            $("#accordion .panel-collapse").removeClass('in');
+            var col_id = localStorage.in_collapse;
+            $('#' + col_id).addClass("in");
+
+            $(".panel-collapse").on("hide.bs.collapse", function () {
+                $(this).parent().find(".panel-title span").removeClass("glyphicon glyphicon-triangle-top").addClass("glyphicon glyphicon-triangle-bottom");
+            });
+            $(".panel-collapse").on("show.bs.collapse", function () {
+                $(this).parent().find(".panel-title span").removeClass("glyphicon glyphicon-triangle-bottom").addClass("glyphicon glyphicon-triangle-top");
+                localStorage.in_collapse = $(this).attr('id');
+            });
+        });
+    </script>
+
+}
+
+

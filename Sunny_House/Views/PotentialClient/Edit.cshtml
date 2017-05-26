@@ -4,40 +4,48 @@
     ViewBag.Title = "Потенциальные клиенты - Редактирование";
 }
 
-<h2>Edit</h2>
+<h2><i class="fa fa-user-circle"></i>&nbsp;@Model.Person.FirstName @Model.Person.LastName @Model.Person.MiddleName</h2>
 
 
-@using (Html.BeginForm())
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog" style="width:660px;"></div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <p class="text-danger" id="MessageError">  @TempData["MessageError"]</p>
+    </div>
+</div>
+
+@using (Html.BeginForm("Edit", "PotentialClient", FormMethod.Post, new { id = "ReserveForm" }))
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
-        <h4>PotentialСlient</h4>
+        <h4>Редактировать информацию</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(model => model.PersonId)
         @Html.HiddenFor(model => model.ClientId)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.PersonId, "PersonId", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.EventId, "Мероприятие", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("PersonId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.PersonId, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.EventId)
+                <div class="inline-form">
+                    <input type="text" name="EventLabel" id="EventLabel" class="form-control" disabled style="margin:2px 0; display:inline-block " value="@ViewData["EventName"]" />
+                    <a class="btn btn-default pModal" style="margin:2px 0;" href='@Url.Action("ShowModalEvents2Res", "Modal", new { field = "EventId"})'><span class="glyphicon glyphicon-folder-open"></span></a><br />
+                </div>
+                @Html.ValidationMessageFor(model => model.EventId, "", new { @class = "text-danger", @id = "EventIdValidator" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.EventId, "EventId", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.RoleId, "Роль", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("EventId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.EventId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.RoleId, "RoleId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("RoleId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.RoleId, "", new { @class = "text-danger" })
+                @Html.DropDownList("RoleId", null, "- Выберите роль -", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.RoleId, "", new { @class = "text-danger", @id = "RoleIdValidator" })
             </div>
         </div>
 
@@ -51,16 +59,49 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <button type="submit" title="Изменить" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Сохранить</button>
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Назад", "Index")
+    <a class="btn btn-default" href='@Url.Action("ResShow", "Reserves", new {PersonId = @Model.Person.PersonId})'><span class="glyphicon glyphicon-circle-arrow-left"> Назад</span></a>
 </div>
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+
+        $(function () {
+            $.ajaxSetup({ cache: false });
+            $(".pModal").click(function (e) {
+                e.preventDefault();
+                $.get(this.href, function (data) {
+                    $('#dialogContent').html(data);
+                    $('#modDialog').modal('show');
+                });
+            });
+        });
+
+        $(function () {
+            $(function () {
+                var widthdelta = 44;
+                var wd = $("#EventLabel").width() - widthdelta;
+                $("#EventLabel").width(wd);
+            });
+        });
+
+        $('#ReserveForm').submit(function () {
+            if ($('#RoleId').val() == '') {
+                $('#RoleIdValidator').text('Выберите роль');
+                flag = true;
+            }
+            if (flag) {
+                return false;
+            }
+        });
+    </script>
 }
