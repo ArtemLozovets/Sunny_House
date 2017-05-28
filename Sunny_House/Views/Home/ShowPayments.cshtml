@@ -50,11 +50,17 @@
     <script type="text/javascript">
         //Скрипт изменения значка раскрытия панели аккордеона
         $(document).ready(function () {
+
+            $("#accordion .panel-collapse").removeClass('in');
+            var col_id = localStorage.inpay_collapse;
+            $('#' + col_id).addClass("in");
+
             $(".panel-collapse").on("hide.bs.collapse", function () {
                 $(this).parent().find(".panel-title span").removeClass("glyphicon glyphicon-triangle-top").addClass("glyphicon glyphicon-triangle-bottom");
             });
             $(".panel-collapse").on("show.bs.collapse", function () {
                 $(this).parent().find(".panel-title span").removeClass("glyphicon glyphicon-triangle-bottom").addClass("glyphicon glyphicon-triangle-top");
+                localStorage.inpay_collapse = $(this).attr('id');
             });
         });
     </script>
