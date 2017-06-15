@@ -335,6 +335,13 @@ namespace Sunny_House.Models
         [Display(Name = "Информация")]
         public string Infoes { get; set; }
         public int PersonId { get; set; }
+
+        [Display(Name = "Возраст")]
+        public int? PersonAge { get; set; }
+
+        [Display(Name = "Месяцев")]
+        public int? PersonMonth { get; set; }
+
     }
 
     [NotMapped]

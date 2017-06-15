@@ -8,6 +8,16 @@
     .SendMail i {
         color: #31708F;
     }
+
+    .grpbtn {
+        cursor: pointer;
+        border-left: 0;
+        border-right: 0;
+    }
+
+        .grpbtn:hover {
+            background-color: #fff;
+        }
 </style>
 @{
     ViewBag.Title = "Мероприятия - Управление мероприятием";
@@ -34,7 +44,7 @@
             <div class="panel-heading breakWord">
                 <strong>
                     Мероприятие: <em class="text-info">
-                        @Html.ActionLink(Model.EventName, "ExShow", "Exercises", new { EventId = Model.EventId }, new { title="Связанные занятия"})
+                        @Html.ActionLink(Model.EventName, "ExShow", "Exercises", new { EventId = Model.EventId }, new { title = "Связанные занятия" })
                     </em>
                 </strong>
             </div>
@@ -196,7 +206,11 @@
                                     </span>
                                 </div>
                                 <div id="collapse1" class="panel-collapse collapse">
-                                    <div class="panel-body">
+                                    <div class="panel-body" >
+                                        <div style="width:100%; cursor:pointer" class="text-center">
+                                            <span id="PTEventName" class="blink"></span>
+                                            @Html.Hidden("PTEventId", 0)
+                                        </div>
                                         <div class="col-lg-12 form-inline" style="margin-top:2px; margin-bottom:2px;">
                                             <div class="input-group" style="width:300px; margin:0 auto">
                                                 <span class="input-group-addon">От</span>
@@ -219,9 +233,15 @@
                                                     @title = "Максимальный возраст",
                                                     @data_val = "true"
                                                 })
-                                                <span class="input-group-addon" style="border-left: 0; border-right: 0;"><span class="glyphicon glyphicon-filter"></span></span>
+
+                                                <span class="input-group-addon grpbtn" id="agefilterclear" title="Очистить возраст">
+                                                    <span class="glyphicon glyphicon-refresh"></span>
+                                                </span>
+
                                                 @Html.DropDownList("RoleId", null, "- Роль -", htmlAttributes: new { @class = "form-control", @style = "width:120px;", @title = "Роль" })
-                                                <span class="input-group-addon" style="border-left: 0; border-right: 0;"><span class="glyphicon glyphicon-filter"></span></span>
+                                                <span class="input-group-addon grpbtn" id="eventselect" title="Выбор мероприятия">
+                                                    <span class="fa fa-institution"></span>
+                                                </span>
                                                 @Html.TextBox("PTSearch", null,
                                                 new
                                                 {
@@ -243,8 +263,12 @@
                                             @using (Ajax.BeginForm("ShowPotentialPartial", "Reserves", new { @EventId = @Model.EventId }, new AjaxOptions { UpdateTargetId = "update_potential" }, new { @id = "clientform" }))
                                             {
                                                 <input class="form-control" type="text" name="PTCSearchString" id="PTCSearchString" placeholder="Фамилия, имя, роль..." style="width:200px; margin:2px 0; display:inline-block">
-                                                <button type="submit" title="Искать" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
-                                                @Html.Raw("&nbsp;")<button type="button" title="Обновить" class="btn btn-default" id="clientfilterclear"><i class="glyphicon glyphicon-refresh"></i></button>
+                                                <button type="submit" title="Искать" class="btn btn-default" style="margin-top:-2px;">
+                                                    <i class="glyphicon glyphicon-search"></i>
+                                                </button>
+                                                <button type="button" title="Обновить" class="btn btn-default" id="clientfilterclear" style="margin-top:-2px;">
+                                                    <i class="glyphicon glyphicon-refresh"></i>
+                                                </button>
                                                 @*@Html.Raw("&nbsp;")<a class="btn btn-danger" title="Будет удалена поле тестирования!!!" href='@Url.Action("DeleteAll", "Reserves", new { @EventId = @Model.EventId })'><span class="glyphicon glyphicon-remove"> Удалить все</span></a>*@
                                             }
                                         </div>
@@ -270,7 +294,7 @@
     <script src="~/Scripts/circle-progress.min.js"></script>
     <script src="~/Scripts/toparrow.js"></script>
     <script src="~/Scripts/PersonCard.js"></script>
-    <script type="text/javascript">
+    <script>
 
         $(function () {
             $('#loadingImg').hide();
@@ -302,6 +326,30 @@
                 $('#eventform').trigger('reset');
                 $('#eventform').submit();
             });
+
+            $('body').on('click', '#eventselect', function (event) {
+                $(this).blur();
+                $('#loadingImg').show();
+                sessionStorage.eventselectmode = 'PTEvent';
+                $.get('/Modal/ShowModalEvents', function (data) {
+                         $('#loadingImg').hide();
+                         $('#dialogContent').html(data);
+                         $('#modDialog').modal('show');
+                     });
+            });
+
+            $('body').on('click', '#PTEventName', function (event) {
+                $('#PTEventName').text('');
+                $('#PTEventId').val(0);
+            });
+
+            PTEventName
+            $('body').on('click', '#agefilterclear', function (event) {
+                $(this).blur();
+                $('#minAge').val('0');
+                $('#maxAge').val('100');
+            });
+
 
             var percent = @ViewData["FillPercent"];
             RefreshCircleBar(percent);
@@ -350,6 +398,7 @@
                 var maxage = $('#maxAge').val();
                 var roleid = $('#RoleId').val();
                 var _ptsearch = $('#PTSearch').val();
+                var _pteventid = $('#PTEventId').val();
                 $('#loadingImg').show();
 
                 $.get('/Reserves/ShowModalClient', {
@@ -357,7 +406,8 @@
                     MinAge:minage,
                     MaxAge:maxage,
                     RoleId:roleid,
-                    PTSearch:_ptsearch
+                    PTSearch:_ptsearch,
+                    PTEventId: _pteventid
                 },
                      function (data) {
                          $('#loadingImg').hide();
@@ -443,8 +493,8 @@
             });
         }
 
-    </script>
-    <script type="text/javascript">
+</script>
+    <script>
         //Скрипт удаления записи из таблицы потенциальных клиентов
         //Работа с представлением ShowPotentialPartial, контроллер ReservesController
         $('body').on('click', '.delPTC', function (event) {
@@ -490,7 +540,7 @@
     </script>
 
 
-    <script type="text/javascript">
+    <script>
         //Скрипт переноса  записи из таблицы потенциальных клиентов в список бронирований
         //Работа с представлением ShowPotentialPartial, контроллер ReservesController
         $('body').on('click', '.reservePTC', function (event) {
@@ -537,13 +587,13 @@
             }
         });
     </script>
-    <script type="text/javascript">
+    <script>
         //Скрипт обновления списка бронирований при активации вкладки "Бронь"
         $('body').on('shown.bs.tab', '#ResTab', function (e) {
             $('#filterclear').trigger("click");
         })
     </script>
-    <script type="text/javascript">
+    <script>
         //Скрипт обновления поля "Информация"
         //Работа с представлением ShowPotentialPartial, контроллер ReservesController
         $('body').on('click', '.infoesBtn', function (event) {
@@ -581,7 +631,7 @@
         });
     </script>
 
-    <script type="text/javascript">
+    <script>
         //Отображение модального окна со списком связанных персон и средств связи
         //Представление ShowPersonCard контроллер PersonCardController
         $(function () {
@@ -617,7 +667,7 @@
         });
     </script>
 
-    <script type="text/javascript">
+    <script>
         //Скрипт изменения роли при бронировании
         $("body").on('change', '.roleddl', function myfunction(e) {
             var elem = e.target;
@@ -651,7 +701,7 @@
         });
     </script>
 
-    <script type="text/javascript">
+    <script>
         //Скрипт Email-рассылки
         $('body').on('click', '.SendMail', function (e) {
             $(this).blur();
@@ -693,7 +743,7 @@
         })
     </script>
 
-    <script type="text/javascript">
+    <script>
 
         //Сохраняем значение поля "Примечание" при потере фокуса поля ввода
         $('body').on('focusout', '#EVNote', function (e) {

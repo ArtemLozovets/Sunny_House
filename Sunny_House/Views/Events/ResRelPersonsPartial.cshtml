@@ -17,7 +17,7 @@
             @Html.DisplayNameFor(model => model.First().PersonRole)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.First().PersonAge)
+            Вз.
         </th>
         <th>
         </th>
@@ -68,7 +68,8 @@
                 <a class="btn btn-default btn-sm BTPay"
                    title="Добавить платеж"
                    style="display:inline-block;"
-                   target="_self"
+                   target="_blank"
+                   onclick="this.blur();"
                    href='@Url.Action("AddPayment", "Home", new {EventId =  ViewData["EventId"], ClientId = item.PersonId })'>
                     +<span class="glyphicon glyphicon-usd"></span>
                 </a>

@@ -10,6 +10,9 @@
         <th>
             Информация
         </th>
+        <th>
+            Вз.
+        </th>
         <th></th>
     </tr>
 
@@ -35,6 +38,19 @@
                     <span class="input-group-addon btn btn-default glyphicon glyphicon-floppy-save infoesBtn" title="Сохранить" data-ptcid="@item.ClientId"></span>
                 </div>
             </td>
+                @if (item.PersonAge != null && item.PersonAge > 0)
+                {
+                <td>
+                    <span class="text-info">@Html.DisplayFor(modelItem => item.PersonAge)</span>
+                </td>
+                }
+                else
+                {
+                    <td>
+                        @if (item.PersonMonth != null)
+                        { <span class="text-success">@Html.DisplayFor(modelItem => item.PersonMonth) мес.</span> }
+                    </td>
+                }
             <td style="text-align:center; width:204px; min-width:204px;">
                 <a class="btn btn-default btn-sm reservePTC" title="Бронь" href='#topanchor' data-clientid="@item.ClientId"><span class="glyphicon glyphicon-education"></span></a>
                 <a class="btn btn-default btn-sm" title="Отказ" href='@Url.Action("PTCRefusing", "Reserves", new

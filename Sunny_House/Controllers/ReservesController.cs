@@ -353,14 +353,17 @@ namespace Sunny_House.Controllers
                                         ClientId = client.ClientId,
                                         PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
                                         RoleName = _role.RoleName,
-                                        Infoes = client.Infoes
+                                        Infoes = client.Infoes,
+                                        DOB = person.DateOfBirth
                                     }).AsEnumerable().Select(c => new PotentialClientsViewModel
                                     {
                                         PersonId = c.PersonId,
                                         ClientId = c.ClientId,
                                         PersonFIO = c.PersonFIO.Trim(),
                                         RoleName = c.RoleName,
-                                        Infoes = c.Infoes
+                                        Infoes = c.Infoes,
+                                        PersonAge = AgeMethods.GetAge(c.DOB),
+                                        PersonMonth = AgeMethods.GetTotalMonth(c.DOB)
                                     }).OrderByDescending(c => c.ClientId);
 
             ViewData["SearchString"] = PTCSearchString;
@@ -370,7 +373,7 @@ namespace Sunny_House.Controllers
             return PartialView(potentialClients.ToList().ToPagedList(pageNumber, pageSize));
         }
 
-        public ActionResult ShowModalClient(int? EventId, int? MinAge, int? MaxAge, int? RoleId, string PTSearch)
+        public ActionResult ShowModalClient(int? EventId, int? MinAge, int? MaxAge, int? RoleId, string PTSearch, int? PTEventId)
         {
 
             if (EventId == null || MinAge == null || MaxAge == null)
@@ -382,6 +385,8 @@ namespace Sunny_House.Controllers
             ViewData["MinAge"] = MinAge;
             ViewData["MaxAge"] = MaxAge;
             ViewData["PTSearch"] = PTSearch;
+            ViewData["PTEventId"] = PTEventId;
+
             if (RoleId != null) { ViewData["RoleId"] = RoleId; }
             else { ViewData["RoleId"] = "0"; }
 
@@ -389,7 +394,7 @@ namespace Sunny_House.Controllers
         }
 
 
-        public ActionResult PartialClientinModal(int? EventId, int? MinAge, int? MaxAge, int? RoleId, int? page, string PTSearch)
+        public ActionResult PartialClientinModal(int? EventId, int? MinAge, int? MaxAge, int? RoleId, int? page, string PTSearch, int? PTEventId)
         {
             if (EventId == null || MinAge == null || MaxAge == null)
             {
@@ -402,6 +407,8 @@ namespace Sunny_House.Controllers
             db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s)); //Debug information------------------------------------
 
             var _persons = (from person in db.Persons
+                            join _visit in db.Visits on person.PersonId equals _visit.VisitorId into _vstmp
+                            from _visit in _vstmp.DefaultIfEmpty()
                             join reserve in db.Reserves on person.PersonId equals reserve.PersonId into resjoined
                             from pr in resjoined.DefaultIfEmpty()
                             join role in db.PersonRoles on pr.RoleId equals role.RoleId into rolejoined
@@ -411,13 +418,16 @@ namespace Sunny_House.Controllers
                             join comm in db.Communications on percomm.CommunicationId equals comm.Id into tmpcomm
                             from comm in tmpcomm.DefaultIfEmpty()
 
-                            where (pr.RoleId == RoleId || RoleId == null) && (SqlFunctions.DateDiff("day", pr.ReserveDate, DateTime.Today) <= 365 || RoleId == null) &&
-                                    ((person.FirstName.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch)) ||
-                                        (person.LastName.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch)) ||
-                                        (person.Note.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch)) ||
-                                        (comm.Address_Number.Contains(PTSearch) || String.IsNullOrEmpty(PTSearch)))
-                                        && (!person.Reserve.Any(x=>x.PersonId == person.PersonId && x.EventId == EventId)) 
-                                        && (!person.PotentialClient.Any(x=>x.PersonId == person.PersonId && x.EventId == EventId))
+                            where (pr.RoleId == RoleId || RoleId == null)
+                                    && ((_visit.Exercise.EventId == PTEventId && _visit.FactVisit) || PTEventId == null || PTEventId == 0) 
+                                    && (SqlFunctions.DateDiff("day", pr.ReserveDate, DateTime.Today) <= 365 || RoleId == null) 
+                                    && (person.FirstName.Contains(PTSearch) 
+                                            || person.LastName.Contains(PTSearch) 
+                                            || person.Note.Contains(PTSearch) 
+                                            || comm.Address_Number.Contains(PTSearch) 
+                                            || String.IsNullOrEmpty(PTSearch))
+                                    && (!person.Reserve.Any(x=>x.PersonId == person.PersonId && x.EventId == EventId)) 
+                                    && (!person.PotentialClient.Any(x=>x.PersonId == person.PersonId && x.EventId == EventId))
 
                             select new
                             {

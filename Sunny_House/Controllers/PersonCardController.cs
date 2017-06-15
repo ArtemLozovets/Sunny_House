@@ -87,7 +87,7 @@ namespace Sunny_House.Controllers
                                           EventId = ex.EventId,
                                           EventName = ex.Event.EventName,
                                           FactVisit = visit.FactVisit
-                                      }).Distinct().Take(30).AsEnumerable().Select(x => new Visit
+                                      }).Distinct().OrderByDescending(x=>x.StartTime).Take(30).AsEnumerable().Select(x => new Visit
                           {
                               VisitId = x.VisitId,
                               VisitorId = x.VisitorId,

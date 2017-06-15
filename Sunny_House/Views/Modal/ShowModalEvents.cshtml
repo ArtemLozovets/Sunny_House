@@ -41,8 +41,15 @@
     function selsubmit(elem) {
         var EventId = $(elem).data('eventid');
         var EventName = $(elem).data('eventname');
-        $("#EventId").val(EventId);
-        $("#EventLabel").val(EventName).trigger('change'); //Триггер для автоматического применения фильтра в списке посещений
+        if (sessionStorage.eventselectmode == "PTEvent") {
+            $("#PTEventId").val(EventId);
+            $("#PTEventName").html(EventName);
+            sessionStorage.removeItem('eventselectmode');
+        }
+        else {
+            $("#EventId").val(EventId);
+            $("#EventLabel").val(EventName).trigger('change'); //Триггер для автоматического применения фильтра в списке посещений
+        }
         $('#modDialog').modal('hide');
     };
 </script>

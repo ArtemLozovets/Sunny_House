@@ -589,7 +589,7 @@ namespace Sunny_House.Controllers
             if (!String.IsNullOrEmpty(Mode) && Mode == "RelComment")
             {
                 var _comments = (from relation in db.PersonRelations.Where(x => x.RelPersonId == SignPersonId || x.PersonId == SignPersonId)
-                                 from comment in db.Comments.Where(x => x.SignPersonId == relation.RelPersonId || x.SignPersonId == relation.PersonId || x.AboutPersonId == relation.PersonId)
+                                 from comment in db.Comments.Where(x => x.SignPersonId == relation.RelPersonId || x.SignPersonId == relation.PersonId || x.AboutPersonId == SignPersonId)
                                  select new
                                  {
                                      CommentId = comment.CommentId,
