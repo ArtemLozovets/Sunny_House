@@ -144,6 +144,19 @@ namespace Sunny_House.Controllers
             return Json(new { Result = false, Message = "Во время выполнения запроса произошла ошибка", Mode = mode }, JsonRequestBehavior.AllowGet);
         }
 
+
+        [Authorize]
+        public ActionResult DOBRep(int? month)
+        {
+            return View();
+        }
+
+        [Authorize]
+        public ActionResult PersonsByDOB(int? month)
+        {
+            return PartialView();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

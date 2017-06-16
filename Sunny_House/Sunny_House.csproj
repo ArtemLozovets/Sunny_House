@@ -323,6 +323,7 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="Content\ui-bootstrap-csp.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -361,6 +362,11 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="Scripts\angular-ui\angular.min.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap-tpls.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap-tpls.min.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap.min.js" />
     <Content Include="Scripts\Chart.js" />
     <Content Include="Scripts\FullCalendar\fullcalendar.min.js.map">
       <DependentUpon>fullcalendar.min.js</DependentUpon>
@@ -550,6 +556,9 @@
     <Content Include="Views\Statistic\Index.cshtml" />
     <Content Include="Views\Visits\PreVisitorPartialList.cshtml" />
     <Content Include="Views\PersonCard\ShowPersonCard.cshtml" />
+    <Content Include="Views\Reserves\PTReserve4Person.cshtml" />
+    <Content Include="Views\Statistic\DOBRep.cshtml" />
+    <Content Include="Views\Statistic\PersonsByDOB.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
