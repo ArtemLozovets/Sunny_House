@@ -122,7 +122,7 @@ namespace Sunny_House.Controllers
             _moremodel.PersonFIO = _pers.FirstName + " " + _pers.LastName + " " + _pers.MiddleName;
             _moremodel.PersonNote = _pers.Note;
             _moremodel.Sex = _pers.Sex;
-            _moremodel.PersonAge = AgeMethods.GetAge(_pers.DateOfBirth);
+            _moremodel.PersonAge = AgeMethods.GetAge(_pers.DateOfBirth, false);
             _moremodel.PersonMonth = AgeMethods.GetTotalMonth(_pers.DateOfBirth);
             _moremodel.DateOfBirth = _pers.DateOfBirth;
 

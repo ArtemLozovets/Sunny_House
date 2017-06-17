@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Sunny_House.Models;
+using Sunny_House.Methods;
 
 namespace Sunny_House.Controllers
 {
@@ -154,7 +155,22 @@ namespace Sunny_House.Controllers
         [Authorize]
         public ActionResult PersonsByDOB(int? month)
         {
-            return PartialView();
+            var _persons = (from person in db.Persons
+                            where person.DateOfBirth != null && person.DateOfBirth.Value.Month == month
+                            select new
+                            {
+                                PersonId = person.PersonId,
+                                PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
+                                DOB = person.DateOfBirth,
+                                Note = person.Note
+                            }).OrderBy(x=>x.DOB.Value.Day).AsEnumerable().Select(x => new PersonsViewModel { 
+                                PersonId = x.PersonId,
+                                PersonFIO = x.PersonFIO,
+                                DateOfBirth = x.DOB,
+                                PersonAge = AgeMethods.GetAge(x.DOB, true),
+                                Note = x.Note
+                            });
+            return PartialView(_persons);
         }
 
         protected override void Dispose(bool disposing)

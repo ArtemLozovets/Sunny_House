@@ -149,7 +149,7 @@ namespace Sunny_House.Controllers
                 _personsviewmodel.LastName = item.LastName;
                 _personsviewmodel.MiddleName = item.MiddleName;
                 _personsviewmodel.DateOfBirth = item.DateOfBirth;
-                _personsviewmodel.PersonAge = AgeMethods.GetAge(item.DateOfBirth);
+                _personsviewmodel.PersonAge = AgeMethods.GetAge(item.DateOfBirth, false);
                 _personsviewmodel.PersonMonth = AgeMethods.GetTotalMonth(item.DateOfBirth);
                 _personsviewmodel.Note = item.Note;
                 _personsviewmodel.Address_Num = item.Address_Num;

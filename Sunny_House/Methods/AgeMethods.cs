@@ -7,7 +7,7 @@ namespace Sunny_House.Methods
 {
     public static class AgeMethods
     {
-        public static int? GetAge(DateTime? DateOfBirth)
+        public static int? GetAge(DateTime? DateOfBirth, bool NextDOB)
         {
             if (DateOfBirth == null)
             {
@@ -20,6 +20,16 @@ namespace Sunny_House.Methods
                 int DOBDayNum = 0;
 
                 DateTime nowDate = DateTime.Today;
+                if (NextDOB)
+                {
+                    DateTime nxtDate = new DateTime(DateTime.Now.Year, DateOfBirth.Value.Month, DateOfBirth.Value.Day);
+                    if (!(nxtDate >= nowDate) )
+                    {
+                       nxtDate = nxtDate.AddYears(1);
+                    }
+                    nowDate = nxtDate;
+                }
+
                 DateTime DOB = DateOfBirth ?? DateTime.Today;
 
                 Age = nowDate.Year - DOB.Year;

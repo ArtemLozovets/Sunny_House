@@ -471,7 +471,7 @@ namespace Sunny_House.Controllers
                                 ReserveId = e.ReserveId,
                                 PersonId = e.PersonId,
                                 PersonFIO = e.PersonFIO.Trim(),
-                                PersonAge = AgeMethods.GetAge(e.DOB),
+                                PersonAge = AgeMethods.GetAge(e.DOB, false),
                                 PersonMonth = AgeMethods.GetTotalMonth(e.DOB),
                                 Num_Address = e.Address_Num,
                                 PersonRole = e.PersonRole,

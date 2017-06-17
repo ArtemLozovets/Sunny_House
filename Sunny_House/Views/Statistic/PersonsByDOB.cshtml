@@ -1,17 +1,62 @@
-﻿
+﻿@model IEnumerable<Sunny_House.Models.PersonsViewModel>
 
- <!-- Table -->
+<style>     
+    .greendate{
+        background-color:#CFC !important;
+    }
+</style>
+
+<!-- Table -->
 <table class="table table-bordered table-condensed table-striped ReestrTable">
     <tr>
-        <th>ФИО</th>
-        <th>Дата рождения</th>
-        <th>Возраст</th>
-        <th>Примечание</th>
+        <th>
+            @Html.DisplayNameFor(model => model.PersonFIO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateOfBirth)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PersonAge)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Note)
+        </th>
     </tr>
-    <tr>
-        <td>Петренко Петро Петрович </td>
-        <td>12.06.1997</td>
-        <td>20</td>
-        <td>TEST TEST TEST</td>
-    </tr>
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="4">
+                <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+            </td>
+        </tr>
+    }
+    @foreach (var item in Model)
+    {
+        var grclass = "foo";
+        var _curDateM = DateTime.Today.Month;
+        var _curDateD = DateTime.Today.Day;
+        var _DOBM = item.DateOfBirth.Value.Month;
+        var _DOBD = item.DateOfBirth.Value.Day;
+        if ((_DOBD == _curDateD) && (_DOBM == _curDateM))
+        {
+           grclass = "greendate";
+        }
+
+        <tr class="@grclass">
+            <td>
+                <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Карточка персоны">@Html.DisplayFor(modelItem => item.PersonFIO)</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+            <td style="text-align:center">
+                <span class="text-info">
+                    @Html.DisplayFor(modelItem => item.PersonAge)
+                </span>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+        </tr>
+    }
 </table>

@@ -362,7 +362,7 @@ namespace Sunny_House.Controllers
                                         PersonFIO = c.PersonFIO.Trim(),
                                         RoleName = c.RoleName,
                                         Infoes = c.Infoes,
-                                        PersonAge = AgeMethods.GetAge(c.DOB),
+                                        PersonAge = AgeMethods.GetAge(c.DOB, false),
                                         PersonMonth = AgeMethods.GetTotalMonth(c.DOB)
                                     }).OrderByDescending(c => c.ClientId);
 
@@ -439,7 +439,7 @@ namespace Sunny_House.Controllers
                             {
                                 PersonId = e.PersonId,
                                 PersonFIO = e.PersonFIO.Trim(),
-                                PersonAge = AgeMethods.GetAge(e.DateOfBirth),
+                                PersonAge = AgeMethods.GetAge(e.DateOfBirth, false),
                                 PersonMonth = AgeMethods.GetTotalMonth(e.DateOfBirth),
                                 DateOfBirth = e.DateOfBirth,
                                 Note = e.Note

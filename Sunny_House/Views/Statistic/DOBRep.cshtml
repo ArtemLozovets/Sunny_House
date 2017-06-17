@@ -1,8 +1,16 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Отчеты - Дни рождения";
 }
 
+<div id="modDialog" class="modal fade">
+    <div id="dialogContent" class="modal-dialog" style="min-width:800px;"></div>
+</div>
+
+<div id="loadingImg">
+    <div id="preloadImg">
+        <img src="~/Content/Images/loader.gif" />
+    </div>
+</div>
 
 <h2><i class="fa fa-birthday-cake" aria-hidden="true"></i>&nbsp;Дни рождения</h2>
 
@@ -10,67 +18,69 @@
 <div ng-app="ui.bootstrap.module" style="margin-top:30px;">
     <div ng-controller="ui.bootstrap.ctrl">
         <accordion close-others="true">
-            <accordion-group ng-repeat="x in numOfMonth" class="panel-default" ng-init="isOpen = $index == currentMonth ? true : false" is-open="isOpen">
+            <accordion-group ng-repeat="group in groups" class="panel-default" ng-init="group.open = $index == currentMonth ? true : false;" is-open="group.open">
                 <accordion-heading>
-                    {{x.header}} <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></i>
+                    <span ng-click="opened(group, $index)">{{group.header}} <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': group.open, 'glyphicon-chevron-right': !group.open}"></i></span>
                 </accordion-heading>
-                
+
+                <div id="upd{{$index}}"></div>
+
             </accordion-group>
         </accordion>
 
     </div>
 </div>
 
+<a href="#" class="scrollup1">Наверх</a>
 
 @section Scripts {
+    <script src="~/Scripts/toparrow.js"></script>
+    <script src="~/Scripts/PersonCard.js"></script>
     <script src="~/Scripts/angular-ui/angular.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.js"></script>
     <script>
         var app = angular.module('ui.bootstrap.module', ['ui.bootstrap']);
         app.controller('ui.bootstrap.ctrl', function ($scope) {
-            $scope.numOfMonth = [
-              { num: 1, header: "Январь" },
-              { num: 2, header: "Февраль" },
-              { num: 3, header: "Март" },
-              { num: 4, header: "Апрель" },
-              { num: 5, header: "Май" },
-              { num: 6, header: "Июнь" },
-              { num: 7, header: "Июль" },
-              { num: 8, header: "Август" },
-              { num: 9, header: "Сентябрь" },
-              { num: 10, header: "Октябрь" },
-              { num: 11, header: "Ноябрь" },
-              { num: 12, header: "Декабрь" },
+            $scope.groups = [
+              { num: 1, header: "Январь", open: false },
+              { num: 2, header: "Февраль", open: false },
+              { num: 3, header: "Март", open: false },
+              { num: 4, header: "Апрель", open: false },
+              { num: 5, header: "Май", open: false },
+              { num: 6, header: "Июнь", open: false },
+              { num: 7, header: "Июль", open: false },
+              { num: 8, header: "Август", open: false },
+              { num: 9, header: "Сентябрь", open: false },
+              { num: 10, header: "Октябрь", open: false },
+              { num: 11, header: "Ноябрь", open: false },
+              { num: 12, header: "Декабрь", open: false },
             ];
 
             var d = new Date();
             $scope.currentMonth = d.getMonth();
-            
-            $scope.openPanel = function (idx) {
-                if (!$scope.groups[idx].open) {
-                    alert('eee');
-                    $scope.groups[idx].open = true;
+
+            $scope.init = function (group, i) {
+                group.open = i == $scope.currentMonth ? true : false;
+            };
+
+            angular.element(document).ready(function () {
+                var monthNum = $scope.currentMonth + 1;
+                    $('#upd' + $scope.currentMonth).load('/Statistic/PersonsByDOB', { month: monthNum }, function () {
+                        $('#loadingImg').hide();
+                    });
+            });
+
+            $scope.opened = function (group, i) {
+                if (!group.open) {
+                    var monthNum = i + 1;
+                    $('#loadingImg').show();
+                    $('#upd' + i).load('/Statistic/PersonsByDOB', { month: monthNum }, function () {
+                        $('#loadingImg').hide();
+                    });
                 }
             };
 
         });
-    </script>
-
-    <script>
-        $("body").on('show.bs.collapse', '.collapse', function () {
-            alert('OPEN');
-            AjaxLoadTasks($(this).attr('id'));
-        });
-
-        function AjaxLoadTasks(_id) {
-            $('#loadingImg').show();
-            $('#' + _id).delay(100).queue(function (nxt) {
-                $('#' + _id + '>div').load('/Tasks/TasksGroupShow', { mode: _id }, function () {
-                    $('#loadingImg').hide();
-                });
-                nxt();
-            });
-        }
     </script>
 }
 

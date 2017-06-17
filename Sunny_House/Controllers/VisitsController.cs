@@ -494,7 +494,7 @@ namespace Sunny_House.Controllers
                                 {
                                     PersonFIO = p.PersonFIO.TrimStart(),
                                     PersonId = p.PersonId,
-                                    PersonAge = AgeMethods.GetAge(p.DateOfBirth),
+                                    PersonAge = AgeMethods.GetAge(p.DateOfBirth, false),
                                     PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
                                     DateOfBirth = p.DateOfBirth,
                                     Note = p.Note,
@@ -521,7 +521,7 @@ namespace Sunny_House.Controllers
                              {
                                  PersonFIO = p.PersonFIO.TrimStart(),
                                  PersonId = p.PersonId,
-                                 PersonAge = AgeMethods.GetAge(p.DateOfBirth),
+                                 PersonAge = AgeMethods.GetAge(p.DateOfBirth, false),
                                  PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
                                  DateOfBirth = p.DateOfBirth,
                                  Note = p.Note
@@ -552,7 +552,7 @@ namespace Sunny_House.Controllers
                                 {
                                     PersonFIO = p.PersonFIO.TrimStart(),
                                     PersonId = p.PersonId,
-                                    PersonAge = AgeMethods.GetAge(p.DateOfBirth),
+                                    PersonAge = AgeMethods.GetAge(p.DateOfBirth, false),
                                     PersonMonth = AgeMethods.GetTotalMonth(p.DateOfBirth),
                                     DateOfBirth = p.DateOfBirth,
                                     RoleId = p.RoleId,
