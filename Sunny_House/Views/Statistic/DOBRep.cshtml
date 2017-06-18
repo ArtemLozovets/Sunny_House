@@ -59,10 +59,6 @@
             var d = new Date();
             $scope.currentMonth = d.getMonth();
 
-            $scope.init = function (group, i) {
-                group.open = i == $scope.currentMonth ? true : false;
-            };
-
             angular.element(document).ready(function () {
                 var monthNum = $scope.currentMonth + 1;
                     $('#upd' + $scope.currentMonth).load('/Statistic/PersonsByDOB', { month: monthNum }, function () {

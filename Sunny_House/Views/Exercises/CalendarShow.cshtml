@@ -1,8 +1,18 @@
 ﻿<link href="~/Content/fullcalendar.css" rel="stylesheet" />
 <link href="~/Content/fullcalendar.print.css" rel="stylesheet" media="print" />
+<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
 @{
     ViewBag.Title = "Занятия - Расписание занятий";
 }
+
+
+<div id="dialog-confirm" title="Изменение занятия" hidden>
+    <p>
+        <span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;">
+        </span>
+        Вы можете редактировать текущее занятие или создать его копию для дальнейшего редактирования. Выберите действие.
+    </p>
+</div>
 
 <h2><i class="fa fa-bell"></i> Расписание занятий</h2>
 
@@ -46,6 +56,7 @@
 @section Scripts {
     <script src="~/Scripts/FullCalendar/lib/moment.min.js"></script>
     <script src="~/Scripts/FullCalendar/lib/jquery.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
     <script src="~/Scripts/jquery.cookie-1.4.1.min.js"></script>
     <script src="~/Scripts/FullCalendar/fullcalendar.min.js"></script>
     <script src='~/Scripts/FullCalendar/ru.js'></script>
@@ -109,13 +120,32 @@
 
                 //=======================Щелчок по событию==========================
                 eventClick: function (calEvent, jsEvent, view) {
-                            var UrlStr = '/Exercises/ExDetails?ObjectId=' + calEvent.id;
-                            window.open(UrlStr, "_self");
+                    var UrlStr = '/Exercises/ExDetails?ObjectId=' + calEvent.id;
+                    window.open(UrlStr, "_self");
                 },
 
                 //==============================Start===============================
                 eventDragStart: function (event, jsEvent, ui, view, revertFunc) {
-
+                    var objid = event.id;
+                    $("#dialog-confirm").dialog({
+                        resizable: false,
+                        height: "auto",
+                        autoOpen: false,
+                        width: 400,
+                        modal: true,
+                        buttons: {
+                            "Создать копию": function () {
+                                $(this).dialog("close");
+                                var UrlStr = '/Exercises/ExCreate?ObjectId=' + objid;
+                                window.open(UrlStr, "_self");
+                            },
+                            "Редактировать": function () {
+                                $(this).dialog("close");
+                                var UrlStr = '/Exercises/ExEdit?ObjectId=' + objid;
+                                window.open(UrlStr, "_self");
+                            }
+                        }
+                    }).dialog('open');
                 },
 
                 //==============================STOP================================
@@ -220,7 +250,7 @@
         //Функция отправки параметров занятия на сервер после изменения размера/перетаскивания (Resize/Drop)
         function FCAjax(event, delta, revertFunc) {
             if (event.end == null) {
-                event.end = event.start.setMinutes(event.start.getMinutes()+60);
+                event.end = event.start.setMinutes(event.start.getMinutes() + 60);
             }
 
             $.ajax({
@@ -248,7 +278,7 @@
     </script>
 
     <script type="text/javascript">
-        //----------Изменение размеров окна окна-----------
+        //---------- Изменение размеров окна ----------
         $(window).resize(function () {
             extpanelToggle()
         });
@@ -278,4 +308,6 @@
             };
         }
     </script>
+
+   
 }
