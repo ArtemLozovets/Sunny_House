@@ -13,7 +13,8 @@
 {
     @Html.AntiForgeryToken()
     @Html.Hidden("ReturnUrl");
-
+    @Html.Hidden("NoCookie", ViewData["NoCookie"]);
+    
     <div class="form-horizontal">
         <h4>Добавление занятия</h4>
         <hr />
@@ -151,23 +152,25 @@
 
         //Читаем содержимое cookies и заполняем поля формы после возврата
         $(function () {
-            $('#EventId').val($.cookie('EventId'));
-            $('#EventLabel').val($.cookie('EventLabel'));
-            $('#Subject').val($.cookie('Subject'));
-            $("#StartTime").val($.cookie('StartTime'));
-            $('#EndTime').val($.cookie('EndTime', String));
-            $('#Note').val($.cookie('Note'));
-            if ($.cookie('ReturnUrl')) {
-                $('#ReturnUrl').val($.cookie('ReturnUrl'));
-            }
+            if ($('#NoCookie').val() != 'true') {
+                $('#EventId').val($.cookie('EventId'));
+                $('#EventLabel').val($.cookie('EventLabel'));
+                $('#Subject').val($.cookie('Subject'));
+                $("#StartTime").val($.cookie('StartTime'));
+                $('#EndTime').val($.cookie('EndTime', String));
+                $('#Note').val($.cookie('Note'));
+                if ($.cookie('ReturnUrl')) {
+                    $('#ReturnUrl').val($.cookie('ReturnUrl'));
+                }
 
-            $.removeCookie('EventId');
-            $.removeCookie('EventLabel');
-            $.removeCookie('Subject');
-            $.removeCookie('StartTime');
-            $.removeCookie('EndTime');
-            $.removeCookie('Note');
-            $.removeCookie('ReturnUrl');
+                $.removeCookie('EventId');
+                $.removeCookie('EventLabel');
+                $.removeCookie('Subject');
+                $.removeCookie('StartTime');
+                $.removeCookie('EndTime');
+                $.removeCookie('Note');
+                $.removeCookie('ReturnUrl');
+            }
         });
 
 

@@ -4,7 +4,15 @@
     .greendate{
         background-color:#CFC !important;
     }
+    .redhr{
+        border-top: #A94442 2px solid;
+    }
+
 </style>
+
+@{
+    var flag = false;
+}
 
 <!-- Table -->
 <table class="table table-bordered table-condensed table-striped ReestrTable">
@@ -39,7 +47,12 @@
         var _DOBD = item.DateOfBirth.Value.Day;
         if ((_DOBD == _curDateD) && (_DOBM == _curDateM))
         {
-           grclass = "greendate";
+            grclass = "greendate";
+        }
+        if ((_DOBD > _curDateD) && (_DOBM == _curDateM) && !flag)
+        {
+            grclass = "redhr";
+            flag = true;
         }
 
         <tr class="@grclass">

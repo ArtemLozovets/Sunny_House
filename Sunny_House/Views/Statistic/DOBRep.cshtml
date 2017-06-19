@@ -18,7 +18,7 @@
 <div ng-app="ui.bootstrap.module" style="margin-top:30px;">
     <div ng-controller="ui.bootstrap.ctrl">
         <accordion close-others="true">
-            <accordion-group ng-repeat="group in groups" class="panel-default" ng-init="group.open = $index == currentMonth ? true : false;" is-open="group.open">
+            <accordion-group ng-repeat="group in groups" ng-class="{'panel-danger':$index == currentMonth, 'panel-default': $index != currentMonth}" ng-init="group.open = $index == currentMonth ? true : false;" is-open="group.open">
                 <accordion-heading>
                     <span ng-click="opened(group, $index)">{{group.header}} <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': group.open, 'glyphicon-chevron-right': !group.open}"></i></span>
                 </accordion-heading>
@@ -61,9 +61,9 @@
 
             angular.element(document).ready(function () {
                 var monthNum = $scope.currentMonth + 1;
-                    $('#upd' + $scope.currentMonth).load('/Statistic/PersonsByDOB', { month: monthNum }, function () {
-                        $('#loadingImg').hide();
-                    });
+                $('#upd' + $scope.currentMonth).load('/Statistic/PersonsByDOB', { month: monthNum }, function () {
+                    $('#loadingImg').hide();
+                });
             });
 
             $scope.opened = function (group, i) {

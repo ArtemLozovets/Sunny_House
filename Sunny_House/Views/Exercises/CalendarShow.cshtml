@@ -142,12 +142,12 @@
                         buttons: {
                             "Создать копию": function () {
                                 $(this).dialog("close");
-                                var UrlStr = '/Exercises/ExCreate?ObjectId=' + objid;
+                                var UrlStr = '/Exercises/ExCreate?ObjectId=' + objid + '&ReturnUrl=/Exercises/CalendarShow&nocookie=true';
                                 window.open(UrlStr, "_self");
                             },
                             "Редактировать": function () {
                                 $(this).dialog("close");
-                                var UrlStr = '/Exercises/ExEdit?ObjectId=' + objid;
+                                var UrlStr = '/Exercises/ExEdit?ObjectId=' + objid + '&ReturnParam=/Exercises/CalendarShow';
                                 window.open(UrlStr, "_self");
                             }
                         }

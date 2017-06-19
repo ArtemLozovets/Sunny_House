@@ -174,7 +174,7 @@ namespace Sunny_House.Controllers
 
         // GET: Exercises/Create
         [Authorize(Roles = "Administrator, User")]
-        public ActionResult ExCreate(int? AddressId, string ReturnUrl)
+        public ActionResult ExCreate(int? ObjectId, int? AddressId, string ReturnUrl, string nocookie)
         {
             string _returnurl = (!String.IsNullOrEmpty(ReturnUrl)) ? ReturnUrl : "/Exercises/ExShow";
             ViewData["ReturnUrl"] = _returnurl;
@@ -189,6 +189,23 @@ namespace Sunny_House.Controllers
             }
             else
             {
+                if (ObjectId != null)
+                {
+                    Exercise _exercise = db.Exercises.FirstOrDefault(x=>x.ExerciseId == ObjectId);
+                    if (_exercise == null)
+                    {
+                        return HttpNotFound();
+                    }
+
+                    ViewData["EventName"] = _exercise.Event.EventName;
+                    ViewData["NoCookie"] = nocookie;
+
+                    string _addressString = string.Format("{0} {1}", _exercise.Address.City, _exercise.Address.AddressValue);
+                    ViewData["AddressText"] = _addressString;
+
+                    return View(_exercise);
+                }
+
                 return View();
             }
 
