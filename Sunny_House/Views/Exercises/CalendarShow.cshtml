@@ -126,13 +126,10 @@
 
                 //=======================Щелчок по событию==========================
                 eventClick: function (calEvent, jsEvent, view) {
-                    var UrlStr = '/Exercises/ExDetails?ObjectId=' + calEvent.id;
-                    window.open(UrlStr, "_self");
-                },
+                    //var UrlStr = '/Exercises/ExDetails?ObjectId=' + calEvent.id;
+                    //window.open(UrlStr, "_self");
 
-                //==============================Start===============================
-                eventDragStart: function (event, jsEvent, ui, view, revertFunc) {
-                    var objid = event.id;
+                    var objid = calEvent.id;
                     $("#dialog-confirm").dialog({
                         resizable: false,
                         height: "auto",
@@ -140,6 +137,11 @@
                         width: 400,
                         modal: true,
                         buttons: {
+                            "Подробно": function () {
+                                $(this).dialog("close");
+                                var UrlStr = '/Exercises/ExDetails?ObjectId=' + objid;
+                                window.open(UrlStr, "_blank");
+                            },
                             "Создать копию": function () {
                                 $(this).dialog("close");
                                 var UrlStr = '/Exercises/ExCreate?ObjectId=' + objid + '&ReturnUrl=/Exercises/CalendarShow&nocookie=true';
@@ -152,6 +154,12 @@
                             }
                         }
                     }).dialog('open');
+
+                },
+
+                //==============================Start===============================
+                eventDragStart: function (event, jsEvent, ui, view, revertFunc) {
+                    
                 },
 
                 //==============================STOP================================
