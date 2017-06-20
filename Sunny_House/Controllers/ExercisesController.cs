@@ -174,7 +174,7 @@ namespace Sunny_House.Controllers
 
         // GET: Exercises/Create
         [Authorize(Roles = "Administrator, User")]
-        public ActionResult ExCreate(int? ObjectId, int? AddressId, string ReturnUrl, string nocookie)
+        public ActionResult ExCreate(int? ObjectId, int? AddressId, string ReturnUrl, string nocookie, DateTime Start_Time, DateTime End_Time)
         {
             string _returnurl = (!String.IsNullOrEmpty(ReturnUrl)) ? ReturnUrl : "/Exercises/ExShow";
             ViewData["ReturnUrl"] = _returnurl;
@@ -191,7 +191,7 @@ namespace Sunny_House.Controllers
             {
                 if (ObjectId != null)
                 {
-                    Exercise _exercise = db.Exercises.FirstOrDefault(x=>x.ExerciseId == ObjectId);
+                    Exercise _exercise = db.Exercises.FirstOrDefault(x => x.ExerciseId == ObjectId);
                     if (_exercise == null)
                     {
                         return HttpNotFound();
@@ -203,7 +203,15 @@ namespace Sunny_House.Controllers
                     string _addressString = string.Format("{0} {1}", _exercise.Address.City, _exercise.Address.AddressValue);
                     ViewData["AddressText"] = _addressString;
 
-                    return View(_exercise);
+                    Exercise _copyEx = new Exercise();
+                    _copyEx.EventId = _exercise.EventId;
+                    _copyEx.Subject = _exercise.Subject;
+                    _copyEx.AddressId = _exercise.AddressId;
+                    _copyEx.StartTime = Start_Time;
+                    _copyEx.EndTime = End_Time;
+                    _copyEx.Note = String.Empty;
+
+                    return View(_copyEx);
                 }
 
                 return View();
@@ -243,8 +251,6 @@ namespace Sunny_House.Controllers
                         TempData["MessageError"] = "Продолжительность занятия должна быть не менее 30 минут";
                         return Redirect(_returnurl);
                     }
-
-
                 }
                 catch (Exception ex)
                 {

@@ -16,11 +16,11 @@
     <p>
         <span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;">
         </span>
-        Вы можете редактировать текущее занятие или создать его копию для дальнейшего редактирования. Выберите действие.
+        Вы можете переместить текущее занятие или создать его копию. 
     </p>
 </div>
 
-<h2><i class="fa fa-bell"></i> Расписание занятий</h2>
+<h2><i class="fa fa-bell"></i>&nbsp;Расписание занятий</h2>
 
 <a href="@Url.Action("ExShow", "Exercises", new { @ReturnUrl = "/Exercises/CalendarShow/" })">Управление занятиями</a>
 
@@ -126,35 +126,8 @@
 
                 //=======================Щелчок по событию==========================
                 eventClick: function (calEvent, jsEvent, view) {
-                    //var UrlStr = '/Exercises/ExDetails?ObjectId=' + calEvent.id;
-                    //window.open(UrlStr, "_self");
-
-                    var objid = calEvent.id;
-                    $("#dialog-confirm").dialog({
-                        resizable: false,
-                        height: "auto",
-                        autoOpen: false,
-                        width: 400,
-                        modal: true,
-                        buttons: {
-                            "Подробно": function () {
-                                $(this).dialog("close");
-                                var UrlStr = '/Exercises/ExDetails?ObjectId=' + objid;
-                                window.open(UrlStr, "_blank");
-                            },
-                            "Создать копию": function () {
-                                $(this).dialog("close");
-                                var UrlStr = '/Exercises/ExCreate?ObjectId=' + objid + '&ReturnUrl=/Exercises/CalendarShow&nocookie=true';
-                                window.open(UrlStr, "_self");
-                            },
-                            "Редактировать": function () {
-                                $(this).dialog("close");
-                                var UrlStr = '/Exercises/ExEdit?ObjectId=' + objid + '&ReturnParam=/Exercises/CalendarShow';
-                                window.open(UrlStr, "_self");
-                            }
-                        }
-                    }).dialog('open');
-
+                    var UrlStr = '/Exercises/ExDetails?ObjectId=' + calEvent.id;
+                    window.open(UrlStr, "_blank");
                 },
 
                 //==============================Start===============================
@@ -200,10 +173,40 @@
 
                 eventDrop: function (event, delta, revertFunc) {
 
-                    if (!confirm('Вы изменили время начала занятия "' + event.title + '" \nСохранить изменения?')) {
-                        revertFunc();
-                    }
-                    FCAjax(event, delta, revertFunc);
+                    //if (!confirm('Вы изменили время начала занятия "' + event.title + '" \nСохранить изменения?')) {
+                    //    revertFunc();
+                    //}
+                    //FCAjax(event, delta, revertFunc);
+
+                    var objid = event.id;
+                    $("#dialog-confirm").dialog({
+                        resizable: false,
+                        height: "auto",
+                        autoOpen: false,
+                        width: 400,
+                        modal: true,
+                        buttons: {
+                            "Переместить": function () {
+                                $(this).dialog("close");
+                                FCAjax(event, delta, revertFunc);
+                            },
+
+                            "Копировать": function () {
+                                $(this).dialog("close");
+                                var UrlStr = '/Exercises/ExCreate?ObjectId=' + objid; 
+                                UrlStr += '&ReturnUrl=/Exercises/CalendarShow&nocookie=true';
+                                UrlStr += '&Start_Time='+event.start.format();
+                                UrlStr += '&End_Time='+event.end.format();
+                                window.open(UrlStr, "_self");
+                            },
+
+                            "Отмена": function () {
+                                $(this).dialog("close");
+                                revertFunc();
+                            }
+                        }
+                    }).dialog('open');
+
 
                 },
 
