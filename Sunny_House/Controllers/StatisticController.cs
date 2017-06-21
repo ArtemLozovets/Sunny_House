@@ -8,16 +8,18 @@ using Sunny_House.Methods;
 
 namespace Sunny_House.Controllers
 {
-    [Authorize(Roles = "Administrator")]
     public class StatisticController : Controller
     {
         private SunnyModel db = new SunnyModel();
 
+
+        [Authorize(Roles = "Administrator")]
         public ActionResult Index(int? Year)
         {
             return View();
         }
 
+        [Authorize(Roles = "Administrator")]
         public JsonResult GetChart(string mode, int? Year)
         {
             db.Database.Log = (s => System.Diagnostics.Debug.WriteLine(s));
@@ -146,13 +148,15 @@ namespace Sunny_House.Controllers
         }
 
 
-        [Authorize]
+
+        [Authorize(Roles = "Administrator, User, Presenter")]
         public ActionResult DOBRep(int? month)
         {
             return View();
         }
 
-        [Authorize]
+
+        [Authorize(Roles = "Administrator, User, Presenter")]
         public ActionResult PersonsByDOB(int? month)
         {
             var _persons = (from person in db.Persons
