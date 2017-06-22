@@ -174,7 +174,7 @@ namespace Sunny_House.Controllers
 
         // GET: Exercises/Create
         [Authorize(Roles = "Administrator, User")]
-        public ActionResult ExCreate(int? ObjectId, int? AddressId, string ReturnUrl, string nocookie, DateTime Start_Time, DateTime End_Time)
+        public ActionResult ExCreate(int? ObjectId, int? AddressId, string ReturnUrl, string nocookie, DateTime? Start_Time, DateTime? End_Time)
         {
             string _returnurl = (!String.IsNullOrEmpty(ReturnUrl)) ? ReturnUrl : "/Exercises/ExShow";
             ViewData["ReturnUrl"] = _returnurl;
@@ -197,18 +197,22 @@ namespace Sunny_House.Controllers
                         return HttpNotFound();
                     }
 
+
                     ViewData["EventName"] = _exercise.Event.EventName;
                     ViewData["NoCookie"] = nocookie;
 
                     string _addressString = string.Format("{0} {1}", _exercise.Address.City, _exercise.Address.AddressValue);
                     ViewData["AddressText"] = _addressString;
 
+                    DateTime _StartTime = Start_Time ?? DateTime.Now;
+                    DateTime _EndTime = End_Time ?? DateTime.Now.AddMinutes(30);
+
                     Exercise _copyEx = new Exercise();
                     _copyEx.EventId = _exercise.EventId;
                     _copyEx.Subject = _exercise.Subject;
                     _copyEx.AddressId = _exercise.AddressId;
-                    _copyEx.StartTime = Start_Time;
-                    _copyEx.EndTime = End_Time;
+                    _copyEx.StartTime = _StartTime;
+                    _copyEx.EndTime = _EndTime;
                     _copyEx.Note = String.Empty;
 
                     return View(_copyEx);
