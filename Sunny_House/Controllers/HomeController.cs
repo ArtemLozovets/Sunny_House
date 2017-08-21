@@ -252,7 +252,6 @@ namespace Sunny_House.Controllers
 
         #endregion
 
-
         #region  Список платежів по платнику
         [HttpGet]
         [Authorize(Roles = "Administrator, User")]
@@ -741,6 +740,28 @@ namespace Sunny_House.Controllers
                         if (person.Event.Any())
                         {
                             string _message = string.Format("Персона \"{0} {1} {2} \" не может быть удалена, так как имеются связанные данные в таблице \"Event\"", person.FirstName, person.LastName, person.MiddleName);
+                            TempData["MessageError"] = _message;
+
+                            return RedirectToAction("ShowPersons", "Home", new { @PersonId = PersonId });
+                        }
+
+                        if (person.Visit.Any())
+                        {
+                            string _message = string.Format("Персона \"{0} {1} {2} \" не может быть удалена, так как имеются связанные данные в таблице посещений", person.FirstName, person.LastName, person.MiddleName);
+                            TempData["MessageError"] = _message;
+
+                            return RedirectToAction("ShowPersons", "Home", new { @PersonId = PersonId });
+                        }
+
+                        if (person.PotentialClient.Any())
+                        {
+                            //var _evname = db.PotentialСlients.Where(x => x.ClientId == person.PersonId).Select(x => x.EventName).FirstOrDefault().ToString();
+                            var _evname = (from ptc in db.PotentialСlients
+                                           join ev in db.Events on ptc.EventId equals ev.EventId
+                                           where ptc.PersonId == person.PersonId
+                                           select ev.EventName).FirstOrDefault().ToString();
+
+                            string _message = string.Format("Персона \"{0} {1} {2} \" не может быть удалена, так как имеются связанные данные в таблице потенциальных клиентов. Мероприятие: \"{3}\".", person.FirstName, person.LastName, person.MiddleName, _evname);
                             TempData["MessageError"] = _message;
 
                             return RedirectToAction("ShowPersons", "Home", new { @PersonId = PersonId });

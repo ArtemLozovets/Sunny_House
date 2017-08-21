@@ -247,8 +247,6 @@ namespace Sunny_House.Controllers
                         TempData["MessageOk"] = _message;
 
                         return Redirect(_returnurl);
-
-
                     }
                     else
                     {

@@ -121,7 +121,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/16/2017 19:04:18</publishTime>
     </File>
     <File Include="bin/Sunny_House.dll">
-      <publishTime>06/20/2017 16:22:54</publishTime>
+      <publishTime>08/21/2017 16:56:51</publishTime>
     </File>
     <File Include="bin/Sunny_House.pdb">
       <publishTime>04/10/2017 12:37:15</publishTime>
@@ -934,7 +934,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/05/2017 13:55:17</publishTime>
     </File>
     <File Include="Views/Exercises/ExDetails.cshtml">
-      <publishTime>06/20/2017 16:21:54</publishTime>
+      <publishTime>08/21/2017 14:22:05</publishTime>
     </File>
     <File Include="Views/Exercises/ExEdit.cshtml">
       <publishTime>06/20/2017 09:20:50</publishTime>
@@ -1246,7 +1246,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/22/2017 21:00:22</publishTime>
     </File>
     <File Include="Views/Statistic/PersonsByDOB.cshtml">
-      <publishTime>06/20/2017 09:06:28</publishTime>
+      <publishTime>06/21/2017 10:30:52</publishTime>
     </File>
     <File Include="Views/Tasks/TaskCreate.cshtml">
       <publishTime>05/05/2017 14:11:47</publishTime>
@@ -1276,7 +1276,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/26/2017 10:26:23</publishTime>
     </File>
     <File Include="Views/Visits/PreVisitorPartialList.cshtml">
-      <publishTime>05/26/2017 10:26:23</publishTime>
+      <publishTime>08/21/2017 14:50:54</publishTime>
     </File>
     <File Include="Views/Visits/VisCreate.cshtml">
       <publishTime>05/05/2017 14:13:21</publishTime>
@@ -1300,7 +1300,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/21/2016 08:29:15</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>06/20/2017 10:44:36</publishTime>
+      <publishTime>08/21/2017 16:56:55</publishTime>
     </File>
   </ItemGroup>
 </Project>
