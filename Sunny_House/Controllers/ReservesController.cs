@@ -370,6 +370,13 @@ namespace Sunny_House.Controllers
 
             int pageSize = 50;
             int pageNumber = (page ?? 1);
+
+            //Передаем в представление набор параметров для возврата 
+            ViewData["ActionName"] = "ResShowOfEvent";
+            ViewData["ControllerName"] = "Reserves";
+            ViewData["ParameterName"] = "EventId";
+            ViewData["ParameterValue"] = EventId;
+
             return PartialView(potentialClients.ToList().ToPagedList(pageNumber, pageSize));
         }
 

@@ -13,7 +13,14 @@
         <th>
             Вз.
         </th>
-        <th></th>
+        <th>
+            <button class="btn btn-default btn-sm pull-right"
+                    style="margin-top:-4px;"
+                    id="deleteAllPTC"
+                    title="Очистить все">
+                    <i class="glyphicon glyphicon-trash"></i>&nbsp;Очистить все
+            </button>
+        </th>
     </tr>
 
 
@@ -60,6 +67,22 @@
                                                                      Mode = "Pot",
                                                                      EventId = Request.QueryString["EventId"]
                                                                  })'><span class="glyphicon glyphicon-ban-circle"></span></a>
+                
+                <a class="btn btn-default btn-sm"
+                   title="Добавить отзыв"
+                   target="_self"
+                   style="display:inline-block;"
+                   href='@Url.Action("CommentCreate", "Comments", new { SignPersonId = item.PersonId, EventId = ViewData["EventId"] })'>
+                    <span class="glyphicon glyphicon-comment"></span>
+                </a>
+
+                <a class="btn btn-default btn-sm" title="Добавить задачу" href='@Url.Action("TaskCreate", "Tasks", new
+                                  {
+                                      ControllerName = ViewData["ControllerName"],
+                                      ActionName = ViewData["ActionName"],
+                                      ParameterName = ViewData["ParameterName"],
+                                      ParameterValue = ViewData["ParameterValue"]
+                                  })'><span class="glyphicon glyphicon-tasks"></span></a>
                 <a class="btn btn-default btn-sm delPTC" title="Удалить" href='#topanchor' data-clientid="@item.ClientId"><span class="glyphicon glyphicon-trash"></span></a>
             </td>
         </tr>
