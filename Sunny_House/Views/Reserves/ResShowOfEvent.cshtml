@@ -793,12 +793,18 @@
                     return false;
                 }
                 if(confirm('Удалить всех потенциальных клиентов из списка?')){
+                    $('#loadingImg').show();
                     $.ajax({
                         url:"/Reserves/DeleteAll",
                         data: {EventId:@Model.EventId},
                         success:function(data){
+                            $('#loadingImg').hide();
                             $('#clientfilterclear').trigger('click');
-                        }
+                        },
+                        error:function(jqXHR, exception){
+                            $('#loadingImg').hide(); 
+                            alert(jqXHR);
+                        },
                     });
                 }
             });

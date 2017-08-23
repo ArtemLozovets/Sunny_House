@@ -71,9 +71,9 @@
                 
                 <a class="btn btn-default btn-sm"
                    title="Добавить отзыв"
-                   target="_self"
+                   target="_blank"
                    style="display:inline-block;"
-                   href='@Url.Action("CommentCreate", "Comments", new { SignPersonId = item.PersonId, EventId = ViewData["EventId"] })'>
+                   href='@Url.Action("CommentCreate", "Comments", new { SignPersonId = item.PersonId, EventId = ViewData["EventId"], SourceName = "Бронирование" })'>
                     <span class="glyphicon glyphicon-comment"></span>
                 </a>
 

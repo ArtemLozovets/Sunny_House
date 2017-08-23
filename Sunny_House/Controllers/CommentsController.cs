@@ -83,9 +83,18 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Comments/Create
-        public ActionResult CommentCreate(int? SignPersonId, int? ExerciseId, DateTime? Date1, int? EventId)
+        public ActionResult CommentCreate(int? SignPersonId, int? ExerciseId, DateTime? Date1, int? EventId, string SourceName)
         {
+
             ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName");
+            if (!string.IsNullOrEmpty(SourceName) && SourceName == "Бронирование")
+            {
+                int? _SrcId = db.CommentSources.Where(x => x.SourceName == "Бронирование").Select(x => x.SourceId).FirstOrDefault();
+                if (_SrcId > 0)
+                {
+                    ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName", _SrcId);
+                }
+            }
 
             ViewBag.MaxAttSize = GetMaxAttSize();
 
