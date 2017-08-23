@@ -784,14 +784,25 @@
     </script>
 
     <script>
-        //Скрипт пакетного удаления ВСЕХ потенциальных клиентов из списка
-        $('body').on('click', ('#deleteAllPTC'), function(e){
-            $(this).blur();
-            if(confirm('Удалить всех потенциальных клиентов из списка?')){
-                alert('OLOLO!');
-            }
+        $(function () {
+            //Скрипт пакетного удаления ВСЕХ потенциальных клиентов из списка
+            $('body').on('click', ('#deleteAllPTC'), function(e){
+                $(this).blur();
+                if($('#PTCCount').val() === '0'){
+                    alert('Список потенциальных клиентов пуст!');
+                    return false;
+                }
+                if(confirm('Удалить всех потенциальных клиентов из списка?')){
+                    $.ajax({
+                        url:"/Reserves/DeleteAll",
+                        data: {EventId:@Model.EventId},
+                        success:function(data){
+                            $('#clientfilterclear').trigger('click');
+                        }
+                    });
+                }
+            });
+
         });
-
-
     </script>
 }

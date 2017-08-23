@@ -2,6 +2,7 @@
 @using PagedList.Mvc;
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
+<input type="hidden" value="@Model.Count()" id="PTCCount"/>
 <table class="table" id="partialtable">
     <tr>
         <th>
@@ -14,7 +15,7 @@
             Вз.
         </th>
         <th>
-            <button class="btn btn-default btn-sm pull-right"
+            <button class="btn btn-danger btn-sm pull-right"
                     style="margin-top:-4px;"
                     id="deleteAllPTC"
                     title="Очистить все">
@@ -27,7 +28,7 @@
     @if (Model.Count() == 0)
     {
         <tr>
-            <td colspan="2">
+            <td colspan="4">
                 <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
             </td>
         </tr>
@@ -101,6 +102,5 @@
                                  new { @EventId = Request.QueryString["EventId"], @SearchString = ViewData["SearchString"], page }),
                                  PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
                                  new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "update_potential" }))
-
-
 }
+
