@@ -426,15 +426,15 @@ namespace Sunny_House.Controllers
                             from comm in tmpcomm.DefaultIfEmpty()
 
                             where (pr.RoleId == RoleId || RoleId == null)
-                                    && ((_visit.Exercise.EventId == PTEventId && _visit.FactVisit) || PTEventId == null || PTEventId == 0) 
-                                    && (SqlFunctions.DateDiff("day", pr.ReserveDate, DateTime.Today) <= 365 || RoleId == null) 
-                                    && (person.FirstName.Contains(PTSearch) 
-                                            || person.LastName.Contains(PTSearch) 
-                                            || person.Note.Contains(PTSearch) 
-                                            || comm.Address_Number.Contains(PTSearch) 
+                                    && ((_visit.Exercise.EventId == PTEventId && _visit.FactVisit) || PTEventId == null || PTEventId == 0)
+                                    && (SqlFunctions.DateDiff("day", pr.ReserveDate, DateTime.Today) <= 365 || RoleId == null)
+                                    && (person.FirstName.Contains(PTSearch)
+                                            || person.LastName.Contains(PTSearch)
+                                            || person.Note.Contains(PTSearch)
+                                            || comm.Address_Number.Contains(PTSearch)
                                             || String.IsNullOrEmpty(PTSearch))
-                                    && (!person.Reserve.Any(x=>x.PersonId == person.PersonId && x.EventId == EventId)) 
-                                    && (!person.PotentialClient.Any(x=>x.PersonId == person.PersonId && x.EventId == EventId))
+                                    && (!person.Reserve.Any(x => x.PersonId == person.PersonId && x.EventId == EventId))
+                                    && (!person.PotentialClient.Any(x => x.PersonId == person.PersonId && x.EventId == EventId))
 
                             select new
                             {
@@ -543,7 +543,7 @@ namespace Sunny_House.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Administrator, User")]
-        public JsonResult AjaxPTCMoveToReserve(int? PTCId)
+        public JsonResult AjaxPTCMoveToReserve(int? PTCId, string PersonFIO)
         {
             if (PTCId == null)
             {
@@ -576,6 +576,37 @@ namespace Sunny_House.Controllers
                         return Json(new { Result = false, Message = "Свободные места отсутствуют" }, JsonRequestBehavior.AllowGet);
                     }
 
+
+                    //Формирование отзыва при нажатии кнопки "Бронь" на странице потенциальных клиентов
+                    int sourceID = db.CommentSources.Where(x => x.SourceName == "Бронирование").Select(x => x.SourceId).FirstOrDefault();
+
+                    var _commData = (from comm in db.PotentialСlients
+                                     join ev in db.Events on comm.EventId equals ev.EventId
+                                     join fio in db.Persons on comm.PersonId equals fio.PersonId
+                                     where comm.ClientId == PTCId
+                                     select new
+                                     {
+                                         EventName = ev.EventName,
+                                         EventId = ev.EventId,
+                                         SignPersonId = comm.PersonId,
+                                         InfoesText = comm.Infoes,
+                                         PersonFIO = (string)(fio.FirstName + " " + fio.LastName + " " + fio.MiddleName).Trim()
+                                     }).FirstOrDefault();
+
+                    if ((sourceID != 0) && (_commData != null))
+                    {
+                        string CommentText = String.Format("Бронь %{0} %{1} %{2}", _commData.PersonFIO, _commData.EventName, _commData.InfoesText);
+
+                        Comment _comm = new Comment();
+                        _comm.SourceId = sourceID;
+                        _comm.EventId = _commData.EventId;
+                        _comm.SignPersonId = _commData.SignPersonId;
+                        _comm.Text = CommentText;
+                        db.Comments.Add(_comm);
+                        db.SaveChanges();
+                    }
+                    //----------------
+
                     Reserve _reserve = new Reserve
                     {
                         PersonId = _client.PersonId,
@@ -601,7 +632,7 @@ namespace Sunny_House.Controllers
                 catch (Exception ex)
                 {
                     dbContextTransaction.Rollback();
-                    return Json(new { Result = false, Message = "Ошибка бронирования персоны" + ex.Message }, JsonRequestBehavior.AllowGet);
+                    return Json(new { Result = false, Message = "Ошибка бронирования персоны " + ex.Message }, JsonRequestBehavior.AllowGet);
                 }
             }
         }

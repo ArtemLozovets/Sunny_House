@@ -60,7 +60,13 @@
                     </td>
                 }
             <td style="text-align:center; width:204px; min-width:204px;">
-                <a class="btn btn-default btn-sm reservePTC" title="Бронь" href='#topanchor' data-clientid="@item.ClientId"><span class="glyphicon glyphicon-education"></span></a>
+                <a class="btn btn-default btn-sm reservePTC"
+                   title="Бронь"
+                   href='#topanchor'
+                   data-personfio="@item.PersonFIO"
+                   data-clientid="@item.ClientId">
+                    <span class="glyphicon glyphicon-education"></span>
+                </a>
                 <a class="btn btn-default btn-sm" title="Отказ" href='@Url.Action("PTCRefusing", "Reserves", new
                                                                  {
                                                                      ClientId = item.ClientId,
@@ -68,7 +74,7 @@
                                                                      Mode = "Pot",
                                                                      EventId = Request.QueryString["EventId"]
                                                                  })'><span class="glyphicon glyphicon-ban-circle"></span></a>
-                
+
                 <a class="btn btn-default btn-sm"
                    title="Добавить отзыв"
                    target="_blank"

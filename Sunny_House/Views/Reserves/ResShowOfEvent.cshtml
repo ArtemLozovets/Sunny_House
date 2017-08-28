@@ -547,14 +547,13 @@
             event.preventDefault();
 
             if (confirm("Выполнить бронирование?")) {
-
                 var _PTCId = $(this).data("clientid");
                 $('#loadingImg').show();
                 $.ajax({
                     type: 'POST',
                     url: '/Reserves/AjaxPTCMoveToReserve/',
                     data: {
-                        PTCId: _PTCId
+                        PTCId: _PTCId,
                     },
                     success: function (data) {
                         $('#loadingImg').hide();
