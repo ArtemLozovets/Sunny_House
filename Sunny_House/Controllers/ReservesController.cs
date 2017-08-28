@@ -543,7 +543,7 @@ namespace Sunny_House.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Administrator, User")]
-        public JsonResult AjaxPTCMoveToReserve(int? PTCId, string PersonFIO)
+        public JsonResult AjaxPTCMoveToReserve(int? PTCId)
         {
             if (PTCId == null)
             {
@@ -595,9 +595,11 @@ namespace Sunny_House.Controllers
 
                     if ((sourceID != 0) && (_commData != null))
                     {
-                        string CommentText = String.Format("Бронь %{0} %{1} %{2}", _commData.PersonFIO, _commData.EventName, _commData.InfoesText);
+                        string CommentText = String.Format("Бронь {0} {1} {2}", _commData.PersonFIO, _commData.EventName, _commData.InfoesText);
 
                         Comment _comm = new Comment();
+                        _comm.Date = DateTime.Now;
+                        _comm.Rating = 5;
                         _comm.SourceId = sourceID;
                         _comm.EventId = _commData.EventId;
                         _comm.SignPersonId = _commData.SignPersonId;
@@ -689,6 +691,24 @@ namespace Sunny_House.Controllers
 
             int SignerId = Mode == "Pot" ? ClientId ?? 0 : ReserveId ?? 0;
 
+            string CommentText = String.Empty;
+            if (Mode == "Pot")
+            {
+                var _commData = (from comm in db.PotentialСlients
+                                 join ev in db.Events on comm.EventId equals ev.EventId
+                                 join fio in db.Persons on comm.PersonId equals fio.PersonId
+                                 where comm.ClientId == SignerId
+                                 select new
+                                 {
+                                     EventName = ev.EventName,
+                                     EventId = ev.EventId,
+                                     SignPersonId = comm.PersonId,
+                                     InfoesText = comm.Infoes,
+                                     PersonFIO = (string)(fio.FirstName + " " + fio.LastName + " " + fio.MiddleName).Trim()
+                                 }).FirstOrDefault();
+                CommentText = String.Format("Отказ {0} {1} {2}", _commData.PersonFIO, _commData.EventName, _commData.InfoesText);
+            }
+
             CommentViewModel _comment = new CommentViewModel();
             _comment.EventId = EventId ?? null;
             _comment.SourceId = _sourceid;
@@ -696,6 +716,7 @@ namespace Sunny_House.Controllers
             _comment.SourceName = "Бронирование";
             _comment.EventName = db.Events.FirstOrDefault(e => e.EventId == EventId).EventName.ToString();
             _comment.SignPersonId = SignerId;
+            _comment.Text = CommentText;
 
             List<RelationViewModel> _rellist = new List<RelationViewModel>();
 
