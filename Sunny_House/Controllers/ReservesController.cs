@@ -350,6 +350,7 @@ namespace Sunny_House.Controllers
                                     select new
                                     {
                                         PersonId = person.PersonId,
+                                        EventId = client.EventId,
                                         ClientId = client.ClientId,
                                         PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
                                         RoleName = _role.RoleName,
@@ -358,6 +359,7 @@ namespace Sunny_House.Controllers
                                     }).AsEnumerable().Select(c => new PotentialClientsViewModel
                                     {
                                         PersonId = c.PersonId,
+                                        EventId = c.EventId,
                                         ClientId = c.ClientId,
                                         PersonFIO = c.PersonFIO.Trim(),
                                         RoleName = c.RoleName,

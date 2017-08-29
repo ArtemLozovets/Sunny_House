@@ -30,6 +30,7 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.RelGuid)
         @Html.Hidden("CreatorName", @Context.User.Identity.Name)
+        @Html.Hidden("ReturnPath1", ViewData["ReturnPath"])
 
         <div class="row">
             <div class="col-lg-6 col-md-6">
@@ -170,9 +171,9 @@
                 e.preventDefault();
                 $(this).blur();
                 var returnPath = '/Comments/CommentShow';
-                if (localStorage.getItem("commentCreateReturnPath") !== null) {
-                    var returnPath = localStorage.getItem('commentCreateReturnPath');
-                    localStorage.removeItem('commentCreateReturnPath');
+                if (sessionStorage.getItem("commentCreateReturnPath") !== null) {
+                    var returnPath = sessionStorage.getItem('commentCreateReturnPath');
+                    sessionStorage.removeItem('commentCreateReturnPath');
                 }
                 window.location.href = returnPath;
             });

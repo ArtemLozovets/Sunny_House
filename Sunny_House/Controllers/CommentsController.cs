@@ -83,10 +83,14 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Comments/Create
-        public ActionResult CommentCreate(int? SignPersonId, int? ExerciseId, DateTime? Date1, int? EventId)
+        public ActionResult CommentCreate(int? SignPersonId, int? ExerciseId, DateTime? Date1, int? EventId, string ReturnPath)
         {
             ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName");
             ViewBag.MaxAttSize = GetMaxAttSize();
+            if (!String.IsNullOrEmpty(ReturnPath))
+            {
+                ViewData["ReturnPath"] = ReturnPath;
+            }
 
             Comment _comment = new Comment();
             DateTime _dt = Date1 ?? DateTime.Now;
@@ -122,7 +126,7 @@ namespace Sunny_House.Controllers
         // POST: Comments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CommentCreate([Bind(Include = "CommentId,SourceId,Date,Text,Rating,AboutPersonId,EventId,ExerciseId,AddressId,SignPersonId,RelGuid,CreatorId")] Comment comment, string CreatorName)
+        public async Task<ActionResult> CommentCreate([Bind(Include = "CommentId,SourceId,Date,Text,Rating,AboutPersonId,EventId,ExerciseId,AddressId,SignPersonId,RelGuid,CreatorId")] Comment comment, string CreatorName, string ReturnPath1)
         {
             if (ModelState.IsValid)
             {
@@ -141,6 +145,11 @@ namespace Sunny_House.Controllers
                     db.Comments.Add(comment);
                     await db.SaveChangesAsync();
                     TempData["MessageOk"] = "Отзыв успешно добавлен";
+                    if (!String.IsNullOrEmpty(ReturnPath1))
+                    {
+                        return Redirect(ReturnPath1);
+                    }
+
                     return RedirectToAction("CommentShow");
                 }
                 catch (Exception ex)
@@ -183,7 +192,10 @@ namespace Sunny_House.Controllers
                 }
 
                 ViewBag.MaxAttSize = GetMaxAttSize();
-
+                if (!String.IsNullOrEmpty(ReturnPath1))
+                {
+                    ViewData["ReturnPath"] = ReturnPath1;
+                }
                 return View(comment);
             }
         }

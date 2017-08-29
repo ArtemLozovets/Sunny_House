@@ -24,7 +24,6 @@
         </th>
     </tr>
 
-
     @if (Model.Count() == 0)
     {
         <tr>
@@ -47,7 +46,7 @@
                 </div>
             </td>
             @if (item.PersonAge != null && item.PersonAge > 0)
-                {
+            {
                 <td>
                     <span class="text-info">@Html.DisplayFor(modelItem => item.PersonAge)</span>
                 </td>
@@ -79,7 +78,10 @@
                    target="_self"
                    onclick="setReturnPath()"
                    style="display:inline-block;"
-                   href='@Url.Action("CommentCreate", "Comments", new { SignPersonId = item.PersonId, EventId = ViewData["EventId"]})'>
+                   href='@Url.Action("CommentCreate", "Comments", new { 
+                        SignPersonId = item.PersonId, 
+                        EventId = Model.First().EventId, 
+                        ReturnPath = "/Reserves/ResShowOfEvent?EventId="+@Model.First().EventId.ToString()})'>
                     <span class="glyphicon glyphicon-comment"></span>
                 </a>
 
@@ -97,11 +99,17 @@
 
 </table>
 
+
+
 @if (Model.PageCount > 0)
 {
     @:<hr />
     @:Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount.
     @:Записи @Model.FirstItemOnPage - @Model.LastItemOnPage из @Model.TotalItemCount
+
+
+
+
 
 
 

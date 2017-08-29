@@ -121,30 +121,30 @@ namespace Sunny_House.Models
     [NotMapped]
     public class MoreInfoesViewModel
     {
-        public int PersonId {get; set;}
-        
-        public string PersonFIO{get; set;}
+        public int PersonId { get; set; }
+
+        public string PersonFIO { get; set; }
 
         [EnumDataType(typeof(Person.SexTypes))]
         [Display(Name = "Пол")]
         public Person.SexTypes? Sex { get; set; }
-        
+
         [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Дата рождения")]
         [DataType(DataType.Date)]
-        
+
         public DateTime? DateOfBirth { get; set; }
-        
+
         [Display(Name = "Возраст")]
         public int? PersonAge { get; set; }
-        
+
         [Display(Name = "Месяцев")]
         public int? PersonMonth { get; set; }
-        
+
         public string PersonNote { get; set; }
-        
-        public List<RelationViewModel> RelPerson {get; set;}
-        
+
+        public List<RelationViewModel> RelPerson { get; set; }
+
         public List<Visit> VisitsList { get; set; }
 
         public List<Comment> CommentList { get; set; }
@@ -328,6 +328,8 @@ namespace Sunny_House.Models
 
         [Display(Name = "Мероприятие")]
         public string EventName { get; set; }
+
+        public int EventId { get; set; }
 
         [Display(Name = "Роль")]
         public string RoleName { get; set; }

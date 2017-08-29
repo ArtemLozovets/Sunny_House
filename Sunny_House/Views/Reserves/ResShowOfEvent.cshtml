@@ -813,7 +813,7 @@
     <script>
         function setReturnPath() {
             var _eventId = @Model.EventId;
-            localStorage.setItem('commentCreateReturnPath', '/Reserves/ResShowOfEvent?EventId='+_eventId);
+            sessionStorage.setItem('commentCreateReturnPath', '/Reserves/ResShowOfEvent?EventId='+_eventId);
         }       
     </script>
 }
