@@ -595,7 +595,7 @@ namespace Sunny_House.Controllers
 
                     if ((sourceID != 0) && (_commData != null))
                     {
-                        string CommentText = String.Format("Бронь {0} {1} {2}", _commData.PersonFIO, _commData.EventName, _commData.InfoesText);
+                        string CommentText = String.Format("Бронь; {0}; {1}; {2}", _commData.PersonFIO, _commData.EventName, _commData.InfoesText);
 
                         Comment _comm = new Comment();
                         _comm.Date = DateTime.Now;
@@ -691,6 +691,7 @@ namespace Sunny_House.Controllers
 
             int SignerId = Mode == "Pot" ? ClientId ?? 0 : ReserveId ?? 0;
 
+            //Формируем текст отзыва при отказе из списка потенциальных клиентов
             string CommentText = String.Empty;
             if (Mode == "Pot")
             {
@@ -706,7 +707,10 @@ namespace Sunny_House.Controllers
                                      InfoesText = comm.Infoes,
                                      PersonFIO = (string)(fio.FirstName + " " + fio.LastName + " " + fio.MiddleName).Trim()
                                  }).FirstOrDefault();
-                CommentText = String.Format("Отказ {0} {1} {2}", _commData.PersonFIO, _commData.EventName, _commData.InfoesText);
+                if (_commData != null)
+                {
+                    CommentText = String.Format("Отказ; {0}; {1}; {2}", _commData.PersonFIO, _commData.EventName, _commData.InfoesText);
+                }
             }
 
             CommentViewModel _comment = new CommentViewModel();

@@ -152,7 +152,8 @@
     </div>
 }
 <div>
-    <a class="btn btn-default" href='@Url.Action("CommentShow", "Comments")'><span class="glyphicon glyphicon-circle-arrow-left"> Список отзывов</span></a>
+    @*<a class="btn btn-default" href='@Url.Action("CommentShow", "Comments")'><span class="glyphicon glyphicon-circle-arrow-left"> Список отзывов</span></a>*@
+    <a class="btn btn-default" href='#' id="backBTN"><span class="glyphicon glyphicon-circle-arrow-left">&nbsp;Назад</span></a>
 </div>
 
 @section Scripts {
@@ -163,6 +164,18 @@
 
         $(function () {
             $.ajaxSetup({ cache: false });
+
+            //Скрипт возврата на вызвавшую страницу при нажатии кнопки "Назад"
+            $('body').on('click', '#backBTN', function (e) {
+                e.preventDefault();
+                $(this).blur();
+                var returnPath = '/Comments/CommentShow';
+                if (localStorage.getItem("commentCreateReturnPath") !== null) {
+                    var returnPath = localStorage.getItem('commentCreateReturnPath');
+                    localStorage.removeItem('commentCreateReturnPath');
+                }
+                window.location.href = returnPath;
+            });
 
             $(".pModal").click(function (e) {
 

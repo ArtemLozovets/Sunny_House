@@ -83,23 +83,12 @@ namespace Sunny_House.Controllers
         }
 
         // GET: Comments/Create
-        public ActionResult CommentCreate(int? SignPersonId, int? ExerciseId, DateTime? Date1, int? EventId, string SourceName)
+        public ActionResult CommentCreate(int? SignPersonId, int? ExerciseId, DateTime? Date1, int? EventId)
         {
-
             ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName");
-            if (!string.IsNullOrEmpty(SourceName) && SourceName == "Бронирование")
-            {
-                int? _SrcId = db.CommentSources.Where(x => x.SourceName == "Бронирование").Select(x => x.SourceId).FirstOrDefault();
-                if (_SrcId > 0)
-                {
-                    ViewBag.SourceId = new SelectList(db.CommentSources.OrderBy(i => i.SourceName), "SourceId", "SourceName", _SrcId);
-                }
-            }
-
             ViewBag.MaxAttSize = GetMaxAttSize();
 
             Comment _comment = new Comment();
-
             DateTime _dt = Date1 ?? DateTime.Now;
             _dt = DateTime.SpecifyKind(_dt, DateTimeKind.Local);
             _comment.Date = _dt;
@@ -124,7 +113,6 @@ namespace Sunny_House.Controllers
                 _comment.EventId = EventId;
                 ViewData["EventName"] = db.Events.FirstOrDefault(x=>x.EventId == EventId).EventName.ToString();
             }
-
             _comment.Rating = 1;
             _comment.RelGuid = Guid.NewGuid();
 
@@ -161,7 +149,6 @@ namespace Sunny_House.Controllers
                     ViewBag.ErStack = ex.StackTrace;
                     return View("Error");
                 }
-
             }
             else
             {

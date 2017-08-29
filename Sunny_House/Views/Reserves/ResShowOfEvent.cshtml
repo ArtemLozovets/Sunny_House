@@ -299,7 +299,6 @@
         $(function () {
             $('#loadingImg').hide();
 
-
             //Сохраняем значение поля "Информация" при потере фокуса поля ввода
             $('body').on('focusout', '.infoesInput', function (e) {
                 $(this).next().trigger('click');
@@ -809,5 +808,12 @@
             });
 
         });
+    </script>
+
+    <script>
+        function setReturnPath() {
+            var _eventId = @Model.EventId;
+            localStorage.setItem('commentCreateReturnPath', '/Reserves/ResShowOfEvent?EventId='+_eventId);
+        }       
     </script>
 }
