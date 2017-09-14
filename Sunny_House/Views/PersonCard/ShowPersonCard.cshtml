@@ -145,6 +145,34 @@
             </div>
             <div id="colcomments" class="panel-collapse collapse">
                 <div class="panel-body">
+
+                    <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
+                        <tr>
+                            <th style="width:140px;"></th>
+                            <th>Отзыв потенциального клиента</th>
+                        </tr>
+                        @if (Model.PTCInfoesList.Count() == 0)
+                        {
+                            <tr>
+                                <td colspan="2">
+                                    <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var item in Model.PTCInfoesList)
+                        {
+                            <tr>
+                                <td style="text-align:center; vertical-align:top !important;">
+                                    <span style="padding:10px 0; font-weight:bold">@item.PersonFIO</span><br />
+                                    <span>"@item.EventName"</span>
+                                </td>
+                                <td>
+                                    @item.Infoes
+                                </td>
+                            </tr>
+                        }
+                    </table>
+
                     <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
                         <tr>
                             <th style="width:140px;"></th>

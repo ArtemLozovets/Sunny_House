@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using Sunny_House.Methods;
 
@@ -39,7 +38,7 @@ namespace Sunny_House.Controllers
                                PersonId = person.PersonId,
                                PersonFIO = person.FirstName + " " + person.LastName + " " + person.MiddleName,
                                RelationName = "Персона",
-                               HaveComm = db.PersonCommunications.Any(x=>x.PersonId == PersonId)
+                               HaveComm = db.PersonCommunications.Any(x => x.PersonId == PersonId)
                            }).ToList();
 
             _rellist.AddRange(_result);
@@ -87,19 +86,19 @@ namespace Sunny_House.Controllers
                                           EventId = ex.EventId,
                                           EventName = ex.Event.EventName,
                                           FactVisit = visit.FactVisit
-                                      }).Distinct().OrderByDescending(x=>x.StartTime).Take(30).AsEnumerable().Select(x => new Visit
-                          {
-                              VisitId = x.VisitId,
-                              VisitorId = x.VisitorId,
-                              ExerciseId = x.ExerciseId,
-                              RoleId = x.RoleId,
-                              ExName = x.ExName,
-                              Note = x.Note,
-                              StartTime = x.StartTime,
-                              EventId = x.EventId,
-                              EventName = x.EventName,
-                              FactVisit = x.FactVisit
-                          }).OrderByDescending(x => x.StartTime).ToList();
+                                      }).Distinct().OrderByDescending(x => x.StartTime).Take(30).AsEnumerable().Select(x => new Visit
+                                      {
+                                          VisitId = x.VisitId,
+                                          VisitorId = x.VisitorId,
+                                          ExerciseId = x.ExerciseId,
+                                          RoleId = x.RoleId,
+                                          ExName = x.ExName,
+                                          Note = x.Note,
+                                          StartTime = x.StartTime,
+                                          EventId = x.EventId,
+                                          EventName = x.EventName,
+                                          FactVisit = x.FactVisit
+                                      }).OrderByDescending(x => x.StartTime).ToList();
 
 
             List<Comment> _commentlist = (from relation in db.PersonRelations.Where(x => x.RelPersonId == PersonId || x.PersonId == PersonId)
@@ -107,7 +106,7 @@ namespace Sunny_House.Controllers
                                           select new
                                           {
                                               Date = comment.Date,
-                                              SignPersonFIO = comment.Person1.FirstName+" "+comment.Person1.LastName,
+                                              SignPersonFIO = comment.Person1.FirstName + " " + comment.Person1.LastName,
                                               Text = comment.Text
                                           }).Distinct().OrderByDescending(x => x.Date).Take(10).AsEnumerable().Select(x => new Comment
                                           {
@@ -115,6 +114,54 @@ namespace Sunny_House.Controllers
                                               SignPersonFIO = x.SignPersonFIO,
                                               Text = x.Text
                                           }).ToList();
+
+
+            List<PTCInfoes> _ptcInfList = new List<PTCInfoes>();
+
+            var _ptcinf = (from ptc in db.PotentialСlients
+                           join ev in db.Events on ptc.EventId equals ev.EventId
+                           where (!String.IsNullOrEmpty(ptc.Infoes) && ev.EndTime >= DateTime.Today && ptc.PersonId == PersonId)
+                           select new
+                           {
+                               PersonId = ptc.PersonId,
+                               PersonFIO = ptc.Person.FirstName + " " + ptc.Person.LastName,
+                               Infoes = ptc.Infoes,
+                               EventId = ptc.EventId,
+                               EventName = ev.EventName,
+                               ClientId = ptc.ClientId
+                           }).AsEnumerable().Select(x => new PTCInfoes
+                           {
+                               PersonId = x.PersonId,
+                               PersonFIO = x.PersonFIO,
+                               Infoes = x.Infoes,
+                               EventId = x.EventId,
+                               EventName = x.EventName
+                           }).ToList();
+
+            _ptcInfList.AddRange(_ptcinf);
+
+            _ptcinf = (from relpers in db.PersonRelations.Where(x => (x.RelPersonId == PersonId || x.PersonId == PersonId))
+                        join ptc in db.PotentialСlients on relpers.PersonId equals ptc.PersonId
+                        join ev in db.Events on ptc.EventId equals ev.EventId
+                       where (!String.IsNullOrEmpty(ptc.Infoes) && ev.EndTime >= DateTime.Today && ptc.PersonId == PersonId)
+                       select new
+                       {
+                           PersonId = ptc.PersonId,
+                           PersonFIO = ptc.Person.FirstName + " " + ptc.Person.LastName,
+                           Infoes = ptc.Infoes,
+                           EventId = ptc.EventId,
+                           EventName = ev.EventName,
+                           ClientId = ptc.ClientId
+                       }).Distinct().OrderByDescending(z => z.ClientId).AsEnumerable().Select(x => new PTCInfoes
+                       {
+                           PersonId = x.PersonId,
+                           PersonFIO = x.PersonFIO,
+                           Infoes = x.Infoes,
+                           EventId = x.EventId,
+                           EventName = x.EventName
+                       }).ToList();
+
+            _ptcInfList.AddRange(_ptcinf);
 
             MoreInfoesViewModel _moremodel = new MoreInfoesViewModel();
 
@@ -129,6 +176,7 @@ namespace Sunny_House.Controllers
             _moremodel.RelPerson = _rellist;
             _moremodel.VisitsList = _visitList;
             _moremodel.CommentList = _commentlist;
+            _moremodel.PTCInfoesList = _ptcInfList;
 
             return PartialView(_moremodel);
         }

@@ -148,6 +148,28 @@ namespace Sunny_House.Models
         public List<Visit> VisitsList { get; set; }
 
         public List<Comment> CommentList { get; set; }
+
+        public List<PTCInfoes> PTCInfoesList { get;  set;}
+    }
+
+    [NotMapped]
+    public class PTCInfoes
+    { 
+        [Key]
+        public int Id { get; set; }
+
+        public int PersonId { get; set; }
+
+        [Display(Name = "Персона")]
+        public string PersonFIO { get; set; }
+
+        public int EventId { get; set; }
+
+        [Display(Name = "Мероприятие")]
+        public string EventName { get; set; }
+
+        [Display(Name = "Отзыв потенциального клиента")]
+        public string Infoes { get; set; }
     }
 
     [NotMapped]
