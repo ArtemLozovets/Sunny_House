@@ -145,13 +145,12 @@
             </div>
             <div id="colcomments" class="panel-collapse collapse">
                 <div class="panel-body">
-
                     <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
                         <tr>
                             <th style="width:140px;"></th>
-                            <th>Отзыв потенциального клиента</th>
+                            <th>Отзыв</th>
                         </tr>
-                        @if (Model.PTCInfoesList.Count() == 0)
+                        @if (Model.CommentList.Count() == 0 && Model.PTCInfoesList.Count == 0)
                         {
                             <tr>
                                 <td colspan="2">
@@ -168,21 +167,6 @@
                                 </td>
                                 <td>
                                     @item.Infoes
-                                </td>
-                            </tr>
-                        }
-                    </table>
-
-                    <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
-                        <tr>
-                            <th style="width:140px;"></th>
-                            <th>Отзыв</th>
-                        </tr>
-                        @if (Model.CommentList.Count() == 0)
-                        {
-                            <tr>
-                                <td colspan="2">
-                                    <p class="text-center text-danger" style="margin-top:12px;">Записи, соответствующие критериям поиска, не найдены<p>
                                 </td>
                             </tr>
                         }
@@ -225,10 +209,10 @@
                 <div class="panel-body">
                     <table class="table table-bordered table-striped table-responsive table-hover ReestrTable">
                         <tr>
-                            <th>Занятие</th>
+                            <th style="width:150px; max-width:150px;">Занятие</th>
                             <th>Дата</th>
                             <th>Мероприятие</th>
-                            <th style="min-width:150px;">Примечание</th>
+                            <th style="width:180px; min-width:180px;">Примечание</th>
                         </tr>
                         @if (Model.VisitsList.Count() == 0)
                         {
