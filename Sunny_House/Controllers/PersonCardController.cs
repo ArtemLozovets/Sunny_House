@@ -101,8 +101,22 @@ namespace Sunny_House.Controllers
                                       }).OrderByDescending(x => x.StartTime).ToList();
 
 
-            List<Comment> _commentlist = (from relation in db.PersonRelations.Where(x => x.RelPersonId == PersonId || x.PersonId == PersonId)
-                                          from comment in db.Comments.Where(x => x.SignPersonId == relation.RelPersonId || x.SignPersonId == relation.PersonId || x.AboutPersonId == PersonId)
+            List<int> _persList = new List<int>();
+
+            _persList.Add(PersonId ?? 0);
+
+            var _crelpers = (from relpers in db.PersonRelations.Where(x => (x.PersonId == PersonId))
+                             select relpers.RelPersonId).ToList();
+
+            _persList.AddRange(_crelpers);
+
+            _crelpers = (from relpers in db.PersonRelations.Where(x => (x.RelPersonId == PersonId))
+                         select relpers.PersonId).ToList();
+
+            _persList.AddRange(_crelpers);
+
+            List<Comment> _commentlist = (from comment in db.Comments
+                                          where (_persList.Contains(comment.SignPersonId ?? 0) || _persList.Contains(comment.AboutPersonId ?? 0))
                                           select new
                                           {
                                               Date = comment.Date,
@@ -115,53 +129,39 @@ namespace Sunny_House.Controllers
                                               Text = x.Text
                                           }).ToList();
 
+            _persList.Clear();
+            _persList.Add(PersonId ?? 0);
 
-            List<PTCInfoes> _ptcInfList = new List<PTCInfoes>();
+            var _relpers = (from relpers in db.PersonRelations.Where(x => (x.PersonId == PersonId))
+                            select relpers.RelPersonId).ToList();
 
-            var _ptcinf = (from ptc in db.PotentialСlients
-                           join ev in db.Events on ptc.EventId equals ev.EventId
-                           where (!String.IsNullOrEmpty(ptc.Infoes) && ev.EndTime >= DateTime.Today && ptc.PersonId == PersonId)
-                           select new
-                           {
-                               PersonId = ptc.PersonId,
-                               PersonFIO = ptc.Person.FirstName + " " + ptc.Person.LastName,
-                               Infoes = ptc.Infoes,
-                               EventId = ptc.EventId,
-                               EventName = ev.EventName,
-                               ClientId = ptc.ClientId
-                           }).AsEnumerable().Select(x => new PTCInfoes
-                           {
-                               PersonId = x.PersonId,
-                               PersonFIO = x.PersonFIO,
-                               Infoes = x.Infoes,
-                               EventId = x.EventId,
-                               EventName = x.EventName
-                           }).ToList();
+            _persList.AddRange(_relpers);
 
-            _ptcInfList.AddRange(_ptcinf);
+            _relpers = (from relpers in db.PersonRelations.Where(x => (x.RelPersonId == PersonId))
+                        select relpers.PersonId).ToList();
 
-            _ptcinf = (from relpers in db.PersonRelations.Where(x => (x.RelPersonId == PersonId || x.PersonId == PersonId))
-                        join ptc in db.PotentialСlients on relpers.PersonId equals ptc.PersonId
-                        join ev in db.Events on ptc.EventId equals ev.EventId
-                       where (!String.IsNullOrEmpty(ptc.Infoes) && ev.EndTime >= DateTime.Today && ptc.PersonId == PersonId)
-                       select new
-                       {
-                           PersonId = ptc.PersonId,
-                           PersonFIO = ptc.Person.FirstName + " " + ptc.Person.LastName,
-                           Infoes = ptc.Infoes,
-                           EventId = ptc.EventId,
-                           EventName = ev.EventName,
-                           ClientId = ptc.ClientId
-                       }).Distinct().OrderByDescending(z => z.ClientId).AsEnumerable().Select(x => new PTCInfoes
-                       {
-                           PersonId = x.PersonId,
-                           PersonFIO = x.PersonFIO,
-                           Infoes = x.Infoes,
-                           EventId = x.EventId,
-                           EventName = x.EventName
-                       }).ToList();
+            _persList.AddRange(_relpers);
 
-            _ptcInfList.AddRange(_ptcinf);
+            List<PTCInfoes> _ptcInfList = (from ptc in db.PotentialСlients
+                                           join ev in db.Events on ptc.EventId equals ev.EventId
+                                           where (!String.IsNullOrEmpty(ptc.Infoes) && ev.EndTime >= DateTime.Today && _persList.Contains(ptc.PersonId))
+                                           select new
+                                           {
+                                               PersonId = ptc.PersonId,
+                                               PersonFIO = ptc.Person.FirstName + " " + ptc.Person.LastName,
+                                               Infoes = ptc.Infoes,
+                                               EventId = ptc.EventId,
+                                               EventName = ev.EventName,
+                                               ClientId = ptc.ClientId
+                                           }).Distinct().OrderByDescending(z => z.ClientId).AsEnumerable().Select(x => new PTCInfoes
+                                           {
+                                               PersonId = x.PersonId,
+                                               PersonFIO = x.PersonFIO,
+                                               Infoes = x.Infoes,
+                                               EventId = x.EventId,
+                                               EventName = x.EventName
+                                           }).ToList();
+
 
             MoreInfoesViewModel _moremodel = new MoreInfoesViewModel();
 
