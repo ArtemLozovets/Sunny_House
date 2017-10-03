@@ -179,7 +179,7 @@
                 },
                     new { @id = "EventName" })@Html.Raw("&nbsp;")<i id="EventNameArrow"></i>
                 </th>
-                <th style="width:130px;">
+                <th style="min-width:9em;">
                     @Html.ActionLink("Начало", "ExShow",
                 new
                 {
@@ -194,7 +194,7 @@
                 },
                     new { @id = "StartTime" })@Html.Raw("&nbsp;")<i id="StartTimeArrow"></i>
                 </th>
-                <th style="width:130px;">
+                <th style="min-width:9em;">
                     @Html.ActionLink("Окончание", "ExShow",
                 new
                 {
@@ -209,13 +209,13 @@
                 },
                     new { @id = "EndTime" })@Html.Raw("&nbsp;")<i id="EndTimeArrow"></i>
                 </th>
-                <th>
+                <th style="min-width:9em;">
                     <label>Место</label>
                 </th>
-                <th>
+                <th style="min-width:20em;">
                     @Html.DisplayNameFor(model => model.First().Note)
                 </th>
-                <th style="width:128px; min-width:128px"></th>
+                <th style="min-width:9.2em; width:9.2em;"></th>
             </tr>
 
             @if (Model.Count() == 0)
@@ -245,7 +245,7 @@
                     <td>
                         @item.Address.City, @item.Address.AddressValue
                     </td>
-                    <td style="min-width:140px;">
+                    <td>
                         @Html.DisplayFor(modelItem => item.Note)
                     </td>
                     <td style="text-align:center;">
