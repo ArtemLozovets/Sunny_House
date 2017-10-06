@@ -56,26 +56,17 @@
                 <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Карточка персоны">@Html.DisplayFor(modelItem => item.PersonFIO)</a>
             </td>
 
-            @if (item.PersonAge != null && item.PersonAge > 0)
-            {
-                <td style="text-align:center">
+            <td style="text-align:center">
+                @if (item.PersonAge != null)
+                {
                     <span class="text-info" title="Дата рождения: @Html.DisplayFor(modelItem => item.DateOfBirth)" style="cursor:help">
-                        @Html.DisplayFor(modelItem => item.PersonAge)
+                        @Html.DisplayFor(modelItem => item.PersonAge)<text>,</text>@Html.DisplayFor(modelItem => item.PersonMonth)
                     </span>
-                </td>
-            }
-            else
-            {
-                <td style="text-align:center">
-                    @if (item.PersonMonth != null)
-                    { <span class="text-success" title="Дата рождения: @Html.DisplayFor(modelItem => item.DateOfBirth)" style="cursor:help">
-                        @Html.DisplayFor(modelItem => item.PersonMonth) мес.
-                    </span> }
-                </td>
-            }
+                }
+            </td>
 
             <td>
-                @if (ViewData["FMode"] == "all")
+                @if (ViewData["FMode"].ToString() == "all")
                 {
                     @Html.DisplayFor(modelItem => item.Note)
                 }
@@ -83,10 +74,10 @@
                 {
                     <div class="input-group" style="width:200px; ">
                         <textarea class="form-control custom-control preInfoesInput" rows="1" cols="200">@item.Note</textarea>
-                        <span class="input-group-addon btn btn-default glyphicon glyphicon-floppy-save preInfoesBtn" 
-                              title="Сохранить" 
-                              data-potid="@item.PotentialId" 
-                              data-resid="@item.ReserveId" 
+                        <span class="input-group-addon btn btn-default glyphicon glyphicon-floppy-save preInfoesBtn"
+                              title="Сохранить"
+                              data-potid="@item.PotentialId"
+                              data-resid="@item.ReserveId"
                               data-fmode="@ViewData["FMode"]">
                         </span>
                     </div>
@@ -105,8 +96,6 @@
         </tr>
     }
 </table>
-
-
 
 @if (Model.PageCount > 0)
 {

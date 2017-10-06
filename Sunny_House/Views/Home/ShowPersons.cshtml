@@ -97,24 +97,16 @@
                     <td>
                         <a href="#topanchor" class="showRelPersons" data-personid="@item.PersonId" title="Карточка персоны">@Html.DisplayFor(modelItem => item.MiddleName)</a>
                     </td>
-                    @if (item.PersonAge != null && item.PersonAge > 0)
-                    {
-                        <td style="text-align:center">
+
+                    <td style="text-align:center">
+                        @if (item.PersonAge != null)
+                        {
                             <span class="text-info">
-                                @Html.DisplayFor(modelItem => item.PersonAge)
+                                @Html.DisplayFor(modelItem => item.PersonAge)<text>,</text>@Html.DisplayFor(modelItem => item.PersonMonth)
                             </span>
-                        </td>
-                    }
-                    else
-                    {
-                        <td style="text-align:center">
-                            @if (item.PersonMonth != null)
-                            { <span class="text-success">
-                                @Html.DisplayFor(modelItem => item.PersonMonth) мес.
-                            </span>
-                            }
-                        </td>
-                    }
+                        }
+                    </td>
+
                     <td>
                         @foreach (var addr in item.Address_Num)
                         {

@@ -50,11 +50,7 @@
                         <span class="inf">Дата рождения: <span class="badge">@Convert.ToDateTime(Model.DateOfBirth).ToString("dd'/'MM'/'yyyy")г.</span></span>
                         if (Model.PersonAge != 0)
                         {
-                            <span class="inf">Возраст: <span class="badge">@Model.PersonAge</span></span>
-                        }
-                        else
-                        {
-                            <span class="inf">Возраст: <span class="badge">@Model.PersonMonth мес.</span></span>
+                            <span class="inf">Возраст: <span class="badge">@Model.PersonAge,@Model.PersonMonth</span></span>
                         }
 
                     }

@@ -49,8 +49,8 @@ namespace Sunny_House.Methods
                     DOBDayNum = DOB.DayOfYear;
                 }
 
-                //string debugMess = string.Format("Now day:{0} | DOB day:{1}", nowDate.DayOfYear, DOB.DayOfYear);
-                //System.Diagnostics.Debug.WriteLine(debugMess);
+                string debugMess = string.Format("Now day:{0} | DOB day:{1}", nowDate.DayOfYear, DOB.DayOfYear);
+                System.Diagnostics.Debug.WriteLine(debugMess);
 
                 if (NowDayNum < DOBDayNum) { Age--; }
 
@@ -78,10 +78,13 @@ namespace Sunny_House.Methods
                         + (nowDate.Day >= DOB.Day - 1 ? 0 : -1)//поправка на числа
                         + ((DOB.Day == 1 && DateTime.DaysInMonth(nowDate.Year, nowDate.Month) == nowDate.Day) ? 1 : 0);
                     //если начальная дата - 1-е число меcяца, а конечная - последнее число, добавляется 1 месяц
+
+                    var proshloMes = GetAge(DateOfBirth, false) * 12;
+                    TotalMonth = TotalMonth - proshloMes ?? 0;
                 }
 
-                //string debugMess = string.Format("Месяцев: ", TotalMonth);
-                //System.Diagnostics.Debug.WriteLine(debugMess);
+                string debugMess = string.Format("Месяцев: ", TotalMonth);
+                System.Diagnostics.Debug.WriteLine(debugMess);
                 return TotalMonth;
             }
         }
