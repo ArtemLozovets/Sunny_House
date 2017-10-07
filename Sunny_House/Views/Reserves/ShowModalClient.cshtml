@@ -16,8 +16,10 @@
                 @Html.Action("PartialClientinModal", "Reserves", new
                        {
                            EventId = @ViewData["EventId"],
-                           MinAge = @ViewData["MinAge"],
-                           MaxAge = @ViewData["MaxAge"],
+                           MinAgeYears = @ViewData["MinAgeYears"],
+                           MinAgeMonths = @ViewData["MinAgeMonths"],
+                           MaxAgeYears = @ViewData["MaxAgeYears"],
+                           MaxAgeMonths = @ViewData["MaxAgeMonths"],
                            RoleId = @ViewData["RoleId"],
                            PTSearch = @ViewData["PTSearch"]
                        })
@@ -26,7 +28,6 @@
     }
 
 </div>
-
 
 
 <script type="text/javascript">

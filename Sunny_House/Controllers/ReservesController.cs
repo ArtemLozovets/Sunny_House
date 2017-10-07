@@ -382,17 +382,19 @@ namespace Sunny_House.Controllers
             return PartialView(potentialClients.ToList().ToPagedList(pageNumber, pageSize));
         }
 
-        public ActionResult ShowModalClient(int? EventId, int? MinAge, int? MaxAge, int? RoleId, string PTSearch, int? PTEventId)
+        public ActionResult ShowModalClient(int? EventId, int? MinAgeYears, int? MaxAgeYears, int? MinAgeMonths, int? MaxAgeMonths, int? RoleId, string PTSearch, int? PTEventId)
         {
 
-            if (EventId == null || MinAge == null || MaxAge == null)
+            if (EventId == null || MinAgeYears == null || MaxAgeYears == null || MinAgeMonths == null || MaxAgeMonths == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
             ViewData["EventId"] = EventId;
-            ViewData["MinAge"] = MinAge;
-            ViewData["MaxAge"] = MaxAge;
+            ViewData["MinAgeYears"] = MinAgeYears;
+            ViewData["MinAgeMonths"] = MinAgeMonths;
+            ViewData["MaxAgeYears"] = MaxAgeYears;
+            ViewData["MaxAgeMonths"] = MaxAgeMonths;
             ViewData["PTSearch"] = PTSearch;
             ViewData["PTEventId"] = PTEventId;
 
@@ -403,9 +405,9 @@ namespace Sunny_House.Controllers
         }
 
 
-        public ActionResult PartialClientinModal(int? EventId, int? MinAge, int? MaxAge, int? RoleId, int? page, string PTSearch, int? PTEventId)
+        public ActionResult PartialClientinModal(int? EventId, int? MinAgeYears, int? MaxAgeYears, int? MinAgeMonths, int? MaxAgeMonths, int? RoleId, int? page, string PTSearch, int? PTEventId)
         {
-            if (EventId == null || MinAge == null || MaxAge == null)
+            if (EventId == null || MinAgeYears == null || MaxAgeYears == null || MinAgeMonths == null || MaxAgeMonths == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -452,9 +454,9 @@ namespace Sunny_House.Controllers
                                 PersonMonth = AgeMethods.GetTotalMonth(e.DateOfBirth),
                                 DateOfBirth = e.DateOfBirth,
                                 Note = e.Note
-                            }).Where(a => a.PersonAge >= MinAge && a.PersonAge <= MaxAge || a.PersonAge == null);
+                            }).Where(a => a.PersonAge >= MinAgeYears && a.PersonAge <= MaxAgeYears || a.PersonAge == null);
 
-            if (MinAge > 0 || MaxAge < 100)
+            if (MinAgeYears > 0 || MinAgeMonths > 0 || MaxAgeYears < 99 || MaxAgeMonths < 12)
             {
                 _persons = _persons.Where(a => a.PersonAge != null);
             }
@@ -463,8 +465,10 @@ namespace Sunny_House.Controllers
             int pageNumber = (page ?? 1);
 
             ViewData["EventId"] = EventId;
-            ViewData["MinAge"] = MinAge;
-            ViewData["MaxAge"] = MaxAge;
+            ViewData["MinAgeYears"] = MinAgeYears;
+            ViewData["MinAgeMonths"] = MinAgeMonths;
+            ViewData["MaxAgeYears"] = MaxAgeYears;
+            ViewData["MaxAgeMonths"] = MaxAgeMonths;
             if (RoleId != null) { ViewData["RoleId"] = RoleId; }
             else { ViewData["RoleId"] = "0"; }
 

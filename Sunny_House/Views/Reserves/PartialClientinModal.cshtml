@@ -72,8 +72,10 @@
                          new
                          {
                              EventId = ViewData["EventId"],
-                             MinAge = ViewData["MinAge"],
-                             MaxAge = ViewData["MaxAge"],
+                             MinAgeYears = ViewData["MinAgeYears"],
+                             MinAgeMonths = ViewData["MinAgeMonths"],
+                             MaxAgeYears = ViewData["MaxAgeYears"],
+                             MaxAgeMonths = ViewData["MaxAgeMonths"],
                              RoleId = ViewData["RoleId"],
                              page
                          }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded },
