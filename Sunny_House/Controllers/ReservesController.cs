@@ -454,9 +454,11 @@ namespace Sunny_House.Controllers
                                 PersonMonth = AgeMethods.GetTotalMonth(e.DateOfBirth),
                                 DateOfBirth = e.DateOfBirth,
                                 Note = e.Note
-                            }).Where(a => a.PersonAge >= MinAgeYears && a.PersonAge <= MaxAgeYears || a.PersonAge == null);
+                            }).Where(a => (((a.PersonAge == MinAgeYears && a.PersonMonth >= MinAgeMonths) || (a.PersonAge > MinAgeYears))
+                                                && ((a.PersonAge == MaxAgeYears && a.PersonMonth <= MaxAgeMonths) || (a.PersonAge < MaxAgeYears))
+                                                || (a.PersonAge == null || a.PersonMonth == null)));
 
-            if (MinAgeYears > 0 || MinAgeMonths > 0 || MaxAgeYears < 99 || MaxAgeMonths < 12)
+            if (MinAgeYears > 0 || MinAgeMonths > 0 || MaxAgeYears < 99 || MaxAgeMonths < 11)
             {
                 _persons = _persons.Where(a => a.PersonAge != null);
             }

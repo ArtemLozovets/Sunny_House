@@ -220,19 +220,19 @@
                                                     @style = "width:60px; text-align:center; font-size:0.9em",
                                                     @type = "text",
                                                     @class = "form-control ",
-                                                    @title = "Минимальный возраст",
+                                                    @title = "Минимальный возраст (0-99 лет 0-11 месяцев)",
                                                     @data_val = "true",
                                                     @onkeyup = "reppoint(this)",
                                                     @onchange = "reppoint(this)"
                                                 })
                                                 <span class="input-group-addon" style="border-left: 0; border-right: 0;">до</span>
-                                                @Html.TextBox("maxAge", "99,12",
+                                                @Html.TextBox("maxAge", "99,11",
                                                 new
                                                 {
                                                     @style = "width:60px; text-align:center; font-size:0.9em",
                                                     @type = "text",
                                                     @class = "form-control ",
-                                                    @title = "Максимальный возраст",
+                                                    @title = "Максимальный возраст (0-99 лет 0-11 месяцев)",
                                                     @data_val = "true",
                                                     @onkeyup = "reppoint(this)",
                                                     @onchange = "reppoint(this)"
@@ -359,7 +359,7 @@
             $('body').on('click', '#agefilterclear', function (event) {
                 $(this).blur();
                 $('#minAge').val('0,0').css('background-color', 'transparent');
-                $('#maxAge').val('99,12').css('background-color', 'transparent');
+                $('#maxAge').val('99,11').css('background-color', 'transparent');
             });
 
 
@@ -384,10 +384,10 @@
         //Ограничиваем диапазон значений полей ввода возраста в фильтре
         $('#minAge, #maxAge').bind("focusout, blur", function() {
 
-            if (!$(this).val().match(/^([0-9]{1,2})(,([\d]|1[012]))?$/g)) {
+            if (!$(this).val().match(/^([0-9]{1,2})(,([\d]|1[01]))?$/g)) {
                 $(this).css('background-color', 'rgba(255, 99, 132, 0.4)');
                 if($(this).attr('name') === 'minAge'){$(this).val('0,0');}
-                if($(this).attr('name') === 'maxAge'){$(this).val('99,12');}
+                if($(this).attr('name') === 'maxAge'){$(this).val('99,11');}
             }
             else{
                 $(this).css('background-color', 'rgba(128, 200, 64, 0.4)');
@@ -409,6 +409,7 @@
             $('#addpotentialbtn').click(function(e){
                 e.preventDefault();
                 
+                //Парсинг значений полей фильтра возраста
                 var minArr = new Array();
                 var maxArr = new Array();
 
@@ -422,11 +423,7 @@
 
                 var _maxAgeYears = parseInt(maxArr[0], 10);
                 var _maxAgeMonths = parseInt(maxArr[1], 10);
-
-                console.clear();
-                console.log('minArr', minArr);
-                console.log('maxArr', maxArr);
-                console.log('_minAgeYears:', _minAgeYears, '_minAgeMonths:', _minAgeMonths, '_maxAgeYears:', _maxAgeYears, '_maxAgeMonths:', _maxAgeMonths )
+                //------------------
 
                 var roleid = $('#RoleId').val();
                 var _ptsearch = $('#PTSearch').val();
