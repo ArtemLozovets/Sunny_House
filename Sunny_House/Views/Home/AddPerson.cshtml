@@ -4,6 +4,23 @@
 }
 <link href="~/Content/jquery.datetimepicker.min.css" rel="stylesheet" />
 
+<style>
+    .adt-block{
+        width:100%;
+        background-color:#ddd;
+        border-radius:6px;
+        margin-bottom:10px;
+        padding:5px 20px 20px;
+    }
+    .adt-block button{
+        margin-top:5px;
+    }
+        .adt-block button:hover {
+            background-color:#bbb;
+        }
+</style>
+
+
 <h2><i class="fa fa-user-circle"></i> Персоны</h2>
 
 @using (Html.BeginForm())
@@ -56,6 +73,15 @@
                 @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
             </div>
         </div>
+
+        <div class="adt-block">
+            <label class="control-label">Средства связи</label>
+            <button type="button" id="addPersonComm" title="Добавить средство связи" class="btn btn-default pull-right"><i class="fa fa-plus"></i></button>
+            <div>
+                <h1>@Model.PersonId</h1>
+            </div>
+        </div>
+            
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <button type="submit" title="Добавить персону" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Добавить</button>
@@ -95,5 +121,12 @@
             }
             return true;
         };
+    </script>
+    <script>
+        //Добавление строки в список средств связи персоны
+        $('body').on('click', '#addPersonComm', function (e) {
+            $(this).blur();
+
+        });
     </script>
 }

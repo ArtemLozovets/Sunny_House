@@ -5,11 +5,9 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using Sunny_House.Models;
 using PagedList;
-using PagedList.Mvc;
 using Sunny_House.Methods;
 
 namespace Sunny_House.Controllers
@@ -551,7 +549,11 @@ namespace Sunny_House.Controllers
         [Authorize(Roles = "Administrator, User")]
         public ActionResult AddPerson()
         {
-            return View();
+            Person _newPerson = new Person();
+            _newPerson.FirstName = "TEST";
+            _newPerson.LastName = "User";
+            db.Persons.Add(_newPerson);
+            return View(_newPerson);
         }
 
         [HttpPost]

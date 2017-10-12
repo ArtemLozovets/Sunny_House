@@ -121,9 +121,9 @@
                     <td style="text-align:center; width:292px; min-width:292px;">
                         <a class="btn btn-default btn-sm" title="Платежи персоны" href='@Url.Action("ShowPayments", "Home", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-usd"></span></a>
                         <a class="btn btn-default btn-sm" title="Бронирование" href='@Url.Action("ResShow", "Reserves", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-info-sign"></span></a>@Html.Raw("&nbsp;")
-                        <a class="btn btn-default btn-sm" title="Средства связи" href='@Url.Action("ComShow", "Communications", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-phone"></span></a>
-                        <a class="btn btn-default btn-sm" title="Информация о взаимоотношениях" href='@Url.Action("ShowRel", "Home", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-link"></span></a>
-                        <a class="btn btn-default btn-sm" title="Контактная информация" href='@Url.Action("ShowPlaces", "Home", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-home"></span></a>@Html.Raw("&nbsp;")
+                        <a class="btn btn-danger btn-sm" title="Средства связи" href='@Url.Action("ComShow", "Communications", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-phone"></span></a>
+                        <a class="btn btn-danger btn-sm" title="Информация о взаимоотношениях" href='@Url.Action("ShowRel", "Home", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-link"></span></a>
+                        <a class="btn btn-danger btn-sm" title="Контактная информация" href='@Url.Action("ShowPlaces", "Home", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-home"></span></a>@Html.Raw("&nbsp;")
                         <a class="btn btn-default btn-sm" title="Редактирование персональных данных" href='@Url.Action("PersonEdit", "Home", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-edit"></span></a>
                         <a class="btn btn-default btn-sm" title="Удаление персоны" href='@Url.Action("PersonDelete", "Home", new { PersonId = item.PersonId })'><span class="glyphicon glyphicon-trash"></span></a>
                     </td>
