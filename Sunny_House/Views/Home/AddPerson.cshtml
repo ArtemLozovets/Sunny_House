@@ -20,14 +20,18 @@
         .adt-block table {
             margin-top: 10px;
         }
+
+            .adt-block table tr td {
+                border: none;
+            }
 </style>
 
 
 <h2><i class="fa fa-user-circle"></i> Персоны</h2>
 <span hidden id="ddlBox">
-    @Html.DropDownList("TypeOfCommunicationId", null, "Выберите вид связи...", htmlAttributes: new { @class = "form-control" })
+    @Html.DropDownList("TypeOfCommunicationId", null, "Выберите вид связи...", htmlAttributes: new { @class = "form-control ddlComm" })
 </span>
-
+@Html.Hidden("perCommCounter", "0");
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -133,21 +137,91 @@
         //Добавление записи в таблицу средств связи
         $('body').on('click', '#addPersonCommRec', function () {
             $(this).blur();
+            var recNum = parseInt($('#perCommCounter').val()) + 1;
+            $('#perCommCounter').val(recNum);
             var ddl = $('#ddlBox').html();
-            ddl = ddl.replace(new RegExp("PID","g"),"Hanuka");
+            ddl = ddl.replace(new RegExp("TypeOfCommunicationId", "g"), "ddl" + recNum);
             var recString = '<tr>';
             recString += '<td>' + ddl + '</td>';
-            recString += '<td><input type="text" value="" placeholder="Адрес/Номер..." class="form-control" /></td>';
-            recString += '<td><input type="text" value="" placeholder="Название..." class="form-control" /></td>';
-            recString += '<td><input type="text" value="" placeholder="Примечание..." class="form-control" /></td>';
-            recString += '<td><button type="button" title="Удалить запись" class="form-control btn btn-default pull-left perCommRemove"><i class="fa fa-remove"></i></button></td></tr>';
+            recString += '<td><input type="text" maxlength="50" value="" placeholder="Адрес/Номер..." class="form-control addr" /></td>';
+            recString += '<td><input type="text" maxlength="100" value="" placeholder="Название..." class="form-control commName" /></td>';
+            recString += '<td><input type="text" maxlength="1000" value="" placeholder="Примечание..." class="form-control note" /></td>';
+            recString += '<td><button type="button" title="Подтвердить запись" class="form-control btn btn-default perCommConfirm"><i class="fa fa-check"></i></button></td>';
+            recString += '<td><button type="button" title="Удалить запись" class="form-control btn btn-default perCommRemove"><i class="fa fa-remove"></i></button></td></tr>';
             $('#commTable').append(recString);
         });
 
         //Удаление записи из таблицы средств связи
         $('body').on('click', '.perCommRemove', function () {
             $(this).blur();
-            $(this).parent().parent().remove();
+            $(this).closest('tr').remove();
         });
+
+        //Подтверждение записи в таблице средств связи
+        $('body').on('click', '.perCommConfirm', function () {
+            $(this).blur();
+            var TOCFlag, addrFlag, commNameFlag, noteFlag;
+            var $row = $(this).closest('tr');
+            var $TOC = $row.find('.ddlComm');
+            var $addr = $row.find('.addr');
+            var $commName = $row.find('.commName');
+            var $note = $row.find('.note');
+
+            if ($TOC.val() == '') {
+                $TOC.css('background-color', 'rgba(255, 99, 132, 0.2)');
+                TOCFlag = false;
+            } else {
+                $TOC.css('background-color', 'rgba(128, 200, 64, 0.2)');
+                TOCFlag = true;
+            }
+
+            if ($addr.val().length == 0 || $addr.val().length > 50) {
+                $addr.css('background-color', 'rgba(255, 99, 132, 0.2)');
+                addrFlag = false;
+            } else {
+                $addr.css('background-color', 'rgba(128, 200, 64, 0.2)');
+                addrFlag = true;
+            }
+
+            if ($commName.val().length == 0 || $commName.val().length > 100) {
+                $commName.css('background-color', 'rgba(255, 99, 132, 0.2)');
+                commNameFlag = false;
+            } else {
+                $commName.css('background-color', 'rgba(128, 200, 64, 0.2)');
+                commNameFlag = true;
+            }
+
+            if ($note.val().length == 0 || $note.val().length > 1000) {
+                $note.css('background-color', 'rgba(255, 99, 132, 0.2)');
+                noteFlag = false;
+            } else {
+                $note.css('background-color', 'rgba(128, 200, 64, 0.2)');
+                noteFlag = true;
+            }
+
+            if (TOCFlag && addrFlag && commNameFlag && noteFlag) {
+                $TOC.attr('disabled', 'disabled');
+                $addr.attr('disabled', 'disabled');
+                $commName.attr('disabled', 'disabled');
+                $note.attr('disabled', 'disabled');
+                $(this).attr('disabled', 'disabled');
+            }
+            console.log(TOCFlag, addrFlag, commNameFlag, noteFlag);
+        });
+
+        //Обработчик изменения типа средства связи
+        $(".ddlComm").change(function (e) {
+            if ($("#TypeOfCommunicationId option:selected").text() == 'Телефон мобильный' || $("#TypeOfCommunicationId option:selected").text() == 'Viber') {
+                $("#Address_Number").mask("+389999999999");
+            }
+            else if ($("#TypeOfCommunicationId option:selected").text() == 'Телефон стационарный') {
+                $("#Address_Number").mask("+389999999999?9");
+            }
+            else {
+                $("#Address_Number").unmask();
+            }
+
+        });
+
     </script>
 }
