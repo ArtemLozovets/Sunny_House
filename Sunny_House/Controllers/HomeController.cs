@@ -549,11 +549,8 @@ namespace Sunny_House.Controllers
         [Authorize(Roles = "Administrator, User")]
         public ActionResult AddPerson()
         {
-            Person _newPerson = new Person();
-            _newPerson.FirstName = "TEST";
-            _newPerson.LastName = "User";
-            db.Persons.Add(_newPerson);
-            return View(_newPerson);
+            ViewBag.TypeOfCommunicationId = new SelectList(db.TypeOfCommunications, "Id", "CommType");
+            return View();
         }
 
         [HttpPost]
