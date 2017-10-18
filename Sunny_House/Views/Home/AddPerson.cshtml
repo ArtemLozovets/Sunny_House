@@ -11,6 +11,8 @@
         border-radius: 6px;
         padding: 10px 20px;
         margin-bottom: 10px;
+        width: 100%;
+        min-width: 800px;
     }
 
         .adt-block button:hover {
@@ -21,17 +23,18 @@
             margin-top: 10px;
         }
 
-            .adt-block table tr td {
-                border: none;
+            .adt-block table tr td, .adt-block table tr th {
+                text-align: center !important;
+                border:none;
             }
 </style>
 
 
 <h2><i class="fa fa-user-circle"></i> Персоны</h2>
 <span hidden id="ddlBox">
-    @Html.DropDownList("TypeOfCommunicationId", null, "Выберите вид связи...", htmlAttributes: new { @class = "form-control ddlComm" })
+    @Html.DropDownList("TypeOfCommunicationId", null, "Выберите вид связи...", htmlAttributes: new { @class = "form-control ddlComm", style = "width:206px;" })
 </span>
-@Html.Hidden("perCommCounter", "0");
+@Html.Hidden("perCommCounter", "0")
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -85,7 +88,7 @@
 
         <div class="adt-block">
             <label class="control-label">Средства связи</label>
-            <table class="table table-condensed" id="commTable" style="width: 100%; margin-bottom: 0;">
+            <table class="table table-condensed" id="commTable">
                 <thead></thead>
                 <tbody></tbody>
             </table>
@@ -94,7 +97,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <button type="submit" title="Добавить персону" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Добавить</button>
+                <button type="submit" title="Добавить персону" id="sendBtn" class="btn btn-default"><i class="glyphicon glyphicon-floppy-save"></i> Добавить</button>
             </div>
         </div>
     </div>
@@ -107,6 +110,7 @@
 
     @*Блок скриптов для работы с DateTimePicker*@
     <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
+    <script src="~/Scripts/jquery.maskedinput.min.js"></script>
     <script type="text/javascript">
 
         $.datetimepicker.setLocale('ru');
@@ -133,6 +137,11 @@
         };
     </script>
     <script>
+        $('#sendBtn').click(function (e) {
+            e.preventDefault().blur();
+        });
+    </script>
+    <script>
         //Блок скриптов для работы со списком средств связи
         //Добавление записи в таблицу средств связи
         $('body').on('click', '#addPersonCommRec', function () {
@@ -142,12 +151,12 @@
             var ddl = $('#ddlBox').html();
             ddl = ddl.replace(new RegExp("TypeOfCommunicationId", "g"), "ddl" + recNum);
             var recString = '<tr>';
-            recString += '<td>' + ddl + '</td>';
+            recString += '<td style="width:210px !important;">' + ddl + '</td>';
             recString += '<td><input type="text" maxlength="50" value="" placeholder="Адрес/Номер..." class="form-control addr" /></td>';
             recString += '<td><input type="text" maxlength="100" value="" placeholder="Название..." class="form-control commName" /></td>';
-            recString += '<td><input type="text" maxlength="1000" value="" placeholder="Примечание..." class="form-control note" /></td>';
-            recString += '<td><button type="button" title="Подтвердить запись" class="form-control btn btn-default perCommConfirm"><i class="fa fa-check"></i></button></td>';
-            recString += '<td><button type="button" title="Удалить запись" class="form-control btn btn-default perCommRemove"><i class="fa fa-remove"></i></button></td></tr>';
+            recString += '<td><textarea rows="1" maxlength="1000" style="resize:vertical;" value="" placeholder="Примечание..." class="form-control note" /></td>';
+            recString += '<td style="width:92px !important;"><button type="button" title="Подтвердить запись" class=" btn btn-default perCommConfirm"><i class="fa fa-check"></i></button>&nbsp;';
+            recString += '<button type="button" title="Удалить запись" class="btn btn-default perCommRemove"><i class="fa fa-remove"></i></button></td></tr>';
             $('#commTable').append(recString);
         });
 
@@ -210,17 +219,21 @@
         });
 
         //Обработчик изменения типа средства связи
-        $(".ddlComm").change(function (e) {
-            if ($("#TypeOfCommunicationId option:selected").text() == 'Телефон мобильный' || $("#TypeOfCommunicationId option:selected").text() == 'Viber') {
-                $("#Address_Number").mask("+389999999999");
+        $('body').on('change', '.ddlComm', function () {
+
+            var $row = $(this).closest('tr');
+            var $addr = $row.find('.addr');
+
+            if ($('option:selected', this).text() == 'Телефон мобильный' || $('option:selected', this).text() == 'Viber') {
+                $addr.mask("+389999999999");
             }
-            else if ($("#TypeOfCommunicationId option:selected").text() == 'Телефон стационарный') {
-                $("#Address_Number").mask("+389999999999?9");
-            }
-            else {
-                $("#Address_Number").unmask();
+            else if ($('option:selected', this).text() == 'Телефон стационарный') {
+                $addr.mask("+389999999999?9");
             }
 
+            else {
+                $addr.unmask();
+            }
         });
 
     </script>
