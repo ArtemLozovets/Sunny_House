@@ -25,7 +25,7 @@
 
             .adt-block table tr td, .adt-block table tr th {
                 text-align: center !important;
-                border:none;
+                border: none;
             }
 </style>
 
@@ -35,7 +35,7 @@
     @Html.DropDownList("TypeOfCommunicationId", null, "Выберите вид связи...", htmlAttributes: new { @class = "form-control ddlComm", style = "width:206px;" })
 </span>
 @Html.Hidden("perCommCounter", "0")
-@using (Html.BeginForm())
+@using (Html.BeginForm("AddPerson", "Home", FormMethod.Post, new { id = "PersonForm" }))
 {
     @Html.AntiForgeryToken()
 
@@ -137,8 +137,29 @@
         };
     </script>
     <script>
+        //Обработчик нажатия кнопки "Добавить"
         $('#sendBtn').click(function (e) {
-            e.preventDefault().blur();
+            e.preventDefault();
+            $(this).blur();
+
+
+            var data = $('#PersonForm').serializeArray(); // or use the id of the form is you have given it one
+            //data.push({ name: "ArchivosDeNorma", value: JSON.stringify(that.aarchivos) });
+            data.push({ name: "ArchivosDeNorma", value: 'AAAAAAAAAAAA' });
+            console.log(data);
+            $.ajax({
+                type: 'POST',
+                cache: false,
+                url: '/Home/AddPerson',
+                data: data,
+                success: function (data, textStatus, jqXHR) {
+                        window.location.href = "/Home/ShowPersons";
+                    },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('error');
+                }
+            });
+
         });
     </script>
     <script>
@@ -152,7 +173,7 @@
             ddl = ddl.replace(new RegExp("TypeOfCommunicationId", "g"), "ddl" + recNum);
             var recString = '<tr>';
             recString += '<td style="width:210px !important;">' + ddl + '</td>';
-            recString += '<td><input type="text" maxlength="50" value="" placeholder="Адрес/Номер..." class="form-control addr" /></td>';
+            recString += '<td><input type="text" id="underman" maxlength="50" value="" placeholder="Адрес/Номер..." class="form-control addr" /></td>';
             recString += '<td><input type="text" maxlength="100" value="" placeholder="Название..." class="form-control commName" /></td>';
             recString += '<td><textarea rows="1" maxlength="1000" style="resize:vertical;" value="" placeholder="Примечание..." class="form-control note" /></td>';
             recString += '<td style="width:92px !important;"><button type="button" title="Подтвердить запись" class=" btn btn-default perCommConfirm"><i class="fa fa-check"></i></button>&nbsp;';
@@ -230,11 +251,9 @@
             else if ($('option:selected', this).text() == 'Телефон стационарный') {
                 $addr.mask("+389999999999?9");
             }
-
             else {
                 $addr.unmask();
             }
         });
-
     </script>
 }

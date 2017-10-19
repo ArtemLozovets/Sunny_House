@@ -556,62 +556,63 @@ namespace Sunny_House.Controllers
         [HttpPost]
         [Authorize(Roles = "Administrator, User")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddPerson([Bind(Include = "PersonId,FirstName,LastName,MiddleName,Sex,DateOfBirth,Note,CreateDate")] Person model)
+        //public async Task<ActionResult> AddPerson([Bind(Include = "PersonId,FirstName,LastName,MiddleName,Sex,DateOfBirth,Note,CreateDate")] Person model)
+        public async Task<ActionResult> AddPerson(string model)
         {
-            ModelState.Remove("CreateDate");
+            //ModelState.Remove("CreateDate");
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    if (model.DateOfBirth > DateTime.Now)
-                    {
-                        string _message = string.Format("Дата рождения не может быть больше текущей даты");
-                        TempData["MessageError"] = _message;
+            //if (ModelState.IsValid)
+            //{
+            //    try
+            //    {
+            //        if (model.DateOfBirth > DateTime.Now)
+            //        {
+            //            string _message = string.Format("Дата рождения не может быть больше текущей даты");
+            //            TempData["MessageError"] = _message;
 
-                        return RedirectToAction("ShowPersons", "Home");
-                    }
-                    model.CreateDate = DateTime.Now;
-                    db.Persons.Add(model);
-                    var result = await db.SaveChangesAsync();
-                    if (result > 0)
-                    {
-                        string _message = string.Format("\"{0} {1} {2} \" добавлен(на) в базу данных", model.FirstName, model.LastName, model.MiddleName);
-                        TempData["MessageOk"] = _message;
+            //            return RedirectToAction("ShowPersons", "Home");
+            //        }
+            //        model.CreateDate = DateTime.Now;
+            //        db.Persons.Add(model);
+            //        var result = await db.SaveChangesAsync();
+            //        if (result > 0)
+            //        {
+            //            string _message = string.Format("\"{0} {1} {2} \" добавлен(на) в базу данных", model.FirstName, model.LastName, model.MiddleName);
+            //            TempData["MessageOk"] = _message;
 
-                        return RedirectToAction("ShowPersons", "Home");
-                    }
+            //            return RedirectToAction("ShowPersons", "Home");
+            //        }
 
-                }
-                catch (Exception ex)
-                {
-                    ViewBag.ErMes = ex.Message;
-                    ViewBag.ErStack = ex.StackTrace;
-                    return View("Error");
-                }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        ViewBag.ErMes = ex.Message;
+            //        ViewBag.ErStack = ex.StackTrace;
+            //        return View("Error");
+            //    }
 
-            }
-            else
-            {
-                if (ModelState["DateOfBirth"].Errors.Count > 0)
-                {
-                    ModelState["DateOfBirth"].Errors.Clear();
-                    ModelState.AddModelError("DateOfBirth", "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)");
-                }
-                else
-                {
-                    //Вывод всех сообщений об ошибках валидации модели
-                    foreach (var item in ModelState)
-                    {
-                        foreach (var error in item.Value.Errors)
-                        {
-                            TempData["MessageError"] = error.ErrorMessage;
-                            return RedirectToAction("ShowPersons", "Home", new { @PersonId = model.PersonId });
-                        }
+            //}
+            //else
+            //{
+            //    if (ModelState["DateOfBirth"].Errors.Count > 0)
+            //    {
+            //        ModelState["DateOfBirth"].Errors.Clear();
+            //        ModelState.AddModelError("DateOfBirth", "Проверьте правильность ввода даты (ДД/ММ/ГГГГ)");
+            //    }
+            //    else
+            //    {
+            //        //Вывод всех сообщений об ошибках валидации модели
+            //        foreach (var item in ModelState)
+            //        {
+            //            foreach (var error in item.Value.Errors)
+            //            {
+            //                TempData["MessageError"] = error.ErrorMessage;
+            //                return RedirectToAction("ShowPersons", "Home", new { @PersonId = model.PersonId });
+            //            }
 
-                    }
-                }
-            }
+            //        }
+            //    }
+            //}
             return View();
 
         }
