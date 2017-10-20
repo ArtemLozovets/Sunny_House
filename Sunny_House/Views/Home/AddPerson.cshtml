@@ -37,7 +37,7 @@
 @Html.Hidden("perCommCounter", "0")
 @using (Html.BeginForm("AddPerson", "Home", FormMethod.Post, new { id = "PersonForm" }))
 {
-    @Html.AntiForgeryToken()
+    @*@Html.AntiForgeryToken()*@
 
     <div class="form-horizontal">
         <h4>Добавить персону</h4>
@@ -107,10 +107,9 @@
 </div>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-
-    @*Блок скриптов для работы с DateTimePicker*@
     <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
     <script src="~/Scripts/jquery.maskedinput.min.js"></script>
+    @*Блок скриптов для работы с DateTimePicker*@
     <script type="text/javascript">
 
         $.datetimepicker.setLocale('ru');
@@ -143,20 +142,32 @@
             $(this).blur();
 
 
-            var data = $('#PersonForm').serializeArray(); // or use the id of the form is you have given it one
-            //data.push({ name: "ArchivosDeNorma", value: JSON.stringify(that.aarchivos) });
-            data.push({ name: "ArchivosDeNorma", value: 'AAAAAAAAAAAA' });
-            console.log(data);
+            var dataForm = $('#PersonForm').serialize(); // or use the id of the form is you have given it one
+            var otherData = { 'Comm1': { "mrm": "124" }, 'Comm2': {"2mra": "456", "3mra":"12789"} };
+            
+            var FirstName = $('#FirstName').val();
+            var LastName = $('#LastName').val();
+            var MiddleName = $('#MiddleName').val();
+            var Sex = $('#Sex').val();
+            var DateOfBirth = $('#DateOfBirth').val();
+            var Note = $('#Note').val();
+
+            var model = { "FirstName": FirstName, "LastName": LastName, "MiddleName": MiddleName, "Sex": Sex, "DateOfBirth": DateOfBirth, "Note": Note };
+
+           // console.log(data);
             $.ajax({
                 type: 'POST',
-                cache: false,
-                url: '/Home/AddPerson',
-                data: data,
-                success: function (data, textStatus, jqXHR) {
-                        window.location.href = "/Home/ShowPersons";
-                    },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert('error');
+                url: '/Home/AddPersonJson/',
+                traditional: true,
+                data: {
+                    'model': JSON.stringify(model),
+                    'JSONData': JSON.stringify(otherData)
+                },
+               
+                dataType: 'json',
+                success: function (data) {
+                },
+                fail: function (data) {
                 }
             });
 
