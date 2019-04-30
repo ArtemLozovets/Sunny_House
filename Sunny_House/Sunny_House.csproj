@@ -341,6 +341,11 @@
     <Content Include="Areas\Administrator\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Administrator\Views\UsersManagement\ShowUsers.cshtml" />
     <Content Include="Areas\Administrator\Views\UsersManagement\LoginAudit.cshtml" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\FontAwesome.otf" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
@@ -349,11 +354,6 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.min.css.map" />
     <Content Include="Content\bootstrap.css.map" />
-    <Content Include="fonts\fontawesome-webfont.eot" />
-    <Content Include="fonts\fontawesome-webfont.ttf" />
-    <Content Include="fonts\fontawesome-webfont.woff" />
-    <Content Include="fonts\fontawesome-webfont.woff2" />
-    <Content Include="fonts\FontAwesome.otf" />
     <None Include="job_scheduling_data_2_0.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -367,13 +367,13 @@
     <Content Include="Scripts\angular-ui\ui-bootstrap-tpls.min.js" />
     <Content Include="Scripts\angular-ui\ui-bootstrap.js" />
     <Content Include="Scripts\angular-ui\ui-bootstrap.min.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Chart.js" />
     <Content Include="Scripts\FullCalendar\fullcalendar.min.js.map">
       <DependentUpon>fullcalendar.min.js</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-3.1.0.intellisense.js" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\circle-progress.min.js" />
     <Content Include="Scripts\FullCalendar\fullcalendar.js" />
     <Content Include="Scripts\FullCalendar\fullcalendar.min.js" />
