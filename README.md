@@ -9,11 +9,15 @@
 Приложение служит для автоматизации процесса планирования учебных мероприятий с последующим анализом их коммерческой эффективности. 
 Анализ выполняется путем построения графических отчетов по различным категориям данных (платежи, посещения, отчеты) за произвольный учебный год.
 
-![Screen_2](http://moonr.ho.ua/downloads/gallery/fresult/SHScr_1M.jpg?)
+![Screen_1](http://moonr.ho.ua/downloads/gallery/fresult/SHScr_1M.jpg?)
 
 В приложении реализована система управления расписанием занятий в интерактивном режиме.
 
-![Screen_1](http://moonr.ho.ua/downloads/gallery/fresult/SHScr_2M.jpg)
+![Screen_2](http://moonr.ho.ua/downloads/gallery/fresult/SHScr_2M.jpg)
+
+Работа с адресными данными персон реализована с использованием сервисов Google Maps и осуществляется в интерактивном режиме.
+
+![Screen_3](http://moonr.ho.ua/downloads/gallery/fresult/SHScr_5.jpg)
 
 ## Особенности программы:
 * Встроенная система управления пользователями на основе ролей
@@ -22,7 +26,7 @@
 * Настраиваемая система связывания клиентов/сотрудников на основе учета типов взаимоотношений между персонами
 * Встроенный механизм электронной рассылки приглашений потенциальным клиентам
 
-![Screen_3](http://moonr.ho.ua/downloads/gallery/fresult/SHScr_3M.jpg)
+![Screen_4](http://moonr.ho.ua/downloads/gallery/fresult/SHScr_3M.jpg)
 
 ## Используемые технологии и библиотеки:
 * [ASP .NET MVC 5.2.3](https://ru.wikipedia.org/wiki/ASP.NET_MVC_Framework)
@@ -31,10 +35,10 @@
 * [JQuery 3.1.0](https://jquery.com)
 * [Angular UI Bootstrap 2.5.0](https://angular-ui.github.io/bootstrap)
 
-![Screen_3](http://moonr.ho.ua/downloads/gallery/fresult/SHScr_4M.jpg)
+![Screen_5](http://moonr.ho.ua/downloads/gallery/fresult/SHScr_4M.jpg)
 
 ## Системные требования
 "Финансово-аналитический портал" является web-ориентированным клиент-серверным приложением. Для его работы необходимо устройство на котором установлен web-браузер с включенной поддержкой `java-script` и `cookies`. Рекомендуемый браузер - `"Google Chrome"`. Рекомендуемое разрешение экрана - `1366 x 768`. Следует отметить, что программа работоспособна в других браузерах и на устройствах с меньшим разрешением экрана, однако указанные параметры являются оптимальными.
 
 ## Лицензия
-Commercial software. 
+Commercial software.
